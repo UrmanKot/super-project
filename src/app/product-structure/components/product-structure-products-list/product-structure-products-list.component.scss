@@ -1,0 +1,12 @@
+.disabled {
+  cursor: default !important;
+
+  &:focus {
+    outline: 0 !important;
+  }
+}
+
+.category-name {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}

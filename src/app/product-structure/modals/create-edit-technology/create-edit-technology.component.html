@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Technology
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="name">Name*</label>
+      <input type="text" id="name" pInputText formControlName="name">
+    </div>
+    <div class="form-group">
+      <label for="description">Description*</label>
+      <textarea id="description" [rows]="2" pInputTextarea [autoResize]="true" formControlName="description"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Type*</label>
+      <div class="column">
+        <p-radioButton
+          class="mr-3"
+          name="service_or_material"
+          label="Service"
+          value="0"
+          formControlName="service_or_material">
+        </p-radioButton>
+        <p-radioButton
+          name="service_or_material"
+          label="Material"
+          value="1"
+          formControlName="service_or_material">
+        </p-radioButton>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

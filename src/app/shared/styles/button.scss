@@ -1,0 +1,36 @@
+.p-button {
+  border-radius: 0.625rem;
+  line-height: 1;
+  font-size: var(--theme-font-size-s);
+  text-transform: capitalize;
+  transition: opacity 0.25s, background-color 0.25s;
+
+  &.p-button-rounded {
+    height: 2.5625rem !important;
+    width: 2.5625rem;
+
+    .pi {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.p-button-icon {
+  font-size: var(--theme-font-size-s);
+}
+
+.p-button-label {
+  font: inherit;
+  font-weight: 500;
+}
+
+.p-button-loading {
+  .p-button-label {
+    display: none;
+    margin: 0;
+  }
+
+  .p-button-icon {
+    margin: auto !important;
+  }
+}

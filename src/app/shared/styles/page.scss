@@ -1,0 +1,39 @@
+.page {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    width: 100%;
+    padding: 1.125rem 2rem 1rem;
+    box-shadow: 0 0.125rem 1rem #00000010;
+  }
+
+  &__title {
+    align-items: center;
+    display: flex;
+
+    h1 {
+      margin-left: 0.75rem;
+      font-weight: 500;
+      font-size: var(--sm-theme-font-size-xl);
+    }
+  }
+
+  &__card {
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 0.5rem #00000010;
+    background: #fff;
+  }
+
+  &__content {
+    padding: 2rem;
+  }
+
+  &__tabs {
+    border-radius: 1rem;
+    //box-shadow: 0 0 0.5rem #00000010;
+    //background: #fff;
+  }
+}

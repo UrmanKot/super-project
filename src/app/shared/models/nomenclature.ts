@@ -1,0 +1,53 @@
+import {ProductCategory} from '../../product-structure/models/product-category';
+
+export class Nomenclature {
+  readonly id: number;
+  code?: string;
+  name?: string;
+  status?: string;
+  parent?: number | Nomenclature;
+  // technologies?: Technology[];
+  image?: string;
+  category?: ProductCategory;
+  // category?: any;
+  description?: string;
+  type?: ENomenclatureType;
+  approved?: string;
+  fullName?: string;
+  // purchase_category?: PurchasingCategory;
+  accounting_number?: string;
+  is_fixed_asset?: boolean;
+  is_non_ressivable?: boolean;
+  qc_protocol?: number;
+  bulk_or_serial?: '1' | '0';
+  tasks?: Task[];
+}
+
+export class NewNomenclature {
+  readonly id: number;
+  name: string;
+  parents?: NomenclatureParent[];
+}
+
+export class NomenclatureParent {
+  readonly id: number;
+  name: string;
+}
+
+export enum ENomenclatureType {
+  PURCHASED = '0',
+  ASSEMBLY = '1',
+  MANUFACTURED = '2'
+}
+
+export enum ENomenclatureApproval {
+  NEW = '0',
+  APPROVED = '1',
+  DECLINED = '2'
+}
+
+
+export enum ENomenclatureBulk {
+  BULK = '0',
+  SERIAL = '1',
+}

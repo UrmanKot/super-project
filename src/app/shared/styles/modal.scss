@@ -1,0 +1,30 @@
+.mat-dialog-actions {
+  padding: 1rem 0 !important;
+
+  button {
+    min-width: 6.25rem;
+  }
+}
+
+.modal {
+  &_visible {
+    mat-dialog-content,
+    mat-dialog-container {
+      overflow: visible !important;
+    }
+  }
+}
+
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  &__title {
+    text-transform: capitalize;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+}

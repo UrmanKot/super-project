@@ -1,0 +1,126 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'confirmation'" [isActive]="true"></pek-module-icon>
+      <h1>Payment Confirmation</h1>
+    </div>
+  </div>
+</div>
+
+
+<div class="page__content">
+  <div class="page__tabs">
+    <p-tabView class="custom-tabs">
+      <p-tabPanel header="Invoices" [selected]="true">
+        <div class="page__table">
+          <p-table
+            #dt
+            selectionMode="single"
+            scrollHeight="calc(100vh - 476px)"
+            [scrollable]="true"
+            [paginator]="payments.length > 0"
+            [rows]="10"
+            [(selection)]="selectedPayments"
+            [value]="payments"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex align-items-center">
+                <div class="payment-price">
+                  <ng-container *ngIf="!isLoadingPayments; else paymentsEmpty">
+                    Total Price: {{paymentTotals.totalPriceInvoicesPayments | moneyFormat}} €, Total Amount: {{paymentTotals.totalAmountInvoicesPayments | moneyFormat}} €
+                  </ng-container>
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  label="Decline"
+                  class="ml-auto p-button-danger mr-2"
+                  [disabled]="selectedPayments?.length === 0"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-check"
+                  label="Confirm"
+                  class="p-button-success"
+                  [disabled]="selectedPayments?.length === 0"
+                ></button>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th style="width: 3%" class="text-center">#</th>
+                <th style="width: 15%" class="text-center">Date</th>
+                <th style="width: 17%" class="text-center">Invoice</th>
+                <th style="width: 20%">Supplier</th>
+                <th style="width: 20%" class="text-center">Invoice Total Price</th>
+                <th style="width: 10%" class="text-center">Amount</th>
+                <th style="width: 10%" class="text-center">Order ID</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-payment let-i="rowIndex">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="payment"></p-tableCheckbox>
+                </td>
+                <td style="width: 3%" class="text-center">{{i + 1}}</td>
+                <td style="width: 15%" class="text-center">
+                  {{payment.invoice.system_creation_date  | date:'dd/MM/yyyy'}}
+                </td>
+                <td style="width: 17%" class="text-center">
+                  <a>
+                    {{payment.invoice.self_serial_number}}
+                  </a>
+                </td>
+                <td style="width: 20%">{{payment.invoice.supplier.name}}</td>
+                <td style="width: 20%" class="text-center">{{payment.invoice_total_price | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">{{payment.payment_amount | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">
+                  <a>{{payment.invoice.order.id}}</a>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="8">
+                  <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoadingPayments">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="dt.paginator=false"
+                styleClass="p-button-text"
+              >All
+              </p-button>
+            </ng-template>
+          </p-table>
+          <div *ngIf="!dt.paginator && !isLoadingPayments && payments.length > 0" class="paginator-return-pagination">
+            <p-button
+              type="button"
+              (click)="dt.paginator=true"
+              styleClass="p-button-text"
+            >
+              Return pagination
+            </p-button>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Auxiliary Invoices">
+        Auxiliary Invoices
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<ng-template #paymentsEmpty>
+  <ng-container>
+    Total Price: ... €, Total Amount: ... €
+  </ng-container>
+</ng-template>

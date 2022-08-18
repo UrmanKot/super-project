@@ -1,0 +1,11 @@
+.category-name {
+  overflow-wrap: anywhere;
+}
+
+::ng-deep {
+  .product-structure-bar {
+    .p-submenu-list {
+      width: 13.5rem !important;
+    }
+  }
+}

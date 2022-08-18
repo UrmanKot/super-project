@@ -1,0 +1,138 @@
+.p-inputtext {
+  font-size: var(--theme-font-size-s);
+  background: #fff;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.625rem;
+
+  &.input-fill  {
+    background: #f4f5f7;
+    border-color: transparent;
+  }
+}
+
+.p-checkbox {
+  .p-checkbox-box {
+    border: 1px solid #ced4da;
+  }
+}
+
+.p-dropdown {
+  width: 100%;
+  border-radius: 0.625rem;
+}
+
+.p-dropdown-label {
+  line-height: 1.334;
+}
+
+.table-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  margin-bottom: 0.125rem;
+
+  label {
+    width: max-content;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+p-menubar {
+  transition: opacity 0.25s;
+
+  &.disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5;
+
+    .p-menuitem-link {
+      background: #e9ecef !important;
+    }
+  }
+}
+
+.p-menubar .p-submenu-list {
+  z-index: 3 !important;
+}
+
+.p-checkbox-label,
+.p-radiobutton-label {
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.custom-tabs {
+  .p-tabview-nav-content {
+    overflow: initial !important;
+  }
+
+  .p-tabview-nav {
+    background: none;
+    border: none !important;
+
+    li {
+      min-width: 10rem;
+      margin-right: 0.75rem;
+      border-radius: 1rem 1rem 0 0 !important;
+      position: relative;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 6px;
+        background: #fff;
+        z-index: 6;
+      }
+    }
+
+    .p-highlight {
+      box-shadow: 0 0 0.5rem #00000010 !important;
+      .p-tabview-nav-link {
+        background: #fff !important;
+        color: var(--theme-text-primary) !important;
+      }
+    }
+  }
+
+  .p-tabview-ink-bar {
+    display: none !important;
+  }
+
+  .p-tabview-panels {
+    box-shadow: 0 0 0.5rem #00000010 !important;
+    border-radius: 0 1rem 1rem 1rem !important;
+    padding: 2rem !important;
+  }
+
+  .p-tabview-nav-link {
+    font-weight: 500 !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    background: var(--theme-color-secondary) !important;
+    color: var(--theme-color-primary)0 !important;
+    padding: 1.25rem 2rem !important;
+    justify-content: center;
+    border: none !important;
+
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  }
+}

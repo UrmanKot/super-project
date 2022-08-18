@@ -1,0 +1,34 @@
+@import '~bootstrap/scss/bootstrap-grid';
+@import "src/assets/styles/reset";
+@import 'app/shared/styles/theme-variables';
+@import "assets/fonts/icomoon/style.css";
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.4;
+  background-color: #f7f8fa;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@import 'app/shared/styles/page';
+@import 'app/shared/styles/button';
+@import 'app/shared/styles/form';
+@import 'app/shared/styles/table';
+@import 'app/shared/styles/modal';
+@import 'app/shared/styles/bootstrap-classes';
