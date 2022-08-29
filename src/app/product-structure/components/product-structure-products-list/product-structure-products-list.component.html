@@ -52,8 +52,8 @@
                   pButton
                   type="button"
                   icon="pi pi pi-table"
-                  label=""
                   class="mr-2"
+                  (click)="goToProductStructure()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
@@ -62,8 +62,8 @@
                   pButton
                   type="button"
                   icon="pi pi pi-clone"
-                  label=""
                   class="mr-2"
+                  (click)="copyProduct()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
@@ -72,17 +72,17 @@
                   pButton
                   type="button"
                   icon="pi pi pi-pencil"
-                  label=""
                   class="mr-2"
+                  (click)="editProduct()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
                   pTooltip="Remove"
                   tooltipPosition="top"
                   pButton
+                  (click)="removeProduct()"
                   type="button"
                   icon="pi pi pi-trash"
-                  label=""
                   class="mr-2 p-button-danger"
                 ></button>
               </div>
