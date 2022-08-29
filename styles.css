@@ -12573,7 +12573,7 @@ body {
 }
 .layout-navigation__item a {
   display: flex;
-  padding: 1.875rem 1.25rem;
+  padding: 1.375rem 1.25rem;
   color: var(--text-color);
   position: relative;
   font-weight: 500;
@@ -12601,7 +12601,7 @@ body {
   justify-content: space-between;
   background: #fff;
   width: 100%;
-  padding: 1.125rem 2rem 1rem;
+  padding: 0.875rem 2rem 0.75rem;
   box-shadow: 0 0.125rem 1rem rgba(0, 0, 0, 0.062745098);
 }
 .page__title {
@@ -12614,7 +12614,7 @@ body {
   font-size: var(--sm-theme-font-size-xl);
 }
 .page__card {
-  padding: 2rem;
+  padding: 1.125rem 2rem 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.062745098);
   background: #fff;
@@ -12749,7 +12749,7 @@ p-menubar.disabled .p-menuitem-link {
 .custom-tabs .p-tabview-panels {
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.062745098) !important;
   border-radius: 0 1rem 1rem 1rem !important;
-  padding: 2rem !important;
+  padding: 1.5rem 2rem 2rem !important;
 }
 .custom-tabs .p-tabview-nav-link {
   font-weight: 500 !important;
@@ -12783,7 +12783,7 @@ p-menubar.disabled .p-menuitem-link {
 .p-treetable .p-treetable-header {
   border: none;
   background: none;
-  padding: 0 0 1.5rem;
+  padding: 0 0 1.125rem;
 }
 .p-menubar {
   padding: 0;
@@ -12823,7 +12823,7 @@ p-menubar.disabled .p-menuitem-link {
 .p-datatable .p-datatable-header {
   border: none;
   background: none;
-  padding: 0 0 1.5rem;
+  padding: 0 0 1.125rem;
 }
 .p-link:focus {
   outline: none;
