@@ -5,7 +5,8 @@
     justify-content: space-between;
     background: #fff;
     width: 100%;
-    padding: 1.125rem 2rem 1rem;
+    //padding: 1.125rem 2rem 1rem;
+    padding: 0.875rem 2rem 0.75rem;
     box-shadow: 0 0.125rem 1rem #00000010;
   }
 
@@ -21,7 +22,7 @@
   }
 
   &__card {
-    padding: 2rem;
+    padding: 1.125rem 2rem 2rem;
     border-radius: 1rem;
     box-shadow: 0 0 0.5rem #00000010;
     background: #fff;
