@@ -1,5 +1,25 @@
 .logo {
-  font-weight: 700;
-  color: var(--theme-color-primary);
-  font-size: var(--theme-font-size-xxl);
+  cursor: pointer;
+  padding: 1rem;
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+
+    &:active {
+      color: inherit;
+    }
+  }
+
+  &__text {
+    font-weight: 600;
+    color: var(--theme-color-primary);
+    font-size: 1.25rem;
+  }
+
+  &__module {
+    color: var(--theme-text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+  }
 }

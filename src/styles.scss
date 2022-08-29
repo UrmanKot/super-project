@@ -26,6 +26,55 @@ body {
   justify-content: center;
 }
 
+.layout-header {
+  position: relative;
+  z-index: 3;
+  //height: 5.1875rem;
+  background-color: #fff;
+  box-shadow: 0 0.125rem 1rem rgb(0 0 0 / 8%);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem 0 1rem;
+}
+
+.layout-navigation {
+  margin-left: 2rem;
+  display: flex;
+  align-items: center;
+
+  &__item {
+    margin-right: 0.5rem;
+
+    a {
+      display: flex;
+      padding: 1.875rem 1.25rem;
+      color: var(--text-color);
+      position: relative;
+      font-weight: 500;
+
+      &::before {
+        opacity: 0;
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 0.1875rem;
+        background: var(--theme-color-primary);
+      }
+    }
+
+    .active {
+      color: var(--theme-color-primary);
+      font-weight: 500;
+
+      &::before {
+        opacity: 0;
+      }
+    }
+  }
+}
+
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/button';
 @import 'app/shared/styles/form';

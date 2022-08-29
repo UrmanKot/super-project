@@ -1,1 +1,16 @@
-<p>header works!</p>
+<div class="layout-header">
+  <pek-logo [module]="module"></pek-logo>
+  <ul class="layout-navigation">
+    <li
+      *ngFor="let route of routes"
+      class="layout-navigation__item"
+    >
+      <a
+        [routerLink]="route.commands"
+        routerLinkActive="active"
+      >
+        {{route.label}}
+      </a>
+    </li>
+  </ul>
+</div>

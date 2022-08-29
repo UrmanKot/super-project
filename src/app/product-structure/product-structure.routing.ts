@@ -8,17 +8,26 @@ import {
 } from './components/product-structure-product/product-structure-product.component';
 import {TechnologiesComponent} from './components/technologies/technologies.component';
 import {PrefixesComponent} from './components/prefixes/prefixes.component';
+import {
+  ProductStructureLayoutComponent
+} from './components/product-structure-layout/product-structure-layout.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'products', pathMatch: 'full'},
   {
-    path: 'products', children: [
-      {path: '', title: 'Products', component: ProductStructureProductsListComponent},
-      {path: 'structure/:id', title: 'Products', component: ProductStructureProductComponent}
+    path: '',
+    component: ProductStructureLayoutComponent,
+    children: [
+      {path: '', redirectTo: 'products', pathMatch: 'full'},
+      {
+        path: 'products', children: [
+          {path: '', title: 'Products', component: ProductStructureProductsListComponent},
+          {path: 'structure/:id', title: 'Products', component: ProductStructureProductComponent}
+        ]
+      },
+      {path: 'technologies', title: 'Technologies', component: TechnologiesComponent},
+      {path: 'prefixes', title: 'Prefixes', component: PrefixesComponent},
     ]
-  },
-  {path: 'technologies', title: 'Technologies', component: TechnologiesComponent},
-  {path: 'prefixes', title: 'Prefixes', component: PrefixesComponent},
+  }
 ];
 
 @NgModule({

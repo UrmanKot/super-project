@@ -1,12 +1,20 @@
-<div class="page">
-  <div class="page__header">
-    <div class="page__title">
-      <pek-module-icon [module]="'dashboard'" [isActive]="true"></pek-module-icon>
-      <h1>Dashboard</h1>
-    </div>
+<div class="dashboard">
+  <div class="page__content">
+    <h1 class="dashboard__title">Welcome To R-WAVE ERP</h1>
+    <ul class="dashboard__list">
+      <li
+        *ngFor="let route of routes"
+        class="dashboard__item"
+      >
+        <button
+          class="dashboard__button"
+          pButton
+          type="button"
+          [routerLink]="route.routerLink"
+          [label]="route.label"
+          [icon]="route.icon"
+        ></button>
+      </li>
+    </ul>
   </div>
-</div>
-
-<div class="page__content">
-  <img src="assets/images/dashboard.png">
 </div>

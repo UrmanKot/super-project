@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { LayoutComponent } from './components/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import { LogoComponent } from './components/logo/logo.component';
-import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {SharedModule} from '@shared/shared.module';
@@ -16,13 +14,15 @@ import {SharedModule} from '@shared/shared.module';
   declarations: [
     LayoutComponent,
     HeaderComponent,
-    NavigationComponent,
     LogoComponent,
+  ],
+  exports: [
+    LogoComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
-    MatMenuModule,
     MatButtonModule,
     MatIconModule,
     SharedModule,

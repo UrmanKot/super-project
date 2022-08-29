@@ -23,13 +23,14 @@ const routes: Routes = [
         title: 'Confirmation',
         loadChildren: () => import('./confirmation/confirmation.routing').then(m => m.ConfirmationRouting)
       },
-      {path: '**', redirectTo: 'dashboard'},
+      {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },
   {path: 'login', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
 
   // Не удалять
-  {path: '**', redirectTo: ''},
+  {path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
+  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 ];
 
 @NgModule({

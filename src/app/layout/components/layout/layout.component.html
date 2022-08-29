@@ -1,15 +1,4 @@
-<div class="layout" [class.layout_nav-hide]="isNavigationHidden">
-  <div class="layout__sidebar">
-    <div class="layout__logo">
-      <pek-logo></pek-logo>
-    </div>
-    <div class="layout__navigation">
-      <pek-navigation (toggleNavigationVisibility)="toggleNavigationVisibility($event)"></pek-navigation>
-    </div>
-  </div>
-  <div class="layout__header">
-
-  </div>
+<div class="layout">
   <div class="layout__content">
     <div class="layout__inner">
       <router-outlet></router-outlet>

@@ -10,7 +10,6 @@ import {Table} from 'primeng/table';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ModalService} from '@shared/services/modal.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'pek-product-structure-products-list',

@@ -7,15 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  isNavigationHidden: boolean = false;
-
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  toggleNavigationVisibility(isHidden: boolean) {
-    this.isNavigationHidden = isHidden;
   }
 
 }

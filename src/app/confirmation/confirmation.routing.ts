@@ -4,11 +4,17 @@ import {
   NomenclatureConfirmationComponent
 } from './components/nomenclature-confirmation/nomenclature-confirmation.component';
 import {PaymentConfirmationComponent} from './components/payment-confirmation/payment-confirmation.component';
+import {ConfirmationLayoutComponent} from './components/confirmation-layout/confirmation-layout.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'nomenclature', pathMatch: 'full'},
-  {path: 'nomenclature', component: NomenclatureConfirmationComponent},
-  {path: 'payment', component: PaymentConfirmationComponent},
+  {
+    path: '',
+    component: ConfirmationLayoutComponent, children: [
+      {path: '', redirectTo: 'nomenclature', pathMatch: 'full'},
+      {path: 'nomenclature', component: NomenclatureConfirmationComponent},
+      {path: 'payment', component: PaymentConfirmationComponent},
+    ]
+  }
 ];
 
 @NgModule({

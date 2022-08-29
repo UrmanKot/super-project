@@ -12,6 +12,8 @@ import { TechnologiesComponent } from './components/technologies/technologies.co
 import { PrefixesComponent } from './components/prefixes/prefixes.component';
 import { CreateEditTechnologyComponent } from './modals/create-edit-technology/create-edit-technology.component';
 import { CreateEditPrefixComponent } from './modals/create-edit-prefix/create-edit-prefix.component';
+import { ProductStructureLayoutComponent } from './components/product-structure-layout/product-structure-layout.component';
+import {LayoutModule} from '../layout/layout.module';
 
 
 @NgModule({
@@ -24,12 +26,14 @@ import { CreateEditPrefixComponent } from './modals/create-edit-prefix/create-ed
     TechnologiesComponent,
     PrefixesComponent,
     CreateEditTechnologyComponent,
-    CreateEditPrefixComponent
+    CreateEditPrefixComponent,
+    ProductStructureLayoutComponent
   ],
   imports: [
     CommonModule,
     ProductStructureRouting,
     SharedModule,
+    LayoutModule,
   ]
 })
 export class ProductStructureModule { }
