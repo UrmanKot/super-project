@@ -43,47 +43,43 @@
           <ng-template pTemplate="caption">
             <div class="d-flex">
 <!--              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>-->
-
+              <p class="subtitle">Select a product to edit</p>
               <div class="ml-auto buttons">
                 <button
                   [disabled]="!selectedNode"
-                  pTooltip="Structure"
-                  tooltipPosition="top"
                   pButton
                   type="button"
                   icon="pi pi pi-table"
                   class="mr-2"
+                  label="Structure"
                   (click)="goToProductStructure()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
-                  pTooltip="Copy"
-                  tooltipPosition="top"
                   pButton
                   type="button"
                   icon="pi pi pi-clone"
                   class="mr-2"
+                  label="Copy"
                   (click)="copyProduct()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
-                  pTooltip="Edit"
-                  tooltipPosition="top"
                   pButton
                   type="button"
                   icon="pi pi pi-pencil"
                   class="mr-2"
+                  label="Edit"
                   (click)="editProduct()"
                 ></button>
                 <button
                   [disabled]="!selectedNode"
-                  pTooltip="Remove"
-                  tooltipPosition="top"
                   pButton
                   (click)="removeProduct()"
                   type="button"
                   icon="pi pi pi-trash"
                   class="mr-2 p-button-danger"
+                  label="Remove"
                 ></button>
               </div>
               <button
