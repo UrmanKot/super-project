@@ -1,8 +1,10 @@
 .p-inputtext {
   font-size: var(--theme-font-size-s);
   background: #fff;
-  padding: 0.625rem 0.75rem;
+  //padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.625rem;
+
 
   &.input-fill  {
     background: #f4f5f7;

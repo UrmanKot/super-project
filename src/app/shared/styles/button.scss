@@ -4,6 +4,7 @@
   font-size: var(--theme-font-size-s);
   text-transform: capitalize;
   transition: opacity 0.25s, background-color 0.25s;
+  padding: 0.625rem 1.125rem;
 
   &.p-button-rounded {
     height: 2.5625rem !important;
