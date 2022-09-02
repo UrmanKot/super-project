@@ -12549,6 +12549,11 @@ body {
   line-height: 1.4;
   background-color: #f7f8fa;
 }
+.subtitle {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
 .loader {
   display: flex;
   align-items: center;
@@ -12614,7 +12619,7 @@ body {
   font-size: var(--sm-theme-font-size-xl);
 }
 .page__card {
-  padding: 1.125rem 2rem 2rem;
+  padding: 1rem 2rem 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.062745098);
   background: #fff;
@@ -12783,7 +12788,7 @@ p-menubar.disabled .p-menuitem-link {
 .p-treetable .p-treetable-header {
   border: none;
   background: none;
-  padding: 0 0 1.125rem;
+  padding: 0 0 1rem;
 }
 .p-menubar {
   padding: 0;
@@ -12823,7 +12828,7 @@ p-menubar.disabled .p-menuitem-link {
 .p-datatable .p-datatable-header {
   border: none;
   background: none;
-  padding: 0 0 1.125rem;
+  padding: 0 0 1rem;
 }
 .p-link:focus {
   outline: none;
