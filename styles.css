@@ -12606,7 +12606,7 @@ body {
   justify-content: space-between;
   background: #fff;
   width: 100%;
-  padding: 0.875rem 2rem 0.75rem;
+  padding: 0.75rem 2rem 0.625rem;
   box-shadow: 0 0.125rem 1rem rgba(0, 0, 0, 0.062745098);
 }
 .page__title {
@@ -12625,7 +12625,7 @@ body {
   background: #fff;
 }
 .page__content {
-  padding: 2rem;
+  padding: 1.5rem 2rem;
 }
 .page__tabs {
   border-radius: 1rem;
@@ -12636,6 +12636,7 @@ body {
   font-size: var(--theme-font-size-s);
   text-transform: capitalize;
   transition: opacity 0.25s, background-color 0.25s;
+  padding: 0.625rem 1.125rem;
 }
 .p-button.p-button-rounded {
   height: 2.5625rem !important;
@@ -12661,7 +12662,7 @@ body {
 .p-inputtext {
   font-size: var(--theme-font-size-s);
   background: #fff;
-  padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.625rem;
 }
 .p-inputtext.input-fill {
