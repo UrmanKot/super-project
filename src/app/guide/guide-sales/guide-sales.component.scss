@@ -1,0 +1,119 @@
+.guide-sales {
+  display: flex;
+  align-items: center;
+
+  &__col {
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &_2 {
+      .guide-button {
+        &:nth-child(1) {
+          span {
+            height: 2px;
+            width: 26px;
+
+            &:nth-child(1) {
+              left: -20px;
+            }
+
+            &:nth-child(2) {
+              right: -20px;
+            }
+          }
+        }
+      }
+    }
+
+    &_4 {
+      .guide-button {
+        &:nth-child(2) {
+          span {
+            height: 2px;
+            width: 26px;
+
+            &:nth-child(1) {
+              left: -20px;
+            }
+
+            &:nth-child(2) {
+              right: -20px;
+            }
+
+            &:nth-child(3) {
+              height: 122px;
+              width: 2px;
+              left: -9px;
+              top: -37px;
+            }
+          }
+        }
+
+        &:nth-child(1),
+        &:nth-child(3) {
+          span {
+            height: 2px;
+
+            &:nth-child(1) {
+              width: 18px;
+              left: -9px;
+            }
+
+            &:nth-child(2) {
+              width: 26px;
+              right: -20px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.guide-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &::ng-deep {
+    pek-guide-button {
+      .guide-button {
+        &__inner {
+          padding: 1px 10px;
+          width: 120px;
+        }
+      }
+    }
+  }
+
+  span {
+    position: absolute;
+    background: #495057;
+  }
+}
+
+.arrow {
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid #495057;
+    border-right: 2px solid #495057;
+    margin-right: 10px;
+    transform: rotate(-135deg);
+    top: -3px;
+    left: 0;
+  }
+}
+
+

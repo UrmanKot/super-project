@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModuleIconComponent } from './module-icon/module-icon.component';
+import { ModuleIconComponent } from './icons/module-icon/module-icon.component';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {TreeTableModule} from 'primeng/treetable';
@@ -17,6 +17,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {TabViewModule} from 'primeng/tabview';
 import {MoneyFormatPipe} from '@shared/pipes/money-format.pipe';
 import {TieredMenuModule} from 'primeng/tieredmenu';
+import { InIconComponent } from './icons/in-icon/in-icon.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {TieredMenuModule} from 'primeng/tieredmenu';
     ConfirmComponent,
     ProductCategoryPickerComponent,
     MoneyFormatPipe,
+    InIconComponent,
   ],
   exports: [
     ButtonModule,
@@ -44,6 +46,7 @@ import {TieredMenuModule} from 'primeng/tieredmenu';
     TabViewModule,
     MoneyFormatPipe,
     TieredMenuModule,
+    InIconComponent,
   ],
   imports: [
     CommonModule,

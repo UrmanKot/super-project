@@ -21,9 +21,19 @@
           class="dashboard__button p-button-secondary"
           pButton
           type="button"
-          [label]="'Log Out'"
+          label="Log Out"
           [icon]="'icon-logout'"
           (click)="logout()"
+        ></a>
+      </li>
+
+      <li class="dashboard__item">
+        <a
+          class="dashboard__button dash"
+          pButton
+          type="button"
+          label="Show Business Guide"
+          (click)="showGuide()"
         ></a>
       </li>
     </ul>

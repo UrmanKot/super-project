@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {environment} from '@env/environment.prod';
 import {AuthService} from '../auth/auth.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 
 @Component({
@@ -75,9 +75,20 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private modalService: ModalService
   ) {
+    this.router.events.subscribe(evt => {
+      if (evt instanceof NavigationEnd) this.changeRoute(evt.url);
+    });
   }
 
   ngOnInit(): void {
+  }
+
+  changeRoute(url: string) {
+    if (url.includes('showGuide=true')) {
+      setTimeout(() => {
+        this.showGuide();
+      }, 700);
+    }
   }
 
   logout() {
@@ -87,5 +98,9 @@ export class DashboardComponent implements OnInit {
         this.router.navigateByUrl('/login').then();
       }
     });
+  }
+
+  showGuide() {
+    this.modalService.showGuide();
   }
 }

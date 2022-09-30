@@ -1,0 +1,27 @@
+<button
+  class="guide-button"
+  [class.guide-button_secondary]="btnStyle === 'secondary'"
+  [class.guide-button_disabled]="disabled"
+  [routerLinkActive]="routeUrl ? 'guide-button_active' : ''"
+>
+  <span
+    [routerLink]="routeUrl"
+    class="guide-button__inner"
+  >
+    {{title}}
+  </span>
+  <div
+    *ngIf="!disabled && !hideButtons && btnStyle === 'primary'"
+    class="guide-button__buttons"
+    [class.guide-button__buttons_right]="buttonsPosition === 'right'"
+    [class.guide-button__buttons_left]="buttonsPosition === 'left'"
+    [class.guide-button__buttons_top]="buttonsPosition === 'top'"
+    [class.guide-button__buttons_bottom]="buttonsPosition === 'bottom'"
+  >
+    <button (click)="onGetInfo()">?</button>
+    <button (click)="onNavigate()">
+      <pek-in-icon></pek-in-icon>
+    </button>
+    <button>R</button>
+  </div>
+</button>

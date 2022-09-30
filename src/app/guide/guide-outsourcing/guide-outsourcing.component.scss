@@ -1,0 +1,45 @@
+.guide-outsourcing {
+  display: flex;
+  align-items: center;
+
+  &__col {
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &_2,
+    &_4 {
+      &::ng-deep {
+        pek-guide-button {
+          .guide-button {
+            &__inner {
+              padding: 1px 10px;
+              width: 160px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .guide-button {
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &::ng-deep {
+      pek-guide-button {
+        .guide-button {
+          &__inner {
+            padding: 1px 10px;
+            width: 120px;
+          }
+        }
+      }
+    }
+  }
+}

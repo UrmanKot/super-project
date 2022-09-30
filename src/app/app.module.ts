@@ -12,6 +12,7 @@ import {AuthInterceptor} from './auth/auth.interceptor';
 import {ConfirmationModule} from './confirmation/confirmation.module';
 import {ProductStructureModule} from './product-structure/product-structure.module';
 import {DeliveryChainsModule} from './delivery-chains/delivery-chains.module';
+import {GuideModule} from './guide/guide.module';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -32,7 +33,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
     LayoutModule,
     ConfirmationModule,
     ProductStructureModule,
-    DeliveryChainsModule
+    DeliveryChainsModule,
+    GuideModule,
   ],
   providers: [
     INTERCEPTOR_PROVIDER,

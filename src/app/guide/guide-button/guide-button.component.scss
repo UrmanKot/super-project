@@ -1,0 +1,149 @@
+.guide-button {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__inner {
+    line-height: 1.2;
+    color: #fff;
+    font-size: 11px;
+    width: 90px;
+    height: 45px;
+    border: none;
+    background: #002e72;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: default;
+    pointer-events: none;
+    transition: all 0.35s ease;
+    padding: 1px 6px;
+  }
+
+  &__buttons {
+    position: absolute;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    z-index: 1;
+
+    button {
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      margin-bottom: 5px;
+      background: #002e72;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &_left {
+      left: -30px;
+    }
+
+    &_bottom {
+      flex-direction: row;
+      bottom: -30px;
+
+      button {
+        margin-bottom: 0;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &_top {
+      flex-direction: row;
+      top: -30px;
+
+      button {
+        margin-bottom: 0;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &_right {
+      right: -30px;
+    }
+  }
+
+  &_active {
+    .guide-button__inner {
+      background: #28a745;
+    }
+
+    &.guide-button_secondary {
+
+      .guide-button__inner {
+        color: #28a745;
+        background: transparent !important;
+      }
+    }
+
+    .guide-button__buttons {
+      button {
+        &:nth-child(2) {
+          background: #28a745;
+        }
+      }
+    }
+  }
+
+  &_secondary {
+    .guide-button__inner {
+      color: #495057;
+      background: transparent;
+    }
+  }
+
+  &_disabled {
+    pointer-events: none;
+
+    .guide-button__inner {
+      background: #ced4da !important;
+      color: #000 !important;
+      opacity: 0.85;
+    }
+
+    &.guide-button_secondary {
+      .guide-button__inner {
+        background: transparent !important;
+        opacity: 0.85 !important;
+      }
+    }
+  }
+
+  &:hover {
+    z-index: 2;
+
+    .guide-button__buttons {
+      opacity: 1;
+    }
+  }
+}
