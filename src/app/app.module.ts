@@ -11,6 +11,7 @@ import {AuthGuard} from './auth/auth.guard';
 import {AuthInterceptor} from './auth/auth.interceptor';
 import {ConfirmationModule} from './confirmation/confirmation.module';
 import {ProductStructureModule} from './product-structure/product-structure.module';
+import {DeliveryChainsModule} from './delivery-chains/delivery-chains.module';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -31,6 +32,7 @@ const INTERCEPTOR_PROVIDER: Provider = {
     LayoutModule,
     ConfirmationModule,
     ProductStructureModule,
+    DeliveryChainsModule
   ],
   providers: [
     INTERCEPTOR_PROVIDER,

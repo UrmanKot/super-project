@@ -22,7 +22,12 @@ const routes: Routes = [
       {
         path: 'confirmation',
         title: 'Confirmation',
-        loadChildren: () => import('./confirmation/confirmation.routing').then(m => m.ConfirmationRouting)
+        loadChildren: () => import('./confirmation/confirmation.module').then(m => m.ConfirmationModule)
+      },
+      {
+        path: 'delivery-chains',
+        title: 'Delivery Chains',
+        loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
       },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]

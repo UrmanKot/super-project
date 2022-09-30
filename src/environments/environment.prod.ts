@@ -10,5 +10,6 @@ export const environment = {
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
-  link_url: 'https://pekauto.unitcode.ru/'
+  // link_url: 'http://localhost:4201/'
+  link_url: 'https://rwave.pekauto.com/'
 };

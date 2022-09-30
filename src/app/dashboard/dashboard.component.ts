@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Delivery Chains',
     icon: 'icon-delivery-chains',
-    routerLink: '',
+    routerLink: '/delivery-chains',
   }, {
     label: 'Payments',
     icon: 'icon-payments',
