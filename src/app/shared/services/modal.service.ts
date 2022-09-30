@@ -13,12 +13,12 @@ export class ModalService {
   ) {
   }
 
-  confirm(type: ConfirmType = 'default'): Observable<boolean> {
+  confirm(type: ConfirmType = 'default', btnConfirmText: string = ''): Observable<boolean> {
     return this.dialog
       .open<ConfirmComponent>(ConfirmComponent, {
         width: '25rem',
         height: '22.5rem',
-        data: type,
+        data: {type, btnConfirmText},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

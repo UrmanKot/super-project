@@ -11,8 +11,8 @@ export type ConfirmType = 'default' | 'success' | 'danger'
 export class ConfirmComponent implements OnInit {
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public type: ConfirmType)
-  { }
+    @Inject(MAT_DIALOG_DATA) public modalData: { type: ConfirmType, btnConfirmText: string }) {
+  }
 
   ngOnInit(): void {
   }

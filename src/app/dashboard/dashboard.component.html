@@ -6,14 +6,25 @@
         *ngFor="let route of routes"
         class="dashboard__item"
       >
-        <button
+        <a
           class="dashboard__button"
           pButton
           type="button"
           [routerLink]="route.routerLink"
           [label]="route.label"
           [icon]="route.icon"
-        ></button>
+        ></a>
+      </li>
+
+      <li class="dashboard__item">
+        <a
+          class="dashboard__button p-button-secondary"
+          pButton
+          type="button"
+          [label]="'Log Out'"
+          [icon]="'icon-logout'"
+          (click)="logout()"
+        ></a>
       </li>
     </ul>
   </div>

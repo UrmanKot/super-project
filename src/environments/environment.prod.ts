@@ -10,4 +10,5 @@ export const environment = {
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
+  link_url: 'https://pekauto.unitcode.ru/'
 };

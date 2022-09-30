@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LayoutComponent} from './layout/components/layout/layout.component';
 import {AuthGuard} from './auth/auth.guard';
+import {ExternalUriGuard} from '@shared/guards/external-uri.guard';
 
 const routes: Routes = [
   {
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'login', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
 
   // Не удалять
+  {path: 'external/:uri', canActivate: [ExternalUriGuard], children: []},
   {path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 ];

@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
+import {environment} from '@env/environment.prod';
+import {AuthService} from '../auth/auth.service';
+import {Router} from '@angular/router';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-dashboard',
@@ -15,52 +19,73 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Confirmation',
     icon: 'icon-confirmation',
-    routerLink: '/confirmation',
+    routerLink: ['/external', `${environment.link_url}dash/confirmation`],
   }, {
     label: 'Warehouse',
     icon: 'icon-warehouse',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/warehouse`],
   }, {
     label: 'Manufacturing Procurement',
     icon: 'icon-manufacturing-procurement',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/procurement/orders`],
   }, {
     label: 'Quality Control',
     icon: 'icon-quality-control',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/quality-control/invoices`],
   }, {
     label: 'Manufacturing',
     icon: 'icon-manufacturing',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/production/plan`],
   }, {
     label: 'Contacts & Events',
     icon: 'icon-contacts-events',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
   }, {
     label: 'Outsourcing',
     icon: 'icon-outsourcing',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/outsource/outsource-chain`],
   }, {
     label: 'Purchasing',
     icon: 'icon-purchasing',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/purchasing/orders`],
   }, {
     label: 'Sales',
     icon: 'icon-sales',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
   }, {
     label: 'Reports',
     icon: 'icon-reports',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/accounting/cost-reports`],
   }, {
     label: 'Administration',
     icon: 'icon-administration',
-    routerLink: '/any',
+    routerLink: ['/external', `${environment.link_url}dash/admin/users-list`],
+  }, {
+    label: 'Delivery Chains',
+    icon: 'icon-delivery-chains',
+    routerLink: '',
+  }, {
+    label: 'Payments',
+    icon: 'icon-payments',
+    routerLink: ['/external', `${environment.link_url}dash/payments`],
   }];
 
-  constructor() { }
+  constructor(
+    public auth: AuthService,
+    private router: Router,
+    private modalService: ModalService
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
+  logout() {
+    this.modalService.confirm('danger', 'Log Out').subscribe(res => {
+      if (res) {
+        this.auth.logout();
+        this.router.navigateByUrl('/login').then();
+      }
+    });
+  }
 }

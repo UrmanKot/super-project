@@ -2,9 +2,9 @@
   <div class="confirm">
     <div
       class="confirm__icon"
-      [class.confirm__icon_success]="type === 'success'"
-      [class.confirm__icon_danger]="type === 'danger'"
-      [ngSwitch]="type"
+      [class.confirm__icon_success]="modalData.type === 'success'"
+      [class.confirm__icon_danger]="modalData.type === 'danger'"
+      [ngSwitch]="modalData.type"
     >
       <i *ngSwitchCase="'danger'" class="pi pi-times-circle"></i>
       <i *ngSwitchCase="'default'" class="pi fa-trash-alt"></i>
@@ -19,8 +19,22 @@
 
 <mat-dialog-actions class="justify-content-between">
   <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-secondary"></button>
-  <ng-container [ngSwitch]="type">
-    <button *ngSwitchCase="'danger'" pButton type="button" label="Remove" [mat-dialog-close]="true" class="p-button-danger"></button>
-    <button *ngSwitchCase="'success'" pButton type="button" label="Confirm" [mat-dialog-close]="true" class="p-button-success"></button>
+  <ng-container [ngSwitch]="modalData.type">
+    <button
+      *ngSwitchCase="'danger'"
+      pButton
+      type="button"
+      [label]="modalData.btnConfirmText ? modalData.btnConfirmText : 'Remove'"
+      [mat-dialog-close]="true"
+      class="p-button-danger"
+    ></button>
+    <button
+      *ngSwitchCase="'success'"
+      pButton
+      type="button"
+      [label]="modalData.btnConfirmText ? modalData.btnConfirmText : 'Confirm'"
+      [mat-dialog-close]="true"
+      class="p-button-success"
+    ></button>
   </ng-container>
 </mat-dialog-actions>
