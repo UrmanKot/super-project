@@ -1,26 +1,60 @@
 .p-inputtext {
   font-size: var(--theme-font-size-s);
   background: #fff;
-  //padding: 0.625rem 0.75rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.625rem;
 
+  &:enabled:focus {
+    border-color: var(--theme-color-primary);
+  }
 
-  &.input-fill  {
+  &.input-fill {
     background: #f4f5f7;
     border-color: transparent;
+  }
+
+  &:enabled {
+    &:hover {
+      border-color: var(--theme-color-primary);
+    }
   }
 }
 
 .p-checkbox {
   .p-checkbox-box {
     border: 1px solid #ced4da;
+
+    &.p-highlight {
+      border-color: var(--theme-color-primary);
+      background: var(--theme-color-primary);
+    }
+  }
+
+  &:not(.p-checkbox-disabled) {
+    .p-checkbox-box {
+      &:hover {
+        border-color: var(--theme-color-primary);
+      }
+
+      &.p-highlight {
+        &:hover {
+          background: var(--theme-color-primary-hover);
+          border-color: var(--theme-color-primary);
+        }
+      }
+    }
   }
 }
 
 .p-dropdown {
   width: 100%;
   border-radius: 0.625rem;
+
+  &:not(.p-disabled) {
+    &:hover {
+      border-color: var(--theme-color-primary);
+    }
+  }
 }
 
 .p-dropdown-label {
@@ -63,8 +97,10 @@ p-menubar {
   }
 }
 
-.p-menubar .p-submenu-list {
-  z-index: 3 !important;
+.p-menubar {
+  .p-submenu-list {
+    z-index: 3 !important;
+  }
 }
 
 .p-checkbox-label,
@@ -106,6 +142,7 @@ p-menubar {
 
     .p-highlight {
       box-shadow: 0 0 0.5rem #00000010 !important;
+
       .p-tabview-nav-link {
         background: #fff !important;
         color: var(--theme-text-primary) !important;
@@ -127,7 +164,7 @@ p-menubar {
     font-weight: 500 !important;
     border-radius: 1rem 1rem 0 0 !important;
     background: var(--theme-color-secondary) !important;
-    color: var(--theme-color-primary)0 !important;
+    color: var(--theme-color-primary) 0 !important;
     padding: 1.25rem 2rem !important;
     justify-content: center;
     border: none !important;
@@ -135,6 +172,31 @@ p-menubar {
     &:focus {
       outline: none !important;
       box-shadow: none !important;
+    }
+  }
+}
+
+.p-radiobutton {
+  .p-radiobutton-box {
+
+    &:not(.p-disabled) {
+      &:not(.p-highlight) {
+        &:hover {
+          border-color: var(--theme-color-primary)
+        }
+      }
+    }
+
+    &.p-highlight {
+      border-color: var(--theme-color-primary);
+      background: var(--theme-color-primary);
+
+      &:not(.p-disabled) {
+        &:hover {
+          border-color: var(--theme-color-primary);
+          background: var(--theme-color-primary);
+        }
+      }
     }
   }
 }

@@ -13,6 +13,9 @@ export class NomenclatureConfirmationComponent implements OnInit {
   selectedNomenclatures: NewNomenclature[] = [];
   isLoading: boolean = true;
 
+  isPendingConfirm: boolean = false;
+  isPendingDecline: boolean = false;
+
   constructor(
     private readonly nomenclatureService: NomenclatureService,
     private readonly modalService: ModalService
@@ -32,6 +35,7 @@ export class NomenclatureConfirmationComponent implements OnInit {
   onConfirm() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
+        this.isPendingConfirm= true;
         const confirmNomenclatures = [];
 
         this.selectedNomenclatures.forEach(nomenclature => {
@@ -46,7 +50,8 @@ export class NomenclatureConfirmationComponent implements OnInit {
             this.nomenclatures = this.nomenclatures.filter(product => product.id !== nomenclature.id);
           });
 
-          this.selectedNomenclatures = null;
+          this.selectedNomenclatures = [];
+          this.isPendingConfirm = false;
         });
       }
     });
@@ -55,6 +60,7 @@ export class NomenclatureConfirmationComponent implements OnInit {
   onDecline() {
     this.modalService.confirm('danger').subscribe(decline => {
       if (decline) {
+        this.isPendingDecline = true;
         const declineNomenclatures = [];
 
         this.selectedNomenclatures.forEach(product => {
@@ -70,6 +76,7 @@ export class NomenclatureConfirmationComponent implements OnInit {
           });
 
           this.selectedNomenclatures = [];
+          this.isPendingDecline = false;
         });
       }
     });

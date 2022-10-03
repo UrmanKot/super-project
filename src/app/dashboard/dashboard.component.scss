@@ -39,11 +39,28 @@
       pointer-events: none;
       opacity: 0.75;
     }
-  }
 
-  .dash {
-    margin-top: 3rem;
-    background: #55b157;
-    border-color: #55b157;
+    &:hover {
+      background: var(--theme-color-primary-hover);
+      border-color: var(--theme-color-primary-hover);
+    }
+
+    &.p-button-secondary {
+      &:hover {
+        background: #475569;
+        border-color: #475569;
+      }
+    }
+
+    &_guide {
+      margin-top: 3rem;
+      background: #55b157;
+      border-color: #55b157;
+
+      &:hover {
+        background: #16A34A;
+        border-color: #16A34A;
+      }
+    }
   }
 }

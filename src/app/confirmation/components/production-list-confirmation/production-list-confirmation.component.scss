@@ -1,0 +1,19 @@
+.icons {
+  font-weight: 500;
+  font-size: 1.125rem;
+  position: relative;
+  top: 1px;
+
+  i {
+    font-size: 1.125rem;
+    font-weight: 500;
+
+    &.danger {
+      color: var(--theme-color-danger);
+    }
+
+    &.success {
+      color: var(--theme-color-success);
+    }
+  }
+}

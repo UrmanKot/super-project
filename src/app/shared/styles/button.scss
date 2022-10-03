@@ -5,6 +5,15 @@
   text-transform: capitalize;
   transition: opacity 0.25s, background-color 0.25s;
   padding: 0.625rem 1.125rem;
+  background: var(--theme-color-primary);
+  border: 1px solid var(--theme-color-primary);
+
+  &:enabled {
+    &:hover {
+      background: var(--theme-color-primary-hover);
+      border-color: var(--theme-color-primary-hover);
+    }
+  }
 
   &.p-button-rounded {
     height: 2.5625rem !important;
@@ -12,6 +21,16 @@
 
     .pi {
       font-size: 0.875rem;
+    }
+  }
+
+  &.p-button-text {
+    color: var(--theme-color-primary);
+
+    &:enabled {
+      &:hover {
+        color: var(--theme-color-primary-hover) !important;
+      }
     }
   }
 }
@@ -26,12 +45,18 @@
 }
 
 .p-button-loading {
+  display: flex;
+  justify-content: center;
+
   .p-button-label {
-    display: none;
+    //display: none;
+    padding-left: 23px;
+    opacity: 0;
     margin: 0;
   }
 
   .p-button-icon {
+    position: absolute;
     margin: auto !important;
   }
 }

@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
 
   routes: MenuItem[] = [{
     label: 'Product Structure',
-    routerLink: '/product-structure',
+    routerLink: ['/external', `${environment.link_url}dash/product-structure`],
     icon: 'icon-product-structure',
   }, {
     label: 'Confirmation',

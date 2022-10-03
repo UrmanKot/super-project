@@ -16,7 +16,7 @@
       <p-table
         #dt
         selectionMode="single"
-        scrollHeight="calc(100vh - 21.75rem)"
+        scrollHeight="calc(100vh - 21rem)"
         [scrollable]="true"
         [paginator]="prefixes.length > 0"
         [rows]="10"
@@ -25,6 +25,7 @@
       >
         <ng-template pTemplate="caption">
           <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedPrefix">Choose the Prefix to edit</p>
             <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedPrefix"></p-menubar>
           </div>
         </ng-template>

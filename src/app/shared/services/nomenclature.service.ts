@@ -56,9 +56,11 @@ export class NomenclatureService {
     );
   }
 
-  updateSeveralPartly(nomenclatures: Nomenclature[]): Observable<any[]> {
+  updateSeveralPartly(nomenclatures: Partial<Nomenclature>[]): Observable<Nomenclature[]> {
     return forkJoin(...nomenclatures.map(nomenclature =>
-      this.httpClient.patch<{ data: Nomenclature }>(this.API_URL + this.url + nomenclature.id + '/', nomenclature))
+      this.httpClient.patch<{ data: Nomenclature}>(this.API_URL + this.url + nomenclature.id + '/', nomenclature).pipe(
+        map(response => response.data)
+      ))
     );
   }
 }

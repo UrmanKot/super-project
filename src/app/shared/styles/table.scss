@@ -8,9 +8,14 @@
       transition: background 0.1s, color 0.1s;
       font-size: var(--theme-font-size-s);
 
+      &.p-highlight {
+        color: var(--theme-color-primary);
+      }
+
       & > td {
         vertical-align: middle;
-        padding: 0.375rem 0.75rem;
+        //padding: 0.375rem 0.75rem;
+        padding: 0.25rem 0.75rem;
       }
     }
   }
@@ -19,7 +24,7 @@
     & > tr {
       & > th {
         vertical-align: middle;
-        padding: 0.75rem;
+        padding: 0.625rem 0.75rem;
         font-weight: 500;
       }
     }
@@ -32,6 +37,7 @@
   }
 }
 
+.p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link .p-menuitem-icon,
 .p-menubar {
   padding: 0;
   background: transparent;
@@ -48,6 +54,21 @@
       }
     }
   }
+
+  .p-submenu-icon {
+    color: var(--theme-color-primary) !important;
+  }
+
+  .p-menuitem {
+    &.p-menuitem-active {
+      & > .p-menuitem-link {
+        .p-menuitem-icon,
+        .p-menuitem-text {
+          color: var(--theme-color-primary) !important;
+        }
+      }
+    }
+  }
 }
 
 .p-datatable {
@@ -56,6 +77,10 @@
       transition: background 0.1s, color 0.1s;
       font-size: var(--theme-font-size-s);
 
+      &.p-highlight {
+        background: #EFF6FF;
+        color: var(--theme-color-primary);
+      }
 
       &:focus {
         outline: none;
@@ -63,7 +88,7 @@
 
       & > td {
         vertical-align: middle;
-        padding: 0.625rem 0.75rem;
+        padding: 0.5rem 0.75rem;
 
         a {
           color: var(--theme-color-primary);
@@ -82,7 +107,7 @@
       & > th {
         font-weight: 500;
         vertical-align: middle;
-        padding: 0.75rem;
+        padding: 0.625rem;
       }
     }
   }
@@ -138,7 +163,8 @@
   position: relative;
   top: -1px;
   display: flex;
-  padding-top: 1.75rem;
+  padding-top: 1rem;
+  margin-bottom: -1rem;
 
   .p-button {
     background: rgba(59, 130, 246, 0.04);
@@ -150,5 +176,41 @@
 
   p-button {
     margin-left: auto;
+  }
+}
+
+.p-paginator {
+  .p-paginator-pages {
+    .p-paginator-page {
+      &.p-highlight {
+        color: var(--theme-color-primary);
+      }
+    }
+  }
+}
+
+.p-treetable-scrollable-header-box {
+  padding-right: 0.5rem !important;
+}
+
+.p-datatable-wrapper,
+.p-dropdown-items-wrapper,
+.p-treetable-scrollable-body {
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.625rem;
+    background-color: #d1d2d8;
+  }
+
+  &::-webkit-scrollbar {
+    cursor: auto;
+    width: 0.5rem;
+    background-color: #f8f9fa;
+  }
+}
+
+.p-datatable-thead {
+  p-tableheadercheckbox {
+    position: relative;
+    left: 0.125rem;
   }
 }

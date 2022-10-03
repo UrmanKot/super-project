@@ -1,0 +1,101 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'confirmation'" [isActive]="true"></pek-module-icon>
+      <h1>Suppliers Confirmation</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+<!--  <div class="page__card">-->
+<!--    <div class="page__table">-->
+<!--      <p-table-->
+<!--        #dt-->
+<!--        selectionMode="single"-->
+<!--        scrollHeight="calc(100vh - 21.75rem)"-->
+<!--        [scrollable]="true"-->
+<!--        [paginator]="productionLists.length > 0"-->
+<!--        [rows]="10"-->
+<!--        [(selection)]="selectedProductionLists"-->
+<!--        [value]="productionLists"-->
+<!--      >-->
+<!--        <ng-template pTemplate="caption">-->
+<!--          <div class="d-flex align-items-center">-->
+<!--            <button-->
+<!--              pButton-->
+<!--              type="button"-->
+<!--              icon="pi pi-times"-->
+<!--              label="Decline"-->
+<!--              class="ml-auto p-button-danger mr-2"-->
+<!--              (click)="onDecline()"-->
+<!--              [disabled]="selectedProductionLists.length === 0"-->
+<!--            ></button>-->
+<!--            <button-->
+<!--              pButton-->
+<!--              type="button"-->
+<!--              icon="pi pi-check"-->
+<!--              label="Confirm"-->
+<!--              class="p-button-success"-->
+<!--              (click)="onConfirm()"-->
+<!--              [disabled]="selectedProductionLists.length === 0"-->
+<!--            ></button>-->
+<!--          </div>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="header">-->
+<!--          <tr>-->
+<!--            <th style="width: 3%">-->
+<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+<!--            </th>-->
+<!--            <th class="text-center" style="width: 5%">#</th>-->
+<!--            <th style="width: 30%">Code</th>-->
+<!--            <th style="width: 27%">Name</th>-->
+<!--            <th style="width: 15%" class="text-center">Quantity</th>-->
+<!--            <th style="width: 20%" class="text-center">Is Grouped</th>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="body" let-list let-i="rowIndex">-->
+<!--          <tr>-->
+<!--            <td style="width: 3%">-->
+<!--              <p-tableCheckbox [value]="list"></p-tableCheckbox>-->
+<!--            </td>-->
+<!--            <td class="text-center" style="width: 5%">{{i + 1}}</td>-->
+<!--            <td style="width: 30%">{{list.nomenclature.code}}</td>-->
+<!--            <td style="width: 27%">{{list.nomenclature.name}}</td>-->
+<!--            <td style="width: 15%" class="text-center">{{list.quantity}}</td>-->
+<!--            <td style="width: 20%" class="text-center">-->
+<!--              <div class="icons">-->
+<!--                <i *ngIf="list.is_grouped; else notGrouped" class="pi pi-check-circle success"></i>-->
+<!--              </div>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="emptymessage">-->
+<!--          <tr>-->
+<!--            <td class="text-center p-4" [attr.colspan]="6">-->
+<!--              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>-->
+<!--              <span *ngIf="!isLoading">No Records Found</span>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="paginatorright">-->
+<!--          <p-button-->
+<!--            type="button"-->
+<!--            (click)="dt.paginator=false"-->
+<!--            styleClass="p-button-text"-->
+<!--          >All-->
+<!--          </p-button>-->
+<!--        </ng-template>-->
+<!--      </p-table>-->
+<!--    </div>-->
+<!--    <div *ngIf="!dt.paginator && !isLoading && productionLists.length > 0" class="paginator-return-pagination">-->
+<!--      <p-button-->
+<!--        type="button"-->
+<!--        (click)="dt.paginator=true"-->
+<!--        styleClass="p-button-text"-->
+<!--      >-->
+<!--        Return pagination-->
+<!--      </p-button>-->
+<!--    </div>-->
+<!--  </div>-->
+</div>

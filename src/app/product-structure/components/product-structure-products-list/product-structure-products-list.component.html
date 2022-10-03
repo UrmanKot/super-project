@@ -38,50 +38,50 @@
           selectionMode="single"
           [(selection)]="selectedNode"
           [scrollable]="true"
-          scrollHeight="calc(100vh - 20.4375rem)"
+          scrollHeight="calc(100vh - 21.375rem)"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
-<!--              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>-->
-              <p class="subtitle">Select a product to edit</p>
-              <div class="ml-auto buttons">
-                <button
-                  [disabled]="!selectedNode"
-                  pButton
-                  type="button"
-                  icon="pi pi pi-table"
-                  class="mr-2"
-                  label="Structure"
-                  (click)="goToProductStructure()"
-                ></button>
-                <button
-                  [disabled]="!selectedNode"
-                  pButton
-                  type="button"
-                  icon="pi pi pi-clone"
-                  class="mr-2"
-                  label="Copy"
-                  (click)="copyProduct()"
-                ></button>
-                <button
-                  [disabled]="!selectedNode"
-                  pButton
-                  type="button"
-                  icon="pi pi pi-pencil"
-                  class="mr-2"
-                  label="Edit"
-                  (click)="editProduct()"
-                ></button>
-                <button
-                  [disabled]="!selectedNode"
-                  pButton
-                  (click)="removeProduct()"
-                  type="button"
-                  icon="pi pi pi-trash"
-                  class="mr-2 p-button-danger"
-                  label="Remove"
-                ></button>
-              </div>
+              <p class="subtitle" *ngIf="!selectedNode">Choose the Product to edit</p>
+              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>
+<!--              <div class="ml-auto buttons">-->
+<!--                <button-->
+<!--                  [disabled]="!selectedNode"-->
+<!--                  pButton-->
+<!--                  type="button"-->
+<!--                  icon="pi pi pi-table"-->
+<!--                  class="mr-2"-->
+<!--                  label="Structure"-->
+<!--                  (click)="goToProductStructure()"-->
+<!--                ></button>-->
+<!--                <button-->
+<!--                  [disabled]="!selectedNode"-->
+<!--                  pButton-->
+<!--                  type="button"-->
+<!--                  icon="pi pi pi-clone"-->
+<!--                  class="mr-2"-->
+<!--                  label="Copy"-->
+<!--                  (click)="copyProduct()"-->
+<!--                ></button>-->
+<!--                <button-->
+<!--                  [disabled]="!selectedNode"-->
+<!--                  pButton-->
+<!--                  type="button"-->
+<!--                  icon="pi pi pi-pencil"-->
+<!--                  class="mr-2"-->
+<!--                  label="Edit"-->
+<!--                  (click)="editProduct()"-->
+<!--                ></button>-->
+<!--                <button-->
+<!--                  [disabled]="!selectedNode"-->
+<!--                  pButton-->
+<!--                  (click)="removeProduct()"-->
+<!--                  type="button"-->
+<!--                  icon="pi pi pi-trash"-->
+<!--                  class="mr-2 p-button-danger"-->
+<!--                  label="Remove"-->
+<!--                ></button>-->
+<!--              </div>-->
               <button
                 pButton
                 type="button"
@@ -112,7 +112,8 @@
               [ttRow]="rowNode"
               [ttSelectableRow]="rowNode"
               [ttSelectableRowDisabled]="!rowData.nomenclature"
-              [class.disabled]="!rowData.nomenclature">
+              [class.disabled]="!rowData.nomenclature"
+            >
               <td style="width: 35%">
                 <div class="table-toggle">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>

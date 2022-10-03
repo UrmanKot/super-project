@@ -1,8 +1,8 @@
 import {NgModule, Provider} from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRouting } from './app.routing';
-import { AppComponent } from './app.component';
+import {AppRouting} from './app.routing';
+import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LayoutModule} from './layout/layout.module';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
@@ -13,11 +13,19 @@ import {ConfirmationModule} from './confirmation/confirmation.module';
 import {ProductStructureModule} from './product-structure/product-structure.module';
 import {DeliveryChainsModule} from './delivery-chains/delivery-chains.module';
 import {GuideModule} from './guide/guide.module';
+import {ErrorInterceptor} from '@shared/interceptors/error-interceptor';
+import { MessageService } from 'primeng/api';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
   multi: true,
   useClass: AuthInterceptor
+};
+
+const INTERCEPTORS_ERROR: Provider = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: ErrorInterceptor,
+  multi: true,
 };
 
 @NgModule({
@@ -37,9 +45,12 @@ const INTERCEPTOR_PROVIDER: Provider = {
     GuideModule,
   ],
   providers: [
+    MessageService,
     INTERCEPTOR_PROVIDER,
+    INTERCEPTORS_ERROR,
     AuthGuard,
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
