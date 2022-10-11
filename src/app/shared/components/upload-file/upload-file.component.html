@@ -1,0 +1,101 @@
+<div
+  class="upload-file"
+  [class.upload-file_upload-one]="uploadFiles.length > 0 && !multiple"
+  [class.upload-file_upload-many]="uploadFiles.length > 0 && multiple"
+>
+
+  <ng-container [ngSwitch]="multiple">
+
+    <!--  Single Select-->
+    <label
+      *ngSwitchCase="false"
+      class="upload-file__input"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
+      <div
+        *ngIf="uploadFiles.length === 0"
+        class="upload-file__placeholder"
+      >
+        <span>Select file</span>
+        <ng-container *ngIf="fileFormat !== 'all'">
+          in <span>{{fileFormat}}</span> format
+        </ng-container>
+        or drag and drop it here
+      </div>
+      <input
+        #addFileInput
+        *ngIf="uploadFiles.length === 0"
+        hidden
+        type="file"
+        (change)="onChangeFile(addFileInput.files)"
+        [accept]="getAcceptFileFormat()"
+        [multiple]="false"
+        [disabled]="uploadFiles.length > 0"
+      >
+
+      <div
+        *ngIf="uploadFiles.length > 0"
+        class="upload-file__upload-files"
+      >
+        <div class="upload-file__upload-files-inner">
+          <i class="pi pi-check-circle"></i>
+          <p>{{uploadFiles[0].name}}</p>
+          <span>{{getFileSize(uploadFiles[0].size)}} КБ</span>
+        </div>
+      </div>
+    </label>
+    <div class="upload-file__remove" (click)="onRemoveFile(0)" *ngIf="uploadFiles.length > 0 && !multiple">
+      <i class="pi pi-times"></i>
+    </div>
+
+    <!--  Multiple select-->
+    <label
+      *ngSwitchCase="true"
+      class="upload-file__input"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
+      <div
+        class="upload-file__placeholder"
+      >
+        <span>Select files</span>
+        <ng-container *ngIf="fileFormat !== 'all'">
+          in <span>{{fileFormat}}</span> format
+        </ng-container>
+        or drag and drop it here
+      </div>
+      <input
+        #addFileInput
+        hidden
+        type="file"
+        (change)="onChangeFile(addFileInput.files)"
+        [accept]="getAcceptFileFormat()"
+        [multiple]="true"
+      >
+    </label>
+
+    <div class="upload-file__upload-files" *ngIf="uploadFiles.length > 0 && multiple">
+      <div class="upload-file__files">
+        <div
+          class="upload-file__file"
+          *ngFor="let file of uploadFiles; let idx = index"
+        >
+          <div class="upload-file__upload-files-inner">
+            <i class="pi pi-check-circle"></i>
+            <p>{{file.name}}</p>
+            <span>{{getFileSize(file.size)}} КБ</span>
+          </div>
+
+          <div
+            class="upload-file__remove"
+            (click)="onRemoveFile(idx)"
+          >
+            <i class="pi pi-times"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

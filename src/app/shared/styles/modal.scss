@@ -15,16 +15,31 @@
   }
 }
 
-
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
 
+  &_vertical {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   &__title {
     text-transform: capitalize;
     font-size: 1.25rem;
     font-weight: 500;
+  }
+}
+
+
+.modal-picker {
+  .mat-dialog-container {
+    overflow: inherit !important;
+  }
+
+  .mat-dialog-content {
+    max-height: 56vh !important;
   }
 }

@@ -1,0 +1,20 @@
+<div class="paste-image">
+  <img [src]="imageSrc" alt="Изображение">
+</div>
+
+<mat-dialog-actions class="justify-content-between">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      [mat-dialog-close]="false"
+      class="p-button-danger mr-3"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Paste Image"
+      [mat-dialog-close]="true"
+      class="p-button-success"
+    ></button>
+</mat-dialog-actions>

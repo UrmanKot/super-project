@@ -23,13 +23,13 @@ export class MakeProductionListComponent implements OnInit {
     private readonly fb: FormBuilder,
     private dialogRef: MatDialogRef<MakeProductionListComponent>,
     private readonly productService: ProductService,
-    @Inject(MAT_DIALOG_DATA) public nomenclature: Nomenclature
+    @Inject(MAT_DIALOG_DATA) public data: { nomenclature: Nomenclature, rootId: number }
   ) { }
 
   ngOnInit(): void {
     this.form.get('is_grouped').disable();
-    this.form.get('nomenclature').patchValue(this.nomenclature.id);
-    this.form.get('root_nomenclature').patchValue(this.nomenclature.id);
+    this.form.get('nomenclature').patchValue(this.data.nomenclature.id);
+    this.form.get('root_nomenclature').patchValue(this.data.rootId);
   }
 
   onChangeQuantity() {

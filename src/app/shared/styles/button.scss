@@ -16,11 +16,21 @@
   }
 
   &.p-button-rounded {
-    height: 2.5625rem !important;
-    width: 2.5625rem;
+    height: 2.25rem !important;
+    width: 2.25rem !important;
 
     .pi {
       font-size: 0.875rem;
+    }
+
+    &_small {
+      height: 1.625rem !important;
+      width: 1.625rem !important;
+
+      .pi {
+        font-weight: 600;
+        font-size: 0.625rem;
+      }
     }
   }
 
@@ -35,10 +45,6 @@
   }
 }
 
-.p-button-icon {
-  font-size: var(--theme-font-size-s);
-}
-
 .p-button-label {
   font: inherit;
   font-weight: 500;
@@ -49,10 +55,9 @@
   justify-content: center;
 
   .p-button-label {
-    //display: none;
-    padding-left: 23px;
+    padding-left: 0 !important;
     opacity: 0;
-    margin: 0;
+    margin: 0 !important;
   }
 
   .p-button-icon {
@@ -60,3 +65,14 @@
     margin: auto !important;
   }
 }
+
+.p-button-icon {
+  font-size: var(--theme-font-size-s);
+
+  &.p-button-loading {
+    .p-button-label {
+      padding-left: 1.5rem !important;
+    }
+  }
+}
+

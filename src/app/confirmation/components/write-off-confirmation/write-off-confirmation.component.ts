@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {WarehouseProduct} from '@shared/models/warehouse-product';
-import {WarehouseProductService} from '@shared/services/warehouse-product.service';
+import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
+import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 import {ModalService} from '@shared/services/modal.service';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureApproval, Nomenclature} from '@shared/models/nomenclature';

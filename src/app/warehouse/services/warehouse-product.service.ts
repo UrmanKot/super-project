@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {WarehouseProduct} from '@shared/models/warehouse-product';
+import {WarehouseProduct} from '../models/warehouse-product';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';

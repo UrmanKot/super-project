@@ -14,12 +14,12 @@ export class DashboardComponent implements OnInit {
 
   routes: MenuItem[] = [{
     label: 'Product Structure',
-    routerLink: ['/external', `${environment.link_url}dash/product-structure`],
+    routerLink: '/product-structure',
     icon: 'icon-product-structure',
   }, {
     label: 'Confirmation',
     icon: 'icon-confirmation',
-    routerLink: ['/external', `${environment.link_url}dash/confirmation`],
+    routerLink: ['/confirmation'],
   }, {
     label: 'Warehouse',
     icon: 'icon-warehouse',

@@ -1,0 +1,163 @@
+<div class="modal-header modal-header_vertical">
+  <h2 class="modal-header__title">
+    Add new Position
+  </h2>
+
+  <div class="form" [class.hide]="!searchForm.get('type').value">
+    <form [formGroup]="searchForm">
+      <div
+        class="form-box"
+        [class.form-box_2]="this.searchForm.get('type').value !== nomenclatureType.PURCHASED"
+        [class.form-box_3]="this.searchForm.get('type').value === nomenclatureType.PURCHASED"
+      >
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input type="text" id="code" pInputText formControlName="code" #searchBoxCode>
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" pInputText formControlName="name" #searchBoxName>
+        </div>
+        <div class="form-group" *ngIf="this.searchForm.get('type').value === nomenclatureType.PURCHASED">
+          <label>Categories</label>
+          <pek-product-category-picker (choiceCategory)="choiceCategory($event)"></pek-product-category-picker>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <ng-container *ngIf="searchForm.get('type').value; else selectionType">
+    <div class="table-pagination-preloader">
+      <p-table
+        #dt
+        (onRowExpand)="resetSendForm()"
+        [value]="nomenclatures"
+        [(selection)]="selectedNomenclature"
+        [rows]="10"
+        dataKey="id"
+        selectionMode="single"
+        rowExpandMode="single"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 7%" class="text-center">#</th>
+            <th style="width: 25%">Code</th>
+            <th style="width: 25%">Name</th>
+            <th style="width: 10%" class="text-center">UOM</th>
+            <th style="width: 33%">Description</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr [pSelectableRow]="product" [pRowToggler]="product">
+            <td style="width: 7%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
+            <td style="width: 25%">{{product.code}}</td>
+            <td style="width: 25%">
+              <ng-container
+                *ngIf="product.approved === nomenclatureApproval.NEW && product.type === nomenclatureType.PURCHASED">
+                <span class="badge badge_warning ">NEW</span>
+              </ng-container>
+              {{product.name}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.category?.unit_of_measure?.symbol ? product.category?.unit_of_measure?.symbol : 'Pcs' }}
+            </td>
+            <td style="width: 33%" class="word-break" [pRowToggler]="product">
+              <a
+                *ngIf="adapterService.isValidHttpUrl(product.description); else productDescription"
+                (click)="openLink(product.description)"
+                target="_blank"
+              >
+                {{product.description}}
+              </a>
+
+              <ng-template #productDescription>
+                {{product.description}}
+              </ng-template>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion">
+          <tr class="disabled">
+            <td colspan="5">
+              <form [formGroup]="sendForm">
+                <div class="form-group">
+                  <label for="quantity">Quantity (Quantity can't be less than one)</label>
+                  <input id="quantity" min="1" class="form-control" type="number" pInputText formControlName="quantity">
+                </div>
+              </form>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-3" [attr.colspan]="5">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <div class="pagination-preloader" *ngIf="isLoading">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+      </div>
+    </div>
+  </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <p-paginator
+    #paginator
+    [class.hide]="countNomenclatures === 0"
+    [rows]="10"
+    [totalRecords]="countNomenclatures"
+    (onPageChange)="paginate($event)"
+  >
+  </p-paginator>
+  <button
+    *ngIf="searchForm.get('type').value"
+    pButton
+    type="button"
+    label="Add"
+    class="p-button-success"
+    [disabled]="!selectedNomenclature || sendForm.invalid"
+    [loading]="isSaving"
+    (click)="onAddProduct()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #selectionType>
+  <div class="add-product">
+    <h3>Please select the type of new position</h3>
+
+    <div class="add-product__buttons">
+      <button
+        pButton
+        type="button"
+        label="Purchased"
+        (click)="choiceType(nomenclatureType.PURCHASED)"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Assembly"
+        (click)="choiceType(nomenclatureType.ASSEMBLY)"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Manufactured"
+        (click)="choiceType(nomenclatureType.MANUFACTURED)"
+      ></button>
+    </div>
+  </div>
+</ng-template>

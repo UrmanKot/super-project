@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Upload Product Structure
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div *ngIf="!isLoading; else loading" class="upload-product-structure">
+    <div
+      *ngIf="error"
+      class="upload-product-structure__error"
+      [class.upload-product-structure__error_upload]="showErrorUpload"
+    >
+      {{error}}
+    </div>
+    <div
+      *ngIf="!showErrorUpload"
+      class="upload-product-structure__uploader"
+    >
+      <pek-upload-file
+        (selectFile)="selectFile($event)"
+        (removeFile)="removeFile()"
+        [fileFormat]="'excel'"
+      ></pek-upload-file>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+
+  <div *ngIf="!isLoading">
+    <button
+      *ngIf="!showErrorUpload; else continueLoading"
+      pButton
+      type="button"
+      class="p-button-success"
+      label="Upload"
+      (click)="onUpload()"
+      [disabled]="!fileToUpload || isLoading || showErrorUpload"
+    ></button>
+  </div>
+</mat-dialog-actions>
+
+<ng-template #loading>
+  <div class="upload-product-structure__text">
+    <div class="upload-message">
+      <p>The structure is being loaded.</p>
+      <p>Please don't close the window.</p>
+      <p>The window will close automatically after a successful download.</p>
+    </div>
+    <div class="upload-product-structure__spinner">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>Pending...</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #continueLoading>
+  <div>
+    <button
+      pButton
+      type="button"
+      class="p-button-warning mr-2"
+      label="Cancel Uploading"
+      (click)="onCancel()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      class="p-button-success"
+      label="Continue Uploading"
+      (click)="onContinueUpdate()"
+    ></button>
+  </div>
+</ng-template>

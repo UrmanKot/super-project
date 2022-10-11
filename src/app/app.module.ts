@@ -15,11 +15,12 @@ import {DeliveryChainsModule} from './delivery-chains/delivery-chains.module';
 import {GuideModule} from './guide/guide.module';
 import {ErrorInterceptor} from '@shared/interceptors/error-interceptor';
 import { MessageService } from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
+  useClass: AuthInterceptor,
   multi: true,
-  useClass: AuthInterceptor
 };
 
 const INTERCEPTORS_ERROR: Provider = {
@@ -43,6 +44,7 @@ const INTERCEPTORS_ERROR: Provider = {
     ProductStructureModule,
     DeliveryChainsModule,
     GuideModule,
+    ToastModule,
   ],
   providers: [
     MessageService,

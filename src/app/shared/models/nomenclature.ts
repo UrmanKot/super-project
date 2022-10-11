@@ -1,4 +1,5 @@
 import {ProductCategory} from '../../product-structure/models/product-category';
+import {Technology} from '../../product-structure/models/technology';
 
 export class Nomenclature {
   readonly id: number;
@@ -6,13 +7,13 @@ export class Nomenclature {
   name?: string;
   status?: string;
   parent?: number | Nomenclature;
-  // technologies?: Technology[];
-  image?: string;
+  technologies?: Technology[];
+  images?: NomenclatureImage[];
   category?: ProductCategory;
   // category?: any;
   description?: string;
   type?: ENomenclatureType;
-  approved?: string;
+  approved?: ENomenclatureApproval;
   fullName?: string;
   // purchase_category?: PurchasingCategory;
   accounting_number?: string;
@@ -21,6 +22,18 @@ export class Nomenclature {
   qc_protocol?: number;
   bulk_or_serial?: '1' | '0';
   tasks?: Task[];
+}
+
+export class NomenclatureImage {
+  readonly id: number;
+  image: string | ArrayBuffer;
+}
+
+export class Nomenclatures {
+  count: number;
+  next: string;
+  previous: string;
+  results: Nomenclature[];
 }
 
 export class NewNomenclature {

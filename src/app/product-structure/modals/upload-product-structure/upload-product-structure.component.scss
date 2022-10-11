@@ -1,0 +1,45 @@
+.upload-product-structure {
+  &__subtitle {
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  &__uploader {
+    margin: 0.5rem 0;
+  }
+
+  &__error {
+    color: var(--theme-color-danger);
+    font-weight: 500;
+    margin-bottom: 1rem;
+
+    &_upload {
+      margin-bottom: 0;
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__spinner {
+    height: 6.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    position: relative;
+
+    p {
+      margin-top: 0.75rem;
+      margin-bottom: -1rem;
+    }
+
+    i {
+      font-size: 3rem;
+    }
+  }
+}

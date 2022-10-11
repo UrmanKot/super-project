@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
 import {TechnologyService} from '../../services/technology.service';
 import {Technology} from '../../models/technology';
 import {MenuItem} from 'primeng/api';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-technologies',
   templateUrl: './technologies.component.html',
   styleUrls: ['./technologies.component.scss']
 })
-export class TechnologiesComponent implements OnInit {
+export class TechnologiesComponent implements OnInit, OnDestroy {
   technologies: Technology[] = [];
   selectedTechnology: Technology;
   isLoading = true;
@@ -30,6 +31,8 @@ export class TechnologiesComponent implements OnInit {
     ]
   }];
 
+  private destroy$ = new Subject();
+
   constructor(
     private technologyService: TechnologyService,
     public modalService: ModalService,
@@ -41,7 +44,9 @@ export class TechnologiesComponent implements OnInit {
   }
 
   getTechnologies() {
-    this.technologyService.get().subscribe(technologies => {
+    this.technologyService.get().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(technologies => {
       this.technologies = technologies;
       this.isLoading = false;
     });
@@ -74,5 +79,9 @@ export class TechnologiesComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

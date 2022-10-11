@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Technology} from '../models/technology';
 import {map} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
@@ -18,6 +18,8 @@ export class TechnologyService {
   API_URL = environment.base_url + environment.product_structure_url;
   readonly url = 'technologies/';
 
+  technologies: Technology[];
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly dialog: MatDialog,
@@ -25,8 +27,16 @@ export class TechnologyService {
   }
 
   get(): Observable<Technology[]> {
+    if (this.technologies) {
+      return of(this.technologies);
+    }
+
     return this.httpClient.get<{ data: Technology[] }>(this.API_URL + this.url).pipe(
-      map(response => response.data));
+      map(response => {
+        const technologies = response.data;
+        this.technologies = technologies;
+        return technologies;
+      }));
   }
 
   create(technology: Partial<Technology>): Observable<Technology> {

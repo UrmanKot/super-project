@@ -16,4 +16,11 @@ export class Product {
   is_scanned?: boolean;
   is_scanned_root?: boolean;
   checkedForGeneration?: boolean;
+  parent?: number;
+}
+
+export class ProductFile {
+  readonly id: number;
+  file: string;
+  product_id: number;
 }

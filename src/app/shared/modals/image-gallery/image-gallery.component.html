@@ -1,0 +1,36 @@
+<div class="image-gallery" *ngIf="!isLoading && images.length > 0">
+  <div class="image-gallery__wrapper">
+    <div
+      class="image-gallery__inner"
+      [style.width]="galleryWidth * images.length + 'px'"
+      [style.transform]="'translateX(-' + offsetSlider + 'px)'"
+    >
+      <div class="image-gallery__slide" *ngFor="let image of images; let idx = index">
+        <img [src]="image.image" [alt]="'Изображение слайда ' + idx + 1">
+      </div>
+    </div>
+  </div>
+
+  <i
+    *ngIf="images.length > 1"
+    class="pi pi-chevron-left image-gallery__btn image-gallery__btn_prev"
+    (click)="onSlidePrev()"
+  >
+  </i>
+  <i
+    *ngIf="images.length > 1"
+    class="pi pi-chevron-right image-gallery__btn image-gallery__btn_next"
+    (click)="onSlideNext()"
+  >
+  </i>
+</div>
+
+<div class="image-gallery__none" *ngIf="isLoading">
+  <i class="pi pi-images"></i>
+  <p>Images are loading...</p>
+</div>
+
+<div class="image-gallery__none" *ngIf="!isLoading && images.length === 0">
+  <i class="pi pi-images"></i>
+  <p>There are no Images</p>
+</div>

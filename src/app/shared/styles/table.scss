@@ -10,11 +10,20 @@
 
       &.p-highlight {
         color: var(--theme-color-primary);
+
+        .p-treetable-toggler {
+          color: var(--theme-color-primary);
+        }
+      }
+
+      .p-treetable-toggler {
+        &:focus {
+          box-shadow: none !important;
+        }
       }
 
       & > td {
         vertical-align: middle;
-        //padding: 0.375rem 0.75rem;
         padding: 0.25rem 0.75rem;
       }
     }
@@ -46,6 +55,7 @@
   .p-menubar-root-list {
     & > .p-menuitem > {
       .p-menuitem-link {
+        height: 2.4375rem !important;
         transition: background 0.25s;
         background: #f4f5f7;
         border-radius: 0.625rem;
@@ -55,12 +65,12 @@
     }
   }
 
-  .p-submenu-icon {
-    color: var(--theme-color-primary) !important;
-  }
-
   .p-menuitem {
     &.p-menuitem-active {
+      .p-submenu-icon {
+        color: var(--theme-color-primary) !important;
+      }
+
       & > .p-menuitem-link {
         .p-menuitem-icon,
         .p-menuitem-text {
@@ -76,6 +86,12 @@
     & > tr {
       transition: background 0.1s, color 0.1s;
       font-size: var(--theme-font-size-s);
+
+      &.disabled {
+        &:hover {
+          background: transparent !important;
+        }
+      }
 
       &.p-highlight {
         background: #EFF6FF;
@@ -213,4 +229,22 @@
     position: relative;
     left: 0.125rem;
   }
+}
+
+.table-pagination-preloader {
+  position: relative;
+}
+
+.pagination-preloader {
+  position: absolute;
+  background: #fff;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  border-bottom: 1px solid #dee2e6;
 }

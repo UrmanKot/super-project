@@ -35,7 +35,7 @@
           #dt
           [value]="productsTree"
           selectionMode="single"
-          [(selection)]="selectedNode"
+          [(selection)]="selectedProduct"
           [scrollable]="true"
           scrollHeight="calc(100vh - 21.4375rem)"
           (onNodeSelect)="onSelectNode()"
@@ -47,7 +47,7 @@
                 type="button"
                 icon="pi pi-arrow-up"
                 class="p-button-rounded mr-2"
-                [disabled]="selectedNode?.data.parent === null"
+                [disabled]="selectedProduct?.data.parent === null"
                 (click)="up()"
               ></button>
               <button
@@ -55,7 +55,7 @@
                 type="button"
                 icon="pi pi-arrow-down"
                 class="p-button-rounded mr-2"
-                [disabled]="selectedNode?.data.parent === null"
+                [disabled]="selectedProduct?.data.parent === null"
                 (click)="down()"
               ></button>
               <button
@@ -73,7 +73,12 @@
                 class="mr-2"
                 (click)="sort()"
               ></button>
-              <p-menubar class="product-structure-bar ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>
+              <p class="ml-1 subtitle" *ngIf="!selectedProduct">Choose the Product to edit</p>
+              <p-menubar
+                class="product-structure-bar ml-auto mr-2"
+                [model]="menuItems"
+                [class.disabled]="!selectedProduct"
+              ></p-menubar>
               <button
                 pButton
                 type="button"

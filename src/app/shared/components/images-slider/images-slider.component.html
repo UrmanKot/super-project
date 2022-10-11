@@ -1,0 +1,68 @@
+<div class="images-slider" #slider>
+  <div class="images-slider__slider"
+       [style.width]="width"
+       [style.height]="height"
+       *ngIf="images.length > 0; else noneImages"
+  >
+    <div class="images-slider__wrapper">
+      <div
+        class="images-slider__inner"
+        [class.images-slider__inner_init]="isInit"
+        [class.slides-none]="images.length === 0"
+        [style.width]="sliderWidth * images.length + 'px'"
+        [style.transform]="'translateX(-' + offsetSlider + 'px)'"
+      >
+        <div
+          class="images-slider__slide"
+          *ngFor="let image of images; let idx = index"
+          (click)="onShowFullImage()"
+        >
+          <img [src]="image.image" [alt]="'Image ' + idx + 1">
+        </div>
+      </div>
+    </div>
+
+    <i
+      *ngIf="images.length > 1"
+      class="pi pi-chevron-left images-slider__btn images-slider__btn_prev"
+      (click)="onSlidePrev()"
+    >
+    </i>
+    <i
+      *ngIf="images.length > 1"
+      class="pi pi-chevron-right images-slider__btn images-slider__btn_next"
+      (click)="onSlideNext()"
+    ></i>
+  </div>
+
+  <div class="images-slider__bottom">
+    <label for="file" class="images-slider__file-picker">
+      <input
+        #inputFile
+        id="file"
+        multiple
+        type="file"
+        (input)="onImageManipulation($event, $event.target)" accept="image/*"
+      >
+      <span>
+        <i class="pi pi-upload"></i>
+        Choice Image
+      </span>
+    </label>
+
+    <div class="images-slider__count" *ngIf="images.length > 1">
+      {{activeSlideIndex}} / {{images.length}}
+    </div>
+
+    <button class="images-slider__remove" (click)="onRemoveImage()" *ngIf="images.length > 0">
+      <i class="pi pi-times"></i>
+      Remove Active Image
+    </button>
+  </div>
+</div>
+
+<ng-template #noneImages>
+  <div [style.width]="width" [style.height]="height" class="images-slider__empty">
+    <i class="pi pi-image"></i>
+  </div>
+</ng-template>

@@ -5,13 +5,14 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ProductService} from '../../services/product.service';
 import {ModalActionType} from '@shared/models/modal-action';
+import {finalize} from 'rxjs';
 
 @Component({
-  selector: 'pek-create-edit-product',
-  templateUrl: './create-edit-product.component.html',
-  styleUrls: ['./create-edit-product.component.scss']
+  selector: 'pek-create-edit-root-product',
+  templateUrl: './create-edit-root-product.component.html',
+  styleUrls: ['./create-edit-root-product.component.scss']
 })
-export class CreateEditProductComponent implements OnInit {
+export class CreateEditRootProductComponent implements OnInit {
   isSaving = false;
 
   form = this.fb.group({
@@ -28,7 +29,7 @@ export class CreateEditProductComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly nomenclatureService: NomenclatureService,
     private readonly productService: ProductService,
-    private dialogRef: MatDialogRef<CreateEditProductComponent>,
+    private dialogRef: MatDialogRef<CreateEditRootProductComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, product: Partial<Product> }
   ) {
   }
@@ -76,24 +77,23 @@ export class CreateEditProductComponent implements OnInit {
   }
 
   createProduct(send: any) {
-    this.nomenclatureService.create(send).subscribe(nomenclature => {
-      if (nomenclature) {
-        // @ts-ignore
-        this.productService.create({nomenclature: nomenclature.id})
-          .subscribe({
-            next: product => this.dialogRef.close(product),
-            error: () => this.isSaving = false
-          });
-      }
+    this.nomenclatureService.create(send).subscribe({
+      next: (nomenclature) => {
+        if (nomenclature) {
+          // @ts-ignore
+          this.productService.create({nomenclature: nomenclature.id}).pipe(
+            finalize(() => this.isSaving = false)
+          ).subscribe(products => this.dialogRef.close(products[0]));
+        }
+      },
+      error: () => this.isSaving = false
     });
   }
 
   editProduct(send: any) {
-    this.nomenclatureService.updateProduct(send)
-      .subscribe({
-        next: nomenclature => this.dialogRef.close(nomenclature),
-        error: () => this.isSaving = false
-      });
+    this.nomenclatureService.update(send).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(product => this.dialogRef.close(product));
   }
 
   copyProduct() {
@@ -103,9 +103,8 @@ export class CreateEditProductComponent implements OnInit {
       name: this.form.get('name').value,
     };
 
-    this.productService.copyStructure(send).subscribe({
-      next: () => this.dialogRef.close(true),
-      error: () => this.isSaving = false,
-    });
+    this.productService.copyStructure(send).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(() => this.dialogRef.close(true));
   }
 }

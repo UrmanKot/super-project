@@ -3,7 +3,7 @@ import {ProductService} from '../../services/product.service';
 import {MenuItem, TreeNode} from 'primeng/api';
 import {Product} from '../../models/product';
 import {ProductCategory} from '../../models/product-category';
-import {forkJoin, fromEvent, Subscription} from 'rxjs';
+import {forkJoin, fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
 import {ProductCategoriesService} from '../../services/product-categories.service';
 import {cloneDeep} from 'lodash-es';
 import {Table} from 'primeng/table';
@@ -32,30 +32,32 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
       {
         label: 'Copy',
         icon: 'pi pi-clone',
-        command: () => this.copyProduct(),
+        command: () => this.onCopyProduct(),
       },
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
-        command: () => this.editProduct(),
+        command: () => this.onEditProduct(),
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
-        command: () => this.removeProduct(),
+        command: () => this.onRemoveProduct(),
       }
     ]
   }];
 
-  productsTree: TreeNode[] = [];
+  productsTree: TreeNode<Product>[] = [];
   categories: ProductCategory[];
-  selectedNode: TreeNode;
+  selectedNode: TreeNode<Product>;
   products: Product[];
 
   inputCodeSub: Subscription;
   inputNameSub: Subscription;
 
   isLoading = true;
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly productService: ProductService,
@@ -119,8 +121,10 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
   getProductsAndCategories() {
     forkJoin({
       products: this.productService.getRoots(),
-      categories: this.productCategoriesService.get([{name: 'is_for_root', value: true}])
-    }).subscribe(({products, categories}) => {
+      categories: this.productCategoriesService.getRoot()
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(({products, categories}) => {
       this.products = products;
       this.categories = categories;
 
@@ -133,6 +137,7 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
       });
 
       this.productsTree.unshift({
+        // @ts-ignore
         data: {name: 'Not category'},
         expanded: false,
         parent: null
@@ -200,7 +205,7 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
     }
   }
 
-  removeProduct() {
+  onRemoveProduct() {
     const product: Product = this.selectedNode.data;
 
     this.modalService.confirm('danger').subscribe(confirm => {
@@ -215,27 +220,45 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
     });
   }
 
-  createProduct() {
-    this.productService.createEditProduct('create').subscribe(product => {
-      // TODO на бэке сделать чтобы отдавался продукт
-      if (product) this.updateProducts();
-    });
-  }
-
-  editProduct() {
-    const product = <Product>this.selectedNode.data;
-    this.productService.createEditProduct('edit', product).subscribe(product => {
-      // TODO на бэке сделать чтобы отдавался продукт
+  onCreateProduct() {
+    this.productService.createEditRootProduct('create').subscribe(product => {
       if (product) {
-        this.updateProducts();
-        this.selectedNode = null;
+        this.products.push(<Product>product);
+        this.createTree();
       }
     });
   }
 
-  copyProduct() {
+  onEditProduct() {
+    const product = {...<Product>this.selectedNode.data};
+    this.productService.createEditRootProduct('edit', product).subscribe(nomenclature => {
+      // TODO ДОЖДАТЬСЯ ИЗМЕНЕНИЙ С БЭКА
+      // if (nomenclature) {
+      //   const index = this.products.findIndex(p => p.nomenclature.id === nomenclature.id)
+      //
+      //   if (index !== -1) {
+      //     this.products[index].nomenclature = nomenclature;
+      //
+      //     // console.log(this.products[index].nomenclature.category);
+      //     // console.log(product.nomenclature.category.id);
+      //
+      //     // @ts-ignore
+      //     if (this.products[index].nomenclature.category !== product.nomenclature.category?.id) {
+      //       console.log('ad');
+      //       this.createTree();
+      //     }
+      //   }
+      // }
+
+      if (nomenclature) {
+        this.updateProducts();
+      }
+    });
+  }
+
+  onCopyProduct() {
     const product = <Product>this.selectedNode.data;
-    this.productService.createEditProduct('copy', product).subscribe(product => {
+    this.productService.createEditRootProduct('copy', product).subscribe(product => {
       // TODO на бэке сделать чтобы отдавался продукт
       if (product) this.updateProducts();
     });
@@ -261,5 +284,6 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
   ngOnDestroy() {
     this.inputCodeSub.unsubscribe();
     this.inputNameSub.unsubscribe();
+    this.destroy$.next(true);
   }
 }

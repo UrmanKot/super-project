@@ -83,6 +83,32 @@
   }
 }
 
+.form-box {
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+
+  .form-group {
+    margin-bottom: 0;
+
+    label {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &_2 {
+    .form-group {
+      width: calc(50% - 0.5rem);
+    }
+  }
+
+  &_3 {
+    .form-group {
+      width: calc(33% - 0.5rem);
+    }
+  }
+}
+
 p-menubar {
   transition: opacity 0.25s;
 
@@ -199,4 +225,110 @@ p-menubar {
       }
     }
   }
+}
+
+.p-multiselect {
+  width: 100%;
+  border-radius: 0.625rem;
+  height: 2.375rem;
+
+  .p-multiselect-label {
+    font-size: var(--theme-font-size-s);
+    padding: 0.4375rem 0.75rem;
+  }
+
+  .pi {
+    font-size: var(--theme-font-size-s);
+  }
+}
+
+.p-multiselect-panel {
+  .p-multiselect-item {
+    font-size: var(--theme-font-size-s);
+    padding: 0.625rem 1.25rem !important;
+  }
+}
+
+.p-treeselect-items-wrapper,
+.p-multiselect-items-wrapper, {
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.625rem;
+    background-color: #d1d2d8;
+  }
+
+  &::-webkit-scrollbar {
+    cursor: auto;
+    width: 0.5rem;
+    background-color: #f8f9fa;
+  }
+}
+
+textarea {
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: #d1d2d8;
+  }
+
+  &::-webkit-scrollbar {
+    cursor: auto;
+    width: 0.5rem;
+    background-color: transparent;
+  }
+}
+
+.p-treeselect {
+  height: 2.375rem;
+  width: 100%;
+  border-radius: 0.625rem;
+  font-size: var(--theme-font-size-s);
+
+  .p-tree {
+    padding: 0.5rem !important;
+  }
+
+  .p-treeselect-label {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .p-tree-toggler {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    margin-right: 0.375rem !important;
+
+    .pi {
+      font-size: 0.875rem !important;
+    }
+
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+
+  .p-treenode-label {
+    padding-right: 0.5rem !important;
+  }
+
+  .p-treenode-content {
+    line-height: 1.2;
+    font-size: 0.875rem;
+    padding: 0.25rem !important;
+
+    &.p-highlight {
+      color: var(--theme-color-primary) !important;
+
+      .p-tree-toggler {
+        color: var(--theme-color-primary) !important;
+      }
+    }
+  }
+
+  &:not(.p-disabled) {
+    &:hover {
+      border-color: var(--theme-color-primary) !important;
+    }
+  }
+}
+
+.p-treeselect-panel {
+  top: 2.5rem !important;
 }

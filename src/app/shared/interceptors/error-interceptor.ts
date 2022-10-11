@@ -57,11 +57,11 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(tap(
       (event) => {
         if (event instanceof HttpResponse) {
-
           if (req.method === 'PUT' || req.method === 'PATCH') {
             this.message$.next({severity: 'success', status: event.status, text: 'Successfully Updated'});
           }
           if (req.method === 'POST') {
+
             this.message$.next({severity: 'success', status: event.status, text: 'Successfully Created'});
           }
           if (req.method === 'DELETE') {

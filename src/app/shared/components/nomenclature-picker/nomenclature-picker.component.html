@@ -1,0 +1,69 @@
+<div class="nomenclature-picker">
+  <p-table
+    [value]="nomenclatures"
+    [rows]="10"
+    selectionMode="single"
+    [(selection)]="selectedNomenclature"
+    (selectionChange)="onSelectNomenclature()"
+  >
+    <ng-template pTemplate="caption">
+      <form [formGroup]="searchForm">
+        <div class="form-box form-box_3">
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input type="text" id="code" pInputText formControlName="code">
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" pInputText formControlName="name">
+        </div>
+          <div class="form-group">
+            <label>Categories</label>
+            <pek-product-category-picker></pek-product-category-picker>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center" style="width: 7%">#</th>
+        <th style="width: 22%">Code</th>
+        <th style="width: 30%">Name</th>
+        <th style="width: 10%">UOM</th>
+        <th style="width: 15%;">Technology</th>
+        <th style="width: 15%" class="text-center">Category</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-nomenclature let-i="rowIndex">
+      <tr [pSelectableRow]="nomenclature">
+        <td style="width: 7%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
+        <td style="width: 22%">{{nomenclature.code}}</td>
+        <td style="width: 30%">{{nomenclature.name}}</td>
+        <td
+          style="width: 10%">{{nomenclature.category?.unit_of_measure?.symbol ? nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}</td>
+        <td style="width: 15%">
+          <div *ngFor="let technology of nomenclature.technologies">
+            {{technology.name}}
+          </div>
+        </td>
+        <td style="width: 15%" class="text-center">{{nomenclature.category?.name}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="4">
+          <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoading">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-paginator
+    #paginator
+    [rows]="10"
+    [totalRecords]="countNomenclatures"
+    (onPageChange)="paginate($event)"
+  >
+  </p-paginator>
+</div>
