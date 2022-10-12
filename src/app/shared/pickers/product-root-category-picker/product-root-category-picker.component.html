@@ -1,0 +1,18 @@
+
+<p-dropdown
+  *ngIf="!isLoading; else spinner"
+  [showClear]="true"
+  [options]="rootCategories"
+  optionLabel="name"
+  optionValue="id"
+  placeholder="Select Product Category"
+  [(ngModel)]="selectCategoryId"
+  (ngModelChange)="onChangeCategory()"
+  [disabled]="isDisabled"
+></p-dropdown>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

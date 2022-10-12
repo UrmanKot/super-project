@@ -59,7 +59,6 @@ export enum ENomenclatureApproval {
   DECLINED = '2'
 }
 
-
 export enum ENomenclatureBulk {
   BULK = '0',
   SERIAL = '1',

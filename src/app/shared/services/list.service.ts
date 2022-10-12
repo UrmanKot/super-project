@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {List} from '@shared/models/production-list';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable({
@@ -23,9 +23,9 @@ export class ListService {
     );
   }
 
-  updateList(list: List): Observable<List> {
-    return this.httpClient.patch<{ data: List }>(this.API_URL + 'list_creation_requests/' + list.id + '/', list).pipe(
-      map(response => response.data)
-    );
+  updateListSeveral(lists: List[]): Observable<List[]> {
+    return forkJoin(...lists.map(list => this.httpClient.patch<{ data: List }>(this.API_URL + 'list_creation_requests/' + list.id + '/', list).pipe(
+      map(response => response.data),
+    )));
   }
 }

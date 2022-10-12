@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureApproval, NewNomenclature} from '@shared/models/nomenclature';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'pek-nomenclature-confirmation',
@@ -45,20 +46,21 @@ export class NomenclatureConfirmationComponent implements OnInit {
           });
         });
 
-        this.nomenclatureService.updateSeveralPartly(confirmNomenclatures).subscribe(() => {
+        this.nomenclatureService.updateSeveralPartly(confirmNomenclatures).pipe(
+          finalize(() => this.isPendingConfirm = false)
+        ).subscribe(() => {
           confirmNomenclatures.forEach(nomenclature => {
             this.nomenclatures = this.nomenclatures.filter(product => product.id !== nomenclature.id);
           });
 
           this.selectedNomenclatures = [];
-          this.isPendingConfirm = false;
         });
       }
     });
   }
 
   onDecline() {
-    this.modalService.confirm('danger').subscribe(decline => {
+    this.modalService.confirm('danger', 'Decline').subscribe(decline => {
       if (decline) {
         this.isPendingDecline = true;
         const declineNomenclatures = [];
@@ -70,7 +72,9 @@ export class NomenclatureConfirmationComponent implements OnInit {
           });
         });
 
-        this.nomenclatureService.updateSeveralPartly(declineNomenclatures).subscribe(() => {
+        this.nomenclatureService.updateSeveralPartly(declineNomenclatures).pipe(
+          finalize(() => this.isPendingDecline = false)
+        ).subscribe(() => {
           declineNomenclatures.forEach(nomenclature => {
             this.nomenclatures = this.nomenclatures.filter(product => product.id !== nomenclature.id);
           });

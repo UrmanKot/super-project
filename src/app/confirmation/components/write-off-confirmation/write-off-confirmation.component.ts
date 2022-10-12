@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 import {ModalService} from '@shared/services/modal.service';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureApproval, Nomenclature} from '@shared/models/nomenclature';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'pek-write-off-confirmation',
@@ -15,11 +16,15 @@ export class WriteOffConfirmationComponent implements OnInit {
   selectedWarehouseProducts: WarehouseProduct[] = [];
   isLoading = true;
 
+  isPendingConfirm: boolean = false;
+  isPendingDecline: boolean = false;
+
   constructor(
     private readonly warehouseProductService: WarehouseProductService,
     private readonly nomenclatureService: NomenclatureService,
     private readonly modalService: ModalService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.getProducts();
@@ -33,23 +38,26 @@ export class WriteOffConfirmationComponent implements OnInit {
   }
 
   onDecline() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    this.modalService.confirm('danger', 'Decline').subscribe(confirm => {
       if (confirm) {
+        this.isPendingDecline = true;
         const declineNomenclatures: Partial<Nomenclature>[] = [];
 
-        this.warehouseProducts.forEach(product => {
+        this.selectedWarehouseProducts.forEach(product => {
           declineNomenclatures.push({
             id: product.id,
             approved: ENomenclatureApproval.DECLINED
           });
         });
 
-        this.nomenclatureService.updateSeveralPartly(declineNomenclatures).subscribe(() => {
+        this.nomenclatureService.updateSeveralPartly(declineNomenclatures).pipe(
+          finalize(() => this.isPendingDecline = false)
+        ).subscribe(() => {
           declineNomenclatures.forEach(nomenclature => {
             this.warehouseProducts = this.warehouseProducts.filter(product => product.id !== nomenclature.id);
           });
 
-          this.selectedWarehouseProducts = null;
+          this.selectedWarehouseProducts = [];
         });
       }
     });
@@ -58,10 +66,14 @@ export class WriteOffConfirmationComponent implements OnInit {
   onConfirm() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
+        this.isPendingConfirm = true;
         const ids: number[] = [];
 
         this.selectedWarehouseProducts.forEach(product => ids.push(product.id));
-        this.warehouseProductService.severalWriteOff(ids).subscribe(() => {
+
+        this.warehouseProductService.severalWriteOff(ids).pipe(
+          finalize(() => this.isPendingConfirm = false)
+        ).subscribe(() => {
           ids.forEach(id => this.warehouseProducts = this.warehouseProducts.filter(product => product.id !== id));
           this.selectedWarehouseProducts = [];
         });

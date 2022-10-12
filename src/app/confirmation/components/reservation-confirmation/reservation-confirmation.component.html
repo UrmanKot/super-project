@@ -8,4 +8,102 @@
 </div>
 
 <div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 20.875rem)"
+        [scrollable]="true"
+        [paginator]="products.length > 0"
+        [rows]="10"
+        [(selection)]="selectedProducts"
+        [value]="products"
+        dataKey="id"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-times"
+              label="Decline"
+              class="ml-auto p-button-danger p-button-icon mr-2"
+              (click)="onDecline()"
+              [loading]="isPendingDecline"
+              [disabled]="selectedProducts?.length === 0"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-check"
+              label="Confirm"
+              class="p-button-success p-button-icon"
+              (click)="onConfirm()"
+              [loading]="isPendingConfirm"
+              [disabled]="selectedProducts?.length === 0"
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3%">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th class="text-center" style="width: 5%">#</th>
+            <th style="width: 15%">Code</th>
+            <th style="width: 15%">Name</th>
+            <th style="width: 10%" class="text-center">Serial Number</th>
+            <th style="width: 15%" class="text-center">Created</th>
+            <th style="width: 10%" class="text-center">List Id</th>
+            <th style="width: 15%" class="text-center">Required Quantity</th>
+            <th style="width: 12%" class="text-center">Reserved Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td style="width: 3%">
+              <p-tableCheckbox [value]="product"></p-tableCheckbox>
+            </td>
+            <td style="width: 5%" class="text-center">{{i + 1}}</td>
+            <td style="width: 15%">{{product.listproduct.nomenclature.code}}</td>
+            <td style="width: 15%">
+              <b *ngIf="product.listproduct.nomenclature.bulk_or_serial === nomenclatureBulk.SERIAL">(S)</b>
+              {{product.listproduct.nomenclature.name}}
+            </td>
+            <td style="width: 10%" class="text-center">{{product.serialnumber}}</td>
+            <td style="width: 15%" class="text-center">{{product.created | date: 'dd/MM/y'}}</td>
+            <td style="width: 10%" class="text-center">{{product?.list?.id}}</td>
+            <td style="width: 15%" class="text-center">{{product.listproduct.required_quantity}}</td>
+            <td style="width: 12%" class="text-center">{{product.reserved_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="9">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && products.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
 </div>

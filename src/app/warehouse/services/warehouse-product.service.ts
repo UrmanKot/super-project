@@ -34,6 +34,16 @@ export class WarehouseProductService {
     );
   }
 
+  getReservations(): Observable<WarehouseProduct[]> {
+    return this.httpClient.get<{ data: WarehouseProduct[] }>(this.API_URL + 'warehouse_products_reservations/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  severalUpdateReservations(ids: number[], send: {is_confirmed: boolean}): Observable<any> {
+    return forkJoin(...ids.map(id => this.httpClient.patch(this.API_URL + `warehouse_products_reservations/${id}/`, send)));
+  }
+
   severalWriteOff(ids: number[]): Observable<WarehouseProduct[]> {
     return forkJoin(...ids.map(id => this.httpClient.post<{ data: WarehouseProduct }>(this.API_URL + this.url + id + '/write_off/', null).pipe(
       map(response => response.data)

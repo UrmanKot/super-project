@@ -13,7 +13,7 @@
       <p-table
         #dt
         selectionMode="single"
-        scrollHeight="calc(100vh - 21.75rem)"
+        scrollHeight="calc(100vh - 20.875rem)"
         [scrollable]="true"
         [paginator]="productionLists.length > 0"
         [rows]="10"
@@ -27,8 +27,9 @@
               type="button"
               icon="pi pi-times"
               label="Decline"
-              class="ml-auto p-button-danger mr-2"
+              class="ml-auto p-button-danger p-button-icon mr-2"
               (click)="onDecline()"
+              [loading]="isPendingDecline"
               [disabled]="selectedProductionLists.length === 0"
             ></button>
             <button
@@ -36,8 +37,9 @@
               type="button"
               icon="pi pi-check"
               label="Confirm"
-              class="p-button-success"
+              class="p-button-success p-button-icon"
               (click)="onConfirm()"
+              [loading]="isPendingConfirm"
               [disabled]="selectedProductionLists.length === 0"
             ></button>
           </div>

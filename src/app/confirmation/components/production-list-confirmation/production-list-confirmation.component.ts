@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
 import {List} from '@shared/models/production-list';
 import {ListService} from '@shared/services/list.service';
-import {concat, last} from 'rxjs';
+import {concat, finalize} from 'rxjs';
 
 @Component({
   selector: 'pek-production-list-confirmation',
@@ -14,10 +14,14 @@ export class ProductionListConfirmationComponent implements OnInit {
   productionLists: List[] = [];
   selectedProductionLists: List[] = [];
 
+  isPendingConfirm: boolean = false;
+  isPendingDecline: boolean = false;
+
   constructor(
     private readonly modalService: ModalService,
     private readonly listService: ListService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.getProductionLists();
@@ -33,6 +37,7 @@ export class ProductionListConfirmationComponent implements OnInit {
   onConfirm() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
+        this.isPendingConfirm = true;
         const confirmProductionLists = [];
 
         this.selectedProductionLists.forEach(productionList => {
@@ -44,8 +49,8 @@ export class ProductionListConfirmationComponent implements OnInit {
 
         confirmProductionLists.sort((a, b) => a.id - b.id);
 
-        concat(...confirmProductionLists.map(productionList => this.listService.updateList(productionList))).pipe(
-          last(),
+        this.listService.updateListSeveral(confirmProductionLists).pipe(
+          finalize(() => this.isPendingConfirm = false)
         ).subscribe(() => {
           confirmProductionLists.forEach(productionList => {
             this.productionLists = this.productionLists.filter(p => p.id !== productionList.id);
@@ -58,8 +63,9 @@ export class ProductionListConfirmationComponent implements OnInit {
   }
 
   onDecline() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    this.modalService.confirm('danger', 'Decline').subscribe(confirm => {
       if (confirm) {
+        this.isPendingDecline = true;
         const declineProductionLists = [];
 
         this.selectedProductionLists.forEach(productionList => {
@@ -71,11 +77,13 @@ export class ProductionListConfirmationComponent implements OnInit {
 
         declineProductionLists.sort((a, b) => a.id - b.id);
 
-        concat(...declineProductionLists.map(productionList => this.listService.updateList(productionList))).pipe(
-          last(),
-        ).subscribe(() => {
+       this.listService.updateListSeveral(declineProductionLists).pipe(
+          finalize(() => this.isPendingDecline = false)
+        ).subscribe(response => {
           declineProductionLists.forEach(productionList => {
-            this.productionLists = this.productionLists.filter(p => p.id !== productionList.id);
+            if (response) {
+              this.productionLists = this.productionLists.filter(p => p.id !== productionList.id);
+            }
           });
 
           this.selectedProductionLists = [];
