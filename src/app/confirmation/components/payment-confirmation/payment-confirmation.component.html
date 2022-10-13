@@ -26,7 +26,7 @@
             selectionMode="checkbox"
             [value]="paymentTree"
             [(selection)]="selectedPayments"
-            scrollHeight="calc(100vh - 24.625rem)"
+            scrollHeight="calc(100vh - 21.8rem)"
             [scrollable]="true"
           >
             <ng-template pTemplate="caption">
@@ -103,7 +103,7 @@
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.invoice">
                     <a
-                      [routerLink]="['../../accounting/invoices/products', payment.invoice.id]"
+                      [routerLink]="['/external', link + 'accounting/invoices/products/' + payment.invoice.id]"
                       target="_blank"
                     >
                       {{payment.invoice.self_serial_number}}
@@ -141,7 +141,7 @@
                       *ngIf="payment.invoice.order.accounting_type == 1"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../procurement/orders/products', payment.invoice.order.id]"
+                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"
                     >
                       {{payment.invoice.order.id}}
                     </a>
@@ -149,7 +149,7 @@
                       *ngIf="payment.invoice.order.accounting_type == 2"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../outsource/outsource-chain/products', payment.invoice.order.id]"
+                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.invoice.order.id]"
                     >
                       {{payment.invoice.order.id}}
                     </a>
@@ -174,7 +174,7 @@
             selectionMode="checkbox"
             [value]="serviceInvoicePaymentsTree"
             [(selection)]="selectedServiceInvoicePayments"
-            scrollHeight="calc(100vh - 24.625rem)"
+            scrollHeight="calc(100vh - 21.8rem)"
             [scrollable]="true"
           >
             <ng-template pTemplate="caption">
@@ -256,7 +256,7 @@
                   <ng-container *ngIf="payment.serviceinvoice || payment.invoice">
                     <a
                       *ngIf="payment.serviceinvoice"
-                      [routerLink]="['../../accounting/invoices/service-invoice', payment.serviceinvoice.id]"
+                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.serviceinvoice.id]"
                       target="_blank"
                     >
                       {{payment.serviceinvoice.self_serial_number}}
@@ -264,7 +264,7 @@
 
                     <a
                       *ngIf="payment.invoice"
-                      [routerLink]="['../../accounting/invoices/service-invoice', payment.invoice.id]"
+                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.invoice.id]"
                       target="_blank"
                     >
                       {{payment.invoice.self_serial_number}}
@@ -319,7 +319,7 @@
                       *ngIf="payment.serviceinvoice.order.accounting_type == 1"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../procurement/orders/products', payment.serviceinvoice.order.id]"
+                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.serviceinvoice.order.id]"
                     >
                       {{payment.serviceinvoice.order.id}}
                     </a>
@@ -327,7 +327,7 @@
                       *ngIf="payment.serviceinvoice.order.accounting_type == 2"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../outsource/outsource-chain/products', payment.serviceinvoice.order.id]"
+                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.serviceinvoice.order.id]"
                     >
                       {{payment.serviceinvoice.order.id}}
                     </a>
@@ -338,7 +338,7 @@
                       *ngIf="payment.invoice.order.accounting_type == 1"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../procurement/orders/products', payment.invoice.order.id]"
+                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"
                     >
                       {{payment.invoice.order.id}}
                     </a>
@@ -346,7 +346,7 @@
                       *ngIf="payment.invoice.order.accounting_type == 2"
                       rel="noopener noreferrer"
                       target="_blank"
-                      [routerLink]="['../../outsource/outsource-chain/products', payment.invoice.order.id]"
+                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' +  payment.invoice.order.id]"
                     >
                       {{payment.invoice.order.id}}
                     </a>

@@ -10,6 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   PaymentConfirmationLimitComponent
 } from '../../modals/payment-confirmation-limit/payment-confirmation-limit.component';
+import {environment} from '@env/environment.prod';
 
 @Component({
   selector: 'pek-payment-confirmation',
@@ -17,6 +18,8 @@ import {
   styleUrls: ['./payment-confirmation.component.scss']
 })
 export class PaymentConfirmationComponent implements OnInit, OnDestroy {
+  link = environment.link_url + 'dash/';
+
   paymentTotals = {
     totalPricePayments: 0,
     totalPriceServiceInvoicePayments: 0,

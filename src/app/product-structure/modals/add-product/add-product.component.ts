@@ -23,6 +23,8 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchBoxCode') searchBoxCode;
   @ViewChild('dt') table: Table;
 
+  mode: 'add' | 'create' = 'add';
+
   inputCodeSub: Subscription;
   inputNameSub: Subscription;
 

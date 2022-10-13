@@ -21,8 +21,13 @@
 }
 
 .p-checkbox {
+  width: 1.375rem !important;
+  height: 1.375rem !important;
+
   .p-checkbox-box {
     border: 1px solid #ced4da;
+    width: 1.375rem !important;
+    height: 1.375rem !important;
 
     &.p-highlight {
       border-color: var(--theme-color-primary);
@@ -183,7 +188,7 @@ p-menubar {
   .p-tabview-panels {
     box-shadow: 0 0 0.5rem #00000010 !important;
     border-radius: 0 1rem 1rem 1rem !important;
-    padding: 1rem 2rem 2rem !important;
+    padding: 0.75rem 1.75rem 1.75rem !important;
   }
 
   .p-tabview-nav-link {
@@ -191,7 +196,7 @@ p-menubar {
     border-radius: 1rem 1rem 0 0 !important;
     background: var(--theme-color-secondary) !important;
     color: var(--theme-color-primary) 0 !important;
-    padding: 1.25rem 2rem !important;
+    padding: 1rem 1.75rem !important;
     justify-content: center;
     border: none !important;
 
@@ -203,7 +208,12 @@ p-menubar {
 }
 
 .p-radiobutton {
+  width: 1.375rem !important;
+  height: 1.375rem !important;
+
   .p-radiobutton-box {
+    width: 1.375rem !important;
+    height: 1.375rem !important;
 
     &:not(.p-disabled) {
       &:not(.p-highlight) {
@@ -216,6 +226,10 @@ p-menubar {
     &.p-highlight {
       border-color: var(--theme-color-primary);
       background: var(--theme-color-primary);
+
+      .p-radiobutton-icon {
+        width: 13px !important;
+      }
 
       &:not(.p-disabled) {
         &:hover {
