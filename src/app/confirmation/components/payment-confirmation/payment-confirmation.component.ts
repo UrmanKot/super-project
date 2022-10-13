@@ -5,9 +5,8 @@ import {ServiceInvoicePaymentService} from '../../../reports/services/service-in
 import {ServiceInvoicePayment} from '../../../reports/models/service-invoice-payment';
 import {ModalService} from '@shared/services/modal.service';
 import {TreeNode} from 'primeng/api';
-import {finalize, Subject, takeUntil} from 'rxjs';
+import {finalize, forkJoin, Subject, takeUntil} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
-import {ProductFilesComponent} from '../../../product-structure/modals/product-files/product-files.component';
 import {
   PaymentConfirmationLimitComponent
 } from '../../modals/payment-confirmation-limit/payment-confirmation-limit.component';
@@ -52,18 +51,31 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getPayments();
-    this.getServiceInvoicePayments();
+    // this.getPayments();
+    this.getAllPayments();
   }
 
-  getPayments() {
-    this.paymentService.getConfirmationPayments().pipe(
+  getAllPayments() {
+    forkJoin({
+      payments: this.paymentService.getConfirmationPayments(),
+      serviceInvoicePayments: this.serviceInvoicePaymentService.getConfirmationPayments()
+    }).pipe(
       takeUntil(this.destroy$)
-    ).subscribe(payments => {
-      this.payments = payments;
+    ).subscribe(({payments, serviceInvoicePayments}) => {
+      this.payments = payments.filter(payment => !payment.invoice.order.purchase_category);
+      // @ts-ignore
+      this.serviceInvoicePayments.push(...payments.filter(payment => payment.invoice.order.purchase_category));
+      this.serviceInvoicePayments.push(...serviceInvoicePayments);
+
       this.countPaymentsTotals();
       this.createPaymentsTree();
+
+      this.countServiceInvoicePaymentsTotals();
+      this.createServiceInvoicePaymentsTree();
+
       this.isLoadingPayments = false;
+      this.isLoadingServiceInvoicePayments = false;
+
     });
   }
 
@@ -112,17 +124,6 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.paymentTree = [...tree];
   }
 
-  getServiceInvoicePayments() {
-    this.serviceInvoicePaymentService.getConfirmationPayments().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(serviceInvoicePayments => {
-      this.serviceInvoicePayments = serviceInvoicePayments;
-      this.countServiceInvoicePaymentsTotals();
-      this.createServiceInvoicePaymentsTree();
-      this.isLoadingServiceInvoicePayments = false;
-    });
-  }
-
   createServiceInvoicePaymentsTree() {
     this.serviceInvoicePaymentsTree = [];
 
@@ -135,9 +136,11 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
         purchaseCategory = payment.serviceinvoice.order.purchase_category;
       }
 
-      // if (payment.invoice) {
-      //   purchaseCategory = payment.invoice.order.purchase_category;
-      // }
+      // @ts-ignore
+      if (payment.invoice) {
+        // @ts-ignore
+        purchaseCategory = payment.invoice.order.purchase_category;
+      }
 
       if (purchaseCategory) {
         const isAdded = categories.findIndex(el => el.id === purchaseCategory.id);
@@ -184,19 +187,21 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
           }
         }
 
-        // if (product.invoice) {
-        //   const purchaseCategory = product.invoice.order.purchase_category;
-        //
-        //   if (purchaseCategory) {
-        //     if (purchaseCategory.id === node.data.id) {
-        //       node.children.push({
-        //         data: product,
-        //         expanded: false,
-        //         children: []
-        //       });
-        //     }
-        //   }
-        // }
+        // @ts-ignore
+        if (product.invoice) {
+          // @ts-ignore
+          const purchaseCategory = product.invoice.order.purchase_category;
+
+          if (purchaseCategory) {
+            if (purchaseCategory.id === node.data.id) {
+              node.children.push({
+                data: product,
+                expanded: false,
+                children: []
+              });
+            }
+          }
+        }
       });
     });
 
@@ -218,8 +223,10 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.paymentTotals.totalAmountServiceInvoicePayments = 0;
 
     this.serviceInvoicePayments.forEach(payment => {
-      this.paymentTotals.totalPriceServiceInvoicePayments += payment.service_invoice_total_price;
-      this.paymentTotals.totalAmountServiceInvoicePayments += parseFloat(payment.service_invoice_payment_amount);
+      // @ts-ignore
+      this.paymentTotals.totalPriceServiceInvoicePayments += payment.service_invoice_total_price ? payment.service_invoice_total_price : payment.invoice_total_price;
+      // @ts-ignore
+      this.paymentTotals.totalAmountServiceInvoicePayments += payment.service_invoice_payment_amount ? parseFloat(payment.service_invoice_payment_amount) : parseFloat(payment.payment_amount);
     });
   }
 
@@ -261,11 +268,19 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.isPendingServiceInvoicePaymentsConfirm = true;
-        const ids = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
-        this.serviceInvoicePaymentService.severalConfirm(ids).pipe(
+
+        const serviceInvoicePaymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
+        // @ts-ignore
+        const paymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
+
+        forkJoin({
+          serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalConfirm(serviceInvoicePaymentIds),
+          paymentsIds: this.paymentService.severalConfirm(paymentIds)
+        }).pipe(
           finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
         ).subscribe(() => {
-          ids.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+          serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+          paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
           this.countServiceInvoicePaymentsTotals();
           this.createServiceInvoicePaymentsTree();
           this.selectedServiceInvoicePayments = [];
@@ -278,11 +293,19 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.modalService.confirm('danger', 'Decline').subscribe(confirm => {
       if (confirm) {
         this.isPendingServiceInvoicePaymentsDecline = true;
-        const ids = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
-        this.serviceInvoicePaymentService.severalDecline(ids).pipe(
+
+        const serviceInvoicePaymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
+        // @ts-ignore
+        const paymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
+
+        forkJoin({
+          serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalDecline(serviceInvoicePaymentIds),
+          paymentsIds: this.paymentService.severalDecline(paymentIds)
+        }).pipe(
           finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
         ).subscribe(() => {
-          ids.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+          serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+          paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
           this.countServiceInvoicePaymentsTotals();
           this.createServiceInvoicePaymentsTree();
           this.selectedServiceInvoicePayments = [];

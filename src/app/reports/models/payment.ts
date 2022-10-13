@@ -15,6 +15,7 @@ export class Payment {
     order: {
       id: number;
       accounting_type: number;
+      purchase_category: any
     }
   }
 }

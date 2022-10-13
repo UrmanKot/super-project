@@ -229,32 +229,45 @@
               <tr>
                 <td style="width: 22%">
                   <div class="d-flex align-items-center">
-                    <div class="table-toggler" *ngIf="!payment.serviceinvoice">
+                    <div class="table-toggler" *ngIf="!payment.serviceinvoice && !payment.invoice">
                       <p-treeTableToggler [rowNode]="paymentNode"></p-treeTableToggler>
                     </div>
 
-                    <div class="table-checkbox" *ngIf="payment.serviceinvoice">
+                    <div class="table-checkbox" *ngIf="payment.serviceinvoice || payment.invoice">
                       <p-treeTableCheckbox [value]="paymentNode"></p-treeTableCheckbox>
                     </div>
 
                     <div class="table-content">
-                      <ng-container *ngIf="!payment.serviceinvoice; else paymentDate">
+                      <ng-container *ngIf="!payment.serviceinvoice || !payment.invoice">
                         {{payment.name}}
                       </ng-container>
-                    </div>
 
-                    <ng-template #paymentDate>
-                      {{payment.serviceinvoice.system_creation_date | date:'dd/MM/yyyy'}}
-                    </ng-template>
+                      <ng-container *ngIf="payment.invoice">
+                        {{payment.invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                      </ng-container>
+
+                      <ng-container *ngIf="payment.serviceinvoice">
+                        {{payment.serviceinvoice.system_creation_date | date:'dd/MM/yyyy'}}
+                      </ng-container>
+                    </div>
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">
-                  <ng-container *ngIf="payment.serviceinvoice">
+                  <ng-container *ngIf="payment.serviceinvoice || payment.invoice">
                     <a
+                      *ngIf="payment.serviceinvoice"
                       [routerLink]="['../../accounting/invoices/service-invoice', payment.serviceinvoice.id]"
                       target="_blank"
                     >
                       {{payment.serviceinvoice.self_serial_number}}
+                    </a>
+
+                    <a
+                      *ngIf="payment.invoice"
+                      [routerLink]="['../../accounting/invoices/service-invoice', payment.invoice.id]"
+                      target="_blank"
+                    >
+                      {{payment.invoice.self_serial_number}}
                     </a>
                   </ng-container>
                 </td>
@@ -262,14 +275,23 @@
                   <ng-container *ngIf="payment.serviceinvoice">
                     {{payment.serviceinvoice.supplier.name}}
                   </ng-container>
+
+                  <ng-container *ngIf="payment.invoice">
+                    {{payment.invoice.supplier.name}}
+                  </ng-container>
                 </td>
                 <td style="width: 20%">
-                  <ng-container>
-                    <div *ngIf="payment.serviceinvoice">
-                      <div *ngFor="let rootList of payment.serviceinvoice.root_production_plans; let idx = index">
-                        {{rootList.list_product.nomenclature.name}}
-                        <span *ngIf="idx !== payment.serviceinvoice.root_production_plans.length - 1">,</span>
-                      </div>
+                  <ng-container *ngIf="payment.serviceinvoice">
+                    <div *ngFor="let rootList of payment.serviceinvoice.root_production_plans; let idx = index">
+                      {{rootList.list_product.nomenclature.name}}
+                      <span *ngIf="idx !== payment.serviceinvoice.root_production_plans.length - 1">,</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="payment.invoice">
+                    <div *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
+                      {{rootList.list_product.nomenclature.name}}
+                      <span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
                     </div>
                   </ng-container>
                 </td>
@@ -277,10 +299,18 @@
                   <ng-container *ngIf="payment.serviceinvoice">
                     {{payment.service_invoice_total_price | moneyFormat}} €
                   </ng-container>
+
+                  <ng-container *ngIf="payment.invoice">
+                    {{payment.invoice_total_price | moneyFormat}} €
+                  </ng-container>
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.serviceinvoice">
                     {{payment.service_invoice_payment_amount | moneyFormat}} €
+                  </ng-container>
+
+                  <ng-container *ngIf="payment.invoice">
+                    {{payment.payment_amount | moneyFormat}} €
                   </ng-container>
                 </td>
                 <td style="width: 10%" class="text-center">
@@ -300,6 +330,25 @@
                       [routerLink]="['../../outsource/outsource-chain/products', payment.serviceinvoice.order.id]"
                     >
                       {{payment.serviceinvoice.order.id}}
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="payment.invoice">
+                    <a
+                      *ngIf="payment.invoice.order.accounting_type == 1"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      [routerLink]="['../../procurement/orders/products', payment.invoice.order.id]"
+                    >
+                      {{payment.invoice.order.id}}
+                    </a>
+                    <a
+                      *ngIf="payment.invoice.order.accounting_type == 2"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      [routerLink]="['../../outsource/outsource-chain/products', payment.invoice.order.id]"
+                    >
+                      {{payment.invoice.order.id}}
                     </a>
                   </ng-container>
                 </td>
