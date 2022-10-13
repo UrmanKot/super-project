@@ -51,7 +51,8 @@ class DashboardComponent {
             }, {
                 label: 'Warehouse',
                 icon: 'icon-warehouse',
-                routerLink: ['/warehouse'],
+                // routerLink: ['/warehouse'],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/warehouse/products`],
             }, {
                 label: 'Manufacturing Procurement',
                 icon: 'icon-manufacturing-procurement',
