@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PaymentService} from '../../../reports/services/payment.service';
 import {MatDialogRef} from '@angular/material/dialog';
-import {finalize} from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-payment-confirmation-limit',
   templateUrl: './payment-confirmation-limit.component.html',
   styleUrls: ['./payment-confirmation-limit.component.scss']
 })
-export class PaymentConfirmationLimitComponent implements OnInit {
+export class PaymentConfirmationLimitComponent implements OnInit, OnDestroy {
   isSaving = false;
   isLoading = true;
 
@@ -17,6 +17,8 @@ export class PaymentConfirmationLimitComponent implements OnInit {
     id: [null],
     value: [0, [Validators.required, Validators.min(0)]],
   });
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly dialogRef: MatDialogRef<PaymentConfirmationLimitComponent>,
@@ -30,7 +32,9 @@ export class PaymentConfirmationLimitComponent implements OnInit {
   }
 
   getLimit() {
-    this.paymentService.getLimit().subscribe(response => {
+    this.paymentService.getLimit().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(response => {
       const data = {
         id: response[0].id,
         value: +response[0].value,
@@ -46,5 +50,9 @@ export class PaymentConfirmationLimitComponent implements OnInit {
     this.paymentService.setLimit(this.form.value).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(() => this.dialogRef.close());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

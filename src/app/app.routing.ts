@@ -25,6 +25,11 @@ const routes: Routes = [
         loadChildren: () => import('./confirmation/confirmation.module').then(m => m.ConfirmationModule)
       },
       {
+        path: 'warehouse',
+        title: 'Warehouse',
+        loadChildren: () => import('./warehouse/warehouse.module').then(m => m.WarehouseModule)
+      },
+      {
         path: 'delivery-chains',
         title: 'Delivery Chains',
         loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
