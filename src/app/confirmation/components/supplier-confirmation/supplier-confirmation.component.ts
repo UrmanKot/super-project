@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {EOrderSupplierConfirmStatus, OrderSupplier, OrderSupplierConfirmation} from '../models/order-supplier';
-import {OrderSupplierService} from '../services/order-supplier.service';
+import {EOrderSupplierConfirmStatus, OrderSupplier, OrderSupplierConfirmation} from '../../models/order-supplier';
+import {OrderSupplierService} from '../../services/order-supplier.service';
 import {ListProduct} from '@shared/models/list-product';
 import {ModalService} from '@shared/services/modal.service';
-import {finalize} from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-supplier-confirmation',
@@ -28,6 +28,8 @@ export class SupplierConfirmationComponent implements OnInit {
   isPendingDecline = false;
   isPendingDeclineAll = false;
 
+  private destroy$ = new Subject();
+
   constructor(
     private readonly orderSupplierService: OrderSupplierService,
     private readonly modalService: ModalService,
@@ -39,7 +41,9 @@ export class SupplierConfirmationComponent implements OnInit {
   }
 
   getConfirmations() {
-    this.orderSupplierService.getConfirmations().subscribe(confirmations => {
+    this.orderSupplierService.getConfirmations().pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(confirmations => {
       this.orderSupplierConfirmations = confirmations;
       this.isLoading = false;
     });
@@ -75,7 +79,9 @@ export class SupplierConfirmationComponent implements OnInit {
   getOrderSuppliers() {
     this.orderSuppliers = [];
     this.isLoadingOrderSuppliers = true;
-    this.orderSupplierService.getOrderSuppliers(this.selectedOrder.id).subscribe(orderSuppliers => {
+    this.orderSupplierService.getOrderSuppliers(this.selectedOrder.id).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(orderSuppliers => {
       this.orderSuppliers = orderSuppliers;
       this.isLoadingOrderSuppliers = false;
     });
@@ -140,10 +146,14 @@ export class SupplierConfirmationComponent implements OnInit {
   }
 
   clear() {
-    this.orderSupplierConfirmations = this.orderSupplierConfirmations.filter(o => o.id !== this.selectedOrderSupplierConfirmation.id);
+    this.orderSupplierConfirmations = [...this.orderSupplierConfirmations.filter(o => o.id !== this.selectedOrderSupplierConfirmation.id)];
     this.orderSuppliers = [];
     this.selectedOrder = null;
     this.selectedOrderSupplier = null;
     this.selectedOrderSupplierConfirmation = null;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

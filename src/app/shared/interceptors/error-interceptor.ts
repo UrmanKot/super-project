@@ -73,8 +73,14 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 400 || err.status === 404 || err.status === 502 || err.status === 403) {
             this.message$.next({severity: 'error', status: err.status, text: JSON.stringify(err.error.data)});
+          } else if (err.status === 500) {
+            console.log(err);
+            this.message$.next({
+              severity: 'error',
+              status: err.status,
+              text: JSON.stringify('Unknown error. Contact the developer.')
+            });
           }
-
         }
       }),
     );

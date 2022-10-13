@@ -24,10 +24,20 @@ export class PaymentService {
   }
 
   severalConfirm(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.httpClient.post<{data: Payment}>(this.API_URL + this.url + `confirm/${id}/`, null)));
+    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `confirm/${id}/`, null)));
   }
 
   severalDecline(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id =>  this.httpClient.post<{data: Payment}>(this.API_URL + this.url + `decline/${id}/`, null)));
+    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `decline/${id}/`, null)));
+  }
+
+  getLimit(): Observable<{ id: number; value: string }[]> {
+    return this.httpClient.get<{ data: { id: number; value: string }[] }>(this.API_URL + 'maximum_confirmed_payment_amount/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  setLimit(limit: { id: number, value: string }): Observable<any> {
+    return this.httpClient.patch(this.API_URL + 'maximum_confirmed_payment_amount/' + limit.id + '/', limit);
   }
 }

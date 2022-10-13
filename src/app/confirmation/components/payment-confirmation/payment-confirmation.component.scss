@@ -2,3 +2,36 @@
   font-size: var(--sm-theme-font-size-ml);
   font-weight: 600;
 }
+
+.payment-header {
+  display: flex;
+  align-items: center;
+}
+
+.payment-header-checkbox {
+  margin-left: 2.375rem;
+  margin-right: 0.75rem;
+  position: relative;
+  top: -1px;
+}
+
+.table-content {
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.table-checkbox {
+  position: relative;
+  top: -1px;
+  margin-left: 2.375rem;
+  margin-right: 0.25rem;
+}
+
+td {
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

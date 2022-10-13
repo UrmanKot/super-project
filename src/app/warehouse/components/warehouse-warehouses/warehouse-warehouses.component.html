@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>Warehouses</h1>
+    </div>
+    <div class="page-header__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Warehouse" (click)="onAddWarehouse()"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 21rem)"
+        [scrollable]="true"
+        [paginator]="warehouses.length > 0"
+        [rows]="10"
+        [(selection)]="selectedWarehouse"
+        [value]="warehouses"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedWarehouse">Choose the Warehouse to edit</p>
+            <!--            &lt;!&ndash;            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedTechnology"></p-menubar>&ndash;&gt;-->
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="index-header text-center" style="width: 5%">#</th>
+            <th style="width: 45%">Name</th>
+            <th style="width: 50%">Description</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-warehouse let-i="rowIndex">
+          <tr [pSelectableRow]="warehouse">
+            <td class="text-center" style="width: 5%">{{i + 1}}</td>
+            <td style="width: 45%">{{warehouse.name}}</td>
+            <td style="width: 50%">{{warehouse.description}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="4">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && warehouses.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

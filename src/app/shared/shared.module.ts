@@ -32,6 +32,9 @@ import {
   MultiTechnologyPickerComponent
 } from '@shared/pickers/multi-technology-picker/multi-technology-picker.component';
 import { UploadFileComponent } from './components/upload-file/upload-file.component';
+import { WarehousePickerComponent } from './pickers/warehouse-picker/warehouse-picker.component';
+import { LocatorPickerComponent } from './pickers/locator-picker/locator-picker.component';
+import { NomenclatureTypePickerComponent } from './pickers/nomenclature-type-picker/nomenclature-type-picker.component';
 
 
 @NgModule({
@@ -47,7 +50,10 @@ import { UploadFileComponent } from './components/upload-file/upload-file.compon
     PasteImageComponent,
     ImageGalleryComponent,
     MultiTechnologyPickerComponent,
-    UploadFileComponent
+    UploadFileComponent,
+    WarehousePickerComponent,
+    LocatorPickerComponent,
+    NomenclatureTypePickerComponent
   ],
   exports: [
     ButtonModule,
@@ -73,7 +79,10 @@ import { UploadFileComponent } from './components/upload-file/upload-file.compon
     ProductCategoryPickerComponent,
     ImagesSliderComponent,
     MultiTechnologyPickerComponent,
-    UploadFileComponent
+    UploadFileComponent,
+    WarehousePickerComponent,
+    LocatorPickerComponent,
+    NomenclatureTypePickerComponent
   ],
   imports: [
     CommonModule,

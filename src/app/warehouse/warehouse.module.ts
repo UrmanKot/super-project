@@ -1,14 +1,26 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { WarehouseRouting } from './warehouse.routing';
+import {WarehouseRouting} from './warehouse.routing';
+import {WarehouseItemsComponent} from './components/warehouse-items/warehouse-items.component';
+import {WarehouseLayoutComponent} from './components/warehouse-layout/warehouse-layout.component';
+import {LayoutModule} from '../layout/layout.module';
+import {SharedModule} from '@shared/shared.module';
+import { WarehouseWarehousesComponent } from './components/warehouse-warehouses/warehouse-warehouses.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    WarehouseItemsComponent,
+    WarehouseLayoutComponent,
+    WarehouseWarehousesComponent
+  ],
   imports: [
     CommonModule,
-    WarehouseRouting
+    WarehouseRouting,
+    LayoutModule,
+    SharedModule
   ]
 })
-export class WarehouseModule { }
+export class WarehouseModule {
+}

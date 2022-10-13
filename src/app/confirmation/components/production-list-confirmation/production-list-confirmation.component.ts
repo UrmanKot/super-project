@@ -1,21 +1,23 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
 import {List} from '@shared/models/production-list';
 import {ListService} from '@shared/services/list.service';
-import {concat, finalize} from 'rxjs';
+import {concat, finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-production-list-confirmation',
   templateUrl: './production-list-confirmation.component.html',
   styleUrls: ['./production-list-confirmation.component.scss']
 })
-export class ProductionListConfirmationComponent implements OnInit {
+export class ProductionListConfirmationComponent implements OnInit, OnDestroy  {
   isLoading = true;
   productionLists: List[] = [];
   selectedProductionLists: List[] = [];
 
   isPendingConfirm: boolean = false;
   isPendingDecline: boolean = false;
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly modalService: ModalService,
@@ -28,7 +30,9 @@ export class ProductionListConfirmationComponent implements OnInit {
   }
 
   getProductionLists() {
-    this.listService.getProductionLists().subscribe(productionLists => {
+    this.listService.getProductionLists().pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(productionLists => {
       this.productionLists = productionLists;
       this.isLoading = false;
     });
@@ -53,7 +57,7 @@ export class ProductionListConfirmationComponent implements OnInit {
           finalize(() => this.isPendingConfirm = false)
         ).subscribe(() => {
           confirmProductionLists.forEach(productionList => {
-            this.productionLists = this.productionLists.filter(p => p.id !== productionList.id);
+            this.productionLists = [...this.productionLists.filter(p => p.id !== productionList.id)];
           });
 
           this.selectedProductionLists = [];
@@ -82,7 +86,7 @@ export class ProductionListConfirmationComponent implements OnInit {
         ).subscribe(response => {
           declineProductionLists.forEach(productionList => {
             if (response) {
-              this.productionLists = this.productionLists.filter(p => p.id !== productionList.id);
+              this.productionLists = [...this.productionLists.filter(p => p.id !== productionList.id)];
             }
           });
 
@@ -90,5 +94,9 @@ export class ProductionListConfirmationComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

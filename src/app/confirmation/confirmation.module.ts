@@ -11,6 +11,7 @@ import { WriteOffConfirmationComponent } from './components/write-off-confirmati
 import { ProductionListConfirmationComponent } from './components/production-list-confirmation/production-list-confirmation.component';
 import { SupplierConfirmationComponent } from './components/supplier-confirmation/supplier-confirmation.component';
 import { ReservationConfirmationComponent } from './components/reservation-confirmation/reservation-confirmation.component';
+import { PaymentConfirmationLimitComponent } from './modals/payment-confirmation-limit/payment-confirmation-limit.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ReservationConfirmationComponent } from './components/reservation-confi
     ProductionListConfirmationComponent,
     SupplierConfirmationComponent,
     ReservationConfirmationComponent,
+    PaymentConfirmationLimitComponent,
   ],
   imports: [
     CommonModule,

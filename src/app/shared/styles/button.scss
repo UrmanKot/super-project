@@ -45,6 +45,10 @@
   }
 }
 
+a {
+  color: var(--theme-color-primary);
+}
+
 .p-button-label {
   font: inherit;
   font-weight: 500;

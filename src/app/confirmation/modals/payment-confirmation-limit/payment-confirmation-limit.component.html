@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Payment Confirmation Limit
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="limit">Limit*</label>
+      <input
+        *ngIf="!isLoading; else spinner"
+        type="number"
+        step="0.001"
+        id="limit"
+        pInputText
+        formControlName="value"
+      >
+    </div>
+  </form>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Save'"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

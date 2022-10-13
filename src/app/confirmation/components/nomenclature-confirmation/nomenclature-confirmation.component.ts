@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureApproval, NewNomenclature} from '@shared/models/nomenclature';
-import {finalize} from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-nomenclature-confirmation',
   templateUrl: './nomenclature-confirmation.component.html',
   styleUrls: ['./nomenclature-confirmation.component.scss']
 })
-export class NomenclatureConfirmationComponent implements OnInit {
+export class NomenclatureConfirmationComponent implements OnInit, OnDestroy {
   nomenclatures: NewNomenclature[] = [];
   selectedNomenclatures: NewNomenclature[] = [];
   isLoading: boolean = true;
 
   isPendingConfirm: boolean = false;
   isPendingDecline: boolean = false;
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly nomenclatureService: NomenclatureService,
@@ -27,7 +29,9 @@ export class NomenclatureConfirmationComponent implements OnInit {
   }
 
   getNomenclatures() {
-    this.nomenclatureService.getNewNomenclatures().subscribe(nomenclatures => {
+    this.nomenclatureService.getNewNomenclatures().pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(nomenclatures => {
       this.nomenclatures = nomenclatures;
       this.isLoading = false;
     })
@@ -50,7 +54,7 @@ export class NomenclatureConfirmationComponent implements OnInit {
           finalize(() => this.isPendingConfirm = false)
         ).subscribe(() => {
           confirmNomenclatures.forEach(nomenclature => {
-            this.nomenclatures = this.nomenclatures.filter(product => product.id !== nomenclature.id);
+            this.nomenclatures = [...this.nomenclatures.filter(product => product.id !== nomenclature.id)];
           });
 
           this.selectedNomenclatures = [];
@@ -76,7 +80,7 @@ export class NomenclatureConfirmationComponent implements OnInit {
           finalize(() => this.isPendingDecline = false)
         ).subscribe(() => {
           declineNomenclatures.forEach(nomenclature => {
-            this.nomenclatures = this.nomenclatures.filter(product => product.id !== nomenclature.id);
+            this.nomenclatures = [...this.nomenclatures.filter(product => product.id !== nomenclature.id)];
           });
 
           this.selectedNomenclatures = [];
@@ -84,5 +88,9 @@ export class NomenclatureConfirmationComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

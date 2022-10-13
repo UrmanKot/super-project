@@ -1,0 +1,19 @@
+<div class="warehouse-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="warehouses"
+    placeholder="Select Warehouse"
+    [(ngModel)]="selectWarehouseId"
+    (ngModelChange)="onSelectWarehouse()"
+    optionLabel="name"
+    optionValue="id"
+    [showClear]="true"
+  >
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

@@ -1,0 +1,20 @@
+<div class="locator-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="locators"
+    placeholder="Select Locator"
+    optionLabel="name"
+    optionValue="id"
+    [(ngModel)]="selectLocatorId"
+    (ngModelChange)="onSelectLocator()"
+    [showClear]="true"
+    [disabled]="isDisabled"
+  >
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

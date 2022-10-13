@@ -9,5 +9,12 @@ export class Payment {
   payment_amount: string;
   is_paid?: boolean;
   status?: string;
-  filter_status?
+  filter_status?;
+  invoice: {
+    id: number;
+    order: {
+      id: number;
+      accounting_type: number;
+    }
+  }
 }

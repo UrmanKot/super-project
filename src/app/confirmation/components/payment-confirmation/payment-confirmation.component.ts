@@ -1,16 +1,23 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PaymentService} from '../../../reports/services/payment.service';
 import {Payment} from '../../../reports/models/payment';
 import {ServiceInvoicePaymentService} from '../../../reports/services/service-invoice-payment.service';
 import {ServiceInvoicePayment} from '../../../reports/models/service-invoice-payment';
 import {ModalService} from '@shared/services/modal.service';
+import {TreeNode} from 'primeng/api';
+import {finalize, Subject, takeUntil} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {ProductFilesComponent} from '../../../product-structure/modals/product-files/product-files.component';
+import {
+  PaymentConfirmationLimitComponent
+} from '../../modals/payment-confirmation-limit/payment-confirmation-limit.component';
 
 @Component({
   selector: 'pek-payment-confirmation',
   templateUrl: './payment-confirmation.component.html',
   styleUrls: ['./payment-confirmation.component.scss']
 })
-export class PaymentConfirmationComponent implements OnInit {
+export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   paymentTotals = {
     totalPricePayments: 0,
     totalPriceServiceInvoicePayments: 0,
@@ -18,19 +25,29 @@ export class PaymentConfirmationComponent implements OnInit {
     totalAmountServiceInvoicePayments: 0
   };
 
+  isPendingPaymentsDecline = false;
+  isPendingPaymentsConfirm = false;
+
+  isPendingServiceInvoicePaymentsDecline = false;
+  isPendingServiceInvoicePaymentsConfirm = false;
+
   isLoadingPayments = true;
-  isLoadingServiceInvoicePayments = true;
-
-  serviceInvoicePayments: ServiceInvoicePayment[] = [];
   payments: Payment[] = [];
+  paymentTree: TreeNode<Payment | { name: string, id: number }>[] = [];
+  selectedPayments: TreeNode<Payment>[] = [];
 
-  selectedPayments: Payment[] = [];
-  selectedServiceInvoicePayments: ServiceInvoicePayment[] = [];
+  isLoadingServiceInvoicePayments = true;
+  serviceInvoicePayments: ServiceInvoicePayment[] = [];
+  serviceInvoicePaymentsTree: TreeNode<ServiceInvoicePayment | { name: string, id: number }>[] = [];
+  selectedServiceInvoicePayments: TreeNode<ServiceInvoicePayment>[] = [];
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly paymentService: PaymentService,
     private readonly serviceInvoicePaymentService: ServiceInvoicePaymentService,
     private readonly modalService: ModalService,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -40,19 +57,150 @@ export class PaymentConfirmationComponent implements OnInit {
   }
 
   getPayments() {
-    this.paymentService.getConfirmationPayments().subscribe(payments => {
+    this.paymentService.getConfirmationPayments().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(payments => {
       this.payments = payments;
       this.countPaymentsTotals();
+      this.createPaymentsTree();
       this.isLoadingPayments = false;
     });
   }
 
+  createPaymentsTree() {
+    this.paymentTree = [];
+
+    const tree: TreeNode<Payment | { name: string, id: number }>[] = [];
+    const categories: { name: string, id: number }[] = [];
+
+    this.payments.forEach(payment => {
+      if (payment.invoice.order.accounting_type === 1) {
+        const isAdded = categories.findIndex(el => el.id === 1);
+        if (isAdded < 0) {
+          categories.push({name: 'Manufacturing Procurement', id: 1});
+        }
+      }
+      if (payment.invoice.order.accounting_type === 2) {
+        const isAdded = categories.findIndex(el => el.id === 2);
+        if (isAdded < 0) {
+          categories.push({name: 'Outsourcing', id: 2});
+        }
+      }
+    });
+
+    categories.forEach(category => {
+      tree.push({
+        data: category,
+        expanded: true,
+        parent: null,
+        children: []
+      });
+    });
+
+    tree.forEach(node => {
+      this.payments.forEach(payment => {
+        if (payment.invoice.order.accounting_type === node.data.id) {
+          node.children.push({
+            data: payment,
+            expanded: false,
+            children: []
+          });
+        }
+      });
+    });
+
+    this.paymentTree = [...tree];
+  }
+
   getServiceInvoicePayments() {
-    this.serviceInvoicePaymentService.getConfirmationPayments().subscribe(serviceInvoicePayments => {
+    this.serviceInvoicePaymentService.getConfirmationPayments().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(serviceInvoicePayments => {
       this.serviceInvoicePayments = serviceInvoicePayments;
       this.countServiceInvoicePaymentsTotals();
+      this.createServiceInvoicePaymentsTree();
       this.isLoadingServiceInvoicePayments = false;
     });
+  }
+
+  createServiceInvoicePaymentsTree() {
+    this.serviceInvoicePaymentsTree = [];
+
+    const tree: TreeNode<ServiceInvoicePayment | { name: string, id: number }>[] = [];
+    const categories: { name: string, id: number }[] = [];
+    this.serviceInvoicePayments.forEach(payment => {
+      let purchaseCategory = null;
+
+      if (payment.serviceinvoice) {
+        purchaseCategory = payment.serviceinvoice.order.purchase_category;
+      }
+
+      // if (payment.invoice) {
+      //   purchaseCategory = payment.invoice.order.purchase_category;
+      // }
+
+      if (purchaseCategory) {
+        const isAdded = categories.findIndex(el => el.id === purchaseCategory.id);
+        if (isAdded < 0) {
+          categories.push({name: purchaseCategory.name, id: purchaseCategory.id});
+        }
+      } else {
+        const isAdded = categories.findIndex(el => el.id === -2);
+        if (isAdded < 0) {
+          categories.push({name: 'Manufacturing Procurement And Outsourcing Auxiliary Invoices', id: -2});
+        }
+      }
+    });
+
+    categories.forEach(category => {
+      tree.push({
+        data: category,
+        expanded: true,
+        children: [],
+        parent: null
+      });
+    });
+
+    tree.forEach(node => {
+      this.serviceInvoicePayments.forEach(product => {
+        if (product.serviceinvoice) {
+          const purchaseCategory = product.serviceinvoice.order.purchase_category;
+          if (purchaseCategory) {
+            if (purchaseCategory.id === node.data.id) {
+              node.children.push({
+                data: product,
+                expanded: false,
+                children: []
+              });
+            }
+          } else {
+            if (node.data.id === -2) {
+              node.children.push({
+                data: product,
+                expanded: false,
+                children: []
+              });
+            }
+          }
+        }
+
+        // if (product.invoice) {
+        //   const purchaseCategory = product.invoice.order.purchase_category;
+        //
+        //   if (purchaseCategory) {
+        //     if (purchaseCategory.id === node.data.id) {
+        //       node.children.push({
+        //         data: product,
+        //         expanded: false,
+        //         children: []
+        //       });
+        //     }
+        //   }
+        // }
+      });
+    });
+
+    this.serviceInvoicePaymentsTree = [...tree];
   }
 
   countPaymentsTotals() {
@@ -75,59 +223,86 @@ export class PaymentConfirmationComponent implements OnInit {
     });
   }
 
-  confirmPayments() {
+  onConfirmPayments() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        const ids = this.selectedPayments.map(payment => payment.id);
-        this.paymentService.severalConfirm(ids).subscribe(() => {
-          ids.forEach(id => this.payments = this.payments.filter(p => p.id !== id));
+        this.isPendingPaymentsConfirm = true;
+        const ids = this.selectedPayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
+        this.paymentService.severalConfirm(ids).pipe(
+          finalize(() => this.isPendingPaymentsConfirm = false)
+        ).subscribe(() => {
+          ids.forEach(id => this.payments = [...this.payments.filter(p => p.id !== id)]);
           this.countPaymentsTotals();
+          this.createPaymentsTree();
           this.selectedPayments = [];
-        })
+        });
       }
     });
   }
 
-  declinePayments() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+  onDeclinePayments() {
+    this.modalService.confirm('danger', 'Decline').subscribe(confirm => {
       if (confirm) {
-        const ids = this.selectedPayments.map(payment => payment.id);
-        this.paymentService.severalDecline(ids).subscribe(() => {
-          ids.forEach(id => this.payments = this.payments.filter(p => p.id !== id));
+        this.isPendingPaymentsDecline = true;
+        const ids = this.selectedPayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
+        this.paymentService.severalDecline(ids).pipe(
+          finalize(() => this.isPendingPaymentsDecline = false)
+        ).subscribe(() => {
+          ids.forEach(id => this.payments = [...this.payments.filter(p => p.id !== id)]);
           this.countPaymentsTotals();
+          this.createPaymentsTree();
           this.selectedPayments = [];
-        })
+        });
       }
     });
   }
 
-  confirmServiceInvoicePayments() {
+  onConfirmServiceInvoicePayments() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        const ids = this.selectedServiceInvoicePayments.map(payment => payment.id);
-        this.serviceInvoicePaymentService.severalConfirm(ids).subscribe(() => {
-          ids.forEach(id => this.serviceInvoicePayments = this.serviceInvoicePayments.filter(p => p.id !== id));
+        this.isPendingServiceInvoicePaymentsConfirm = true;
+        const ids = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
+        this.serviceInvoicePaymentService.severalConfirm(ids).pipe(
+          finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
+        ).subscribe(() => {
+          ids.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
           this.countServiceInvoicePaymentsTotals();
+          this.createServiceInvoicePaymentsTree();
           this.selectedServiceInvoicePayments = [];
-        })
+        });
       }
     });
   }
 
-  declineServiceInvoicePayments() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+  onDeclineServiceInvoicePayments() {
+    this.modalService.confirm('danger', 'Decline').subscribe(confirm => {
       if (confirm) {
-        const ids = this.selectedServiceInvoicePayments.map(payment => payment.id);
-        this.serviceInvoicePaymentService.severalDecline(ids).subscribe(() => {
-          ids.forEach(id => this.serviceInvoicePayments = this.serviceInvoicePayments.filter(p => p.id !== id));
+        this.isPendingServiceInvoicePaymentsDecline = true;
+        const ids = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
+        this.serviceInvoicePaymentService.severalDecline(ids).pipe(
+          finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
+        ).subscribe(() => {
+          ids.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
           this.countServiceInvoicePaymentsTotals();
+          this.createServiceInvoicePaymentsTree();
           this.selectedServiceInvoicePayments = [];
-        })
+        });
       }
     });
   }
 
   onEditConfirmationLimit() {
-    // TODO доделать
+    return this.dialog
+      .open<PaymentConfirmationLimitComponent>(PaymentConfirmationLimitComponent, {
+        width: '30rem',
+        height: 'auto',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

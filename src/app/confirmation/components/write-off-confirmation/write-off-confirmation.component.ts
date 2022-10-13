@@ -1,23 +1,25 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 import {ModalService} from '@shared/services/modal.service';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureApproval, Nomenclature} from '@shared/models/nomenclature';
-import {finalize} from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-write-off-confirmation',
   templateUrl: './write-off-confirmation.component.html',
   styleUrls: ['./write-off-confirmation.component.scss']
 })
-export class WriteOffConfirmationComponent implements OnInit {
+export class WriteOffConfirmationComponent implements OnInit, OnDestroy {
   warehouseProducts: WarehouseProduct[] = [];
   selectedWarehouseProducts: WarehouseProduct[] = [];
   isLoading = true;
 
   isPendingConfirm: boolean = false;
   isPendingDecline: boolean = false;
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly warehouseProductService: WarehouseProductService,
@@ -31,7 +33,9 @@ export class WriteOffConfirmationComponent implements OnInit {
   }
 
   getProducts() {
-    this.warehouseProductService.get([{name: 'to_write_off', value: true}]).subscribe(warehouseProducts => {
+    this.warehouseProductService.get([{name: 'to_write_off', value: true}]).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(warehouseProducts => {
       this.warehouseProducts = warehouseProducts;
       this.isLoading = false;
     });
@@ -54,7 +58,7 @@ export class WriteOffConfirmationComponent implements OnInit {
           finalize(() => this.isPendingDecline = false)
         ).subscribe(() => {
           declineNomenclatures.forEach(nomenclature => {
-            this.warehouseProducts = this.warehouseProducts.filter(product => product.id !== nomenclature.id);
+            this.warehouseProducts = [...this.warehouseProducts.filter(product => product.id !== nomenclature.id)];
           });
 
           this.selectedWarehouseProducts = [];
@@ -74,10 +78,14 @@ export class WriteOffConfirmationComponent implements OnInit {
         this.warehouseProductService.severalWriteOff(ids).pipe(
           finalize(() => this.isPendingConfirm = false)
         ).subscribe(() => {
-          ids.forEach(id => this.warehouseProducts = this.warehouseProducts.filter(product => product.id !== id));
+          ids.forEach(id => this.warehouseProducts = [...this.warehouseProducts.filter(product => product.id !== id)]);
           this.selectedWarehouseProducts = [];
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

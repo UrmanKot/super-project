@@ -1,0 +1,12 @@
+<div class="nomenclature-type-picker">
+  <p-dropdown
+    [options]="nomenclatureTypes"
+    optionLabel="label"
+    optionValue="value"
+    placeholder="Select Type"
+    [disabled]="isDisabled"
+    [showClear]="true"
+    (ngModelChange)="onSelectNomenclatureType()"
+    [(ngModel)]="selectNomenclatureType"
+  ></p-dropdown>
+</div>

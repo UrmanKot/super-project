@@ -1,0 +1,154 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>Warehouse Items</h1>
+    </div>
+    <div class="page-header__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Item" (click)="onAddItem()"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 21rem)"
+        [scrollable]="true"
+        [paginator]="products.length > 0"
+        [rows]="10"
+        [(selection)]="selectedProduct"
+        [value]="products"
+      >
+        <ng-template pTemplate="caption">
+          <!--          <div class="d-flex">-->
+          <!--            <p class="subtitle" *ngIf="!selectedProduct">Choose the Warehouse Item to edit</p>-->
+          <!--            &lt;!&ndash;            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedTechnology"></p-menubar>&ndash;&gt;-->
+          <!--          </div>-->
+
+          <form [formGroup]="searchForm">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input class="form-control" pInputText #searchBoxName>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Code</label>
+                  <input class="form-control" pInputText #searchBoxCode>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Description</label>
+                  <input class="form-control" pInputText #searchBoxDescription>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Warehouses</label>
+                      <pek-warehouse-picker (selectWarehouse)="selectWarehouse($event)"></pek-warehouse-picker>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Locator</label>
+                      <pek-locator-picker
+                        [warehouseId]="searchForm.get('warehouse').value"
+                        [isAllLocators]="false"
+                        [isDisabled]="true"
+                      ></pek-locator-picker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Type</label>
+                      <pek-nomenclature-type-picker></pek-nomenclature-type-picker>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Locator</label>
+                      <pek-locator-picker
+                        [warehouseId]="searchForm.get('warehouse').value"
+                        [isAllLocators]="false"
+                        [isDisabled]="true"
+                      ></pek-locator-picker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Category</label>
+                  <pek-product-category-picker></pek-product-category-picker>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="index-header text-center" style="width: 5%">#</th>
+            <th style="width: 30%">Name</th>
+            <th style="width: 50%">Description</th>
+            <th class="text-center" style="width: 15%">Type</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-technology let-i="rowIndex">
+          <tr [pSelectableRow]="technology">
+            <td class="text-center" style="width: 5%">{{i + 1}}</td>
+            <td style="width: 30%">{{technology.name}}</td>
+            <td style="width: 50%">{{technology.description}}</td>
+            <td class="text-center" style="width: 15%">
+              <ng-container [ngSwitch]="technology.service_or_material">
+                <span *ngSwitchCase="'0'">
+                  Service
+                </span>
+                <span *ngSwitchCase="'1'">
+                  Material
+                </span>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="4">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && products.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

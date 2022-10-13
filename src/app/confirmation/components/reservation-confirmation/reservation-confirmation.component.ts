@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
 import {ModalService} from '@shared/services/modal.service';
 import {ENomenclatureBulk} from '@shared/models/nomenclature';
-import {finalize} from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-reservation-confirmation',
   templateUrl: './reservation-confirmation.component.html',
   styleUrls: ['./reservation-confirmation.component.scss']
 })
-export class ReservationConfirmationComponent implements OnInit {
+export class ReservationConfirmationComponent implements OnInit, OnDestroy {
   nomenclatureBulk = ENomenclatureBulk;
 
   isLoading = true;
@@ -19,6 +19,8 @@ export class ReservationConfirmationComponent implements OnInit {
 
   isPendingDecline = false;
   isPendingConfirm = false;
+
+  private destroy$ = new Subject();
 
   constructor(
     private readonly warehouseProductsService: WarehouseProductService,
@@ -31,7 +33,9 @@ export class ReservationConfirmationComponent implements OnInit {
   }
 
   getProducts() {
-    this.warehouseProductsService.getReservations().subscribe(products => {
+    this.warehouseProductsService.getReservations().pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(products => {
       this.products = products;
       this.isLoading = false;
     });
@@ -49,7 +53,7 @@ export class ReservationConfirmationComponent implements OnInit {
         this.warehouseProductsService.severalUpdateReservations(ids, send).pipe(
           finalize(() => this.isPendingDecline = false)
         ).subscribe(() => {
-          ids.forEach(id => this.products = this.products.filter(product => product.id !== id));
+          ids.forEach(id => this.products = [...this.products.filter(product => product.id !== id)]);
           this.selectedProducts = [];
         });
       }
@@ -68,10 +72,14 @@ export class ReservationConfirmationComponent implements OnInit {
         this.warehouseProductsService.severalUpdateReservations(ids, send).pipe(
           finalize(() => this.isPendingConfirm = false)
         ).subscribe(() => {
-          ids.forEach(id => this.products = this.products.filter(product => product.id !== id));
+          ids.forEach(id => this.products = [...this.products.filter(product => product.id !== id)]);
           this.selectedProducts = [];
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }
