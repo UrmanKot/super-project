@@ -13,116 +13,12 @@
 </div>
 
 <mat-dialog-content>
-  <form [formGroup]="form">
-    <div class="edit-product">
-      <div class="edit-product__left" *ngIf="product.nomenclature.type !== nomenclatureType.PURCHASED">
-        <div class="form-group edit-product__technology-picker">
-          <label>Technologies</label>
-          <pek-multi-technology-picker
-            (selectTechnology)="selectTechnology($event)"
-            [currentTechnologiesIds]="selectedTechnologiesIds"
-          >
-          </pek-multi-technology-picker>
-        </div>
-        <div class="form-group">
-          <label>Order of Technologies</label>
-          <div
-            class="edit-product__list"
-            cdkDropList
-            (cdkDropListDropped)="drop($event)"
-          >
-            <div
-              class="edit-product__technology"
-              *ngFor="let technology of selectedTechnologies"
-              cdkDrag
-            >
-              <div class="edit-product__placeholder" *cdkDragPlaceholder></div>
-              {{technology.name}}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="edit-product__right">
-        <div class="edit-product__column">
-          <div class="edit-product__image">
-            <pek-images-slider
-              [width]="'15.75rem'"
-              [height]="'15.75rem'"
-              [images]="product.nomenclature.images"
-              (removeImage)="removeImage($event)"
-              (choiceImages)="uploadImages($event)"
-            ></pek-images-slider>
-          </div>
-          <div class="edit-product__fields">
-            <div class="form-group">
-              <label>Type</label>
-<!--              <p-dropdown-->
-<!--                id="type"-->
-<!--                [options]="nomenclatureTypes"-->
-<!--                formControlName="type"-->
-<!--                optionLabel="label"-->
-<!--                optionValue="value"-->
-<!--              ></p-dropdown>-->
-              <pek-nomenclature-type-picker
-                [isDisabled]="true"
-                [currentNomenclatureType]="form.get('type').value"
-              ></pek-nomenclature-type-picker>
-            </div>
-            <div class="form-group" *ngIf="form.get('type').value !== nomenclatureType.PURCHASED">
-              <label for="code">Code*</label>
-              <input type="text" id="code" pInputText formControlName="code">
-            </div>
-            <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-              <label>Id</label>
-              <input type="text" pInputText formControlName="codeId">
-            </div>
-            <div class="form-group">
-              <label for="name">Name*</label>
-              <input type="text" id="name" pInputText formControlName="name">
-            </div>
-          </div>
-        </div>
-        <div class="product-add__box">
-          <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-            <label>Category</label>
-            <pek-product-category-picker
-              (choiceCategory)="onSelectCategory($event)"
-              [currentCategoryId]="this.form.get('category').value"
-            >
-            </pek-product-category-picker>
-          </div>
-          <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-            <label for="bulk">Bulk / With Serial Numbers*</label>
-            <p-dropdown
-              id="bulk"
-              [options]="bulkOrSerial"
-              formControlName="bulk_or_serial"
-              optionLabel="label"
-              optionValue="value"
-            ></p-dropdown>
-          </div>
-          <div class="form-group" *ngIf="form.get('type').value !== nomenclatureType.PURCHASED">
-            <label for="id">Id</label>
-            <input type="text" id="id" pInputText formControlName="codeId">
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea
-              id="description"
-              [rows]="2"
-              pInputTextarea
-              [autoResize]="false"
-              formControlName="description"
-            ></textarea>
-          </div>
-          <div class="form-group" *ngIf="product.parent">
-            <label for="quantity">Quantity*</label>
-            <input type="number" min="1" step="1" id="quantity" pInputText formControlName="quantity">
-          </div>
-        </div>
-      </div>
-    </div>
-  </form>
+  <pek-create-edit-product-form
+    [product]="product"
+    (formChange)="onChangeFormValue($event)"
+    (uploadImage)="onUploadImage($event)"
+    (removeImage)="onRemoveImage($event)"
+  ></pek-create-edit-product-form>
 </mat-dialog-content>
 
 <mat-dialog-actions class="justify-content-between">
@@ -138,7 +34,7 @@
     type="button"
     label="Edit"
     class="p-button-success"
-    [disabled]="form.invalid"
+    [disabled]="isFormInvalid"
     [loading]="isSaving"
     (click)="onUpdateProduct()"
   ></button>

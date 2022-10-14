@@ -27,6 +27,7 @@ export class Nomenclature {
 export class NomenclatureImage {
   readonly id: number;
   image: string | ArrayBuffer;
+  file?: File;
 }
 
 export class Nomenclatures {

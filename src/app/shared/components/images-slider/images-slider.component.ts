@@ -79,7 +79,7 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
   onRemoveImage() {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
-        this.removeImage.emit(this.images[this.activeSlideIndex - 1].id);
+        this.removeImage.emit(this.activeSlideIndex - 1);
         if (this.activeSlideIndex !== 1) {
           this.onSlidePrev();
           this.inputFile.nativeElement.value = '';

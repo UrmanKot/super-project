@@ -23,7 +23,6 @@ export class NomenclatureTypePickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.currentNomenclatureType);
     this.setCurrentNomenclatureType();
   }
 
@@ -31,8 +30,6 @@ export class NomenclatureTypePickerComponent implements OnInit {
     if (this.currentNomenclatureType !== null) {
       this.selectNomenclatureType = this.currentNomenclatureType;
     }
-
-    console.log(this.selectNomenclatureType);
   }
 
   onSelectNomenclatureType() {

@@ -373,7 +373,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
         this.productService.delete(this.selectedProduct.data.id).subscribe(() => {
           const removeChildren = (id: number) => {
             const ids: number[] = this.products.filter(p => p.parent === id).map(p => p.id);
-            this.products = this.products.filter(p => p.parent !== id);
+            this.products = [...this.products.filter(p => p.parent !== id)];
 
             ids.forEach(id => {
               removeChildren(id);
@@ -384,12 +384,14 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
 
           const index = this.products.findIndex(p => p.id === this.selectedProduct.data.id);
 
-          if (!this.products[index].parent) {
-            this.router.navigate(['../../'], {relativeTo: this.route});
-          } else {
-            this.products.splice(index, 1);
-            this.selectedProduct = null;
-            this.createTree();
+          if (index >= 0) {
+            if (!this.products[index].parent) {
+              this.router.navigate(['../../'], {relativeTo: this.route});
+            } else {
+              this.products.splice(index, 1);
+              this.selectedProduct = null;
+              this.createTree();
+            }
           }
         });
       }
@@ -400,7 +402,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
     this.productService.addProductModal(this.selectedProduct.data.id).subscribe(products => {
       if (products) {
         this.products = [...this.products, ...products];
-        console.log(this.products);
+        // console.log(this.products);
         // this.productsTree = [];
         this.createTree();
       }

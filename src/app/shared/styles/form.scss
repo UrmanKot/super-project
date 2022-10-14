@@ -55,6 +55,12 @@
   width: 100%;
   border-radius: 0.625rem;
 
+  .p-dropdown-item {
+    &.p-highlight {
+      color: var(--theme-color-primary) !important;
+    }
+  }
+
   &:not(.p-disabled) {
     &:hover {
       border-color: var(--theme-color-primary);

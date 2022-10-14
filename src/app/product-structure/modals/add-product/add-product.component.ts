@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ENomenclatureApproval, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
+import {ENomenclatureApproval, ENomenclatureType, Nomenclature, NomenclatureImage} from '@shared/models/nomenclature';
 import {ProductService} from '../../services/product.service';
 import {finalize, fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -11,6 +11,7 @@ import {debounceTime, map, tap} from 'rxjs/operators';
 import {ProductCategory} from '../../models/product-category';
 import {AdapterService} from '@shared/services/adapter.service';
 import {Table} from 'primeng/table';
+import {Product} from '../../models/product';
 
 @Component({
   selector: 'pek-add-product',
@@ -22,6 +23,9 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchBoxName') searchBoxName;
   @ViewChild('searchBoxCode') searchBoxCode;
   @ViewChild('dt') table: Table;
+
+  isCreateFormInvalid: boolean = true;
+  createFormValue: Partial<Nomenclature & Product>;
 
   mode: 'add' | 'create' = 'add';
 
@@ -51,7 +55,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sendForm: FormGroup = this.fb.group({
     quantity: [1, [Validators.min(1), Validators.required]],
-  })
+  });
 
   query: QuerySearch[] = [
     {name: 'page', value: this.searchForm.get('page').value},
@@ -59,6 +63,16 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   queryKey = 'name:/code:/category:';
+
+  newProduct: Partial<Product> = {
+    nomenclature: {
+      id: null,
+      category: null,
+      technologies: [],
+      images: [],
+      type: null,
+    }
+  };
 
   private destroy$ = new Subject();
 
@@ -82,8 +96,8 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
         map(() => this.searchBoxName.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
-      this.searchNomenclatures();
-    });
+        this.searchNomenclatures();
+      });
 
     this.inputCodeSub = fromEvent(this.searchBoxCode.nativeElement, 'keyup')
       .pipe(
@@ -91,8 +105,8 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
         map(() => this.searchBoxCode.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
-      this.searchNomenclatures();
-    });
+        this.searchNomenclatures();
+      });
   }
 
   getNomenclatures() {
@@ -118,6 +132,8 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
       name: 'type',
       value: this.searchForm.get('type').value
     });
+
+    this.newProduct.nomenclature.type = type;
 
     this.isSelectNomenclature = true;
     this.isLoading = true;
@@ -198,16 +214,118 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sendForm.get('quantity').patchValue(1);
   }
 
-  openLink(description: string) {
+  onOpenLink(description: string) {
     window.open(description, '_blank');
     this.selectedNomenclature = null;
     this.table.expandedRowKeys = {};
     this.resetSendForm();
   }
 
+  onChangeMode(mode: 'add' | 'create') {
+    this.mode = mode;
+
+    if (this.searchForm.get('type').value === ENomenclatureType.PURCHASED) {
+      this.dialogRef.updateSize('50rem', 'auto');
+    } else {
+      this.dialogRef.updateSize('60rem', 'auto');
+    }
+
+    this.dialogRef.removePanelClass('modal-picker');
+    this.dialogRef.addPanelClass('modal-edit-product');
+  }
+
+  onChangeFormValue(data: { invalid: boolean, formValue: Partial<Product & Nomenclature> }) {
+    this.createFormValue = data.formValue;
+    this.isCreateFormInvalid = data.invalid;
+  }
+
+  onCreateProduct() {
+    if (!this.isCreateFormInvalid) {
+      this.isSaving = true;
+
+      const send: Partial<Nomenclature> = {
+        name: this.createFormValue.name,
+        code: this.createFormValue.code,
+        description: this.createFormValue.description,
+        type: this.createFormValue.type,
+      };
+
+      if (this.createFormValue.type === ENomenclatureType.PURCHASED) {
+        send.category = this.createFormValue.category;
+        send.bulk_or_serial = this.createFormValue.bulk_or_serial;
+      } else {
+        send.technologies = [...this.createFormValue.technologies];
+        send.category = null;
+      }
+
+      this.nomenclatureService.create(send).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(nomenclature => {
+        this.isSaving = true;
+
+        const send = [];
+
+        if (this.newProduct.nomenclature.images.length > 0) {
+          this.newProduct.nomenclature.images.forEach(file => {
+            send.push({
+              nomenclature: nomenclature.id,
+              image: file.file,
+            });
+          });
+        }
+
+        this.nomenclatureService.uploadImagesSeveral(send).pipe(
+          finalize(() => this.isSaving = false)
+        ).subscribe(images => {
+          this.isSaving = true;
+          this.addProduct(nomenclature.id, this.createFormValue.quantity, images);
+        });
+      });
+    }
+  }
+
+  addProduct(id: number, quantity: number, images: NomenclatureImage[]) {
+    const send: Partial<Product> = {
+      // @ts-ignore
+      nomenclature: id,
+      parent: this.parentId,
+      quantity,
+    };
+    this.productService.addProduct(send).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(products => {
+      products[0].nomenclature.images = [...images];
+      this.dialogRef.close(products);
+    });
+  }
+
   ngOnDestroy() {
     this.inputNameSub.unsubscribe();
     this.inputCodeSub.unsubscribe();
     this.destroy$.next(true);
+  }
+
+  onRemoveImage(idx: number) {
+    this.newProduct.nomenclature.images.splice(idx, 1);
+  }
+
+  onUploadImage(files: File[]) {
+    files.forEach(file => {
+      const fileReader = new FileReader();
+
+      fileReader.onload = (fileLoadedEvent) => {
+        const srcData = fileLoadedEvent.target.result;
+
+        const newImage: NomenclatureImage = {
+          file,
+          image: srcData,
+          id: null
+        };
+
+        this.newProduct.nomenclature.images.push(newImage);
+      };
+
+      fileReader.readAsDataURL(file);
+    });
   }
 }

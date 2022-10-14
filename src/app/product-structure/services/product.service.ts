@@ -46,12 +46,6 @@ export class ProductService {
     );
   }
 
-  create(product: Partial<Product>): Observable<Product[]> {
-    return this.httpClient.post<{ data: Product[] }>(this.API_URL + this.url, product).pipe(
-      map(response => response.data)
-    );
-  }
-
   updatePartly(product: Partial<Product>) {
     return this.httpClient.patch<{ data: Product }>(this.API_URL + this.url + product.id + '/', product).pipe(
       map(response => response.data)

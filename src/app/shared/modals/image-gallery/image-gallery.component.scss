@@ -13,6 +13,7 @@ $slider-height: 600px;
   border-radius: 4px;
   width: $slider-width;
   position: relative;
+  max-height: 90vh;
 
   &__btn {
     position: absolute;
@@ -44,12 +45,14 @@ $slider-height: 600px;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
+    max-height: 90vh;
   }
 
   &__inner {
     border-radius: 0.25rem;
     transition: 0.75s all ease;
     display: flex;
+    max-height: 90vh;
   }
 
   &__slide {
@@ -58,6 +61,7 @@ $slider-height: 600px;
     width: 100%;
     display: flex;
     align-items: center;
+    max-height: 90vh;
 
     img {
       width: $slider-width;
