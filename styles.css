@@ -12784,6 +12784,9 @@ body::-webkit-scrollbar {
   width: 100%;
   border-radius: 0.625rem;
 }
+.p-dropdown .p-dropdown-item.p-highlight {
+  color: var(--theme-color-primary) !important;
+}
 .p-dropdown:not(.p-disabled):hover {
   border-color: var(--theme-color-primary);
 }
@@ -13207,6 +13210,13 @@ textarea::-webkit-scrollbar {
 .modal-picker .mat-dialog-content {
   max-height: 56vh !important;
 }
+.modal-edit-product mat-dialog-content {
+  overflow: initial !important;
+  max-height: 70vh !important;
+}
+.modal-edit-product .mat-dialog-container {
+  overflow: initial !important;
+}
 .ml-auto {
   margin-left: auto !important;
 }
@@ -13247,6 +13257,8 @@ textarea::-webkit-scrollbar {
   color: #dc3545 !important;
 }
 .badge {
+  position: relative;
+  top: -1px;
   border-radius: 0.25rem;
   padding: 0.25em 0.5rem;
   text-transform: uppercase;
