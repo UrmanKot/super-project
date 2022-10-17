@@ -272,22 +272,43 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
       if (confirm) {
         this.isPendingServiceInvoicePaymentsConfirm = true;
 
+
         const serviceInvoicePaymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.serviceinvoice).map(payment => payment.data.id);
         // @ts-ignore
         const paymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
 
-        forkJoin({
-          serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalConfirm(serviceInvoicePaymentIds),
-          paymentsIds: this.paymentService.severalConfirm(paymentIds)
-        }).pipe(
-          finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
-        ).subscribe(() => {
-          serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
-          paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
-          this.countServiceInvoicePaymentsTotals();
-          this.createServiceInvoicePaymentsTree();
-          this.selectedServiceInvoicePayments = [];
-        });
+        if (paymentIds.length > 0 && serviceInvoicePaymentIds.length > 0) {
+          forkJoin({
+            serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalConfirm(serviceInvoicePaymentIds),
+            paymentsIds: this.paymentService.severalConfirm(paymentIds)
+          }).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
+          ).subscribe(() => {
+            serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        } else if (serviceInvoicePaymentIds.length > 0 && paymentIds.length === 0) {
+          this.serviceInvoicePaymentService.severalConfirm(serviceInvoicePaymentIds).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
+          ).subscribe(() => {
+            serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        } else if (paymentIds.length > 0 && serviceInvoicePaymentIds.length === 0) {
+          this.paymentService.severalConfirm(paymentIds).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsConfirm = false)
+          ).subscribe(() => {
+            paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        }
       }
     });
   }
@@ -301,18 +322,38 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
         // @ts-ignore
         const paymentIds = this.selectedServiceInvoicePayments.filter(payment => payment.data.invoice).map(payment => payment.data.id);
 
-        forkJoin({
-          serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalDecline(serviceInvoicePaymentIds),
-          paymentsIds: this.paymentService.severalDecline(paymentIds)
-        }).pipe(
-          finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
-        ).subscribe(() => {
-          serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
-          paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
-          this.countServiceInvoicePaymentsTotals();
-          this.createServiceInvoicePaymentsTree();
-          this.selectedServiceInvoicePayments = [];
-        });
+        if (serviceInvoicePaymentIds.length > 0 && paymentIds.length > 0) {
+          forkJoin({
+            serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalDecline(serviceInvoicePaymentIds),
+            paymentsIds: this.serviceInvoicePaymentService.severalDecline(paymentIds)
+          }).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
+          ).subscribe(() => {
+            serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        } else if (serviceInvoicePaymentIds.length > 0 && paymentIds.length === 0) {
+          this.serviceInvoicePaymentService.severalDecline(serviceInvoicePaymentIds).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
+          ).subscribe(() => {
+            serviceInvoicePaymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        } else if (paymentIds.length > 0 && serviceInvoicePaymentIds.length === 0) {
+          this.paymentService.severalDecline(paymentIds).pipe(
+            finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
+          ).subscribe(() => {
+            paymentIds.forEach(id => this.serviceInvoicePayments = [...this.serviceInvoicePayments.filter(p => p.id !== id)]);
+            this.countServiceInvoicePaymentsTotals();
+            this.createServiceInvoicePaymentsTree();
+            this.selectedServiceInvoicePayments = [];
+          });
+        }
       }
     });
   }
@@ -326,6 +367,44 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  // TODO пофиксить
+
+  onGoToPaymentInvoice(payment: Payment) {
+    window.open(`${this.link}accounting/invoices/products/` + payment.invoice.id);
+  }
+
+  onGoToPaymentServiceInvoice(payment: Payment) {
+    window.open(`${this.link}accounting/invoices/service-invoice/` + payment.invoice.id);
+  }
+
+  onGoToServicePaymentInvoice(servicePayment: ServiceInvoicePayment) {
+    window.open(`${this.link}accounting/invoices/service-invoice/` +  servicePayment.serviceinvoice.id);
+  }
+
+  onGoToPaymentOrder(payment: Payment) {
+    let link = '';
+
+    if (payment.invoice.order.accounting_type === 1) {
+      link = `${this.link}procurement/orders/products/` + payment.invoice.order.id;
+    } else if (payment.invoice.order.accounting_type === 2) {
+      link = `${this.link}outsource/outsource-chain/products/` + payment.invoice.order.id;
+    }
+
+    window.open(link);
+  }
+
+  onGoToServiceOrder(servicePayment: ServiceInvoicePayment) {
+    let link = '';
+
+    if (servicePayment.serviceinvoice.order.accounting_type === 1) {
+      link = `${this.link}procurement/orders/products/` + servicePayment.serviceinvoice.order.id;
+    } else if (servicePayment.serviceinvoice.order.accounting_type === 2) {
+      link = `${this.link}outsource/outsource-chain/products/` + servicePayment.serviceinvoice.order.id;
+    }
+
+    window.open(link);
   }
 
   ngOnDestroy() {

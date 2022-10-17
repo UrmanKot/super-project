@@ -102,9 +102,15 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.invoice">
+<!--                    <a-->
+<!--                      [routerLink]="['/external', link + 'accounting/invoices/products/' + payment.invoice.id]"-->
+<!--                      target="_blank"-->
+<!--                    >-->
+<!--                      {{payment.invoice.self_serial_number}}-->
+<!--                    </a>-->
+
                     <a
-                      [routerLink]="['/external', link + 'accounting/invoices/products/' + payment.invoice.id]"
-                      target="_blank"
+                      (click)="onGoToPaymentInvoice(payment)"
                     >
                       {{payment.invoice.self_serial_number}}
                     </a>
@@ -137,19 +143,25 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.invoice">
+<!--                    <a-->
+<!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.invoice.order.id}}-->
+<!--                    </a>-->
+<!--                    <a-->
+<!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.invoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.invoice.order.id}}-->
+<!--                    </a>-->
+
                     <a
-                      *ngIf="payment.invoice.order.accounting_type == 1"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"
-                    >
-                      {{payment.invoice.order.id}}
-                    </a>
-                    <a
-                      *ngIf="payment.invoice.order.accounting_type == 2"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.invoice.order.id]"
+                      (click)="onGoToPaymentOrder(payment)"
                     >
                       {{payment.invoice.order.id}}
                     </a>
@@ -254,18 +266,32 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.serviceinvoice || payment.invoice">
+<!--                    <a-->
+<!--                      *ngIf="payment.serviceinvoice"-->
+<!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.serviceinvoice.id]"-->
+<!--                      target="_blank"-->
+<!--                    >-->
+<!--                      {{payment.serviceinvoice.self_serial_number}}-->
+<!--                    </a>-->
+
+<!--                    <a-->
+<!--                      *ngIf="payment.invoice"-->
+<!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.invoice.id]"-->
+<!--                      target="_blank"-->
+<!--                    >-->
+<!--                      {{payment.invoice.self_serial_number}}-->
+<!--                    </a>-->
+
                     <a
                       *ngIf="payment.serviceinvoice"
-                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.serviceinvoice.id]"
-                      target="_blank"
+                      (click)="onGoToServicePaymentInvoice(payment)"
                     >
                       {{payment.serviceinvoice.self_serial_number}}
                     </a>
 
                     <a
                       *ngIf="payment.invoice"
-                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.invoice.id]"
-                      target="_blank"
+                      (click)="onGoToPaymentServiceInvoice(payment)"
                     >
                       {{payment.invoice.self_serial_number}}
                     </a>
@@ -315,38 +341,50 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.serviceinvoice">
+<!--                    <a-->
+<!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 1"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.serviceinvoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.serviceinvoice.order.id}}-->
+<!--                    </a>-->
+<!--                    <a-->
+<!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 2"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.serviceinvoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.serviceinvoice.order.id}}-->
+<!--                    </a>-->
+
                     <a
-                      *ngIf="payment.serviceinvoice.order.accounting_type == 1"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.serviceinvoice.order.id]"
-                    >
-                      {{payment.serviceinvoice.order.id}}
-                    </a>
-                    <a
-                      *ngIf="payment.serviceinvoice.order.accounting_type == 2"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.serviceinvoice.order.id]"
+                      (click)="onGoToServiceOrder(payment)"
                     >
                       {{payment.serviceinvoice.order.id}}
                     </a>
                   </ng-container>
 
                   <ng-container *ngIf="payment.invoice">
+<!--                    <a-->
+<!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.invoice.order.id}}-->
+<!--                    </a>-->
+<!--                    <a-->
+<!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
+<!--                      rel="noopener noreferrer"-->
+<!--                      target="_blank"-->
+<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' +  payment.invoice.order.id]"-->
+<!--                    >-->
+<!--                      {{payment.invoice.order.id}}-->
+<!--                    </a>-->
+
                     <a
-                      *ngIf="payment.invoice.order.accounting_type == 1"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"
-                    >
-                      {{payment.invoice.order.id}}
-                    </a>
-                    <a
-                      *ngIf="payment.invoice.order.accounting_type == 2"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' +  payment.invoice.order.id]"
+                      (click)="onGoToPaymentOrder(payment)"
                     >
                       {{payment.invoice.order.id}}
                     </a>

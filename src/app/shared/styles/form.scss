@@ -352,3 +352,42 @@ textarea {
 .p-treeselect-panel {
   top: 2.5rem !important;
 }
+
+.p-tree {
+  padding: 0.75rem !important;
+
+  .p-tree-container {
+    .p-treenode {
+      .p-treenode-content {
+        padding: 0.25rem;
+        font-size: 0.9375rem;
+
+        .p-tree-toggler {
+          width: 1.75rem;
+          height: 1.75rem;
+          position: relative;
+
+          &:focus {
+            box-shadow: none !important;
+          }
+
+          .p-tree-toggler-icon {
+            font-size: 0.9375rem !important;
+          }
+        }
+
+        &:focus {
+          box-shadow: none !important;
+        }
+
+        &.p-highlight {
+          color: var(--theme-color-primary);
+
+          .p-tree-toggler {
+            color: var(--theme-color-primary);
+          }
+        }
+      }
+    }
+  }
+}
