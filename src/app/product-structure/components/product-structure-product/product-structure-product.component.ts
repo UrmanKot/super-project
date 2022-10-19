@@ -5,7 +5,7 @@ import {ProductService} from '../../services/product.service';
 import {FormBuilder} from '@angular/forms';
 import {Product} from '../../models/product';
 import {Table} from 'primeng/table';
-import {fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
+import {finalize, fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash-es';
 import {MatDialog} from '@angular/material/dialog';
@@ -27,6 +27,9 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
   productsTree: TreeNode<Product>[];
   selectedProduct: TreeNode<Product> = null;
   products: Product[];
+
+  isMovingUp = false;
+  isMovingDown = false;
 
   menuItems: MenuItem[] = [
     {
@@ -247,14 +250,18 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
       }
     });
 
-    if (index < node.parent.children.length - 1) {
+    if (index < node.parent.children.length - 1 && !this.isMovingDown) {
+      this.isMovingDown = true;
       const move = {
-        child: node.data.id,
         parent: node.parent.children[index + 1].data.id,
         move_to: 'right'
       };
-      // TODO СДЕЛАТЬ ЧТОБЫ ЗАНОВО НЕ ОТОБРАЖАТЬ СТРУКТУРУ И ВЫВЕСТИ УВЕДОМЛЕНИЕ ИЛИ ЗАБЛОЧИТЬ КНОПКУ
-      this.productService.move(move).subscribe(() => this.getProducts());
+      this.productService.move(move, node.data.id).pipe(
+        finalize(() => this.isMovingDown = false)
+      ).subscribe(product => {
+
+        this.productMoved(product, 'down');
+      });
     }
   }
 
@@ -268,14 +275,60 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
       }
     });
 
-    if (index > 0) {
+    if (index > 0 && !this.isMovingUp) {
+      this.isMovingUp = true;
       const move = {
-        child: node.data.id,
         parent: node.parent.children[index - 1].data.id,
         move_to: 'left'
       };
-      this.productService.move(move).subscribe(() => this.getProducts());
+      this.productService.move(move, node.data.id).pipe(
+        finalize(() => this.isMovingUp = false)
+      ).subscribe(product => {
+        this.productMoved(product, 'up');
+      });
     }
+  }
+
+  productMoved(product: Product, direction: 'up' | 'down') {
+    let findedProduct: TreeNode<Product>;
+    let parentProduct: TreeNode<Product>;
+
+    const findProduct = (nodes: TreeNode<Product>[]) => {
+      nodes.forEach(node => {
+        if (node.data.id === product.id) {
+          findedProduct = node;
+        } else {
+          if (node.children && node.children.length > 0) {
+            findProduct(node.children);
+          }
+        }
+      });
+    };
+
+    const findParent = (nodes: TreeNode<Product>[]) => {
+      nodes.forEach(node => {
+        if (node.data.id === findedProduct.parent.data.id) {
+          parentProduct = node;
+        } else {
+          if (node.children && node.children.length > 0) {
+            findParent(node.children);
+          }
+        }
+      });
+    };
+
+    findProduct(this.productsTree);
+    findParent(this.productsTree);
+
+    const index = parentProduct.children.findIndex(child => child.data.id === product.id);
+
+    if (direction === 'down') {
+      [parentProduct.children[index], parentProduct.children[index + 1]] = [parentProduct.children[index + 1], parentProduct.children[index]];
+    } else {
+      [parentProduct.children[index], parentProduct.children[index - 1]] = [parentProduct.children[index - 1], parentProduct.children[index]];
+    }
+
+    this.productsTree = this.productsTree.map(node => node);
   }
 
   sort() {
@@ -344,9 +397,8 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
   }
 
   onEditProduct() {
-    this.productService.editProductModal(this.selectedProduct.data).subscribe(response => {
-      if (response) {
-        // TODO МЕНЯТЬ ЛОКАЛЬНО
+    this.productService.editProductModal(this.selectedProduct.data).subscribe(product => {
+      if (product) {
         this.getProducts();
       }
     });
@@ -359,9 +411,10 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
           nomenclature_id: this.selectedProduct.data.nomenclature.id,
           parent_id: this.selectedProduct.data.parent,
           name: this.selectedProduct.data.nomenclature.name
-        }).subscribe(response => {
-          // TODO МЕНЯТЬ ЛОКАЛЬНО
-          this.getProducts();
+        }).subscribe(products => {
+          if (products) {
+            this.getProducts();
+          }
         });
       }
     });
@@ -401,6 +454,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
   onAddProduct() {
     this.productService.addProductModal(this.selectedProduct.data.id).subscribe(products => {
       if (products) {
+        console.log(products);
         this.products = [...this.products, ...products];
         // console.log(this.products);
         // this.productsTree = [];
@@ -419,7 +473,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
         if (response) {
           this.getProducts();
         }
-      })
+      });
     }
   }
 

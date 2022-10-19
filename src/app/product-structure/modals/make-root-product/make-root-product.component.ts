@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../models/product';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ProductService} from '../../services/product.service';
+import {ProductStructureCategory} from '../../models/product-structure-category';
 
 @Component({
   selector: 'pek-make-root-product',
@@ -25,8 +26,12 @@ export class MakeRootProductComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSelectCategory(categoryId: number) {
-    this.form.get('category').patchValue(categoryId);
+  onSelectCategory(category: ProductStructureCategory) {
+    if (category) {
+      this.form.get('category').patchValue(category.id);
+    } else {
+      this.form.get('category').patchValue(null);
+    }
   }
 
   onMakeRoot() {

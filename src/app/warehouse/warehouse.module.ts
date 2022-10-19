@@ -7,6 +7,7 @@ import {WarehouseLayoutComponent} from './components/warehouse-layout/warehouse-
 import {LayoutModule} from '../layout/layout.module';
 import {SharedModule} from '@shared/shared.module';
 import { WarehouseWarehousesComponent } from './components/warehouse-warehouses/warehouse-warehouses.component';
+import {TreeModule} from 'primeng/tree';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { WarehouseWarehousesComponent } from './components/warehouse-warehouses/
     CommonModule,
     WarehouseRouting,
     LayoutModule,
-    SharedModule
+    SharedModule,
+    TreeModule
   ]
 })
 export class WarehouseModule {

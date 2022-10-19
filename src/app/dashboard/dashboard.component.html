@@ -18,23 +18,23 @@
 
       <li class="dashboard__item">
         <a
-          class="dashboard__button p-button-secondary"
-          pButton
-          type="button"
-          label="Log Out"
-          [icon]="'icon-logout'"
-          (click)="logout()"
-        ></a>
-      </li>
-
-      <li class="dashboard__item">
-        <a
           class="dashboard__button dashboard__button_guide"
           pButton
           type="button"
           icon="pi pi-book"
           label="Business Guide"
           (click)="showGuide()"
+        ></a>
+      </li>
+
+      <li class="dashboard__item_log-out">
+        <a
+          class="dashboard__button dashboard__button_log-out p-button-secondary"
+          pButton
+          type="button"
+          label="Log Out"
+          [icon]="'icon-logout'"
+          (click)="logout()"
         ></a>
       </li>
     </ul>

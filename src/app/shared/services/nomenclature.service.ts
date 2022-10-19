@@ -59,25 +59,7 @@ export class NomenclatureService {
   }
 
   updatePartly(nomenclature: Partial<Nomenclature>): Observable<Nomenclature> {
-    const formData = new FormData();
-
-    if (nomenclature.technologies && nomenclature.technologies.length > 0) {
-      nomenclature.technologies.forEach(technology => {
-        formData.append('technologies', technology.id + '');
-      });
-    }
-
-    for (const key in nomenclature) {
-      if (nomenclature[key] !== null && key !== 'technologies') {
-        formData.append(key, nomenclature[key]);
-      }
-    }
-
-    if (nomenclature.category === null) {
-      formData.append('category', '');
-    }
-
-    return this.httpClient.patch<{ data: Nomenclature }>(this.API_URL + this.url + `${nomenclature.id}/`, formData).pipe(
+    return this.httpClient.patch<{ data: Nomenclature }>(this.API_URL + this.url + `${nomenclature.id}/`, nomenclature).pipe(
       map(response => response.data)
     );
   }
@@ -105,6 +87,30 @@ export class NomenclatureService {
       map(response => response.data)
     );
   }
+
+  // updateRoot(nomenclature: Partial<Nomenclature>): Observable<Nomenclature> {
+  //   const formData = new FormData();
+  //
+  //   if (nomenclature.technologies && nomenclature.technologies.length > 0) {
+  //     nomenclature.technologies.forEach(technology => {
+  //       formData.append('technologies', technology.id + '');
+  //     });
+  //   }
+  //
+  //   for (const key in nomenclature) {
+  //     if (nomenclature[key] !== null && key !== 'technologies') {
+  //       formData.append(key, nomenclature[key]);
+  //     }
+  //   }
+  //
+  //   if (nomenclature.category === null) {
+  //     formData.append('category', '');
+  //   }
+  //
+  //   return this.httpClient.put<{ data: Nomenclature }>(this.API_URL + this.url + `${nomenclature.id}/`, formData).pipe(
+  //     map(response => response.data)
+  //   );
+  // }
 
   // Nomenclatures for confirmation
   getNewNomenclatures(): Observable<NewNomenclature[]> {

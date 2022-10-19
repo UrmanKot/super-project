@@ -1,0 +1,30 @@
+<div class="product-root-category-picker">
+<!--  <p-dropdown-->
+<!--    *ngIf="!isLoading; else spinner"-->
+<!--    [showClear]="true"-->
+<!--    [options]="categories"-->
+<!--    optionLabel="name"-->
+<!--    optionValue="id"-->
+<!--    placeholder="Select Product Structure Category"-->
+<!--    [(ngModel)]="selectCategoryId"-->
+<!--    (ngModelChange)="onChangeCategory()"-->
+<!--    [disabled]="isDisabled"-->
+<!--  ></p-dropdown>-->
+
+  <p-treeSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="categoriesTree"
+    [(ngModel)]="selectedCategory"
+    [showClear]="true"
+    placeholder="Select Category"
+    (ngModelChange)="onChoiceCategory()"
+    [disabled]="isDisabled"
+  ></p-treeSelect>
+
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

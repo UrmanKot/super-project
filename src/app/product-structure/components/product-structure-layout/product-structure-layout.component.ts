@@ -12,6 +12,7 @@ export class ProductStructureLayoutComponent implements OnInit {
     {label: 'Products', commands: ['products']},
     {label: 'Technologies', commands: ['technologies']},
     {label: 'Prefixes', commands: ['prefixes']},
+    {label: 'Categories', commands: ['categories']},
   ]
 
   constructor() { }

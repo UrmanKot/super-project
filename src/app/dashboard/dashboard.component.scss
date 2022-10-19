@@ -11,6 +11,16 @@
     font-weight: 500;
   }
 
+  &__item {
+    &_log-out {
+      grid-area: 6/3;
+
+      a {
+        margin-top: 3rem;
+      }
+    }
+  }
+
   &__list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

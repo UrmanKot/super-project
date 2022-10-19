@@ -1,33 +1,34 @@
-<div class="create-edit-root-product">
-
+<div class="create-edit-product-structure-category">
   <div class="modal-header">
     <h2 class="modal-header__title">
-      {{data.type}} Product
+      {{data.type}} Prefix
     </h2>
   </div>
 
   <mat-dialog-content>
     <form [formGroup]="form">
       <div class="form-group">
-        <label>Category</label>
-        <pek-product-structure-category-picker
-          [currentCategoryId]="form.get('root_category').value"
-          [isDisabled]="isCategoryDisabled"
-          (choiceCategory)="onSelectCategory($event)"
-        ></pek-product-structure-category-picker>
-      </div>
-      <div class="form-group">
         <label for="name">Name*</label>
         <input type="text" id="name" pInputText formControlName="name">
       </div>
       <div class="form-group">
-        <label for="code">Code*</label>
-        <input type="text" id="code" pInputText formControlName="code">
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Description*</label>
         <textarea id="description" [rows]="2" pInputTextarea [autoResize]="true"
                   formControlName="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Unit of measure*</label>
+        <pek-unit-measure-picker
+          [currentMeasureUnitId]="form.get('unit_of_measure').value"
+          (selectMeasureUnit)="onSelectMeasureUnit($event)"
+        ></pek-unit-measure-picker>
+      </div>
+      <div class="form-group">
+        <label>Parent Category</label>
+        <pek-product-structure-category-picker
+          [currentCategoryId]="form.get('parent').value"
+          (choiceCategory)="onSelectCategory($event)"
+        ></pek-product-structure-category-picker>
       </div>
     </form>
   </mat-dialog-content>
@@ -40,9 +41,8 @@
       class="p-button-success"
       [label]="data.type"
       [loading]="isSaving"
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || !form.get('unit_of_measure').value"
       (click)="onSave()"
     ></button>
   </mat-dialog-actions>
-
 </div>

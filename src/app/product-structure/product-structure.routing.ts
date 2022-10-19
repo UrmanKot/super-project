@@ -11,6 +11,9 @@ import {PrefixesComponent} from './components/prefixes/prefixes.component';
 import {
   ProductStructureLayoutComponent
 } from './components/product-structure-layout/product-structure-layout.component';
+import {
+  ProductStructureCategoriesComponent
+} from './components/product-structure-categories/product-structure-categories.component';
 
 const routes: Routes = [
   {
@@ -26,6 +29,7 @@ const routes: Routes = [
       },
       {path: 'technologies', title: 'Technologies', component: TechnologiesComponent},
       {path: 'prefixes', title: 'Prefixes', component: PrefixesComponent},
+      {path: 'categories', title: 'Categories', component: ProductStructureCategoriesComponent},
     ]
   }
 ];

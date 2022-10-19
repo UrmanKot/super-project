@@ -3,6 +3,15 @@
     <div class="add-product__header">
       <h2 class="modal-header__title">
         {{mode === 'add' ? 'Add' : 'Create'}} new Position
+        <ng-container *ngIf="mode === 'create'">
+          <span
+            class="hint"
+            pTooltip="To paste the image, copy it and press «Ctrl + V»"
+            tooltipPosition="top"
+          >
+            <i>?</i>
+          </span>
+        </ng-container>
       </h2>
 
       <p *ngIf="mode === 'add' && this.searchForm.get('type').value">

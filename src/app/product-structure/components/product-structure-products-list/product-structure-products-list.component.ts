@@ -2,14 +2,14 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {ProductService} from '../../services/product.service';
 import {MenuItem, TreeNode} from 'primeng/api';
 import {Product} from '../../models/product';
-import {ProductCategory} from '../../models/product-category';
 import {forkJoin, fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
-import {ProductCategoriesService} from '../../services/product-categories.service';
 import {cloneDeep} from 'lodash-es';
 import {Table} from 'primeng/table';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ModalService} from '@shared/services/modal.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ProductStructureCategory} from '../../models/product-structure-category';
+import {ProductStructureCategoryService} from '../../services/product-structure-category.service';
 
 @Component({
   selector: 'pek-product-structure-products-list',
@@ -47,8 +47,8 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
     ]
   }];
 
-  productsTree: TreeNode<Product>[] = [];
-  categories: ProductCategory[];
+  productsTree: TreeNode<Product & ProductStructureCategory>[] = [];
+  categories: ProductStructureCategory[];
   selectedNode: TreeNode<Product>;
   products: Product[];
 
@@ -63,7 +63,7 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
     private readonly productService: ProductService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly productCategoriesService: ProductCategoriesService,
+    private readonly productStructureCategoryServices: ProductStructureCategoryService,
     private readonly modalService: ModalService,
   ) {
   }
@@ -121,62 +121,95 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
   getProductsAndCategories() {
     forkJoin({
       products: this.productService.getRoots(),
-      categories: this.productCategoriesService.getRoot()
+      categories: this.productStructureCategoryServices.get()
     }).pipe(
       takeUntil(this.destroy$)
     ).subscribe(({products, categories}) => {
       this.products = products;
       this.categories = categories;
-
-      this.categories.forEach(category => {
-        this.productsTree.push({
-          data: category,
-          expanded: false,
-          parent: null
-        });
-      });
-
-      this.productsTree.unshift({
-        // @ts-ignore
-        data: {name: 'Not category'},
-        expanded: false,
-        parent: null
-      });
-
+      this.createTreeCategories();
       this.createTree();
       this.isLoading = false;
     });
   }
 
-  createTree() {
-    this.productsTree = this.productsTree.map(node => {
-      return {
-        ...node,
-        children: []
-      };
+  createTreeCategories() {
+    this.productsTree.unshift({
+      // @ts-ignore
+      data: {name: 'Not category'},
+      expanded: false,
+      parent: null,
+      children: []
     });
 
-    this.productsTree.forEach(node => {
-      this.products.forEach(product => {
-        if (product.nomenclature.category && node.data.id === product.nomenclature.category.id) {
-          node.children.push({
-            data: product,
-            expanded: false,
-            children: []
-          });
-        }
+    this.categories.filter(category => !category.parent).forEach(category => {
+      this.productsTree.push({
+        data: category,
+        expanded: false,
+        parent: null,
+        children: []
       });
     });
 
-    this.products.forEach(product => {
-      if (!product.nomenclature.category) {
-        this.productsTree[0].children.push({
-          data: product,
-          expanded: false,
-          children: []
-        });
-      }
-    });
+    const addChildrenCategories = (nodes: TreeNode<Product>[]) => {
+      nodes.forEach(node => {
+        const childrenCategories = this.categories.filter(category => category.parent === node.data.id);
+
+        if (childrenCategories.length > 0) {
+          node.children = childrenCategories.map(category => {
+            return {
+              data: category,
+              expanded: false,
+              parent: null,
+              children: [],
+            };
+          });
+        }
+
+        if (node.children.length > 0) {
+          addChildrenCategories(node.children);
+        }
+      });
+    };
+
+    addChildrenCategories(this.productsTree);
+  }
+
+  clearTree() {
+    const clear = (nodes: TreeNode<Product & ProductStructureCategory>[]) => {
+      nodes.forEach(node => {
+        node.children = [...node.children.filter(child => child.data.tree_id)];
+
+        clear(node.children);
+      });
+    };
+
+    clear(this.productsTree);
+  }
+
+  createTree() {
+    this.clearTree();
+
+    const addProductsToTree = (nodes: TreeNode<Product>[]) => {
+      nodes.forEach(node => {
+        const products = this.products.filter(p => p.nomenclature.root_category?.id === node.data.id);
+
+        node.children = [...node.children, ...products.map(product => {
+          return {
+            data: product,
+            expanded: false,
+            parent: null,
+            children: [],
+          };
+        })];
+
+        addProductsToTree(node.children);
+      });
+    };
+
+    this.productsTree = [...this.productsTree];
+
+    addProductsToTree(this.productsTree);
   }
 
   onExpandAll(): void {
@@ -223,7 +256,7 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
   onCreateProduct() {
     this.productService.createEditRootProduct('create').subscribe(product => {
       if (product) {
-        this.products.push(<Product>product);
+        this.products.unshift(<Product>product);
         this.createTree();
       }
     });
@@ -232,41 +265,22 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
   onEditProduct() {
     const product = {...<Product>this.selectedNode.data};
     this.productService.createEditRootProduct('edit', product).subscribe(nomenclature => {
-      // TODO ДОЖДАТЬСЯ ИЗМЕНЕНИЙ С БЭКА
-      // if (nomenclature) {
-      //   const index = this.products.findIndex(p => p.nomenclature.id === nomenclature.id)
-      //
-      //   if (index !== -1) {
-      //     this.products[index].nomenclature = nomenclature;
-      //
-      //     // console.log(this.products[index].nomenclature.category);
-      //     // console.log(product.nomenclature.category.id);
-      //
-      //     // @ts-ignore
-      //     if (this.products[index].nomenclature.category !== product.nomenclature.category?.id) {
-      //       console.log('ad');
-      //       this.createTree();
-      //     }
-      //   }
-      // }
-
       if (nomenclature) {
-        this.updateProducts();
+        const index = this.products.findIndex(p => p.nomenclature.id === nomenclature.id);
+
+        if (index !== -1) {
+          this.products[index].nomenclature = nomenclature;
+          this.createTree();
+        }
       }
     });
   }
 
   onCopyProduct() {
     const product = <Product>this.selectedNode.data;
-    this.productService.createEditRootProduct('copy', product).subscribe(product => {
-      // TODO на бэке сделать чтобы отдавался продукт
-      if (product) this.updateProducts();
+    this.productService.createEditRootProduct('copy', product).subscribe(products => {
+      if (products) this.updateProducts();
     });
-  }
-
-  updateTree(product: Product) {
-    this.products.push(product);
-    this.createTree();
   }
 
   // временный метод до оптимизации

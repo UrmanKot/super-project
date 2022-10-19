@@ -73,6 +73,7 @@ export class EditProductComponent implements OnInit {
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         send.category = this.formValue.category;
         send.bulk_or_serial = this.formValue.bulk_or_serial;
+        delete send.code
       } else {
         send.technologies = [...this.formValue.technologies];
         send.category = null;
@@ -90,13 +91,13 @@ export class EditProductComponent implements OnInit {
         }).pipe(
           finalize(() => this.isSaving = false)
         ).subscribe(({nomenclature, product}) => {
-          this.dialogRef.close(nomenclature);
+          this.dialogRef.close({nomenclature, product});
         });
       } else {
         this.nomenclatureService.update(send).pipe(
           finalize(() => this.isSaving = false)
         ).subscribe(nomenclature => {
-          this.dialogRef.close(nomenclature);
+          this.dialogRef.close({nomenclature, product: null});
         });
       }
     }

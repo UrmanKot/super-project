@@ -1,0 +1,19 @@
+<div class="unit-measure-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="measureUnits"
+    placeholder="Select Unit of Measure"
+    [(ngModel)]="selectMeasureUnitId"
+    (ngModelChange)="onSelectWarehouse()"
+    optionLabel="label"
+    optionValue="id"
+    [showClear]="true"
+  >
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

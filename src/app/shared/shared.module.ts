@@ -18,9 +18,6 @@ import {MoneyFormatPipe} from '@shared/pipes/money-format.pipe';
 import {TieredMenuModule} from 'primeng/tieredmenu';
 import { InIconComponent } from './icons/in-icon/in-icon.component';
 import { NomenclaturePickerComponent } from './components/nomenclature-picker/nomenclature-picker.component';
-import {
-  ProductRootCategoryPickerComponent
-} from '@shared/pickers/product-root-category-picker/product-root-category-picker.component';
 import { ProductCategoryPickerComponent } from './pickers/product-category-picker/product-category-picker.component';
 import {TreeSelectModule} from 'primeng/treeselect';
 import {PaginatorModule} from 'primeng/paginator';
@@ -35,13 +32,17 @@ import { UploadFileComponent } from './components/upload-file/upload-file.compon
 import { WarehousePickerComponent } from './pickers/warehouse-picker/warehouse-picker.component';
 import { LocatorPickerComponent } from './pickers/locator-picker/locator-picker.component';
 import { NomenclatureTypePickerComponent } from './pickers/nomenclature-type-picker/nomenclature-type-picker.component';
+import {
+  ProductStructureCategoryPickerComponent
+} from '@shared/pickers/product-structure-category-picker/product-structure-category-picker.component';
+import { UnitMeasurePickerComponent } from './pickers/unit-measure-picker/unit-measure-picker.component';
 
 
 @NgModule({
   declarations: [
     ModuleIconComponent,
     ConfirmComponent,
-    ProductRootCategoryPickerComponent,
+    ProductStructureCategoryPickerComponent,
     MoneyFormatPipe,
     InIconComponent,
     NomenclaturePickerComponent,
@@ -53,7 +54,8 @@ import { NomenclatureTypePickerComponent } from './pickers/nomenclature-type-pic
     UploadFileComponent,
     WarehousePickerComponent,
     LocatorPickerComponent,
-    NomenclatureTypePickerComponent
+    NomenclatureTypePickerComponent,
+    UnitMeasurePickerComponent
   ],
   exports: [
     ButtonModule,
@@ -66,7 +68,7 @@ import { NomenclatureTypePickerComponent } from './pickers/nomenclature-type-pic
     DropdownModule,
     FormsModule,
     CheckboxModule,
-    ProductRootCategoryPickerComponent,
+    ProductStructureCategoryPickerComponent,
     TableModule,
     RadioButtonModule,
     ModuleIconComponent,
@@ -82,7 +84,8 @@ import { NomenclatureTypePickerComponent } from './pickers/nomenclature-type-pic
     UploadFileComponent,
     WarehousePickerComponent,
     LocatorPickerComponent,
-    NomenclatureTypePickerComponent
+    NomenclatureTypePickerComponent,
+    UnitMeasurePickerComponent
   ],
   imports: [
     CommonModule,

@@ -40,6 +40,23 @@ export class WarehouseProductService {
     );
   }
 
+  getGrouped(query?: { name: string, value: any }[]): Observable<WarehouseProduct[]> {
+    let qString = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          qString += '&' + element.name + '=' + element.value;
+        } else {
+          qString += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+    return this.httpClient.get<{ data: WarehouseProduct[] }>(this.API_URL + this.url + 'grouped_by_warehouse_locator/' + qString).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
   severalUpdateReservations(ids: number[], send: {is_confirmed: boolean}): Observable<any> {
     return forkJoin(...ids.map(id => this.httpClient.patch(this.API_URL + `warehouse_products_reservations/${id}/`, send)));
   }

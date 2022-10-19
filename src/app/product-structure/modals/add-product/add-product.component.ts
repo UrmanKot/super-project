@@ -253,6 +253,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.createFormValue.type === ENomenclatureType.PURCHASED) {
         send.category = this.createFormValue.category;
         send.bulk_or_serial = this.createFormValue.bulk_or_serial;
+        delete send.code;
       } else {
         send.technologies = [...this.createFormValue.technologies];
         send.category = null;
@@ -272,14 +273,17 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
               image: file.file,
             });
           });
-        }
 
-        this.nomenclatureService.uploadImagesSeveral(send).pipe(
-          finalize(() => this.isSaving = false)
-        ).subscribe(images => {
+          this.nomenclatureService.uploadImagesSeveral(send).pipe(
+            finalize(() => this.isSaving = false)
+          ).subscribe(images => {
+            this.isSaving = true;
+            this.addProduct(nomenclature.id, this.createFormValue.quantity, images);
+          });
+        } else {
           this.isSaving = true;
-          this.addProduct(nomenclature.id, this.createFormValue.quantity, images);
-        });
+          this.addProduct(nomenclature.id, this.createFormValue.quantity, []);
+        }
       });
     }
   }

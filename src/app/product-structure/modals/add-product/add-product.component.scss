@@ -45,3 +45,28 @@
 .hide {
   display: none;
 }
+
+.modal-header__title {
+  display: flex;
+  align-items: center;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--theme-color-primary);
+  background: rgba(59, 130, 246, 0.04);
+  border-radius: 50%;
+  margin-left: 0.75rem;
+  width: 1.75rem;
+
+  i {
+    font-size: 1.25rem;
+    font-style: normal;
+    position: relative;
+    left: 1px;
+  }
+}

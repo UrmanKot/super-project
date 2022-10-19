@@ -17,6 +17,8 @@ export class Product {
   is_scanned_root?: boolean;
   checkedForGeneration?: boolean;
   parent?: number;
+  lft?: number;
+  rght?: number;
 }
 
 export class ProductFile {

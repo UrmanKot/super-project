@@ -48,6 +48,7 @@
                 icon="pi pi-arrow-up"
                 class="p-button-rounded mr-2"
                 [disabled]="selectedProduct?.data.parent === null"
+                [loading]="isMovingUp"
                 (click)="up()"
               ></button>
               <button
@@ -56,6 +57,7 @@
                 icon="pi pi-arrow-down"
                 class="p-button-rounded mr-2"
                 [disabled]="selectedProduct?.data.parent === null"
+                [loading]="isMovingDown"
                 (click)="down()"
               ></button>
               <button

@@ -6,6 +6,8 @@ import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ProductService} from '../../services/product.service';
 import {ModalActionType} from '@shared/models/modal-action';
 import {finalize} from 'rxjs';
+import {ProductStructureCategory} from '../../models/product-structure-category';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 @Component({
   selector: 'pek-create-edit-root-product',
@@ -20,7 +22,7 @@ export class CreateEditRootProductComponent implements OnInit {
     code: ['', Validators.required],
     description: [''],
     type: [1],
-    category: [null],
+    root_category: [null],
   });
 
   isCategoryDisabled: boolean = false;
@@ -36,12 +38,13 @@ export class CreateEditRootProductComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data.type !== 'create') {
-      const nomenclature: any = this.data.product.nomenclature;
+      const nomenclature: Partial<Nomenclature> = this.data.product.nomenclature;
       this.form.addControl('id' as any, new FormControl(this.data.product.id));
+      // @ts-ignore
       this.form.patchValue(nomenclature);
 
-      if (nomenclature.category) {
-        this.form.get('category').patchValue(nomenclature.category.id);
+      if (nomenclature.root_category) {
+        this.form.get('root_category').patchValue(nomenclature.root_category.id);
       }
     }
 
@@ -52,8 +55,12 @@ export class CreateEditRootProductComponent implements OnInit {
     }
   }
 
-  onSelectCategory(categoryId: number) {
-    this.form.get('category').patchValue(categoryId);
+  onSelectCategory(category: ProductStructureCategory) {
+    if (category) {
+      this.form.get('root_category').patchValue(category.id);
+    } else {
+      this.form.get('root_category').patchValue(null);
+    }
   }
 
   onSave() {
@@ -81,7 +88,7 @@ export class CreateEditRootProductComponent implements OnInit {
       next: (nomenclature) => {
         if (nomenclature) {
           // @ts-ignore
-          this.productService.create({nomenclature: nomenclature.id}).pipe(
+          this.productService.addProduct({nomenclature: nomenclature.id}).pipe(
             finalize(() => this.isSaving = false)
           ).subscribe(products => this.dialogRef.close(products[0]));
         }
@@ -91,7 +98,7 @@ export class CreateEditRootProductComponent implements OnInit {
   }
 
   editProduct(send: any) {
-    this.nomenclatureService.update(send).pipe(
+    this.nomenclatureService.updatePartly(send).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(product => this.dialogRef.close(product));
   }
@@ -105,6 +112,6 @@ export class CreateEditRootProductComponent implements OnInit {
 
     this.productService.copyStructure(send).pipe(
       finalize(() => this.isSaving = false)
-    ).subscribe(() => this.dialogRef.close(true));
+    ).subscribe(products => this.dialogRef.close(products));
   }
 }

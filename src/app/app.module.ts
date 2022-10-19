@@ -10,12 +10,12 @@ import {AuthModule} from './auth/auth.module';
 import {AuthGuard} from './auth/auth.guard';
 import {AuthInterceptor} from './auth/auth.interceptor';
 import {ConfirmationModule} from './confirmation/confirmation.module';
-import {ProductStructureModule} from './product-structure/product-structure.module';
 import {DeliveryChainsModule} from './delivery-chains/delivery-chains.module';
 import {GuideModule} from './guide/guide.module';
 import {ErrorInterceptor} from '@shared/interceptors/error-interceptor';
 import { MessageService } from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import {ProductStructureModule} from './product-structure/product-structure.module';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,

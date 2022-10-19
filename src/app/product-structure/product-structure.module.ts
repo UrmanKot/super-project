@@ -26,6 +26,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { UploadProductStructureComponent } from './modals/upload-product-structure/upload-product-structure.component';
 import { ProductFilesComponent } from './modals/product-files/product-files.component';
 import {CreateEditProductComponentForm} from './components/create-edit-product-form/create-edit-product.component-form';
+import { ProductStructureCategoriesComponent } from './components/product-structure-categories/product-structure-categories.component';
+import { CreateEditProductStructureCategoryComponent } from './modals/create-edit-product-sctucture-categoy/create-edit-product-structure-category.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import {CreateEditProductComponentForm} from './components/create-edit-product-f
     UploadProductStructureComponent,
     ProductFilesComponent,
     CreateEditProductComponentForm,
+    ProductStructureCategoriesComponent,
+    CreateEditProductStructureCategoryComponent,
   ],
   imports: [
     CommonModule,

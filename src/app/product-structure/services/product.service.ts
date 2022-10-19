@@ -56,14 +56,16 @@ export class ProductService {
     return this.httpClient.delete(this.API_URL + this.url + `${id}/`);
   }
 
-  copyStructure(send: { nomenclature_id: number, parent_id: number, name: string }): Observable<Product> {
-    return this.httpClient.post<{ data: Product }>(this.API_URL + 'product_structure_copy/', send).pipe(
+  copyStructure(send: { nomenclature_id: number, parent_id: number, name: string }): Observable<Product[]> {
+    return this.httpClient.post<{ data: Product[] }>(this.API_URL + this.url + 'product_structure_copy/', send).pipe(
       map(response => response.data)
     );
   }
 
-  move(move: any): Observable<any> {
-    return this.httpClient.post(this.API_URL + 'product_move/', move);
+  move(move: any, productId: number): Observable<Product> {
+    return this.httpClient.post<{data: Product}>(this.API_URL + this.url + `${productId}/move/`, move).pipe(
+      map(response => response.data)
+    );
   }
 
   getProductFiles(productId: number): Observable<ProductFile[]> {
@@ -112,7 +114,7 @@ export class ProductService {
   }
 
   makeRoot(productId: number, send: { category: number }): Observable<any> {
-    return this.httpClient.post<{ data: any }>(this.API_URL + `products/${productId}/copy_tree_to_root/`, send).pipe(
+    return this.httpClient.post<{ data: any }>(this.API_URL + `${this.url}${productId}/copy_tree_to_root/`, send).pipe(
       map(response => response.data)
     );
   }
@@ -128,7 +130,7 @@ export class ProductService {
     );
   }
 
-  createEditRootProduct(type: ModalActionType, product?: Product): Observable<Product | Nomenclature> {
+  createEditRootProduct(type: ModalActionType, product?: Product): Observable<Nomenclature & Product[]> {
     return this.dialog
       .open<CreateEditRootProductComponent>(CreateEditRootProductComponent, {
         width: '35rem',
@@ -140,7 +142,7 @@ export class ProductService {
       .afterClosed();
   }
 
-  editProductModal(product: Product): Observable<{ nomenclature: Nomenclature, product: Partial<Product> }> {
+  editProductModal(product: Product): Observable<{ nomenclature: Nomenclature, product: Product }> {
     return this.dialog
       .open<EditProductComponent>(EditProductComponent, {
         width: '50rem',
