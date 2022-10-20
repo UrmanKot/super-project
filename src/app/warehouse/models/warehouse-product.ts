@@ -19,3 +19,10 @@ export class WarehouseProduct {
   // extra_info: WarehouseProductExtraInfo[];
   checkedForGeneration?: boolean;
 }
+
+export class WarehouseProducts {
+  prev: string;
+  next: string;
+  count: number;
+  results: WarehouseProduct[]
+}

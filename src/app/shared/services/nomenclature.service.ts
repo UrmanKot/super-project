@@ -88,6 +88,12 @@ export class NomenclatureService {
     );
   }
 
+  searchWhereUsed(id: number): Observable<Nomenclature[]> {
+    return this.httpClient.get<{ data: Nomenclature[] }>(this.API_URL + this.url + id + '/used_in_list/').pipe(
+      map(response => response.data)
+    );
+  }
+
   // updateRoot(nomenclature: Partial<Nomenclature>): Observable<Nomenclature> {
   //   const formData = new FormData();
   //

@@ -1,7 +1,7 @@
 <div class="unit-measure-picker">
   <p-dropdown
     *ngIf="!isLoading; else spinner"
-    [options]="measureUnits"
+    [options]="unitsMeasure"
     placeholder="Select Unit of Measure"
     [(ngModel)]="selectMeasureUnitId"
     (ngModelChange)="onSelectWarehouse()"

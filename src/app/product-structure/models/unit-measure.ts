@@ -1,4 +1,4 @@
-export class MeasureUnit {
+export class UnitMeasure {
   readonly id: number;
   name: string;
   symbol: string;

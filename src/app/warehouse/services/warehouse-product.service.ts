@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {WarehouseProduct} from '../models/warehouse-product';
+import {WarehouseProduct, WarehouseProducts} from '../models/warehouse-product';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
@@ -53,6 +53,24 @@ export class WarehouseProductService {
       });
     }
     return this.httpClient.get<{ data: WarehouseProduct[] }>(this.API_URL + this.url + 'grouped_by_warehouse_locator/' + qString).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
+  getGroupedPagination(query?: { name: string, value: any }[]): Observable<WarehouseProducts> {
+    query.push({name: 'paginated', value: true});
+    let qString = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          qString += '&' + element.name + '=' + element.value;
+        } else {
+          qString += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+    return this.httpClient.get<{ data: WarehouseProducts }>(this.API_URL + this.url + 'grouped_by_warehouse_locator/' + qString).pipe(map(response => {
       return response.data;
     }));
   }

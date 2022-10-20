@@ -5,6 +5,7 @@ import {ProductStructureCategory} from '../../models/product-structure-category'
 import {MenuItem, TreeNode} from 'primeng/api';
 import {cloneDeep} from 'lodash-es';
 import {Subject, takeUntil} from 'rxjs';
+import {TreeService} from '@shared/services/tree.service';
 
 @Component({
   selector: 'pek-product-structure-categories',
@@ -13,12 +14,14 @@ import {Subject, takeUntil} from 'rxjs';
 })
 export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
   categories: ProductStructureCategory[] = [];
-  categoriesTree: TreeNode<ProductStructureCategory>[] = [];
+  categoriesTree: TreeNode<ProductStructureCategory>[];
   selectedCategory: TreeNode<ProductStructureCategory>;
 
   isLoading = true;
   isMovingDown = false;
   isMovingUp = false;
+
+  expanseMap = {};
 
   menuItems: MenuItem[] = [{
     label: 'Selected Category',
@@ -41,10 +44,15 @@ export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
   constructor(
     private productStructureCategoryService: ProductStructureCategoryService,
     private modalService: ModalService,
+    private readonly treeService: TreeService,
   ) {
   }
 
   ngOnInit(): void {
+    this.getCategories();
+  }
+
+  getCategories() {
     this.productStructureCategoryService.get().pipe(
       takeUntil(this.destroy$)
     ).subscribe(categories => {
@@ -55,36 +63,11 @@ export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
   }
 
   createTree() {
-    this.categoriesTree = this.categories.filter(cat => !cat.parent).map(cat => {
-      return {
-        data: cat,
-        children: [],
-        expanded: false,
-      };
-    });
+    if (this.categoriesTree) {
+      this.treeService.mapExpansion(this.categoriesTree, this.expanseMap);
+    }
 
-    const addCategoriesToTree = (nodes: TreeNode<ProductStructureCategory>[]) => {
-      nodes.forEach(node => {
-        const categories = this.categories.filter(cat => cat.parent === node.data.id);
-
-        if (categories.length > 0) {
-          node.children = categories.map(cat => {
-            return {
-              data: cat,
-              children: [],
-              expanded: false,
-            };
-          });
-        }
-
-
-        if (node.children.length > 0) {
-          addCategoriesToTree(node.children);
-        }
-      });
-    };
-
-    addCategoriesToTree(this.categoriesTree);
+    this.categoriesTree = this.treeService.createTree(this.categories, this.expanseMap);
   }
 
   getMeasure(measure) {
@@ -118,6 +101,7 @@ export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
         const index = this.categories.findIndex(t => t.id === this.selectedCategory.data.id);
         this.categories[index] = category;
         this.createTree();
+        this.selectedCategory = this.treeService.findSelectedNode(this.selectedCategory, this.categoriesTree);
       }
     });
   }
@@ -130,9 +114,9 @@ export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
           this.categories.splice(index, 1);
           this.selectedCategory = null;
           this.createTree();
-        })
+        });
       }
-    })
+    });
   }
 
   onExpandAll(): void {

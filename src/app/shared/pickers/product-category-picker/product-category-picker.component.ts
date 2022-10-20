@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ProductCategory} from '../../../product-structure/models/product-category';
-import {ProductCategoriesService} from '../../../product-structure/services/product-categories.service';
+import {Category} from '../../../product-structure/models/category';
+import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {TreeNode} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
 
@@ -10,24 +10,24 @@ import {Subject, takeUntil} from 'rxjs';
   styleUrls: ['./product-category-picker.component.scss'],
 })
 export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
-  @Output() choiceCategory: EventEmitter<ProductCategory> = new EventEmitter<ProductCategory>();
+  @Output() choiceCategory: EventEmitter<Category> = new EventEmitter<Category>();
   @Input() currentCategoryId: number;
 
   isLoading = true;
-  categories: ProductCategory[] = [];
-  categoriesTree: TreeNode<ProductCategory>[] = [];
+  categories: Category[] = [];
+  categoriesTree: TreeNode<Category>[] = [];
 
-  selectedCategory: TreeNode<ProductCategory> = null;
+  selectedCategory: TreeNode<Category> = null;
 
   private destroy$ = new Subject();
 
   constructor(
-    private readonly productCategoriesService: ProductCategoriesService,
+    private readonly productCategoriesService: CategoriesService,
   ) {
   }
 
   ngOnInit(): void {
-    this.productCategoriesService.get([{name: 'is_for_root', value: false}]).pipe(
+    this.productCategoriesService.get().pipe(
       takeUntil(this.destroy$)
     ).subscribe(categories => {
       this.categories = categories;
@@ -38,22 +38,22 @@ export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
   }
 
   findCategory() {
-    const find = (nodes: TreeNode<ProductCategory>[]) => {
+    const find = (nodes: TreeNode<Category>[]) => {
       nodes.forEach(node => {
         if (node.data.id === this.currentCategoryId) {
           this.selectedCategory = node;
-          return
+          return;
         } else if (node.children.length > 0) {
           find(node.children);
         }
-      })
-    }
+      });
+    };
 
-    find(this.categoriesTree)
+    find(this.categoriesTree);
   }
 
   createTree() {
-    const getChildren = (nodes: TreeNode<ProductCategory>[]) => {
+    const getChildren = (nodes: TreeNode<Category>[]) => {
       nodes.forEach(node => {
         const children = this.categories.filter(c => c.parent === node.data.id);
 
@@ -71,10 +71,10 @@ export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
       });
     };
 
-    const tree: TreeNode<ProductCategory>[] = this.categories.filter(c => !c.parent).map(category => {
+    const tree: TreeNode<Category>[] = this.categories.filter(c => !c.parent).map(category => {
       return {
         label: category.name,
-        data: <ProductCategory>category,
+        data: <Category>category,
         children: [],
       };
     });

@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ENomenclatureBulk, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {Technology} from '../../models/technology';
 import {Product} from '../../models/product';
-import {ProductCategory} from '../../models/product-category';
+import {Category} from '../../models/category';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Subject, takeUntil} from 'rxjs';
 
@@ -75,7 +75,7 @@ export class CreateEditProductComponentForm implements OnInit, OnDestroy {
     }
   }
 
-  onSelectCategory(category: ProductCategory) {
+  onSelectCategory(category: Category) {
     if (category) {
       this.form.get('category').patchValue(category.id);
     } else {

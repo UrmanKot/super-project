@@ -1,6 +1,5 @@
-import {ProductCategory} from '../../product-structure/models/product-category';
+import {Category} from '../../product-structure/models/category';
 import {Technology} from '../../product-structure/models/technology';
-import {ProductStructureCategory} from '../../product-structure/models/product-structure-category';
 
 export class Nomenclature {
   readonly id: number;
@@ -10,7 +9,7 @@ export class Nomenclature {
   parent?: number | Nomenclature;
   technologies?: Technology[];
   images?: NomenclatureImage[];
-  category?: ProductCategory;
+  category?: Category;
   // category?: any;
   description?: string;
   type?: ENomenclatureType;
@@ -23,7 +22,7 @@ export class Nomenclature {
   qc_protocol?: number;
   bulk_or_serial?: '1' | '0';
   tasks?: Task[];
-  root_category?: ProductStructureCategory;
+  root_category?: Category;
 }
 
 export class NomenclatureImage {

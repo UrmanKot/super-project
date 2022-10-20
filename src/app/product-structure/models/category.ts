@@ -1,4 +1,4 @@
-export class ProductCategory {
+export class Category {
   readonly id:number;
   name?: string;
   description?: string;

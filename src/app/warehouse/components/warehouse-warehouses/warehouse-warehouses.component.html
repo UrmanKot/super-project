@@ -16,7 +16,7 @@
       <p-table
         #dt
         selectionMode="single"
-        scrollHeight="calc(100vh - 21rem)"
+        scrollHeight="calc(100vh - 18.8rem)"
         [scrollable]="true"
         [paginator]="warehouses.length > 0"
         [rows]="10"
@@ -26,12 +26,12 @@
         <ng-template pTemplate="caption">
           <div class="d-flex">
             <p class="subtitle" *ngIf="!selectedWarehouse">Choose the Warehouse to edit</p>
-            <!--            &lt;!&ndash;            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedTechnology"></p-menubar>&ndash;&gt;-->
+            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedWarehouse"></p-menubar>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th class="index-header text-center" style="width: 5%">#</th>
+            <th class="text-center" style="width: 5%">#</th>
             <th style="width: 45%">Name</th>
             <th style="width: 50%">Description</th>
           </tr>

@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {Technology} from '../../product-structure/models/technology';
 import {map} from 'rxjs/operators';
 import {environment} from '@env/environment';
 import {Warehouse} from '../models/warehouse';
@@ -18,7 +17,8 @@ export class WarehouseService {
 
   constructor(
     private httpClient: HttpClient
-  ) { }
+  ) {
+  }
 
   get(): Observable<Warehouse[]> {
     if (this.warehouses) {
@@ -31,5 +31,15 @@ export class WarehouseService {
         this.warehouses = warehouses;
         return warehouses;
       }));
+  }
+
+  getById(id: number): Observable<Warehouse> {
+    if (this.warehouses) {
+      return of(this.warehouses.find(w => w.id === id));
+    }
+
+    return this.httpClient.get<{ data: Warehouse }>(this.API_URL + this.url + id + '/').pipe(
+      map(response => response.data)
+    );
   }
 }

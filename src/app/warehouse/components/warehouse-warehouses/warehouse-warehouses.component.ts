@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Warehouse} from '../../models/warehouse';
 import {WarehouseService} from '../../services/warehouse.service';
 import {Subject, takeUntil} from 'rxjs';
+import {MenuItem} from 'primeng/api';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'pek-warehouse-warehouses',
@@ -9,6 +11,27 @@ import {Subject, takeUntil} from 'rxjs';
   styleUrls: ['./warehouse-warehouses.component.scss']
 })
 export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
+
+  menuItems: MenuItem[] = [{
+    label: 'Selected Warehouse',
+    items: [
+      {
+        label: 'Locators',
+        icon: 'pi pi-list',
+        command: () => this.onGoToWarehouseLocators()
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.onEditTechnology()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.onRemoveTechnology()
+      }
+    ]
+  }];
 
   warehouses: Warehouse[] = [];
   selectedWarehouse: Warehouse;
@@ -18,6 +41,8 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly warehouseService: WarehouseService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -36,6 +61,18 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
 
   onAddWarehouse() {
 
+  }
+
+  onGoToWarehouseLocators() {
+    this.router.navigate([ this.selectedWarehouse.id, 'locators'], {relativeTo: this.route})
+  }
+
+  onEditTechnology() {
+    return undefined;
+  }
+
+  onRemoveTechnology() {
+    return undefined;
   }
 
   ngOnDestroy() {

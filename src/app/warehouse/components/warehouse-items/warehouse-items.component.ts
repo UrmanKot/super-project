@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WarehouseProduct} from '../../models/warehouse-product';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ProductCategory} from '../../../product-structure/models/product-category';
+import {Category} from '../../../product-structure/models/category';
 import {Subject, takeUntil} from 'rxjs';
-import {ProductCategoriesService} from '../../../product-structure/services/product-categories.service';
+import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {TreeNode} from 'primeng/api';
 import {WarehouseProductService} from '../../services/warehouse-product.service';
 import {QuerySearch} from '@shared/models/other';
@@ -13,15 +13,18 @@ import {QuerySearch} from '@shared/models/other';
   templateUrl: './warehouse-items.component.html',
   styleUrls: ['./warehouse-items.component.scss']
 })
-export class WarehouseItemsComponent implements OnInit {
-  isLoading = false;
+export class WarehouseItemsComponent implements OnInit, OnDestroy {
+  isLoading = true;
+  isStartOnePage = false;
+
   selectedProduct: WarehouseProduct;
   products: WarehouseProduct[] = [];
+  countProducts: number = 0;
 
-  categoriesTree: TreeNode<ProductCategory>[] = [];
+  categoriesTree: TreeNode<Category>[] = [];
   isLoadingCategories = true;
 
-  categories: ProductCategory[];
+  categories: Category[];
 
   acceptedTypes: {name: string, value: boolean}[] = [
     {name: 'Invoices', value: true},
@@ -50,14 +53,14 @@ export class WarehouseItemsComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly productCategoriesService: ProductCategoriesService,
+    private readonly productCategoriesService: CategoriesService,
     private readonly warehouseProductService: WarehouseProductService
   ) {
   }
 
   ngOnInit(): void {
     this.getCategories();
-    this.getProducts();
+    this.getProductsForPagination();
   }
 
   getCategories() {
@@ -70,11 +73,11 @@ export class WarehouseItemsComponent implements OnInit {
     });
   }
 
-  getProducts() {
-    this.warehouseProductService.getGrouped(this.query).pipe(
+  getProductsForPagination() {
+    this.warehouseProductService.getGroupedPagination(this.query).pipe(
       takeUntil(this.destroy$)
-    ).subscribe( products => {
-      products.forEach((product: any) => {
+    ).subscribe( response => {
+      response.results.forEach((product: any, idx) => {
         if (!product.nomenclature) {
           product.nomenclature = {
             id: product.nomenclature_id,
@@ -84,15 +87,30 @@ export class WarehouseItemsComponent implements OnInit {
             category: product.category,
             description: product.description,
           };
+
+          product.checkedForGeneration = false;
+          product.uid = idx;
         }
       });
-      this.products = products;
-      this.products.forEach((product, idx) => {
-        product.checkedForGeneration = false;
-        product.uid = idx;
-      });
+
+      this.products = response.results;
+      this.countProducts = response.count;
       this.isLoading = false;
     });
+  }
+
+  searchProducts() {
+    this.isLoading = true;
+    this.selectedProduct = null;
+
+    this.destroy$.next(true);
+
+    this.query = [
+      {name: 'page', value: this.searchForm.get('page').value},
+      {name: 'at_area', value: false}
+    ];
+
+    this.getProductsForPagination();
   }
 
   onAddItem() {
@@ -100,7 +118,7 @@ export class WarehouseItemsComponent implements OnInit {
   }
 
   createTree() {
-    const getChildren = (nodes: TreeNode<ProductCategory>[]) => {
+    const getChildren = (nodes: TreeNode<Category>[]) => {
       nodes.forEach(node => {
         const children = this.categories.filter(c => c.parent === node.data.id);
 
@@ -118,10 +136,10 @@ export class WarehouseItemsComponent implements OnInit {
       });
     };
 
-    const tree: TreeNode<ProductCategory>[] = this.categories.filter(c => !c.parent).map(category => {
+    const tree: TreeNode<Category>[] = this.categories.filter(c => !c.parent).map(category => {
       return {
         label: category.name,
-        data: <ProductCategory>category,
+        data: <Category>category,
         children: [],
       };
     });
@@ -138,6 +156,13 @@ export class WarehouseItemsComponent implements OnInit {
     let value = null;
     if (warehouseId) value = warehouseId;
     this.searchForm.get('warehouse').patchValue(value);
+  }
+
+  paginate(evt: any) {
+    if (!this.isStartOnePage) {
+      this.searchForm.get('page').patchValue(evt.page + 1);
+      this.searchProducts();
+    }
   }
 
   ngOnDestroy() {

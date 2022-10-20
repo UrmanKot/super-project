@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {Observable, of} from 'rxjs';
-import {ProductStructureCategory} from '../models/product-structure-category';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {ModalActionType} from '@shared/models/modal-action';
 import {MatDialog} from '@angular/material/dialog';
 import {
   CreateEditProductStructureCategoryComponent
-} from '../modals/create-edit-product-sctucture-categoy/create-edit-product-structure-category.component';
+} from '../modals/create-edit-product-structure-category/create-edit-product-structure-category.component';
+import {ProductStructureCategory} from '../models/product-structure-category';
 
 @Injectable({
   providedIn: 'root'

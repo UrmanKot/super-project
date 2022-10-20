@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
-import {ProductStructureCategory} from '../../../product-structure/models/product-structure-category';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {TreeNode} from 'primeng/api';
-import {ProductCategory} from '../../../product-structure/models/product-category';
+import {ProductStructureCategory} from '../../../product-structure/models/product-structure-category';
 
 @Component({
   selector: 'pek-product-structure-category-picker',
@@ -40,7 +39,7 @@ export class ProductStructureCategoryPickerComponent implements OnInit, OnDestro
   }
 
   findCategory() {
-    const find = (nodes: TreeNode<ProductCategory>[]) => {
+    const find = (nodes: TreeNode<ProductStructureCategory>[]) => {
       nodes.forEach(node => {
         if (node.data.id === this.currentCategoryId) {
           this.selectedCategory = node;
@@ -55,7 +54,7 @@ export class ProductStructureCategoryPickerComponent implements OnInit, OnDestro
   }
 
   createTree() {
-    const getChildren = (nodes: TreeNode<ProductCategory>[]) => {
+    const getChildren = (nodes: TreeNode<ProductStructureCategory>[]) => {
       nodes.forEach(node => {
         const children = this.categories.filter(c => c.parent === node.data.id);
 
@@ -73,10 +72,10 @@ export class ProductStructureCategoryPickerComponent implements OnInit, OnDestro
       });
     };
 
-    const tree: TreeNode<ProductCategory>[] = this.categories.filter(c => !c.parent).map(category => {
+    const tree: TreeNode<ProductStructureCategory>[] = this.categories.filter(c => !c.parent).map(category => {
       return {
         label: category.name,
-        data: <ProductCategory>category,
+        data: <ProductStructureCategory>category,
         children: [],
       };
     });

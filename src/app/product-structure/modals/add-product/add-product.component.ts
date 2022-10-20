@@ -8,7 +8,7 @@ import {QuerySearch} from '@shared/models/other';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
-import {ProductCategory} from '../../models/product-category';
+import {Category} from '../../models/category';
 import {AdapterService} from '@shared/services/adapter.service';
 import {Table} from 'primeng/table';
 import {Product} from '../../models/product';
@@ -201,7 +201,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  choiceCategory(category: ProductCategory) {
+  choiceCategory(category: Category) {
     if (category) {
       this.searchForm.get('category').patchValue(category.name);
     } else {

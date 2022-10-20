@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Warehouse} from '../../../warehouse/models/warehouse';
 import {Subject, takeUntil} from 'rxjs';
-import {MeasureUnitService} from '../../../warehouse/services/measure-unit.service';
-import {MeasureUnit} from '../../../product-structure/models/measure-unit';
+import {UnitMeasureService} from '../../../warehouse/services/unit-measure.service';
+import {UnitMeasure} from '../../../product-structure/models/unit-measure';
 
 @Component({
   selector: 'pek-unit-measure-picker',
@@ -17,12 +17,12 @@ export class UnitMeasurePickerComponent implements OnInit {
   selectMeasureUnitId: number;
 
   isLoading = true;
-  measureUnits: MeasureUnit[];
+  unitsMeasure: UnitMeasure[];
 
   private destroy$ = new Subject();
 
   constructor(
-    private readonly measureUnitService: MeasureUnitService
+    private readonly measureUnitService: UnitMeasureService
   ) { }
 
   ngOnInit(): void {
@@ -36,8 +36,8 @@ export class UnitMeasurePickerComponent implements OnInit {
   getMeasureUnit() {
     this.measureUnitService.get().pipe(
       takeUntil(this.destroy$)
-    ).subscribe(measureUnits => {
-      this.measureUnits = measureUnits;
+    ).subscribe(unitsMeasure => {
+      this.unitsMeasure = unitsMeasure;
       this.isLoading = false;
     })
   }
