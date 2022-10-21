@@ -17,7 +17,7 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
     items: [
       {
         label: 'Locators',
-        icon: 'pi pi-list',
+        icon: 'pi pi-bars',
         command: () => this.onGoToWarehouseLocators()
       },
       {

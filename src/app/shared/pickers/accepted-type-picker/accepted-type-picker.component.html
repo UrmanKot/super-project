@@ -1,0 +1,12 @@
+<div class="accepted-type-picker">
+  <p-dropdown
+    [(ngModel)]="selectedValue"
+    (ngModelChange)="onSelectAcceptedType()"
+    [options]="acceptedTypes"
+    [showClear]="true"
+    placeholder="Select Accepted"
+    optionLabel="name"
+    optionValue="value"
+  >
+  </p-dropdown>
+</div>

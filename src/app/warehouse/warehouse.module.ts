@@ -17,6 +17,11 @@ import { WarehouseInsulatorOrdersComponent } from './components/warehouse-insula
 import { WarehouseCategoriesComponent } from './components/warehouse-categories/warehouse-categories.component';
 import { WarehouseWhereUsedComponent } from './components/warehouse-where-used/warehouse-where-used.component';
 import { PhysicalInventoryComponent } from './components/physical-inventory/physical-inventory.component';
+import { PhysicalInventoryProductsComponent } from './components/physical-inventory/physical-inventory-products/physical-inventory-products.component';
+import { WarehouseToolRequestsComponent } from './components/warehouse-tool-requests/warehouse-tool-requests.component';
+import { WarehouseToolRequestComponent } from './components/warehouse-tool-request/warehouse-tool-request.component';
+import { WarehouseProductionRequestsComponent } from './components/warehouse-production-requests/warehouse-production-requests.component';
+import { WarehouseProductionRequestComponent } from './components/warehouse-production-request/warehouse-production-request.component';
 
 
 @NgModule({
@@ -32,7 +37,12 @@ import { PhysicalInventoryComponent } from './components/physical-inventory/phys
     WarehouseInsulatorOrdersComponent,
     WarehouseCategoriesComponent,
     WarehouseWhereUsedComponent,
-    PhysicalInventoryComponent
+    PhysicalInventoryComponent,
+    PhysicalInventoryProductsComponent,
+    WarehouseToolRequestsComponent,
+    WarehouseToolRequestComponent,
+    WarehouseProductionRequestsComponent,
+    WarehouseProductionRequestComponent
   ],
   imports: [
     CommonModule,

@@ -19,6 +19,17 @@
 
 <div class="page__content">
   <div class="page__card">
+    <div class="page__block">
+      <button
+        pButton
+        type="button"
+        class="ml-auto"
+        icon="pi pi-bars"
+        label="Inventory Products"
+        [routerLink]="[selectedPhysicalInventory?.id]"
+        [disabled]="!selectedPhysicalInventory"
+      ></button>
+    </div>
     <div class="page__table">
       <div class="table-pagination-preloader">
         <p-table
@@ -30,12 +41,6 @@
           [(selection)]="selectedPhysicalInventory"
           [value]="physicalInventories"
         >
-          <ng-template pTemplate="caption">
-            <div class="d-flex">
-              <!--            <p class="subtitle" *ngIf="!physicalInventories">Choose the Warehouse to edit</p>-->
-              <!--            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedWarehouse"></p-menubar>-->
-            </div>
-          </ng-template>
           <ng-template pTemplate="header">
             <tr>
               <th class="text-center" style="width: 5%">#</th>
@@ -48,7 +53,8 @@
             <tr [pSelectableRow]="physicalInventory">
               <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
               <td style="width: 25%" class="text-center">{{physicalInventory.id}}</td>
-              <td style="width: 35%" class="text-center">{{physicalInventory?.system_creation_date | date:'dd/MM/yyyy'}}</td>
+              <td style="width: 35%"
+                  class="text-center">{{physicalInventory?.system_creation_date | date:'dd/MM/yyyy'}}</td>
               <td style="width: 35%" class="text-center">
                 <span *ngIf="physicalInventory.status === '1'">Completed</span>
                 <span *ngIf="physicalInventory.status === '0'">In Progress</span>

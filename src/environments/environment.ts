@@ -11,6 +11,5 @@ export const environment = {
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
-  image_path: 'http://erp.slopehelper.com',
   link_url: 'https://pekauto.unitcode.ru/'
 };

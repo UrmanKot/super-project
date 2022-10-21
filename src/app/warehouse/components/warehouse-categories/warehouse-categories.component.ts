@@ -75,6 +75,13 @@ export class WarehouseCategoriesComponent implements OnInit, OnDestroy {
     this.categoriesTree = this.treeService.createTree(this.categories, this.expanseMap);
   }
 
+  getMeasure(measure) {
+    if (measure != null) {
+      return measure.name + ' (' + measure.symbol + ')';
+    } else {
+      return '_';
+    }
+  }
 
   onExpandAll(): void {
     const temp = cloneDeep(this.categoriesTree);

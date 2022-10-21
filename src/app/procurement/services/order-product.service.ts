@@ -20,19 +20,19 @@ export class OrderProductService {
   }
 
   get(query?: QuerySearch[]): Observable<OrderProduct[]> {
-    let queryString = '';
+    let queryParams = '';
 
     if (query) {
       query.forEach((element, index) => {
         if (index > 0) {
-          queryString += '&' + element.name + '=' + element.value;
+          queryParams += '&' + element.name + '=' + element.value;
         } else {
-          queryString += '?' + element.name + '=' + element.value;
+          queryParams += '?' + element.name + '=' + element.value;
         }
       });
     }
 
-    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'all/' + queryString).pipe(
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
       map(response => response.data)
     );
   }

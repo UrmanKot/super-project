@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PhysicalInventory} from '../../models/physical-inventory';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
 import {PhysicalInventoryService} from '../../services/physical-inventory.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-physical-inventory',
   templateUrl: './physical-inventory.component.html',
   styleUrls: ['./physical-inventory.component.scss']
 })
-export class PhysicalInventoryComponent implements OnInit {
+export class PhysicalInventoryComponent implements OnInit, OnDestroy {
   isLoading = true;
 
   physicalInventories: PhysicalInventory[] = [];
@@ -19,6 +20,8 @@ export class PhysicalInventoryComponent implements OnInit {
   searchForm: FormGroup = this.fb.group({
     page: [1]
   });
+
+  private destroy$ = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +39,9 @@ export class PhysicalInventoryComponent implements OnInit {
   ];
 
   getPhysicalInventoryForPagination() {
-    this.physicalInventoryService.getForPagination(this.query).subscribe(physicalInventories => {
+    this.physicalInventoryService.getForPagination(this.query).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(physicalInventories => {
       this.physicalInventories = physicalInventories.results;
       this.countPhysicalInventory = physicalInventories.count;
       this.isLoading = false;
@@ -62,5 +67,9 @@ export class PhysicalInventoryComponent implements OnInit {
   paginate(evt: any) {
     this.searchForm.get('page').patchValue(evt.page + 1);
     this.searchPhysicalInventory();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

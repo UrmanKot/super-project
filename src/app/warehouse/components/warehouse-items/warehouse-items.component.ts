@@ -26,11 +26,6 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
 
   categories: Category[];
 
-  acceptedTypes: {name: string, value: boolean}[] = [
-    {name: 'Invoices', value: true},
-    {name: 'Orders', value: false}
-  ];
-
   searchForm: FormGroup = this.fb.group({
     name: [null],
     code: [null],

@@ -19,19 +19,19 @@ export class LocatorService {
   }
 
   get(query?: QuerySearch[]): Observable<Locator[]> {
-    let queryString = '';
+    let queryParams = '';
     if (query) {
       query.forEach((element, index) => {
         if (index > 0) {
-          queryString += '&' + element.name + '=' + element.value;
+          queryParams += '&' + element.name + '=' + element.value;
         } else {
-          queryString += '?' + element.name + '=' + element.value;
+          queryParams += '?' + element.name + '=' + element.value;
         }
 
       });
     }
 
-    return this.httpClient.get<{ data: Locator[] }>(this.API_URL + this.url + queryString).pipe(
+    return this.httpClient.get<{ data: Locator[] }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }

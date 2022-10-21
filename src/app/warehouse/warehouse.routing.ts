@@ -16,6 +16,17 @@ import {
 import {WarehouseCategoriesComponent} from './components/warehouse-categories/warehouse-categories.component';
 import {WarehouseWhereUsedComponent} from './components/warehouse-where-used/warehouse-where-used.component';
 import {PhysicalInventoryComponent} from './components/physical-inventory/physical-inventory.component';
+import {
+  PhysicalInventoryProductsComponent
+} from './components/physical-inventory/physical-inventory-products/physical-inventory-products.component';
+import {WarehouseToolRequestsComponent} from './components/warehouse-tool-requests/warehouse-tool-requests.component';
+import {WarehouseToolRequestComponent} from './components/warehouse-tool-request/warehouse-tool-request.component';
+import {
+  WarehouseProductionRequestsComponent
+} from './components/warehouse-production-requests/warehouse-production-requests.component';
+import {
+  WarehouseProductionRequestComponent
+} from './components/warehouse-production-request/warehouse-production-request.component';
 
 const routes: Routes = [
   {
@@ -33,7 +44,24 @@ const routes: Routes = [
       {path: 'serial-types', title: 'Serial Types', component: WarehouseSerialTypesComponent},
       {path: 'categories', title: 'Warehouse Categories', component: WarehouseCategoriesComponent},
       {path: 'where-used', title: 'Where Used', component: WarehouseWhereUsedComponent},
-      {path: 'physical-inventory', title: 'Physical Inventory', component: PhysicalInventoryComponent},
+      {
+        path: 'production-requests', children: [
+          {path: '', title: 'Production Requests', component: WarehouseProductionRequestsComponent},
+          {path: ':id', title: 'Tool Request', component: WarehouseProductionRequestComponent}
+        ]
+      },
+      {
+        path: 'tool-requests', children: [
+          {path: '', title: 'Tool Requests', component: WarehouseToolRequestsComponent},
+          {path: ':id', title: 'Tool Request', component: WarehouseToolRequestComponent}
+        ]
+      },
+      {
+        path: 'physical-inventory', children: [
+          {path: '', title: 'Physical Inventory', component: PhysicalInventoryComponent},
+          {path: ':id', title: 'Physical Inventory Products', component: PhysicalInventoryProductsComponent},
+        ]
+      },
       {
         path: 'insulator', children: [
           {path: '', title: 'Insulator', component: WarehouseInsulatorComponent},

@@ -36,6 +36,7 @@ import {
   ProductStructureCategoryPickerComponent
 } from '@shared/pickers/product-structure-category-picker/product-structure-category-picker.component';
 import { UnitMeasurePickerComponent } from './pickers/unit-measure-picker/unit-measure-picker.component';
+import { AcceptedTypePickerComponent } from './pickers/accepted-type-picker/accepted-type-picker.component';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { UnitMeasurePickerComponent } from './pickers/unit-measure-picker/unit-m
     WarehousePickerComponent,
     LocatorPickerComponent,
     NomenclatureTypePickerComponent,
-    UnitMeasurePickerComponent
+    UnitMeasurePickerComponent,
+    AcceptedTypePickerComponent
   ],
   exports: [
     ButtonModule,
@@ -85,7 +87,8 @@ import { UnitMeasurePickerComponent } from './pickers/unit-measure-picker/unit-m
     WarehousePickerComponent,
     LocatorPickerComponent,
     NomenclatureTypePickerComponent,
-    UnitMeasurePickerComponent
+    UnitMeasurePickerComponent,
+    AcceptedTypePickerComponent
   ],
   imports: [
     CommonModule,

@@ -1,28 +1,26 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
-import {QuerySearch} from '@shared/models/other';
-import {InvoiceProduct} from '../models/invoice-product';
 import {Observable} from 'rxjs';
+import {QuerySearch} from '@shared/models/other';
+import {ToolRequest} from './tool-request';
 import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InvoiceProductService {
+export class ToolRequestService {
 
-  API_URL = environment.base_url + environment.procurement_url;
-  readonly url = 'invoice_products/';
+  API_URL = environment.base_url + environment.production_url;
+  readonly url = 'tool_requests/';
 
   constructor(
     private httpClient: HttpClient
   ) {
-
   }
 
-  get(query?: QuerySearch[]): Observable<InvoiceProduct[]> {
+  get(query?: QuerySearch[]): Observable<ToolRequest[]> {
     let queryParams = '';
-
     if (query) {
       query.forEach((element, index) => {
         if (index > 0) {
@@ -33,8 +31,9 @@ export class InvoiceProductService {
       });
     }
 
-    return this.httpClient.get<{ data: InvoiceProduct[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
+    return this.httpClient.get<{ data: ToolRequest[] }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }
+
 }
