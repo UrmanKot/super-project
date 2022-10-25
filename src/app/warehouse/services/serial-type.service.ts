@@ -5,6 +5,11 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {SerialType} from '../models/serial-type';
 import {map} from 'rxjs/operators';
+import {ModalActionType} from '@shared/models/modal-action';
+import {Warehouse} from '../models/warehouse';
+import {CreateEditWarehouseComponent} from '../modals/create-edit-warehouse/create-edit-warehouse.component';
+import {MatDialog} from '@angular/material/dialog';
+import {CreateEditSerialTypeComponent} from '../modals/create-edit-serial-type/create-edit-serial-type.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +20,8 @@ export class SerialTypeService {
   readonly url = 'serial_number_types/';
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -56,5 +62,17 @@ export class SerialTypeService {
 
   delete(serialType: SerialType): Observable<any> {
     return this.httpClient.delete(this.API_URL + this.url + serialType.id + '/');
+  }
+
+  createEditSerialTypeModal(type: ModalActionType, serialType?: SerialType): Observable<SerialType> {
+    return this.dialog
+      .open<CreateEditSerialTypeComponent>(CreateEditSerialTypeComponent, {
+        width: '65rem',
+        height: 'auto',
+        data: {type, serialType},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

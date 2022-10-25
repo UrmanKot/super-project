@@ -1,0 +1,103 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Serial Number Type
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="name">Name*</label>
+      <input type="text" id="name" pInputText formControlName="name">
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="prefix"> Prefix* </label>
+          <input formControlName="prefix" pInputText class="form-control" type="text" id="prefix" required="required">
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="start"> Start Number* </label>
+          <input formControlName="start_number" pInputText class="form-control" type="number" id="start"
+                 required="required">
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="suffix"> Suffix* </label>
+          <input formControlName="suffix" pInputText class="form-control" type="text" id="suffix" required="required">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="nomenclature-header">
+        <label> Nomenclatures </label>
+        <div class="custom-button">
+          <p-button
+            icon="pi pi-plus"
+            type="button"
+            styleClass="p-button-text"
+            (click)="onChoiceNomenclature()"
+          >
+            Add Nomenclature
+          </p-button>
+        </div>
+      </div>
+
+      <div *ngIf="nomenclatures.length > 0; else empty">
+        <p-table
+          [value]="nomenclatures"
+          [paginator]="true"
+          [rows]="10"
+          selectionMode="single"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 7%" class="text-center">#</th>
+              <th style="width: 33%">Name</th>
+              <th style="width: 30%">Code</th>
+              <th style="width: 20%" class="text-center">Type</th>
+              <th style="width: 10%" class="text-right"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-nomenclature let-i="rowIndex">
+            <tr>
+              <td style="width: 7%" class="text-center">{{i + 1}}</td>
+              <td style="width: 33%">{{nomenclature.name}}</td>
+              <td style="width: 30%">{{nomenclature.code}}</td>
+              <td style="width: 20%" class="text-center">{{getType(nomenclature.type)}}</td>
+              <td style="width: 10%" class="text-right">
+                <button
+                  pButton
+                  (click)="onRemoveNomenclature(nomenclature.id)"
+                  type="button"
+                  class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                  icon="pi pi-trash"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <ng-template #empty>
+        <div class="empty">The nomenclature is missing</div>
+      </ng-template>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

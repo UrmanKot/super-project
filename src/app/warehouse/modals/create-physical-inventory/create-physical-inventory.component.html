@@ -1,0 +1,50 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Create Physical Inventory
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Warehouses</label>
+      <pek-multi-warehouse-picker
+        (selectWarehouses)="selectWarehouses($event)"
+        [currentWarehousesIds]="form.get('warehouses').value"
+      ></pek-multi-warehouse-picker>
+    </div>
+
+    <div class="form-group">
+      <label>Locator</label>
+      <pek-multi-locator-picker
+        [isDisabled]="true"
+        [currentWarehousesIds]="form.get('warehouses').value"
+        (selectLocators)="selectLocators($event)"
+      >
+      </pek-multi-locator-picker>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    pButton
+    type="button"
+    label="Create"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onCreatePhysicalInventory()"
+  ></button>
+</mat-dialog-actions>

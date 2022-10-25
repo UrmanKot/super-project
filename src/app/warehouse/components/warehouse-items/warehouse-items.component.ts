@@ -35,7 +35,7 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
     root_categories: [null],
     locator: {value: null, disabled: true},
     type: [null],
-    acceptedByInvoices: [null],
+    accepted_by_invoices: [null],
     page: [1],
   });
 

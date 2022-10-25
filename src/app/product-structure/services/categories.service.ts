@@ -5,6 +5,11 @@ import {Observable, of} from 'rxjs';
 import {Category} from '../models/category';
 import {QuerySearch} from '@shared/models/other';
 import {map} from 'rxjs/operators';
+import {ModalActionType} from '@shared/models/modal-action';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  CreateEditWarehouseCategoryComponent
+} from '../../warehouse/modals/create-edit-warehouse-category/create-edit-warehouse-category.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +21,8 @@ export class CategoriesService {
   categories: Category[];
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -47,5 +53,40 @@ export class CategoriesService {
       this.categories = categories;
       return categories;
     }));
+  }
+
+  create(category: Partial<Category>): Observable<Category> {
+    return this.httpClient.post<{ data: Category }>(this.API_URL + this.url, category).pipe(
+      map(response => response.data)
+    );
+  }
+
+  updatePartly(category: Partial<Category>): Observable<Category> {
+    return this.httpClient.patch<{ data: Category }>(this.API_URL + this.url + `${category.id}/`, category).pipe(
+      map(response => response.data)
+    );
+  }
+
+  delete(category: Category): Observable<any> {
+    return this.httpClient.delete(this.API_URL + this.url + `${category.id}/`);
+  };
+
+  move(move: any, categoryId: number): Observable<Category> {
+    return this.httpClient.post<{ data: Category }>(this.API_URL + this.url + `${categoryId}/move/`, move).pipe(
+      map(response => response.data)
+    );
+  }
+
+  createEditWarehouseCategoryModal(type: ModalActionType, category?: Category): Observable<Category> {
+    return this.dialog
+      .open<CreateEditWarehouseCategoryComponent>(CreateEditWarehouseCategoryComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {type, category},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

@@ -147,7 +147,7 @@ export class ProductService {
       .open<EditProductComponent>(EditProductComponent, {
         width: '50rem',
         height: 'auto',
-        panelClass: 'modal-edit-product',
+        panelClass: 'modal-overflow-visible',
         data: product,
         autoFocus: false,
         enterAnimationDuration: '250ms'

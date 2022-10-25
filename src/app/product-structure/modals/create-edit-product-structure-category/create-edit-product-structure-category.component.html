@@ -1,7 +1,7 @@
 <div class="create-edit-product-structure-category">
   <div class="modal-header">
     <h2 class="modal-header__title">
-      {{data.type}} Prefix
+      {{data.type}} Product Structure
     </h2>
   </div>
 
@@ -26,6 +26,7 @@
       <div class="form-group">
         <label>Parent Category</label>
         <pek-product-structure-category-picker
+          [ignoredCategoryId]="data.category?.id"
           [currentCategoryId]="form.get('parent').value"
           (choiceCategory)="onSelectCategory($event)"
         ></pek-product-structure-category-picker>

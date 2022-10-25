@@ -5,7 +5,7 @@
       <h1>Product Structure Categories</h1>
     </div>
 
-    <div class="page-header__tools">
+    <div class="page__tools">
       <button pButton type="button" icon="pi pi-plus" label="New Category" (click)="onCreateCategory()"></button>
     </div>
   </div>
@@ -27,6 +27,7 @@
                 type="button"
                 icon="pi pi-arrow-up"
                 class="p-button-rounded mr-2"
+                [disabled]="!selectedCategory"
                 [loading]="isMovingUp"
                 (click)="up()"
               ></button>
@@ -35,6 +36,7 @@
                 type="button"
                 icon="pi pi-arrow-down"
                 class="p-button-rounded mr-2"
+                [disabled]="!selectedCategory"
                 [loading]="isMovingDown"
                 (click)="down()"
               ></button>

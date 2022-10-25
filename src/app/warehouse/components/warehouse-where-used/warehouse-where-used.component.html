@@ -18,25 +18,31 @@
           <div class="col-3">
             <div class="form-group">
               <label>Code</label>
-              <input class="form-control" pInputText #searchBoxCode>
+              <input class="form-control" formControlName="code" pInputText #searchBoxCode>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Name</label>
-              <input class="form-control" pInputText #searchBoxName>
+              <input class="form-control" formControlName="name" pInputText #searchBoxName>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Category</label>
-              <pek-product-category-picker></pek-product-category-picker>
+              <pek-product-category-picker
+                (choiceCategoryFolAllIds)="onSelectCategory($event)"
+                [isAllIds]="true"
+              ></pek-product-category-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Product Structure Category</label>
-              <pek-product-structure-category-picker></pek-product-structure-category-picker>
+              <pek-product-structure-category-picker
+                (choiceCategoryFolAllIds)="onSelectRootCategory($event)"
+                [isAllIds]="true"
+              ></pek-product-structure-category-picker>
             </div>
           </div>
         </div>
@@ -71,7 +77,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-2" [attr.colspan]="4">
+              <td class="text-center p-4" [attr.colspan]="4">
                 <i *ngIf="isLoadingNomenclatures" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingNomenclatures">No Records Found</span>
               </td>
@@ -82,7 +88,10 @@
           <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
         </div>
       </div>
-      <div class="paginator-wrapper" *ngIf="nomenclatureList.length > 0">
+      <div
+        class="paginator-wrapper"
+        [class.hide]="nomenclatureList.length === 0"
+      >
         <p-paginator
           #paginator
           [rows]="10"
@@ -126,7 +135,7 @@
             <td style="width: 30%">
               <a
                 target="_blank"
-                [routerLink]="'/dash/product-structure/structure/' + usedNomenclature.id"
+                [routerLink]="'/product-structure/products/structure/' + usedNomenclature.id"
               >
                 {{usedNomenclature.nomenclature.code}}
               </a>

@@ -1,4 +1,5 @@
 import {Nomenclature} from '@shared/models/nomenclature';
+import {Locator} from '../../warehouse/models/locator';
 
 export class Product {
   readonly id: number;
@@ -19,6 +20,8 @@ export class Product {
   parent?: number;
   lft?: number;
   rght?: number;
+  locator?: Locator;
+  physical_inventory_nomenclature?: any;
 }
 
 export class ProductFile {

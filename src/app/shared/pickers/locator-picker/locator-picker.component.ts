@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {LocatorService} from '../../../warehouse/services/locator.service';
 import {Subject} from 'rxjs';
 import {Locator} from '../../../warehouse/models/locator';
@@ -9,6 +9,7 @@ import {Locator} from '../../../warehouse/models/locator';
   styleUrls: ['./locator-picker.component.scss']
 })
 export class LocatorPickerComponent implements OnInit, OnChanges, OnDestroy {
+  @Output() selectLocator: EventEmitter<number> = new EventEmitter<number>();
   @Input() isAllLocators = true;
   @Input() warehouseId: number = null;
   @Input() isDisabled = false;
@@ -29,6 +30,7 @@ export class LocatorPickerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.selectLocatorId = null;
     if ('warehouseId' in changes) {
       if (!this.isAllLocators && this.warehouseId) {
         this.getLocatorsForWarehouse();
@@ -49,7 +51,7 @@ export class LocatorPickerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSelectLocator() {
-
+    this.selectLocator.emit(this.selectLocatorId);
   }
 
   ngOnDestroy() {

@@ -68,6 +68,14 @@
   }
 }
 
+.p-dropdown-panel {
+  .p-dropdown-items {
+    .p-dropdown-item-group {
+      font-weight: 500 !important;
+    }
+  }
+}
+
 .p-dropdown-label {
   line-height: 1.334;
 }

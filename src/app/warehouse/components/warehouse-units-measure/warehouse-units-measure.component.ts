@@ -3,6 +3,7 @@ import {UnitMeasureService} from '../../services/unit-measure.service';
 import {UnitMeasure} from '../../../product-structure/models/unit-measure';
 import {MenuItem} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-warehouse-units-measure',
@@ -34,7 +35,8 @@ export class WarehouseUnitsMeasureComponent implements OnInit, OnDestroy  {
   private destroy$ = new Subject();
 
   constructor(
-    private readonly unitMeasureService: UnitMeasureService
+    private readonly unitMeasureService: UnitMeasureService,
+    private readonly modalService: ModalService,
   ) { }
 
   ngOnInit(): void {
@@ -51,15 +53,33 @@ export class WarehouseUnitsMeasureComponent implements OnInit, OnDestroy  {
   }
 
   onAddUnit() {
-
+    this.unitMeasureService.createEditUnitMeasureModal('create').subscribe(unitMeasure => {
+      if (unitMeasure) {
+        this.unitsMeasure.unshift(unitMeasure);
+      }
+    });
   }
 
   onEditUnit() {
-    return undefined;
+    this.unitMeasureService.createEditUnitMeasureModal('edit', this.selectedUnitMeasure).subscribe(unitMeasure => {
+      if (unitMeasure) {
+        const index = this.unitsMeasure.findIndex(t => t.id === this.selectedUnitMeasure.id);
+        this.unitsMeasure[index] = unitMeasure;
+        this.selectedUnitMeasure = this.unitsMeasure[index];
+      }
+    });
   }
 
   onRemoveUnit() {
-    return undefined;
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.unitMeasureService.delete(this.selectedUnitMeasure).subscribe(() => {
+          const index = this.unitsMeasure.findIndex(w => w.id === this.selectedUnitMeasure.id);
+          this.unitsMeasure.splice(index, 1);
+          this.selectedUnitMeasure = null;
+        });
+      }
+    });
   }
 
   ngOnDestroy() {

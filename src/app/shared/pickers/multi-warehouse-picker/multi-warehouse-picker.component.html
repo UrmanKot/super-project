@@ -1,0 +1,16 @@
+<div class="multi-warehouse-picker">
+  <p-multiSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="warehouses"
+    [(ngModel)]="selectedWarehouses"
+    optionLabel="name"
+    placeholder="Select Warehouses"
+    (ngModelChange)="onSelectWarehouses($event)"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

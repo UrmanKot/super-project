@@ -37,6 +37,11 @@ import {
 } from '@shared/pickers/product-structure-category-picker/product-structure-category-picker.component';
 import { UnitMeasurePickerComponent } from './pickers/unit-measure-picker/unit-measure-picker.component';
 import { AcceptedTypePickerComponent } from './pickers/accepted-type-picker/accepted-type-picker.component';
+import {MultiWarehousePickerComponent} from '@shared/pickers/multi-warehouse-picker/multi-warehouse-picker.component';
+import { MultiLocatorPickerComponent } from './pickers/multi-locator-picker/multi-locator-picker.component';
+import { GroupLocatorPickerComponent } from './pickers/group-locator-picker/group-locator-picker.component';
+import { TechnologyPickerComponent } from './pickers/technology-picker/technology-picker.component';
+import { NomenclaturePickerModalComponent } from './modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
 
 
 @NgModule({
@@ -57,7 +62,12 @@ import { AcceptedTypePickerComponent } from './pickers/accepted-type-picker/acce
     LocatorPickerComponent,
     NomenclatureTypePickerComponent,
     UnitMeasurePickerComponent,
-    AcceptedTypePickerComponent
+    AcceptedTypePickerComponent,
+    MultiWarehousePickerComponent,
+    MultiLocatorPickerComponent,
+    GroupLocatorPickerComponent,
+    TechnologyPickerComponent,
+    NomenclaturePickerModalComponent
   ],
   exports: [
     ButtonModule,
@@ -88,7 +98,11 @@ import { AcceptedTypePickerComponent } from './pickers/accepted-type-picker/acce
     LocatorPickerComponent,
     NomenclatureTypePickerComponent,
     UnitMeasurePickerComponent,
-    AcceptedTypePickerComponent
+    AcceptedTypePickerComponent,
+    MultiWarehousePickerComponent,
+    MultiLocatorPickerComponent,
+    GroupLocatorPickerComponent,
+    TechnologyPickerComponent
   ],
   imports: [
     CommonModule,

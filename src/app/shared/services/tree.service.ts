@@ -12,7 +12,7 @@ export class TreeService {
     const prepareNodes: Partial<TreeNode>[] = [];
 
     categories.forEach(element => {
-      const ins = {data: element, expanded: false};
+      const ins = {data: element, expanded: false, children: []};
 
       if (expanseMap) {
         ins.expanded = expanseMap[element.id];
@@ -37,7 +37,7 @@ export class TreeService {
       parentEl.children = [...(parentEl.children || []), el];
 
       if (parentEl.children.length === 0) {
-        delete parentEl.children;
+        // delete parentEl.children;
       }
     });
 

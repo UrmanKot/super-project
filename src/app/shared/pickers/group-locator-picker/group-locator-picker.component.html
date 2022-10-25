@@ -1,0 +1,24 @@
+<div class="group-locator-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="groupLocators"
+    placeholder="Select Locator"
+    [(ngModel)]="selectLocatorId"
+    (ngModelChange)="onSelectLocator()"
+    [showClear]="true"
+    [filter]="true"
+    [group]="true"
+  >
+    <ng-template let-group pTemplate="group">
+      <div class="d-flex align-items-center">
+        <span>{{group.label}}</span>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

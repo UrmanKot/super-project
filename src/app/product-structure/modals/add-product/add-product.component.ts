@@ -231,7 +231,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.dialogRef.removePanelClass('modal-picker');
-    this.dialogRef.addPanelClass('modal-edit-product');
+    this.dialogRef.addPanelClass('modal-overflow-visible');
   }
 
   onChangeFormValue(data: { invalid: boolean, formValue: Partial<Product & Nomenclature> }) {

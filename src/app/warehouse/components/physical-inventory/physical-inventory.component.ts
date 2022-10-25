@@ -61,7 +61,11 @@ export class PhysicalInventoryComponent implements OnInit, OnDestroy {
   }
 
   onCreatePhysicalInventory() {
-
+    this.physicalInventoryService.openCreatePhysicalInventoryModal().subscribe(response => {
+      if (response) {
+        this.searchPhysicalInventory();
+      }
+    })
   }
 
   paginate(evt: any) {

@@ -1,16 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
-import {Subject, takeUntil} from 'rxjs';
+import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {QuerySearch} from '@shared/models/other';
+import {Paginator} from 'primeng/paginator';
+import {debounceTime, map, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'pek-warehouse-where-used',
   templateUrl: './warehouse-where-used.component.html',
   styleUrls: ['./warehouse-where-used.component.scss']
 })
-export class WarehouseWhereUsedComponent implements OnInit {
+export class WarehouseWhereUsedComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('paginator') paginator: Paginator;
+  @ViewChild('searchBoxName') searchBoxName;
+  @ViewChild('searchBoxCode') searchBoxCode;
 
   isStartOnePage = false;
   isLoadingNomenclatures = true;
@@ -32,6 +37,8 @@ export class WarehouseWhereUsedComponent implements OnInit {
     page: [1]
   });
 
+  queryKey = 'name:/code:/categories:/root_categories:';
+
   query: QuerySearch[] = [
     {name: 'page', value: this.searchForm.get('page').value},
     {name: 'paginated', value: true}
@@ -45,6 +52,26 @@ export class WarehouseWhereUsedComponent implements OnInit {
   ) {
   }
 
+  ngAfterViewInit() {
+    fromEvent(this.searchBoxName.nativeElement, 'keyup')
+      .pipe(
+        tap(() => this.selectedNomenclature = null),
+        map(() => this.searchBoxName.nativeElement.value),
+        debounceTime(350),
+      ).subscribe(() => {
+      this.searchNomenclatures();
+    });
+
+    fromEvent(this.searchBoxCode.nativeElement, 'keyup')
+      .pipe(
+        tap(() => this.selectedNomenclature = null),
+        map(() => this.searchBoxCode.nativeElement.value),
+        debounceTime(350),
+      ).subscribe(() => {
+      this.searchNomenclatures();
+    });
+  }
+
   ngOnInit(): void {
     this.getNomenclatures();
   }
@@ -56,9 +83,9 @@ export class WarehouseWhereUsedComponent implements OnInit {
       this.nomenclatureList = nomenclatures.results;
       this.countNomenclatures = nomenclatures.count;
 
-      // if (this.isStartOnePage) {
-      //   this.paginator.changePage(0);
-      // }
+      if (this.isStartOnePage) {
+        this.paginator.changePage(0);
+      }
 
       this.isStartOnePage = false;
       this.isLoadingNomenclatures = false;
@@ -95,13 +122,39 @@ export class WarehouseWhereUsedComponent implements OnInit {
   }
 
   searchNomenclatures() {
+    this.destroy$.next(true);
     this.isLoadingNomenclatures = true;
     this.selectedNomenclature = null;
+
+    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/categories:${this.searchForm.get('category').value}/root_categories:${this.searchForm.get('root_categories').value}`;
+
+    if (newQueryKey !== this.queryKey) {
+      this.queryKey = newQueryKey;
+      this.searchForm.get('page').patchValue(1);
+      this.isStartOnePage = true;
+    }
 
     this.query = [
       {name: 'page', value: this.searchForm.get('page').value},
       {name: 'paginated', value: true}
     ];
+
+    if (this.searchForm.get('name').value !== '') {
+      this.query.push({name: 'name', value: this.searchForm.get('name').value});
+    }
+
+    if (this.searchForm.get('code').value !== '') {
+      this.query.push({name: 'code', value: encodeURIComponent(this.searchForm.get('code').value)});
+    }
+
+    if (this.searchForm.get('category').value) {
+      this.query.push({name: 'categories', value: this.searchForm.get('category').value});
+    }
+
+    if (this.searchForm.get('root_categories').value) this.query.push({
+      name: 'root_categories',
+      value: this.searchForm.get('root_categories').value
+    });
 
     this.getNomenclatures();
   }
@@ -115,5 +168,24 @@ export class WarehouseWhereUsedComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+  }
+
+  onSelectCategory(ids: number[]) {
+    if (ids) {
+      this.searchForm.get('category').patchValue(ids.join(','));
+    } else {
+      this.searchForm.get('category').patchValue('');
+    }
+    this.searchNomenclatures();
+  }
+
+  onSelectRootCategory(ids: number[]) {
+    if (ids) {
+      this.searchForm.get('root_categories').patchValue(ids.join(','));
+    } else {
+      this.searchForm.get('root_categories').patchValue('');
+    }
+
+    this.searchNomenclatures();
   }
 }

@@ -9,6 +9,7 @@ import {
   CreateEditProductStructureCategoryComponent
 } from '../modals/create-edit-product-structure-category/create-edit-product-structure-category.component';
 import {ProductStructureCategory} from '../models/product-structure-category';
+import {Product} from '../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,12 @@ export class ProductStructureCategoryService {
   delete(category: ProductStructureCategory): Observable<any> {
     return this.httpClient.delete(this.API_URL + this.url + `${category.id}/`);
   };
+
+  move(move: any, categoryId: number): Observable<ProductStructureCategory> {
+    return this.httpClient.post<{data: ProductStructureCategory}>(this.API_URL + this.url + `${categoryId}/move/`, move).pipe(
+      map(response => response.data)
+    );
+  }
 
   createEditCategory(type: ModalActionType, category?: ProductStructureCategory): Observable<ProductStructureCategory> {
     return this.dialog

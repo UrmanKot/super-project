@@ -22,6 +22,14 @@ import { WarehouseToolRequestsComponent } from './components/warehouse-tool-requ
 import { WarehouseToolRequestComponent } from './components/warehouse-tool-request/warehouse-tool-request.component';
 import { WarehouseProductionRequestsComponent } from './components/warehouse-production-requests/warehouse-production-requests.component';
 import { WarehouseProductionRequestComponent } from './components/warehouse-production-request/warehouse-production-request.component';
+import { CreatePhysicalInventoryComponent } from './modals/create-physical-inventory/create-physical-inventory.component';
+import { MovePhysicalInventoryProductComponent } from './modals/move-physical-inventory-product/move-physical-inventory-product.component';
+import { AddProductToPhysicalInventoryComponent } from './modals/add-product-to-physical-inventory/add-product-to-physical-inventory.component';
+import { CreateEditWarehouseComponent } from './modals/create-edit-warehouse/create-edit-warehouse.component';
+import { CreateEditLocatorComponent } from './modals/create-edit-locator/create-edit-locator.component';
+import { CreateEditWarehouseCategoryComponent } from './modals/create-edit-warehouse-category/create-edit-warehouse-category.component';
+import {CreateEditUnitMeasureComponent} from './modals/create-edit-unit-measure/create-edit-unit-measure.component';
+import { CreateEditSerialTypeComponent } from './modals/create-edit-serial-type/create-edit-serial-type.component';
 
 
 @NgModule({
@@ -42,7 +50,15 @@ import { WarehouseProductionRequestComponent } from './components/warehouse-prod
     WarehouseToolRequestsComponent,
     WarehouseToolRequestComponent,
     WarehouseProductionRequestsComponent,
-    WarehouseProductionRequestComponent
+    WarehouseProductionRequestComponent,
+    CreatePhysicalInventoryComponent,
+    MovePhysicalInventoryProductComponent,
+    AddProductToPhysicalInventoryComponent,
+    CreateEditWarehouseComponent,
+    CreateEditLocatorComponent,
+    CreateEditWarehouseCategoryComponent,
+    CreateEditUnitMeasureComponent,
+    CreateEditSerialTypeComponent
   ],
   imports: [
     CommonModule,

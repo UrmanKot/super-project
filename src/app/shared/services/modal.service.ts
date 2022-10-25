@@ -6,6 +6,9 @@ import {GuideComponent} from '../../guide/guide/guide.component';
 import {PasteImageComponent} from '@shared/modals/paste-image/paste-image.component';
 import {NomenclatureImage} from '@shared/models/nomenclature';
 import {ImageGalleryComponent} from '@shared/modals/image-gallery/image-gallery.component';
+import {
+  NomenclaturePickerModalComponent
+} from '@shared/modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +67,18 @@ export class ModalService {
         autoFocus: false,
         disableClose: true,
         backdropClass: 'guide-modalbox',
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  choiceNomenclatureModal() {
+    return this.dialog
+      .open<NomenclaturePickerModalComponent>(NomenclaturePickerModalComponent, {
+        width: '90rem',
+        height: 'auto',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
       })
       .afterClosed()
       .pipe();

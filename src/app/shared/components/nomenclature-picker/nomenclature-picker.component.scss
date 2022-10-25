@@ -1,0 +1,22 @@
+:host {
+  position: relative;
+}
+
+.hide {
+  display: none;
+}
+
+.nomenclature-picker {
+  &__form {
+    margin-bottom: 1rem;
+  }
+
+  &_paginator-absolute {
+    p-paginator {
+      position: absolute;
+      bottom: -4.875rem;
+      left: 0;
+      right: 0;
+    }
+  }
+}

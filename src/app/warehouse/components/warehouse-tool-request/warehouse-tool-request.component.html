@@ -11,7 +11,7 @@
         </ng-container>
       </h1>
     </div>
-    <div class="page-header__tools">
+    <div class="page__tools">
       <button pButton type="button" icon="pi pi-check" label="Complete"></button>
     </div>
   </div>
@@ -30,6 +30,18 @@
         [(selection)]="selectedRequest"
         [value]="requests"
       >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <button
+              class="ml-auto"
+              pButton
+              type="button"
+              icon="pi pi-images"
+              label="Show Images"
+              [disabled]="!selectedRequest"
+            ></button>
+          </div>
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th class="text-center" style="width: 5%">#</th>

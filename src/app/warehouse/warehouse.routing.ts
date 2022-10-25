@@ -41,7 +41,7 @@ const routes: Routes = [
         ]
       },
       {path: 'measure', title: 'Units of Measure', component: WarehouseUnitsMeasureComponent},
-      {path: 'serial-types', title: 'Serial Types', component: WarehouseSerialTypesComponent},
+      {path: 'serial-types', title: 'Serial Number Types', component: WarehouseSerialTypesComponent},
       {path: 'categories', title: 'Warehouse Categories', component: WarehouseCategoriesComponent},
       {path: 'where-used', title: 'Where Used', component: WarehouseWhereUsedComponent},
       {

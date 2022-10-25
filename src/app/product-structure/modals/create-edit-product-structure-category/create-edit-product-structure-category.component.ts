@@ -18,7 +18,7 @@ export class CreateEditProductStructureCategoryComponent implements OnInit {
     name: ['', Validators.required],
     description: ['', Validators.required],
     unit_of_measure: [0],
-    parent: [null]
+    parent: [null],
   });
 
   constructor(

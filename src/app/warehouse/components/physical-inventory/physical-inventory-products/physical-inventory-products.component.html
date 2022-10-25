@@ -12,14 +12,36 @@
         </ng-container>
       </h1>
     </div>
-    <div class="page-header__tools">
+    <div class="page__tools">
       <button
         pButton
         type="button"
-        icon="pi pi-check"
-        label="Complete"
+        icon="pi pi-plus"
+        label="Add Product"
+        class="mr-2"
+        (click)="onOpenAddProductModal()"
       >
       </button>
+      <button
+        pButton
+        type="button"
+        class="mr-2 p-button-icon"
+        icon="pi pi-check"
+        label="Complete"
+        (click)="onComplete()"
+        [loading]="isCompleting"
+        [disabled]="!currentInventory || (isLoadingCurrentInventory && currentInventory.status === '0')">
+      </button>
+
+      <button
+        pButton
+        type="button"
+        icon="pi pi-times"
+        label="Cancel Physical Inventory"
+        class="p-button-danger p-button-icon"
+        [loading]="isCancelation"
+        (click)="onRemovePhysicalInventory()"
+      ></button>
     </div>
   </div>
 </div>
@@ -34,19 +56,19 @@
         <div class="col-4">
           <div class="form-group">
             <label>Code</label>
-            <input class="form-control" pInputText #searchBoxCode>
+            <input class="form-control" formControlName="code" pInputText #searchBoxCode>
           </div>
         </div>
         <div class="col-4">
           <div class="form-group">
             <label>Name</label>
-            <input class="form-control" pInputText #searchBoxName>
+            <input class="form-control" formControlName="name" pInputText #searchBoxName>
           </div>
         </div>
         <div class="col-4">
           <div class="form-group">
             <label>Description</label>
-            <input class="form-control" pInputText #searchBoxDescription>
+            <input class="form-control" formControlName="description" pInputText #searchBoxDescription>
           </div>
         </div>
         <div class="col-4">
@@ -54,13 +76,17 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Warehouses</label>
-                <pek-warehouse-picker (selectWarehouse)="selectWarehouse($event)"></pek-warehouse-picker>
+                <pek-warehouse-picker
+                  [acceptedWarehouseIds]="warehousesIds"
+                  (selectWarehouse)="onSelectWarehouse($event)"
+                ></pek-warehouse-picker>
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
                 <label>Locator</label>
                 <pek-locator-picker
+                  (selectLocator)="onSelectLocator($event)"
                   [warehouseId]="searchForm.get('warehouse').value"
                   [isAllLocators]="false"
                   [isDisabled]="true"
@@ -74,15 +100,33 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Type</label>
-                <pek-nomenclature-type-picker></pek-nomenclature-type-picker>
+                <pek-nomenclature-type-picker
+                  (choiceNomenclatureType)="onSelectNomenclatureType($event)"
+                ></pek-nomenclature-type-picker>
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
                 <label>Accepted Type</label>
-                <pek-accepted-type-picker></pek-accepted-type-picker>
+                <pek-accepted-type-picker
+                  (selectAcceptedType)=onSelectAcceptedByInvoices($event)
+                ></pek-accepted-type-picker>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="action-buttons">
+            <button
+              class="ml-auto mt-auto"
+              pButton
+              type="button"
+              icon="pi pi-angle-double-right"
+              label="Move product"
+              [disabled]="!selectedInventoryProduct"
+              (click)="onMoveProduct()"
+            >
+            </button>
           </div>
         </div>
       </div>
@@ -94,6 +138,7 @@
         selectionMode="single"
         scrollHeight="calc(100vh - 30.25rem)"
         [scrollable]="true"
+        dataKey="id"
         [rows]="10"
         [(selection)]="selectedInventoryProduct"
         [value]="inventoryProducts"
@@ -132,13 +177,19 @@
               <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
                 <b *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">(S)</b>
                 {{inventoryProduct.product.nomenclature.name}}
-                <b *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">({{inventoryProduct.countProducts}})</b>
+                <b
+                  *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">
+                  ({{inventoryProduct.countProducts}})
+                </b>
               </ng-container>
 
               <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
                 <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
                 {{inventoryProduct.physical_inventory_nomenclature.name}}
-                <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">({{inventoryProduct.countProducts}})</b>
+                <b
+                  *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">
+                  ({{inventoryProduct.countProducts}})
+                </b>
               </ng-container>
             </td>
             <td style="width: 10%" class="text-center">
@@ -153,19 +204,25 @@
             <td style="width: 9%" class="text-center">
               {{inventoryProduct.initial_quantity}}
             </td>
-            <td class="text-center" style="width: 11%">
+            <td pEditableColumn class="text-center" style="width: 11%">
 
-<!--              <p-cellEditor *ngIf="currentInventory && currentInventory.status === '0'">-->
-<!--                <ng-template pTemplate="input">-->
-<!--                  <input pInputText type="number" step="1" [(ngModel)]="inventoryProduct.new_quantity"-->
-<!--                         (ngModelChange)="newQuantity$.next(inventoryProduct)">-->
-<!--                </ng-template>-->
-<!--                <ng-template pTemplate="output">-->
-<!--                  {{inventoryProduct.new_quantity}}-->
-<!--                </ng-template>-->
-<!--              </p-cellEditor>-->
+              <p-cellEditor *ngIf="currentInventory && currentInventory.status === '0'">
+                <ng-template pTemplate="input">
+                  <input
+                    pInputText
+                    style="width: 100%; text-align: center"
+                    type="number"
+                    step="1"
+                    [(ngModel)]="inventoryProduct.new_quantity"
+                    (ngModelChange)="newQuantity$.next(inventoryProduct)"
+                  >
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{inventoryProduct.new_quantity}}
+                </ng-template>
+              </p-cellEditor>
 
-<!--              <span *ngIf="currentInventory && currentInventory.status === '1'">{{inventoryProduct.new_quantity}}</span>-->
+              <span *ngIf="currentInventory && currentInventory.status === '1'">{{inventoryProduct.new_quantity}}</span>
             </td>
             <td style="width: 13%" class="text-center">
               <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
@@ -222,7 +279,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td class="text-center p-2" [attr.colspan]="9">
+            <td class="text-center p-4" [attr.colspan]="10">
               <i *ngIf="isLoadingInventoryList" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoadingInventoryList">No Records Found</span>
             </td>
@@ -233,7 +290,11 @@
         <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
       </div>
     </div>
-    <div class="paginator-wrapper" *ngIf="inventoryProducts.length > 0">
+    <div
+      class="paginator-wrapper"
+      *ngIf="!isShowAll"
+      [class.paginator-wrapper_hide]="inventoryProducts.length === 0"
+    >
       <p-paginator
         #paginator
         [rows]="10"
@@ -242,11 +303,22 @@
       >
       </p-paginator>
       <p-button
+        (click)="onShowAll()"
         class="paginator-all"
         type="button"
         styleClass="p-button-text"
       >
         All
+      </p-button>
+    </div>
+
+    <div *ngIf="isShowAll" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="onShowPartial()"
+        styleClass="p-button-text"
+      >
+        Return pagination
       </p-button>
     </div>
   </div>

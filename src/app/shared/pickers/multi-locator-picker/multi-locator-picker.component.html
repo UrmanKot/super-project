@@ -1,0 +1,17 @@
+<div class="multi-locator-picker">
+  <p-multiSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="locators"
+    [(ngModel)]="selectedLocators"
+    optionLabel="name"
+    placeholder="Select Locators"
+    (ngModelChange)="onSelectLocators($event)"
+    [disabled]="isDisabled"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

@@ -65,6 +65,7 @@ export class TechnologiesComponent implements OnInit, OnDestroy {
       if (technology) {
         const index = this.technologies.findIndex(t => t.id === this.selectedTechnology.id);
         this.technologies[index] = technology;
+        this.selectedTechnology = this.technologies[index];
       }
     });
   }

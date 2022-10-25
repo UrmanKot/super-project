@@ -10,7 +10,7 @@ import {Subject, takeUntil} from 'rxjs';
 })
 export class MultiTechnologyPickerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentTechnologiesIds: number[] = [];
-  @Output() selectTechnology: EventEmitter<Technology[]> = new EventEmitter<Technology[]>();
+  @Output() selectTechnologies: EventEmitter<Technology[]> = new EventEmitter<Technology[]>();
 
   isLoading = true;
   technologies: Technology[] = [];
@@ -40,8 +40,8 @@ export class MultiTechnologyPickerComponent implements OnInit, OnChanges, OnDest
     }
   }
 
-  onSelectTechnology(technologies: Technology[]) {
-    this.selectTechnology.emit(technologies);
+  onSelectTechnologies(technologies: Technology[]) {
+    this.selectTechnologies.emit(technologies);
   }
 
   findTechnologies() {

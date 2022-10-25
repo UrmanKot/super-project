@@ -1,0 +1,11 @@
+.nomenclature-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  label {
+    margin-bottom: 0;
+  }
+}

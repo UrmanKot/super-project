@@ -4,7 +4,7 @@
       <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
       <h1>Locators (Warehouse: {{isLoadingWarehouse ? '...' : currentWarehouse.name}})</h1>
     </div>
-    <div class="page-header__tools">
+    <div class="page__tools">
       <button pButton type="button" icon="pi pi-plus" label="New Locator" (click)="onAddLocator()"></button>
     </div>
   </div>
@@ -53,7 +53,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td class="text-center p-4" [attr.colspan]="4">
+            <td class="text-center p-4" [attr.colspan]="7">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>
             </td>

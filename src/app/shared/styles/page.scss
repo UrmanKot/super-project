@@ -9,6 +9,11 @@
     box-shadow: 0 0.125rem 1rem #00000010;
   }
 
+  &__tools {
+    display: flex;
+    margin-left: 2.5rem;
+  }
+
   &__block {
     display: flex;
     width: 100%;

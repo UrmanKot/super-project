@@ -1,0 +1,55 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Move Product
+
+        <ng-container *ngIf="data.product; else productTitle">
+          {{data.product.nomenclature.name}}
+        </ng-container>
+
+        <ng-template #productTitle>
+          {{data.physical_inventory_nomenclature.name}}
+        </ng-template>
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <label class="current-locator">
+      Current Locator: {{data.product.locator.name}}
+      R: {{data.product.locator.row}}
+      Col: {{data.product.locator.column}}
+      Sh: {{data.product.locator.shelf}}
+      Pl: {{data.product.locator.place}}
+    </label>
+    <div class="form-group">
+      <label>Move to*</label>
+      <pek-group-locator-picker
+        [product]="data"
+        (selectLocator)="selectLocator($event)"
+      ></pek-group-locator-picker>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    pButton
+    type="button"
+    label="Move"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onMoveProduct()"
+  ></button>
+</mat-dialog-actions>
