@@ -141,13 +141,13 @@
   </ng-container>
 
   <ng-container *ngIf="mode === 'create'">
-    <pek-create-edit-product-form
+    <pek-create-edit-form
       [product]="newProduct"
       (formChange)="onChangeFormValue($event)"
       (uploadImage)="onUploadImage($event)"
       (removeImage)="onRemoveImage($event)"
       type="create"
-    ></pek-create-edit-product-form>
+    ></pek-create-edit-form>
   </ng-container>
 </mat-dialog-content>
 
