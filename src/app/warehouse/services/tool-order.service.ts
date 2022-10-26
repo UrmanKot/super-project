@@ -41,4 +41,10 @@ export class ToolOrderService {
       map(response => response.data)
     );
   }
+
+  complete(id: number): Observable<ToolOrder> {
+    return this.httpClient.post<{ data: ToolOrder }>(this.API_URL + this.url + id + '/complete/', null).pipe(map(response => {
+      return response.data;
+    }));
+  }
 }

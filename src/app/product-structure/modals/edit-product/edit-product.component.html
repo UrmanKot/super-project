@@ -13,12 +13,12 @@
 </div>
 
 <mat-dialog-content>
-  <pek-create-edit-product-form
+  <pek-create-edit-form
     [product]="product"
     (formChange)="onChangeFormValue($event)"
     (uploadImage)="onUploadImage($event)"
     (removeImage)="onRemoveImage($event)"
-  ></pek-create-edit-product-form>
+  ></pek-create-edit-form>
 </mat-dialog-content>
 
 <mat-dialog-actions class="justify-content-between">

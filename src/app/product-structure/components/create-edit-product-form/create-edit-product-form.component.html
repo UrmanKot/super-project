@@ -52,30 +52,31 @@
               <input type="text" id="code" pInputText formControlName="code">
             </div>
 
-            <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-              <label for="bulk">Bulk / With Serial Numbers*</label>
-              <p-dropdown
-                id="bulk"
-                [options]="bulkOrSerial"
-                formControlName="bulk_or_serial"
-                optionLabel="label"
-                optionValue="value"
-              ></p-dropdown>
-            </div>
             <div class="form-group">
               <label for="name">Name*</label>
               <input type="text" id="name" pInputText formControlName="name">
+            </div>
+
+            <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
+              <label>Category</label>
+              <pek-product-category-picker
+                (choiceCategory)="onSelectCategory($event)"
+                [currentCategoryId]="this.form.get('category').value"
+              >
+              </pek-product-category-picker>
             </div>
           </div>
         </div>
         <div class="product-add__box">
           <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-            <label>Category</label>
-            <pek-product-category-picker
-              (choiceCategory)="onSelectCategory($event)"
-              [currentCategoryId]="this.form.get('category').value"
-            >
-            </pek-product-category-picker>
+            <label for="bulk">Bulk / With Serial Numbers*</label>
+            <p-dropdown
+              id="bulk"
+              [options]="bulkOrSerial"
+              formControlName="bulk_or_serial"
+              optionLabel="label"
+              optionValue="value"
+            ></p-dropdown>
           </div>
           <div class="form-group" *ngIf="type === 'edit'">
             <label for="id">Id</label>
@@ -91,7 +92,7 @@
               formControlName="description"
             ></textarea>
           </div>
-          <div class="form-group" *ngIf="product.parent || type === 'create'">
+          <div class="form-group" *ngIf="(product.parent || type === 'create') && isShowQuantity">
             <label for="quantity">Quantity*</label>
             <input type="number" min="1" step="1" id="quantity" pInputText formControlName="quantity">
           </div>

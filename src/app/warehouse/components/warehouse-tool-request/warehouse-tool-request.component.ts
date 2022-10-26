@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
+import {finalize, Subject} from 'rxjs';
 import {ToolRequest} from '../../services/tool-request';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ToolOrder} from '../../models/tool-order';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {ToolRequestService} from '../../services/tool-request.service';
 import {ToolOrderService} from '../../services/tool-order.service';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-warehouse-tool-request',
@@ -14,6 +15,7 @@ import {ToolOrderService} from '../../services/tool-order.service';
 })
 export class WarehouseToolRequestComponent implements OnInit, OnDestroy {
   isLoading = true;
+  isCompleting = false;
   requests: ToolRequest[] = [];
   selectedRequest: ToolRequest;
 
@@ -26,7 +28,10 @@ export class WarehouseToolRequestComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private toolRequestService: ToolRequestService,
     private toolOrderService: ToolOrderService,
-  ) { }
+    private readonly modalService: ModalService,
+    private readonly router: Router,
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -45,11 +50,28 @@ export class WarehouseToolRequestComponent implements OnInit, OnDestroy {
 
   getToolRequest() {
     this.toolRequestService.get([
-        {name: 'tool_order', value: this.orderId},
-        {name: 'is_completed', value: false}
-      ]).subscribe(requests => {
+      {name: 'tool_order', value: this.orderId},
+      {name: 'is_completed', value: false}
+    ]).subscribe(requests => {
       this.requests = requests;
       this.isLoading = false;
+    });
+  }
+
+  onShowImages() {
+    this.modalService.showImageGallery([], this.selectedRequest.nomenclature.id, 1).subscribe();
+  }
+
+  onComplete() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.isCompleting = true;
+        this.toolOrderService.complete(this.orderId).pipe(
+          finalize(() => this.isCompleting = false)
+        ).subscribe(() => {
+          this.router.navigate(['/warehouse/tool-requests/']);
+        });
+      }
     });
   }
 

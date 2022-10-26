@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Item
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div class="create-edit-warehouse-product">
+    <ng-container *ngIf="data.type === 'edit'">
+      <ng-container *ngIf="!isLoading; else loading">
+        <pek-create-edit-form
+          [isShowQuantity]="false"
+          [product]="product"
+          (formChange)="onChangeFormValue($event)"
+          (uploadImage)="onUploadImage($event)"
+          (removeImage)="onRemoveImage($event)"
+        ></pek-create-edit-form>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="data.type === 'create'">
+      <ng-container *ngIf="!selectionTypeMode; else selectionType">
+        <pek-create-edit-form
+          type="create"
+          [isShowQuantity]="false"
+          [product]="newProduct"
+          (formChange)="onChangeFormValue($event)"
+          (uploadImage)="onNewProductUploadImage($event)"
+          (removeImage)="onNewProductRemoveImage($event)"
+        ></pek-create-edit-form>
+      </ng-container>
+    </ng-container>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <ng-container *ngIf="!isLoading">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      [mat-dialog-close]="false"
+      class="p-button-danger"
+    ></button>
+    <button
+      *ngIf="data.type === 'edit' || (data.type === 'create' && !this.selectionTypeMode)"
+      pButton
+      type="button"
+      [label]="data.type"
+      class="p-button-success"
+      [disabled]="isFormInvalid"
+      [loading]="isSaving"
+      (click)="onSave()"
+    ></button>
+  </ng-container>
+</mat-dialog-actions>
+
+<ng-template #loading>
+  <div class="loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3.25rem"></i>
+  </div>
+</ng-template>
+
+<ng-template #selectionType>
+  <div class="choice-type">
+    <h3>Please select the type of new position</h3>
+
+    <div class="choice-type__buttons">
+      <button
+        pButton
+        type="button"
+        label="Purchased"
+        (click)="choiceType(nomenclatureType.PURCHASED)"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Assembly"
+        (click)="choiceType(nomenclatureType.ASSEMBLY)"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Manufactured"
+        (click)="choiceType(nomenclatureType.MANUFACTURED)"
+      ></button>
+    </div>
+  </div>
+</ng-template>

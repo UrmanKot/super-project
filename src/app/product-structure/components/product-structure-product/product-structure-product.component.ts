@@ -481,6 +481,25 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
     this.productService.showProductFiles(+this.productId).subscribe();
   }
 
+  drop(event) {
+    const parent = this.products.find(x => x.id === event.container.data);
+    const child = this.products.find(x => x.id === event.item.data);
+    if (child.parent !== null && child.id !== parent.id) {
+      if (parent.nomenclature.type === ENomenclatureType.ASSEMBLY || parent.parent === null) {
+        if (child.id !== parent.id) {
+          const product = {
+            id: child.id,
+            parent: parent.id,
+          };
+
+          this.productService.updatePartly(product).subscribe(product => {
+            this.getProducts();
+          });
+        }
+      }
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.inputCodeSub.unsubscribe();

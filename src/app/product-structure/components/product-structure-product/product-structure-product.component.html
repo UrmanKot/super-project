@@ -39,6 +39,7 @@
           [scrollable]="true"
           scrollHeight="calc(100vh - 19.2rem)"
           (onNodeSelect)="onSelectNode()"
+          cdkDropListGroup
         >
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center">
@@ -115,10 +116,19 @@
                 style="width: 30%"
                 [ngStyle]="{'padding-left': rowNode.level * 0.5 + 'rem'}"
                 [class.font-italic]="rowData.nomenclature.type !== '1'"
+                (cdkDropListDropped)="drop($event)"
+                [cdkDropListData]="rowData.id"
+                cdkDropList
               >
                 <div class="table-toggle">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  <span class="category-name">{{rowData.nomenclature.code}}</span>
+                  <span
+                    cdkDrag
+                    [cdkDragData]="rowData.id"
+                    class="drag-cursor"
+                  >
+                    {{rowData.nomenclature.code}}
+                  </span>
                 </div>
               </td>
               <td style="width: 20%" [class.font-italic]="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.name}}</td>

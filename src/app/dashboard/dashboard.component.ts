@@ -23,8 +23,8 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Warehouse',
     icon: 'icon-warehouse',
-    routerLink: ['/warehouse'],
-    // routerLink: ['/external', `${environment.link_url}dash/warehouse/products`],
+    // routerLink: ['/warehouse'],
+    routerLink: ['/external', `${environment.link_url}dash/warehouse/products`],
   }, {
     label: 'Manufacturing Procurement',
     icon: 'icon-manufacturing-procurement',

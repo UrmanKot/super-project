@@ -7,6 +7,7 @@ import {CategoriesService} from '../../../product-structure/services/categories.
 import {TreeNode} from 'primeng/api';
 import {WarehouseProductService} from '../../services/warehouse-product.service';
 import {QuerySearch} from '@shared/models/other';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -82,10 +83,10 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
             category: product.category,
             description: product.description,
           };
-
-          product.checkedForGeneration = false;
-          product.uid = idx;
         }
+
+        product.checkedForGeneration = false;
+        product.uid = idx;
       });
 
       this.products = response.results;
@@ -109,7 +110,11 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
   }
 
   onAddItem() {
-
+    this.warehouseProductService.openCreateEditWarehouseProductModal('create').subscribe(response => {
+      if (response) {
+        this.searchProducts();
+      }
+    })
   }
 
   createTree() {
@@ -162,5 +167,13 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+  }
+
+  onEditItem() {
+    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct.nomenclature.id).subscribe(response => {
+      if (response) {
+        this.searchProducts();
+      }
+    })
   }
 }

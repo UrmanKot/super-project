@@ -30,6 +30,8 @@ import { CreateEditLocatorComponent } from './modals/create-edit-locator/create-
 import { CreateEditWarehouseCategoryComponent } from './modals/create-edit-warehouse-category/create-edit-warehouse-category.component';
 import {CreateEditUnitMeasureComponent} from './modals/create-edit-unit-measure/create-edit-unit-measure.component';
 import { CreateEditSerialTypeComponent } from './modals/create-edit-serial-type/create-edit-serial-type.component';
+import { CreateEditWarehouseProductComponent } from './modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
+import {ProductStructureModule} from '../product-structure/product-structure.module';
 
 
 @NgModule({
@@ -58,14 +60,16 @@ import { CreateEditSerialTypeComponent } from './modals/create-edit-serial-type/
     CreateEditLocatorComponent,
     CreateEditWarehouseCategoryComponent,
     CreateEditUnitMeasureComponent,
-    CreateEditSerialTypeComponent
+    CreateEditSerialTypeComponent,
+    CreateEditWarehouseProductComponent
   ],
   imports: [
     CommonModule,
     WarehouseRouting,
     LayoutModule,
     SharedModule,
-    TreeModule
+    TreeModule,
+    ProductStructureModule
   ]
 })
 export class WarehouseModule {

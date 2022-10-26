@@ -34,6 +34,12 @@ export class NomenclatureService {
     );
   }
 
+  getById(id: number): Observable<Nomenclature> {
+    return this.httpClient.get<{ data: Nomenclature }>(this.API_URL + this.url + id + '/').pipe(
+      map(response => response.data)
+    );
+  }
+
   create(nomenclature: Partial<Nomenclature>): Observable<Nomenclature> {
     const formData = new FormData();
 
@@ -143,6 +149,12 @@ export class NomenclatureService {
     }
 
     return this.httpClient.post<{ data: NomenclatureImage }>(this.API_URL + 'nomenclature_images/', formData).pipe(
+      map(response => response.data)
+    );
+  }
+
+  loadImages(id: number): Observable<NomenclatureImage[]> {
+    return this.httpClient.get<{ data: NomenclatureImage[] }>(this.API_URL + `nomenclature_images/?nomenclature=${id}`).pipe(
       map(response => response.data)
     );
   }

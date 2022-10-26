@@ -8,11 +8,12 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
-  selector: 'pek-create-edit-product-form',
-  templateUrl: './create-edit-product.component-form.html',
-  styleUrls: ['./create-edit-product.component-form.scss']
+  selector: 'pek-create-edit-form',
+  templateUrl: './create-edit-product-form.component.html',
+  styleUrls: ['./create-edit-product-form.component.scss']
 })
-export class CreateEditProductComponentForm implements OnInit, OnDestroy {
+export class CreateEditProductFormComponent implements OnInit, OnDestroy {
+  @Input() isShowQuantity = true;
   @Input() type: 'edit' | 'create' = 'edit';
   @Input() product: Partial<Product>;
   @Output() formChange: EventEmitter<{ invalid: boolean, formValue: Partial<Product & Nomenclature> }> = new EventEmitter<{ invalid: boolean; formValue: Partial<Product> }>();
@@ -62,7 +63,12 @@ export class CreateEditProductComponentForm implements OnInit, OnDestroy {
 
       this.form.patchValue(this.product.nomenclature);
 
-      this.form.get('quantity').patchValue(this.product.quantity);
+      if (this.isShowQuantity) {
+        this.form.get('quantity').patchValue(this.product.quantity);
+      } else {
+        this.form.removeControl('quantity');
+      }
+
       this.form.get('codeId').patchValue(this.product.nomenclature.code);
 
       if (this.product.nomenclature.category) {

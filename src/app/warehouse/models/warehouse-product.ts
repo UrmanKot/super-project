@@ -9,7 +9,7 @@ export class WarehouseProduct {
   name?: string;
   code?: string;
   fullName?: string;
-  nomenclature?: number | Nomenclature;
+  nomenclature?: number & Nomenclature;
   // serial_number?: string | SerialNumber;
   // locator?: number | Locator;
   // invoice?: number | Invoice;

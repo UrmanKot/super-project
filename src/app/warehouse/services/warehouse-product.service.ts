@@ -5,6 +5,15 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
+import {ModalActionType} from '@shared/models/modal-action';
+import {Technology} from '../../product-structure/models/technology';
+import {
+  CreateEditTechnologyComponent
+} from '../../product-structure/modals/create-edit-technology/create-edit-technology.component';
+import {
+  CreateEditWarehouseProductComponent
+} from '../modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +24,7 @@ export class WarehouseProductService {
 
   constructor(
     private readonly httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -83,5 +93,18 @@ export class WarehouseProductService {
     return forkJoin(...ids.map(id => this.httpClient.post<{ data: WarehouseProduct }>(this.API_URL + this.url + id + '/write_off/', null).pipe(
       map(response => response.data)
     )));
+  }
+
+  openCreateEditWarehouseProductModal(type: ModalActionType, nomenclatureId?: number): Observable<Technology> {
+    return this.dialog
+      .open<CreateEditWarehouseProductComponent>(CreateEditWarehouseProductComponent, {
+        width: 'auto',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {type, nomenclatureId},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

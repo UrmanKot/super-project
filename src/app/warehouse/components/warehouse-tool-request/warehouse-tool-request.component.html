@@ -12,7 +12,14 @@
       </h1>
     </div>
     <div class="page__tools">
-      <button pButton type="button" icon="pi pi-check" label="Complete"></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-check"
+        label="Complete"
+        [loading]="isCompleting"
+        (click)="onComplete()"
+      ></button>
     </div>
   </div>
 </div>
@@ -38,6 +45,7 @@
               type="button"
               icon="pi pi-images"
               label="Show Images"
+              (click)="onShowImages()"
               [disabled]="!selectedRequest"
             ></button>
           </div>

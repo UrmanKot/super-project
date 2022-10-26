@@ -25,7 +25,7 @@ import { EditProductComponent } from './modals/edit-product/edit-product.compone
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { UploadProductStructureComponent } from './modals/upload-product-structure/upload-product-structure.component';
 import { ProductFilesComponent } from './modals/product-files/product-files.component';
-import {CreateEditProductComponentForm} from './components/create-edit-product-form/create-edit-product.component-form';
+import {CreateEditProductFormComponent} from './components/create-edit-product-form/create-edit-product-form.component';
 import { ProductStructureCategoriesComponent } from './components/product-structure-categories/product-structure-categories.component';
 import {
   CreateEditProductStructureCategoryComponent
@@ -47,9 +47,12 @@ import {
     EditProductComponent,
     UploadProductStructureComponent,
     ProductFilesComponent,
-    CreateEditProductComponentForm,
+    CreateEditProductFormComponent,
     ProductStructureCategoriesComponent,
     CreateEditProductStructureCategoryComponent,
+  ],
+  exports: [
+    CreateEditProductFormComponent
   ],
   imports: [
     CommonModule,

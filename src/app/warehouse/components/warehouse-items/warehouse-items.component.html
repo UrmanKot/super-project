@@ -5,6 +5,15 @@
       <h1>Warehouse Items</h1>
     </div>
     <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-pencil"
+        class="mr-2"
+        label="Edit Item"
+        (click)="onEditItem()"
+        [disabled]="!selectedProduct"
+      ></button>
       <button pButton type="button" icon="pi pi-plus" label="New Item" (click)="onAddItem()"></button>
     </div>
   </div>
@@ -112,6 +121,7 @@
               #dt
               selectionMode="single"
               scrollHeight="calc(100vh - 30.25rem)"
+              dataKey="uid"
               [scrollable]="true"
               [rows]="10"
               [(selection)]="selectedProduct"

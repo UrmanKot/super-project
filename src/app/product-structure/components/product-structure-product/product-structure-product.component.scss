@@ -1,5 +1,12 @@
-.category-name {
-  overflow-wrap: anywhere;
+//.category-name {
+//  overflow-wrap: anywhere;
+//}
+.drag-cursor {
+  cursor: s-resize;
+}
+
+.cdk-drag-drop-list-dragging {
+
 }
 
 ::ng-deep {

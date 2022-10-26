@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {NomenclatureImage} from '@shared/models/nomenclature';
+import {NomenclatureService} from '@shared/services/nomenclature.service';
 
 @Component({
   selector: 'pek-image-gallery',
@@ -16,11 +17,17 @@ export class ImageGalleryComponent implements OnInit {
   isLoading = true;
 
   constructor(
+    private readonly nomenclatureService: NomenclatureService,
     @Inject(MAT_DIALOG_DATA) public data: { images: NomenclatureImage[], nomenclatureId: number, activeIdx: number },
   ) {
   }
 
   ngOnInit(): void {
+    if (this.data.nomenclatureId) {
+      this.loadingImages();
+      return;
+    }
+
     if (this.data.images) {
       this.images = this.data.images;
       this.activeSlideIndex = this.data.activeIdx;
@@ -31,6 +38,15 @@ export class ImageGalleryComponent implements OnInit {
 
       this.isLoading = false;
     }
+  }
+
+  loadingImages() {
+    this.nomenclatureService.loadImages(this.data.nomenclatureId).subscribe(images => {
+      this.images = images;
+      this.isLoading = false;
+    });
+
+    this.activeSlideIndex = 1;
   }
 
   onSlideNext() {

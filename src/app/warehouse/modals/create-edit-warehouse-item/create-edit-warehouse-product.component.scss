@@ -1,0 +1,47 @@
+.loading {
+  min-height: 32rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2.5625rem;
+}
+
+.choice-type {
+  &__buttons {
+    button {
+      margin-right: 1rem;
+      width: 9rem;
+
+      &:nth-child(2) {
+        .pi {
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  h3 {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  padding: 0 0 0.25rem;
+
+  &__header-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__header {
+    p {
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+  }
+}
