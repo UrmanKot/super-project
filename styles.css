@@ -13287,7 +13287,7 @@ textarea::-webkit-scrollbar {
   margin-bottom: 0.75rem;
 }
 .filters-visibility__header button, .filters-visibility__header a {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 .mat-dialog-actions {
   padding: 1rem 0 !important;

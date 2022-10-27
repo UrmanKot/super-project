@@ -2702,7 +2702,7 @@ class ProductionListsComponent {
             return;
         }
         if (this.isHideFilters && this.isShowAll) {
-            this.tableScrollHeight = '19.25rem';
+            this.tableScrollHeight = '18.75rem';
             return;
         }
         if (!this.isHideFilters && this.isShowAll) {
