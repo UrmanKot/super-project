@@ -24,8 +24,9 @@
     }
 
     &_small {
-      height: 1.625rem !important;
-      width: 1.625rem !important;
+      height: 1.5rem !important;
+      width: 1.5rem !important;
+      padding: 0 !important;
 
       .pi {
         font-weight: 600;
@@ -80,3 +81,20 @@ a {
   }
 }
 
+a {
+  &.disabled {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+}
+
+.action-buttons {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  button, a {
+    height: 2.375rem;
+    margin-bottom: 0.535rem;
+  }
+}

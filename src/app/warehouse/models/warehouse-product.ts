@@ -1,4 +1,5 @@
 import {Nomenclature} from '@shared/models/nomenclature';
+import {Locator} from './locator';
 
 export class WarehouseProduct {
   readonly id: number;
@@ -11,7 +12,9 @@ export class WarehouseProduct {
   fullName?: string;
   nomenclature?: number & Nomenclature;
   // serial_number?: string | SerialNumber;
-  // locator?: number | Locator;
+  serial_number?: any;
+  serial_numbers?: any;
+  locator?: Locator;
   // invoice?: number | Invoice;
   uid?: number;
   uom?: string;

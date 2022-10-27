@@ -20,7 +20,10 @@
 <div class="page__content">
   <div class="page__tabs">
     <p-tabView class="custom-tabs">
-      <p-tabPanel header="Manufacturing Procurement and Outsourcing Payments" [selected]="true">
+      <p-tabPanel
+        [header]="'Manufacturing Procurement and Outsourcing Payments (' + (isLoadingPayments ? '...' : payments.length) + ')'"
+        [selected]="true"
+      >
         <div class="page__table">
           <p-treeTable
             selectionMode="checkbox"
@@ -124,10 +127,9 @@
                 <td style="width: 20%">
                   <ng-container>
                     <div *ngIf="payment.invoice">
-                      <div *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
-                        {{rootList.list_product.nomenclature.name}}
-                        <span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
-                      </div>
+                      <ng-container *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
+                        {{rootList.list_product.nomenclature.name}}<span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
+                      </ng-container>
                     </div>
                   </ng-container>
                 </td>
@@ -180,7 +182,9 @@
           </p-treeTable>
         </div>
       </p-tabPanel>
-      <p-tabPanel header="Purchasing Payments">
+      <p-tabPanel
+        [header]="'Purchasing Payments (' + (isLoadingServiceInvoicePayments ? '...' : serviceInvoicePayments.length) + ')'"
+      >
         <div class="page__table">
           <p-treeTable
             selectionMode="checkbox"
@@ -315,10 +319,9 @@
                   </ng-container>
 
                   <ng-container *ngIf="payment.invoice">
-                    <div *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
-                      {{rootList.list_product.nomenclature.name}}
-                      <span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
-                    </div>
+                    <ng-container *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
+                      {{rootList.list_product.nomenclature.name}}<span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
+                    </ng-container>
                   </ng-container>
                 </td>
                 <td style="width: 10%" class="text-center">

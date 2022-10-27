@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {OrderService} from '../../../procurement/services/order.service';
 import {QuerySearch} from '@shared/models/other';
+import {ViewMode} from '../production-lists/production-lists.component';
 
 @Component({
   selector: 'pek-warehouse-production-requests',
@@ -9,6 +10,8 @@ import {QuerySearch} from '@shared/models/other';
   styleUrls: ['./warehouse-production-requests.component.scss']
 })
 export class WarehouseProductionRequestsComponent implements OnInit {
+  viewModeType = ViewMode;
+  viewMode: ViewMode = ViewMode.LIST;
 
   isLoading = true;
   orders: Order[] = [];
@@ -53,5 +56,10 @@ export class WarehouseProductionRequestsComponent implements OnInit {
       });
     }
     return lists;
+  }
+
+  onChoiceViewType(mode: ViewMode) {
+    this.viewMode = mode;
+    this.selectedOrder = null;
   }
 }

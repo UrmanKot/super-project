@@ -6,13 +6,8 @@ import {WarehouseWarehousesComponent} from './components/warehouse-warehouses/wa
 import {WarehouseLocatorsComponent} from './components/warehouse-locators/warehouse-locators.component';
 import {WarehouseUnitsMeasureComponent} from './components/warehouse-units-measure/warehouse-units-measure.component';
 import {WarehouseSerialTypesComponent} from './components/warehouse-serial-types/warehouse-serial-types.component';
-import {WarehouseInsulatorComponent} from './components/warehouse-insulator/warehouse-insulator.component';
-import {
-  WarehouseInsulatorInvoicesComponent
-} from './components/warehouse-insulator/components/warehouse-insulator-invoices/warehouse-insulator-invoices.component';
-import {
-  WarehouseInsulatorOrdersComponent
-} from './components/warehouse-insulator/components/warehouse-insulator-orders/warehouse-insulator-orders.component';
+
+
 import {WarehouseCategoriesComponent} from './components/warehouse-categories/warehouse-categories.component';
 import {WarehouseWhereUsedComponent} from './components/warehouse-where-used/warehouse-where-used.component';
 import {PhysicalInventoryComponent} from './components/physical-inventory/physical-inventory.component';
@@ -27,6 +22,21 @@ import {
 import {
   WarehouseProductionRequestComponent
 } from './components/warehouse-production-request/warehouse-production-request.component';
+import {ProductionListsComponent} from './components/production-lists/production-lists.component';
+import {ProductionListComponent} from './components/production-lists/production-list/production-list.component';
+import {WarehouseQcComponent} from './components/warehouse-qc/warehouse-qc.component';
+import {
+  WarehouseQcInvoiceComponent
+} from './components/warehouse-qc/warehouse-qc-invoice/warehouse-qc-invoice.component';
+import {WarehouseQcOrderComponent} from './components/warehouse-qc/warehouse-qc-order/warehouse-qc-order.component';
+import {
+  WarehouseIsolatorInvoicesComponent
+} from './components/warehouse-isolator/components/warehouse-isolator-invoices/warehouse-isolator-invoices.component';
+import {
+  WarehouseIsolatorOrdersComponent
+} from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
+import {WarehouseIsolatorComponent} from './components/warehouse-isolator/warehouse-isolator.component';
+
 
 const routes: Routes = [
   {
@@ -63,10 +73,23 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'insulator', children: [
-          {path: '', title: 'Insulator', component: WarehouseInsulatorComponent},
-          {path: 'invoices/:id', title: 'Insulator Invoices', component: WarehouseInsulatorInvoicesComponent},
-          {path: 'orders/:id', title: 'Insulator Orders', component: WarehouseInsulatorOrdersComponent}
+        path: 'production-lists', children: [
+          {path: '', title: 'Production Lists', component: ProductionListsComponent},
+          {path: ':id', title: 'Production List', component: ProductionListComponent},
+        ]
+      },
+      {
+        path: 'warehouse-qc', children: [
+          {path: '', title: 'Warehouse QC', component: WarehouseQcComponent},
+          {path: 'invoice/:id', title: 'Warehouse QC Invoice', component: WarehouseQcInvoiceComponent},
+          {path: 'order/:id', title: 'Warehouse QC Order', component: WarehouseQcOrderComponent},
+        ]
+      },
+      {
+        path: 'isolator', children: [
+          {path: '', title: 'Isolator', component: WarehouseIsolatorComponent},
+          {path: 'invoices/:id', title: 'Isolator Invoices', component: WarehouseIsolatorInvoicesComponent},
+          {path: 'orders/:id', title: 'Isolator Orders', component: WarehouseIsolatorOrdersComponent}
         ]
       },
     ]

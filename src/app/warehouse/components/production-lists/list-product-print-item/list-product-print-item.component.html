@@ -1,0 +1,23 @@
+<div class="list-product-print-item" *ngIf="product.children.length > 0">
+  <h2>Production List {{product.data.nomenclature.name}} ({{product.data.list}}) {{product.data.nomenclature.name}}</h2>
+
+  <div class="list-product-print-item__row">
+    <div class="list-product-print-item__col">#</div>
+    <div class="list-product-print-item__col">Code</div>
+    <div class="list-product-print-item__col">Name</div>
+    <div class="list-product-print-item__col">UOM</div>
+    <div class="list-product-print-item__col">Total Req Qty</div>
+    <div class="list-product-print-item__col">Locator</div>
+    <div class="list-product-print-item__col">Status</div>
+  </div>
+
+  <div *ngFor="let product of product.children; let idx = index" class="list-product-print-item__row">
+    <div class="list-product-print-item__col">{{idx + 1}}</div>
+    <div class="list-product-print-item__col">{{product.nomenclature.code}}</div>
+    <div class="list-product-print-item__col">{{product.nomenclature.name}}</div>
+    <div class="list-product-print-item__col">{{product.nomenclature?.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}</div>
+    <div class="list-product-print-item__col">{{product.total_required_quantity}}</div>
+    <div class="list-product-print-item__col">{{product.available_on_locator}}</div>
+    <div class="list-product-print-item__col">{{statuses[product.status]}}</div>
+  </div>
+</div>

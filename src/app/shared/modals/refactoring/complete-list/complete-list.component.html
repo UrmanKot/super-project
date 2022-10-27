@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="data.type==='edit'">Set Locator</span>
+    <span *ngIf="data.type==='date'">Set Date</span>
+  </h2>
+</div>
+
+<mat-dialog-content class="overflow-visible">
+  <form [formGroup]="form">
+    <div class="form-group" *ngIf="data.type==='edit'">
+      <label for="locator">Locator</label>
+      <p-dropdown formControlName="locator" [options]="groupLocators" id="locator" [filter]="true"
+                  placeholder="Select Locator" [group]="true">
+        <ng-template let-group pTemplate="group">
+          <div class="d-flex align-items-center">
+            <span>{{group.label}}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="form-group" *ngIf="data.type==='date'">
+      <label for="completed">Locator</label>
+      <p-calendar formControlName="completed" dataType="date" dateFormat="dd/mm/yy" [readonlyInput]="true"></p-calendar>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class=" d-flex justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+
+  <button
+    *ngIf="data.type==='edit'"
+    pButton
+    type="button"
+    label="Complete"
+    class="p-button-success"
+    (click)="complete()"
+  ></button>
+
+  <button
+    *ngIf="data.type==='date'"
+    pButton
+    type="button"
+    label="Set Date"
+    class="p-button-success"
+    (click)="setDate()"
+  ></button>
+</mat-dialog-actions>

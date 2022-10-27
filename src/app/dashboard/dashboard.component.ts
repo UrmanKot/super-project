@@ -23,14 +23,27 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Warehouse',
     icon: 'icon-warehouse',
-    // routerLink: ['/warehouse'],
-    routerLink: ['/external', `${environment.link_url}dash/warehouse/products`],
+    routerLink: ['/warehouse'],
+    // routerLink: ['/external', `${environment.link_url}dash/warehouse/products`],
   }, {
-    label: 'Manufacturing Procurement',
+    label: 'Production Lists Procurement',
     icon: 'icon-manufacturing-procurement',
     routerLink: ['/external', `${environment.link_url}dash/procurement/orders`],
   }, {
-    label: 'Quality Control',
+    label: 'Outsourcing',
+    icon: 'icon-outsourcing',
+    routerLink: ['/external', `${environment.link_url}dash/outsource/outsource-chain`],
+  }, {
+    label: 'General Procurement',
+    icon: 'icon-manufacturing-procurement',
+    // icon: 'icon-purchasing',
+    routerLink: ['/external', `${environment.link_url}dash/purchasing/orders`],
+  }, {
+    label: 'Contacts & Events',
+    icon: 'icon-contacts-events',
+    routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
+  }, {
+    label: 'QC',
     icon: 'icon-quality-control',
     routerLink: ['/external', `${environment.link_url}dash/quality-control/invoices`],
   }, {
@@ -38,41 +51,29 @@ export class DashboardComponent implements OnInit {
     icon: 'icon-manufacturing',
     routerLink: ['/external', `${environment.link_url}dash/production/plan`],
   }, {
-    label: 'Contacts & Events',
-    icon: 'icon-contacts-events',
-    routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
-  }, {
-    label: 'Outsourcing',
-    icon: 'icon-outsourcing',
-    routerLink: ['/external', `${environment.link_url}dash/outsource/outsource-chain`],
-  }, {
-    label: 'Purchasing',
-    icon: 'icon-purchasing',
-    routerLink: ['/external', `${environment.link_url}dash/purchasing/orders`],
-  }, {
     label: 'Sales',
     icon: 'icon-sales',
     routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
-  }, {
-    label: 'Reports',
-    icon: 'icon-reports',
-    routerLink: ['/external', `${environment.link_url}dash/accounting/cost-reports`],
-  }, {
-    label: 'Administration',
-    icon: 'icon-administration',
-    routerLink: ['/external', `${environment.link_url}dash/admin/users-list`],
-  }, {
-    label: 'Delivery Chains',
-    icon: 'icon-delivery-chains',
-    routerLink: '/delivery-chains',
   }, {
     label: 'Payments',
     icon: 'icon-payments',
     routerLink: ['/external', `${environment.link_url}dash/payments`],
   }, {
+    label: 'Administration',
+    icon: 'icon-administration',
+    routerLink: ['/external', `${environment.link_url}dash/admin/users-list`],
+  }, {
     label: 'Corespondents',
     icon: '',
     routerLink: ['/external', `${environment.link_url}dash/correspondents`],
+  }, {
+    label: 'Reports',
+    icon: 'icon-reports',
+    routerLink: ['/external', `${environment.link_url}dash/accounting/cost-reports`],
+  }, {
+    label: 'Delivery',
+    icon: 'icon-delivery-chains',
+    routerLink: '/delivery-chains',
   }];
 
   constructor(

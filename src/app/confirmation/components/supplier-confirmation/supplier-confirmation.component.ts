@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EOrderSupplierConfirmStatus, OrderSupplier, OrderSupplierConfirmation} from '../../models/order-supplier';
 import {OrderSupplierService} from '../../services/order-supplier.service';
-import {ListProduct} from '@shared/models/list-product';
+import {ListProduct} from '../../../warehouse/models/list-product';
 import {ModalService} from '@shared/services/modal.service';
 import {finalize, Subject, takeUntil} from 'rxjs';
 

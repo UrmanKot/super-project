@@ -1,6 +1,6 @@
 <div class="layout-header">
   <pek-logo [module]="module"></pek-logo>
-  <ul class="layout-navigation">
+  <ul class="layout-navigation" [class.layout-navigation_wh]="module === 'Warehouse'">
     <li
       *ngFor="let route of routes"
       class="layout-navigation__item"

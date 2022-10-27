@@ -1,0 +1,50 @@
+.list-product-print-item {
+  margin-bottom: 20px;
+
+  &__row {
+    width: 100%;
+    display: flex;
+    border: 1px solid #000;
+
+    border-bottom: none;
+
+    &:last-child {
+      border-bottom: 1px solid #000;
+    }
+  }
+
+  &__col {
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+
+    &:nth-child(1) {
+      width: 5%;
+    }
+
+    &:nth-child(2) {
+      width: 20%;
+    }
+
+    &:nth-child(3) {
+      width: 25%;
+    }
+
+    &:nth-child(4) {
+      width: 5%;
+    }
+
+    &:nth-child(5) {
+      width: 15%;
+    }
+
+    &:nth-child(6) {
+      width: 15%;
+    }
+
+    &:nth-child(7) {
+      width: 15%;
+    }
+  }
+
+}

@@ -90,6 +90,14 @@ body {
       }
     }
   }
+
+  &_wh {
+    .layout-navigation__item {
+      a {
+        padding: 1.375rem 0.75rem;
+      }
+    }
+  }
 }
 
 .mat-dialog-container {

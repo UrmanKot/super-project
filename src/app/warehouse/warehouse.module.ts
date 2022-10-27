@@ -11,9 +11,6 @@ import {TreeModule} from 'primeng/tree';
 import { WarehouseLocatorsComponent } from './components/warehouse-locators/warehouse-locators.component';
 import {WarehouseUnitsMeasureComponent} from './components/warehouse-units-measure/warehouse-units-measure.component';
 import { WarehouseSerialTypesComponent } from './components/warehouse-serial-types/warehouse-serial-types.component';
-import { WarehouseInsulatorComponent } from './components/warehouse-insulator/warehouse-insulator.component';
-import { WarehouseInsulatorInvoicesComponent } from './components/warehouse-insulator/components/warehouse-insulator-invoices/warehouse-insulator-invoices.component';
-import { WarehouseInsulatorOrdersComponent } from './components/warehouse-insulator/components/warehouse-insulator-orders/warehouse-insulator-orders.component';
 import { WarehouseCategoriesComponent } from './components/warehouse-categories/warehouse-categories.component';
 import { WarehouseWhereUsedComponent } from './components/warehouse-where-used/warehouse-where-used.component';
 import { PhysicalInventoryComponent } from './components/physical-inventory/physical-inventory.component';
@@ -32,6 +29,25 @@ import {CreateEditUnitMeasureComponent} from './modals/create-edit-unit-measure/
 import { CreateEditSerialTypeComponent } from './modals/create-edit-serial-type/create-edit-serial-type.component';
 import { CreateEditWarehouseProductComponent } from './modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
 import {ProductStructureModule} from '../product-structure/product-structure.module';
+import { MoveWarehouseProductComponent } from './modals/move-warehouse-product/move-warehouse-product.component';
+import { ProductionListsComponent } from './components/production-lists/production-lists.component';
+import { ProductionListComponent } from './components/production-lists/production-list/production-list.component';
+import { SetProductionListLocatorComponent } from './modals/set-production-list-locator/set-production-list-locator.component';
+import {
+  ListProductPrintItemComponent
+} from './components/production-lists/list-product-print-item/list-product-print-item.component';
+import { WarehouseQcComponent } from './components/warehouse-qc/warehouse-qc.component';
+import { WarehouseQcInvoiceComponent } from './components/warehouse-qc/warehouse-qc-invoice/warehouse-qc-invoice.component';
+import { QcAcceptToWarehouseComponent } from './modals/qc-accept-to-warehouse/qc-accept-to-warehouse.component';
+import { WarehouseQcOrderComponent } from './components/warehouse-qc/warehouse-qc-order/warehouse-qc-order.component';
+import {WarehouseIsolatorComponent} from './components/warehouse-isolator/warehouse-isolator.component';
+import {
+  WarehouseIsolatorInvoicesComponent
+} from './components/warehouse-isolator/components/warehouse-isolator-invoices/warehouse-isolator-invoices.component';
+import {
+  WarehouseIsolatorOrdersComponent
+} from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
+
 
 
 @NgModule({
@@ -42,9 +58,9 @@ import {ProductStructureModule} from '../product-structure/product-structure.mod
     WarehouseLocatorsComponent,
     WarehouseUnitsMeasureComponent,
     WarehouseSerialTypesComponent,
-    WarehouseInsulatorComponent,
-    WarehouseInsulatorInvoicesComponent,
-    WarehouseInsulatorOrdersComponent,
+    WarehouseIsolatorComponent,
+    WarehouseIsolatorInvoicesComponent,
+    WarehouseIsolatorOrdersComponent,
     WarehouseCategoriesComponent,
     WarehouseWhereUsedComponent,
     PhysicalInventoryComponent,
@@ -61,7 +77,16 @@ import {ProductStructureModule} from '../product-structure/product-structure.mod
     CreateEditWarehouseCategoryComponent,
     CreateEditUnitMeasureComponent,
     CreateEditSerialTypeComponent,
-    CreateEditWarehouseProductComponent
+    CreateEditWarehouseProductComponent,
+    MoveWarehouseProductComponent,
+    ProductionListsComponent,
+    ProductionListComponent,
+    SetProductionListLocatorComponent,
+    ListProductPrintItemComponent,
+    WarehouseQcComponent,
+    WarehouseQcInvoiceComponent,
+    QcAcceptToWarehouseComponent,
+    WarehouseQcOrderComponent
   ],
   imports: [
     CommonModule,
@@ -69,7 +94,7 @@ import {ProductStructureModule} from '../product-structure/product-structure.mod
     LayoutModule,
     SharedModule,
     TreeModule,
-    ProductStructureModule
+    ProductStructureModule,
   ]
 })
 export class WarehouseModule {

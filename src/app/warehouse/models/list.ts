@@ -15,3 +15,10 @@ export class List {
   list?: any;
   root_production_plans?: any[];
 }
+
+export class Lists {
+  count: number;
+  next: string;
+  previous: string;
+  results: List[];
+}

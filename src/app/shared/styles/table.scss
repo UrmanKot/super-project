@@ -10,9 +10,16 @@
 
       &.p-highlight {
         color: var(--theme-color-primary);
+        background: #EFF6FF !important;
 
         .p-treetable-toggler {
           color: var(--theme-color-primary);
+        }
+      }
+
+      &:not(.p-highlight) {
+        &:hover {
+          background: #e9ecef !important;
         }
       }
 
@@ -94,8 +101,14 @@
       }
 
       &.p-highlight {
-        background: #EFF6FF;
+        background: #EFF6FF !important;
         color: var(--theme-color-primary);
+      }
+
+      &:not(.p-highlight) {
+        &:hover {
+          background: #e9ecef !important;
+        }
       }
 
       &:focus {

@@ -9,6 +9,8 @@ import {ImageGalleryComponent} from '@shared/modals/image-gallery/image-gallery.
 import {
   NomenclaturePickerModalComponent
 } from '@shared/modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
+import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
+import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +81,30 @@ export class ModalService {
         height: 'auto',
         autoFocus: false,
         enterAnimationDuration: '250ms'
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  completeList(entity) {
+    return this.dialog
+      .open<CompleteListComponent>(CompleteListComponent, {
+        width: '800px',
+        data: { type: 'edit', entity: entity },
+        disableClose: true,
+        panelClass: 'modal-overflow-visible'
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  editListProduct(entity) {
+    return this.dialog
+      .open<ListProductsComponent>(ListProductsComponent, {
+        width: '800px',
+        data: { type: 'edit', entity: entity },
+        disableClose: true,
+        panelClass: 'modal-overflow-visible',
       })
       .afterClosed()
       .pipe();

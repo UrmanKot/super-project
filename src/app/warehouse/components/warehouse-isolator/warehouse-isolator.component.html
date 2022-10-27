@@ -2,7 +2,7 @@
   <div class="page__header">
     <div class="page__title">
       <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>Warehouse Insulator</h1>
+      <h1>Warehouse Isolator</h1>
     </div>
   </div>
 </div>
@@ -10,7 +10,7 @@
 <div class="page__content">
   <div class="page__tabs">
     <p-tabView class="custom-tabs">
-      <p-tabPanel header="Invoices Insulator" [selected]="true">
+      <p-tabPanel header="Invoices Isolator" [selected]="true">
         <div class="page__table">
           <p-table
             #dt
@@ -30,7 +30,7 @@
                   pButton
                   type="button"
                   icon="pi pi-bars"
-                  label="Insulator Items"
+                  label="Isolator Items"
                   [disabled]="!selectedInvoice"
                   [routerLink]="['invoices', selectedInvoice?.id]"
                 ></button>
@@ -84,7 +84,7 @@
           </p-button>
         </div>
       </p-tabPanel>
-      <p-tabPanel header="Orders Insulator">
+      <p-tabPanel header="Orders Isolator">
         <div class="page__table">
           <p-table
             #st
@@ -104,7 +104,7 @@
                   pButton
                   type="button"
                   icon="pi pi-bars"
-                  label="Insulator Items"
+                  label="Isolator Items"
                   [disabled]="!selectedOrder"
                   [routerLink]="['orders', selectedOrder?.id]"
                 ></button>

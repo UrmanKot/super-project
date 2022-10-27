@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {OrderProduct} from '../models/order-product';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -35,5 +35,11 @@ export class OrderProductService {
     return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
       map(response => response.data)
     );
+  }
+
+  acceptSeveral(send: any[]): Observable<any> {
+    return forkJoin(...send.map(product => this.httpClient.post(environment.base_url + environment.warehouse_url + 'order_product_to_warehouse/', [product.data]).pipe(
+      map(response => response)
+    )));
   }
 }

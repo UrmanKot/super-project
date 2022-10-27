@@ -1,21 +1,29 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {WarehouseProduct} from '../../models/warehouse-product';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Category} from '../../../product-structure/models/category';
-import {Subject, takeUntil} from 'rxjs';
+import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {TreeNode} from 'primeng/api';
 import {WarehouseProductService} from '../../services/warehouse-product.service';
 import {QuerySearch} from '@shared/models/other';
-import {Nomenclature} from '@shared/models/nomenclature';
+import {Paginator} from 'primeng/paginator';
+import {debounceTime, map, tap} from 'rxjs/operators';
+import {ENomenclatureType} from '@shared/models/nomenclature';
 
 @Component({
   selector: 'pek-warehouse-items',
   templateUrl: './warehouse-items.component.html',
   styleUrls: ['./warehouse-items.component.scss']
 })
-export class WarehouseItemsComponent implements OnInit, OnDestroy {
-  isLoading = true;
+export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('paginator') paginator: Paginator;
+  @ViewChild('searchBoxName') searchBoxName;
+  @ViewChild('searchBoxCode') searchBoxCode;
+  @ViewChild('searchBoxDescription') searchBoxDescription;
+
+  isShowAll = false;
+  isLoading = false;
   isStartOnePage = false;
 
   selectedProduct: WarehouseProduct;
@@ -36,14 +44,17 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
     root_categories: [null],
     locator: {value: null, disabled: true},
     type: [null],
-    accepted_by_invoices: [null],
+    acceptedByInvoices: [null],
     page: [1],
   });
 
   query: QuerySearch[] = [
     {name: 'page', value: this.searchForm.get('page').value},
+    {name: 'paginated', value: true},
     {name: 'at_area', value: false}
   ];
+
+  queryKey = 'name:null/code:null/description:null/type:null/acceptedByInvoices:null/warehouse:null/locator:null/category:null';
 
   private destroy$ = new Subject();
 
@@ -54,9 +65,38 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
   ) {
   }
 
+  ngAfterViewInit() {
+    fromEvent(this.searchBoxName.nativeElement, 'keyup')
+      .pipe(
+        tap(() => this.selectedProduct = null),
+        map(() => this.searchBoxName.nativeElement.value),
+        debounceTime(350),
+      ).subscribe(() => {
+      this.searchProducts();
+    });
+
+    fromEvent(this.searchBoxCode.nativeElement, 'keyup')
+      .pipe(
+        tap(() => this.selectedProduct = null),
+        map(() => this.searchBoxCode.nativeElement.value),
+        debounceTime(350),
+      ).subscribe(() => {
+      this.searchProducts();
+    });
+
+    fromEvent(this.searchBoxDescription.nativeElement, 'keyup')
+      .pipe(
+        tap(() => this.selectedProduct = null),
+        map(() => this.searchBoxDescription.nativeElement.value),
+        debounceTime(350),
+      ).subscribe(() => {
+      this.searchProducts();
+    });
+  }
+
   ngOnInit(): void {
     this.getCategories();
-    this.getProductsForPagination();
+    // this.getProductsForPagination();
   }
 
   getCategories() {
@@ -72,7 +112,7 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
   getProductsForPagination() {
     this.warehouseProductService.getGroupedPagination(this.query).pipe(
       takeUntil(this.destroy$)
-    ).subscribe( response => {
+    ).subscribe(response => {
       response.results.forEach((product: any, idx) => {
         if (!product.nomenclature) {
           product.nomenclature = {
@@ -91,22 +131,118 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
 
       this.products = response.results;
       this.countProducts = response.count;
+
+      if (this.isStartOnePage) {
+        this.paginator?.changePage(0);
+      }
+
+      this.isStartOnePage = false;
+
+      this.isLoading = false;
+    });
+  }
+
+  getProducts() {
+    this.warehouseProductService.getGrouped(this.query).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(response => {
+      response.forEach((product: any, idx) => {
+        if (!product.nomenclature) {
+          product.nomenclature = {
+            id: product.nomenclature_id,
+            code: product.code,
+            name: product.name,
+            type: product.type,
+            category: product.category,
+            description: product.description,
+          };
+        }
+
+        product.checkedForGeneration = false;
+        product.uid = idx;
+      });
+
+      this.products = response;
+      this.countProducts = response.length;
+
+      if (this.isStartOnePage) {
+        this.paginator?.changePage(0);
+      }
+
+      this.isStartOnePage = false;
       this.isLoading = false;
     });
   }
 
   searchProducts() {
     this.isLoading = true;
+    this.destroy$.next(true);
     this.selectedProduct = null;
 
-    this.destroy$.next(true);
+    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
-    this.query = [
-      {name: 'page', value: this.searchForm.get('page').value},
-      {name: 'at_area', value: false}
-    ];
+    if (newQueryKey !== this.queryKey) {
+      this.queryKey = newQueryKey;
+      this.searchForm.get('page').patchValue(1);
+      this.isStartOnePage = true;
+    }
 
-    this.getProductsForPagination();
+    this.query = [];
+
+    if (!this.isShowAll) {
+      this.query = [
+        {name: 'paginated', value: 'true'},
+        {name: 'page', value: this.searchForm.get('page').value},
+      ];
+    }
+
+    this.query.push({name: 'at_area', value: false});
+
+    if (this.searchForm.get('name').value) this.query.push({
+      name: 'name',
+      value: this.searchForm.get('name').value.replace(/\+/g, '%2b')
+    });
+
+    if (this.searchForm.get('code').value) this.query.push({name: 'code', value: this.searchForm.get('code').value});
+
+    if (this.searchForm.get('description').value) this.query.push({
+      name: 'description',
+      value: this.searchForm.get('description').value
+    });
+
+    if (this.searchForm.get('type').value) this.query.push({name: 'type', value: this.searchForm.get('type').value});
+
+    if (this.searchForm.get('warehouse').value) this.query.push({
+      name: 'warehouse',
+      value: this.searchForm.get('warehouse').value
+    });
+
+    if (this.searchForm.get('locator').value) this.query.push({
+      name: 'locator',
+      value: this.searchForm.get('locator').value
+    });
+
+    if (this.searchForm.get('category').value) this.query.push({
+      name: 'category',
+      value: this.searchForm.get('category').value
+    });
+
+    if (this.searchForm.get('root_categories').value) this.query.push({
+      name: 'root_categories',
+      value: this.searchForm.get('root_categories').value
+    });
+
+    if (this.searchForm.get('acceptedByInvoices').value !== null) this.query.push({
+      name: 'accepted_by_invoices',
+      value: this.searchForm.get('acceptedByInvoices').value
+    });
+
+    if (!this.isShowAll) {
+      this.getProductsForPagination();
+    } else {
+      this.searchForm.get('page').patchValue(1);
+      this.getProducts();
+    }
   }
 
   onAddItem() {
@@ -114,7 +250,7 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
       if (response) {
         this.searchProducts();
       }
-    })
+    });
   }
 
   createTree() {
@@ -148,14 +284,11 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
     this.categoriesTree = [...tree];
   }
 
-  getProductsAll() {
-
-  }
-
   selectWarehouse(warehouseId: number) {
     let value = null;
     if (warehouseId) value = warehouseId;
     this.searchForm.get('warehouse').patchValue(value);
+    this.searchProducts();
   }
 
   paginate(evt: any) {
@@ -165,15 +298,59 @@ export class WarehouseItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-  }
-
   onEditItem() {
     this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct.nomenclature.id).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
-    })
+    });
+  }
+
+  onMoveProduct() {
+    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProduct).subscribe(response => {
+      if (response) {
+        this.searchProducts();
+      }
+    });
+  }
+
+  onShowAll() {
+    this.isShowAll = true;
+    this.searchProducts();
+  }
+
+  onShowPartial() {
+    this.isShowAll = false;
+    this.searchProducts();
+  }
+
+  onSelectLocator(id: number) {
+    this.searchForm.get('locator').patchValue(id);
+    this.searchProducts();
+  }
+
+  onSelectNomenclatureType(type: ENomenclatureType) {
+    this.searchForm.get('type').patchValue(type);
+    this.searchProducts();
+  }
+
+  onSelectAcceptedType(type: boolean) {
+    this.searchForm.get('acceptedByInvoices').patchValue(type);
+    this.searchProducts();
+  }
+
+
+  onSelectCategory(ids: number[]) {
+    if (ids) {
+      this.searchForm.get('root_categories').patchValue(ids.join(','));
+    } else {
+      this.searchForm.get('root_categories').patchValue('');
+    }
+
+    this.searchProducts();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }

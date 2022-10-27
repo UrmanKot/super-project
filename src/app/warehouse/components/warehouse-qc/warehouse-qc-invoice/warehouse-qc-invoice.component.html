@@ -1,0 +1,94 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>Invoice Items</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="multiple"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="invoiceProducts.length > 0"
+        [(selection)]="selectedInvoiceProducts"
+        [value]="invoiceProducts"
+        [rows]="10"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="selectedInvoiceProducts.length === 0">Choose the Invoice Products to Accept Warehouse</p>
+
+            <button
+              pButton
+              type="button"
+              icon="pi pi-images"
+              label="Show Images"
+              class="ml-auto mr-2"
+              [disabled]="selectedInvoiceProducts.length > 1 || selectedInvoiceProducts.length === 0"
+              (click)="onShowImages()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-angle-double-right"
+              label="Accept to warehouse"
+              [disabled]="selectedInvoiceProducts.length === 0"
+              (click)="onAcceptToWarehouse()"
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%;">#</th>
+            <th style="width: 20%;">Code</th>
+            <th style="width: 20%;">Name</th>
+            <th style="width: 20%;" class="text-center">Technology</th>
+            <th style="width: 20%;" class="text-center">Quantity</th>
+            <th style="width: 15%;" class="text-center">Passed</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+          <tr [pSelectableRow]="invoice">
+            <td style="width: 5%;" class="text-center">{{i + 1}}</td>
+            <td style="width: 20%;">{{invoice.nomenclature.code}}</td>
+            <td style="width: 20%;">{{invoice.nomenclature.name}}</td>
+            <td style="width: 20%;" class="text-center">{{invoice.current_technology}}</td>
+            <td style="width: 20%;" class="text-center">{{invoice.quantity}}</td>
+            <td style="width: 15%;" class="text-center">{{invoice.passed_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="6">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && invoiceProducts.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

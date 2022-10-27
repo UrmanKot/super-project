@@ -62,9 +62,9 @@
             <td class="text-center" style="width: 5%">{{i + 1}}</td>
             <td style="width: 45%">{{nomenclature.name}}</td>
             <td style="width: 47%">
-              <div *ngFor="let parent of nomenclature.parents">{{parent.name}}
-                <span *ngIf="i !== nomenclature.parents.length - 1">,</span>
-              </div>
+              <ng-container *ngFor="let parent of nomenclature.parents; let idx = index">
+                {{parent.name}}<span *ngIf="idx !== nomenclature.parents.length - 1">, </span>
+              </ng-container>
             </td>
           </tr>
         </ng-template>

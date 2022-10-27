@@ -8,12 +8,10 @@ import {QuerySearch} from '@shared/models/other';
 import {ModalActionType} from '@shared/models/modal-action';
 import {Technology} from '../../product-structure/models/technology';
 import {
-  CreateEditTechnologyComponent
-} from '../../product-structure/modals/create-edit-technology/create-edit-technology.component';
-import {
   CreateEditWarehouseProductComponent
 } from '../modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
 import {MatDialog} from '@angular/material/dialog';
+import {MoveWarehouseProductComponent} from '../modals/move-warehouse-product/move-warehouse-product.component';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +66,6 @@ export class WarehouseProductService {
   }
 
   getGroupedPagination(query?: { name: string, value: any }[]): Observable<WarehouseProducts> {
-    query.push({name: 'paginated', value: true});
     let qString = '';
     if (query) {
       query.forEach((element, index) => {
@@ -85,7 +82,7 @@ export class WarehouseProductService {
     }));
   }
 
-  severalUpdateReservations(ids: number[], send: {is_confirmed: boolean}): Observable<any> {
+  severalUpdateReservations(ids: number[], send: { is_confirmed: boolean }): Observable<any> {
     return forkJoin(...ids.map(id => this.httpClient.patch(this.API_URL + `warehouse_products_reservations/${id}/`, send)));
   }
 
@@ -106,5 +103,26 @@ export class WarehouseProductService {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  openMoveWarehouseProductModal(product: WarehouseProduct) {
+    return this.dialog
+      .open<MoveWarehouseProductComponent>(MoveWarehouseProductComponent, {
+        width: '40rem',
+        height: 'auto',
+        data: product,
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  moveBulk(product: Partial<WarehouseProduct>): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'bulk_move_bulk_products/', product);
+  }
+
+  moveSerial(product: Partial<WarehouseProduct>): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'bulk_move_serial_products/', product);
   }
 }

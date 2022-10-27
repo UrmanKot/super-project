@@ -1,3 +1,5 @@
+import {Order} from './order';
+
 export class Invoice {
   readonly id: number;
   self_serial_number?: string;
@@ -9,7 +11,7 @@ export class Invoice {
   tax: number;
   completed: boolean;
   qc_completed: boolean;
-  // order?: Order;
+  order?: Order;
   related_files: boolean;
   // currency: Currency;
   invoice_date: Date;

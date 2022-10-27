@@ -1,8 +1,10 @@
+import {Nomenclature} from '@shared/models/nomenclature';
+
 export class OrderProduct {
   readonly id: number;
   ids?: number[];
   current_technology: any;
-  // nomenclature: Nomenclature;
+  nomenclature: Nomenclature;
   order: string;
   accepted_quantity: number;
   initial_quantity: number;

@@ -1,4 +1,4 @@
-import {List} from '@shared/models/production-list';
+import {List} from './list';
 import {Nomenclature} from '@shared/models/nomenclature';
 
 export class ListProduct {
@@ -10,6 +10,8 @@ export class ListProduct {
   level: number;
   list: number | List;
   nomenclature: Nomenclature;
+  available_on_locator?: any
+  has_children?: any;
   parent?: number;
   status?: string;
   list_url?: string;

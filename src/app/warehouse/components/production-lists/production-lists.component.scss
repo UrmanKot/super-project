@@ -1,0 +1,39 @@
+.hide {
+  display: none;
+}
+
+.colors {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-left: 1rem;
+
+  &__color {
+    display: flex;
+    align-items: center;
+  }
+
+  &__color-block {
+    width: 1.5rem;
+    height: 0.75rem;
+    margin-right: 0.5rem;
+
+    &_free-products {
+      background: #e1efe2;
+    }
+
+    &_deficit {
+      background: #f5dfe1;
+    }
+  }
+}
+
+.free-products {
+  background: #e1efe2 !important;
+}
+
+.deficit {
+  background: #f5dfe1 !important;
+}

@@ -1,0 +1,83 @@
+.colors {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-left: 1rem;
+
+  &__color {
+    display: flex;
+    align-items: center;
+  }
+
+  &__color-block {
+    width: 1.5rem;
+    height: 0.75rem;
+    margin-right: 0.5rem;
+
+    &_free-products {
+      background: #e1efe2;
+    }
+
+    &_deficit {
+      background: #f5dfe1;
+    }
+  }
+}
+
+.free-products {
+  background: #e1efe2 !important;
+}
+
+.deficit {
+  background: #f5dfe1 !important;
+}
+
+.disabled {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.back {
+  background: transparent;
+  cursor: pointer;
+  color: #343a40;
+  position: relative;
+  margin-right: 0.25rem;
+
+  i {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}
+
+.disabled-toggler {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.list-parent {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.print-list-product {
+  z-index: 1000;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  display: none;
+
+  @media print {
+    display: block;
+  }
+}

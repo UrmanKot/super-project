@@ -6,11 +6,11 @@ import {OrderService} from '../../../procurement/services/order.service';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
-  selector: 'pek-warehouse-insulator',
-  templateUrl: './warehouse-insulator.component.html',
-  styleUrls: ['./warehouse-insulator.component.scss']
+  selector: 'pek-warehouse-isolator',
+  templateUrl: './warehouse-isolator.component.html',
+  styleUrls: ['./warehouse-isolator.component.scss']
 })
-export class WarehouseInsulatorComponent implements OnInit, OnDestroy {
+export class WarehouseIsolatorComponent implements OnInit, OnDestroy {
   isLoadingInvoices = true;
   isLoadingOrders = true;
 

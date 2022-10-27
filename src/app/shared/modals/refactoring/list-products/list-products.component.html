@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span>Edit Actual Quantity</span>
+  </h2>
+</div>
+
+<mat-dialog-content class="overflow-visible">
+  <form [formGroup]="form" *ngIf="!errorStr">
+    <div class="form-group"
+         *ngIf="data.entity.serial_warehouse_products.length == 0 && data.entity.nomenclature.bulk_or_serial === '0'">
+      <label>Actual Quantity</label>
+      <input formControlName="actual_quantity" pInputText class="form-control" type="number">
+    </div>
+    <div *ngIf="(serialsWarehouse.length > 0 || serialsProduction.length > 0) && isSerial && !isLoading">
+      <div class="d-flex mb-3">
+        <div class="сol-6 mr-2">
+          <input class="mr-2" id="own" type="radio" value="0" name="isWarehouse" formControlName="isWarehouse">
+          <label for="own">Warehouses</label>
+        </div>
+        <div class="col-6" *ngIf="data.entity.nomenclature.type === '1'">
+          <input class="mr-2" id="outsource"  type="radio" value="1" name="isWarehouse"
+                 formControlName="isWarehouse">
+          <label for="outsource">Production</label>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="form.get('isWarehouse').value === '0'">
+        <div *ngIf="serialsWarehouse.length > 0 && isSerial && !isLoading">
+          <label>Warehouses Serial Numbers</label>
+          <p-multiSelect formControlName="serial_product_ids" [options]="serialsWarehouse"
+                         optionLabel="label" optionValue="id"></p-multiSelect>
+        </div>
+
+        <div *ngIf="serialsWarehouse.length === 0 && isSerial && !isLoading" class="mb-2">
+          <div class="empty">Serial Numbers None</div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="form.get('isWarehouse').value === '1'">
+        <div *ngIf="serialsProduction.length > 0 && isSerial && !isLoading">
+          <label>Production Serial Numbers</label>
+          <p-multiSelect formControlName="root_serial_numbers_in_production" [options]="serialsProduction"
+                         optionLabel="label" optionValue="id"></p-multiSelect>
+        </div>
+
+        <div *ngIf="serialsProduction.length === 0 && isSerial && !isLoading" class="mb-2">
+          <div class="empty">Serial Numbers None</div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <div *ngIf="errorStr">
+    <div class="empty mb-2">{{errorStr}}</div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class=" d-flex justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+<!--  <div>-->
+<!--    <button (click)="edit()" type="button" class="btn btn-success ml-2" [disabled]="errorStr">Edit</button>-->
+<!--  </div>-->
+
+  <button
+    *ngIf="data.type==='edit'"
+    pButton
+    type="button"
+    label="Edit"
+    class="p-button-success"
+    [disabled]="errorStr"
+    (click)="edit()"
+  ></button>
+
+
+</mat-dialog-actions>

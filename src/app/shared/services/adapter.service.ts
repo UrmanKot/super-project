@@ -12,6 +12,24 @@ export class AdapterService {
     return string.includes('http:') || string.includes('https:');
   }
 
+  dateAdapter(date: Date) {
+    if (date === null) {
+      return null;
+    } else {
+      return (date.getFullYear() + '-' +
+        ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + date.getDate()).slice(-2));
+    }
+  }
+
+  dateTimeAdapter(date: Date) {
+    if (date === null) {
+      return null;
+    } else {
+      return date.toISOString();
+    }
+  }
+
   downloadFile(filename: string, response: Blob) {
     const dataType = response.type;
     const binaryData = [];

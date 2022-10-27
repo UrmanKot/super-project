@@ -2,17 +2,542 @@
   <div class="page__header">
     <div class="page__title">
       <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>Requests for Order</h1>
+      <h1>
+        Requests for Order
+
+        <a target="blank" *ngIf="order?.accounting_type == 1"
+           [routerLink]="['/dash/procurement/orders/products', order.id]">
+          {{orderId}}
+        </a>
+
+        <a target="blank" *ngIf="order?.accounting_type == 2"
+           [routerLink]="['/dash/outsource/outsource-chain/products', order.id]">
+          {{orderId}}
+        </a>
+
+        <a target="blank" *ngIf="order?.accounting_type == 3"
+           [routerLink]="['/dash/production/orders/order', order.id]">
+          {{orderId}}
+        </a>
+
+        <span *ngIf="order?.root_production_plans">
+      <span *ngIf="order?.root_production_plans.length === 1">
+        <a [routerLink]="['/dash/production/plan/tasks/', order?.root_production_plans[0].id]" target="_blank">
+          {{order?.root_production_plans[0].list_product.nomenclature.name}}
+        </a>
+      </span>
+          <!--      <span class="root-plans" *ngIf="order?.root_production_plans.length > 1" (click)="showProductionLists()">-->
+          <!--          {{order?.root_production_plans[0].list_product.nomenclature.name}}-->
+          <!--        (L {{order?.root_production_plans.length}})-->
+          <!--      </span>-->
+    </span>
+      </h1>
     </div>
     <div class="page__tools">
       <button pButton type="button" icon="pi pi-check" label="Complete"></button>
+
+      <button pButton class="p-button-danger ml-2" type="button" label="Cancelation" (click)="onCancel()"></button>
+
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        target="blank"
+        *ngIf="order?.accounting_type == 1"
+        [routerLink]="['/dash/procurement/orders/products', order.id]"
+        label="Go to Order"
+      >
+      </a>
+
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        target="blank"
+        *ngIf="order?.accounting_type == 2"
+        [routerLink]="['/dash/outsource/outsource-chain/products', order.id]"
+        label="Go to Order"
+      >
+      </a>
+
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        target="blank"
+        *ngIf="order?.accounting_type == 3"
+        [routerLink]="['/dash/production/orders/order', order.id]"
+        label="Go to Order"
+      >
+      </a>
     </div>
   </div>
 </div>
 
 <div class="page__content">
   <div class="page__card">
-    <div class="page__table">
-    </div>
+    <ng-container *ngIf="viewMode === viewModes.LIST">
+      <div class="page__table">
+        <p-table
+          #dt
+          [paginator]="requests.length > 0"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          class="adaptive-table print-table"
+          [rows]="10"
+          [value]="requests"
+          [globalFilterFields]="['name']"
+          selectionMode="single" [(selection)]="selectedRequest"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                class="ml-auto mr-2 p-button-warning"
+                label="Cancel"
+                [disabled]="!selectedRequest"
+                (click)="onCancelItem(selectedRequest)"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                icon="pi pi-images"
+                label="Show Images"
+                [disabled]="!selectedRequest"
+                (click)="showImages(selectedRequest.list_product)"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="List"
+                (click)="changeView(viewModes.LIST)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Hierarchy"
+                (click)="changeView(viewModes.HIERARCHY)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Detailed Hierarchy"
+                (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="colgroup">
+            <colgroup>
+              <col class="index-header">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center" style="width: 5%;">#</th>
+              <th class="text-center" style="width: 5%;">ID</th>
+              <th style="width: 18%;">Code</th>
+              <th style="width: 21%;">Name</th>
+              <th style="width: 12%;">Technology</th>
+              <th class="text-center" style="width: 14%;">Required Quantity</th>
+              <th class="text-center" style="width: 13%;">Locator</th>
+              <th class="text-center" style="width: 12%;">Available Quantity</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-request let-i="rowIndex">
+            <tr class="pagebreak" [pSelectableRow]="request"
+                [class.qr-code-scanned]="request.is_scanned">
+              <td style="width: 5%;" class="text-center">{{i + 1}}</td>
+              <td style="width: 5%;" class="text-center">
+                {{request.id}}
+              </td>
+              <td style="width: 18%;">
+                <div *ngIf="request.material_nomenclature">
+                  {{request.material_nomenclature.code}}
+                </div>
+                <div *ngIf="request.order_product_nomenclature">
+                  {{request.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  {{request.list_product.nomenclature.code}}
+                </div>
+              </td>
+              <td style="width: 21%;">
+                <div *ngIf="request.material_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.material_nomenclature.name}}
+                </div>
+                <div *ngIf="request.order_product_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.list_product.nomenclature.name}}
+                </div>
+              </td>
+              <td style="width: 12%">
+                <span *ngIf="request.technology">{{request.technology}}</span>
+              </td>
+              <td style="width: 14%;" class="text-center">
+                {{request.required_quantity}}
+              </td>
+              <td style="width: 13%" class="text-center">
+                <div *ngIf="request.locators">
+                  <div *ngFor="let locator of request.locators">
+                    {{locator.name}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 12%;" class="text-center">
+                {{request.warehouse_quantity}}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="8">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoading && requests.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModes.HIERARCHY">
+      <p-treeTable class="orders-tree"
+                   [value]="requestTree"
+                   selectionMode="single"
+                   [(selection)]="selectedRequestNode"
+                   scrollHeight="calc(100vh - 300px)"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <button
+              pButton
+              type="button"
+              class="ml-auto mr-2 p-button-warning"
+              label="Cancel"
+              [disabled]="!selectedRequestNode"
+              (click)="onCancelItem(selectedRequestNode.data.request)"
+            ></button>
+
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              icon="pi pi-images"
+              label="Show Images"
+              [disabled]="!selectedRequestNode"
+              (click)="showImages(selectedRequestNode.data.request.list_product)"
+            ></button>
+
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Expand all"
+              (click)="expandCollapseAllOrders()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Collapse all"
+              (click)="expandCollapseAllOrders(false)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="List"
+              (click)="changeView(viewModes.LIST)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Hierarchy"
+              (click)="changeView(viewModes.HIERARCHY)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Detailed Hierarchy"
+              (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 16%;">ID</th>
+            <th style="width: 18%;">Code</th>
+            <th style="width: 20%;">Name</th>
+            <th style="width: 10%;">Technology</th>
+            <th class="text-center" style="width: 14%;">Required Quantity</th>
+            <th class="text-center" style="width: 10%;">Locator</th>
+            <th class="text-center" style="width: 12%;">Available Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr
+            class="pagebreak"
+            [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttSelectableRowDisabled]="rowData.level < 4"
+          >
+            <td style="width: 16%;" class="text-center">
+              <div class="toggle-row">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span [class.bold]="rowData.level < 4">
+                    {{rowData.name}}
+                  </span>
+                <span *ngIf="rowData.level === 4">
+                     {{rowData.request.id}}
+                  </span>
+              </div>
+            </td>
+            <td style="width: 18%;">
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.material_nomenclature">
+                  {{rowData.request.material_nomenclature.code}}
+                </div>
+                <div *ngIf="rowData.request.order_product_nomenclature">
+                  {{rowData.request.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  {{rowData.request.list_product.nomenclature.code}}
+                </div>
+              </div>
+            </td>
+            <td style="width: 20%;">
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.material_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.material_nomenclature.name}}
+                </div>
+                <div *ngIf="rowData.request.order_product_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.list_product.nomenclature.name}}
+                </div>
+              </div>
+            </td>
+            <td style="width: 10%">
+              <div *ngIf="rowData.level === 4">
+                <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
+              </div>
+            </td>
+            <td style="width: 14%;" class="text-center">
+              <div *ngIf="rowData.level === 4">
+                {{rowData.request.required_quantity}}
+              </div>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.locators">
+                  <div *ngFor="let locator of rowData.request.locators">
+                    {{locator.name}}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td style="width: 12%;" class="text-center">
+              <div *ngIf="rowData.level === 4">
+                {{rowData.request.warehouse_quantity}}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="8">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModes.DETAILED_HIERARCHY">
+      <div class="page__table">
+        <p-treeTable
+          class="orders-tree"
+          [value]="detailedRequestTree"
+          (onNodeExpand)="onNodeExpand($event)"
+          scrollHeight="calc(100vh - 300px)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                class="ml-auto mr-2"
+                label="Expand all"
+                (click)="expandCollapseDetailedView()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Collapse all"
+                (click)="expandCollapseDetailedView(false)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="List"
+                (click)="changeView(viewModes.LIST)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Hierarchy"
+                (click)="changeView(viewModes.HIERARCHY)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Detailed Hierarchy"
+                (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 16%;">ID</th>
+              <th style="width: 18%;">Code</th>
+              <th style="width: 20%;">Name</th>
+              <th style="width: 10%;">Technology</th>
+              <th class="text-center" style="width: 14%;">Required Quantity</th>
+              <th class="text-center" style="width: 10%;">Locator</th>
+              <th class="text-center" style="width: 12%;">Available Quantity</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              class="pagebreak"
+              [ttRow]="rowNode"
+              [class.in-plan]="rowData.request"
+              [class.placeholder]="!rowData.request"
+            >
+              <td style="width: 16%;" class="text-center">
+                <div class="toggle-row">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span *ngIf="rowData.loading" [class.bold]="!rowData.request">
+                      {{rowData.loading}}
+                    </span>
+                  <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.id}}
+                    </span>
+                  <span *ngIf="rowData.request">
+                     {{rowData.request.id}}
+                    </span>
+                </div>
+              </td>
+              <td style="width: 18%;">
+                   <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.code}}
+                  </span>
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    {{rowData.request.material_nomenclature.code}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    {{rowData.request.order_product_nomenclature.code}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    {{rowData.request.list_product.nomenclature.code}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 20%;">
+                   <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.name}}
+                     {{rowData.serialNumber}}
+                  </span>
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.material_nomenclature.name}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.order_product_nomenclature.name}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.list_product.nomenclature.name}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 10%">
+                <div *ngIf="rowData.request">
+                  <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
+                </div>
+              </td>
+              <td style="width: 14%;" class="text-center">
+                <div *ngIf="rowData.request">
+                  {{rowData.request.required_quantity}}
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.locators">
+                    <div *ngFor="let locator of rowData.request.locators">
+                      {{locator.name}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 12%;" class="text-center">
+                <div *ngIf="rowData.request">
+                  {{rowData.request.warehouse_quantity}}
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="8">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </div>
+    </ng-container>
   </div>
 </div>

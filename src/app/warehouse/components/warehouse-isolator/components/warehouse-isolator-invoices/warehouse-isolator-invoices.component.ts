@@ -6,11 +6,11 @@ import {ActivatedRoute} from '@angular/router';
 import {InvoiceProductService} from '../../../../../procurement/services/invoice-product.service';
 
 @Component({
-  selector: 'pek-warehouse-insulator-invoices',
-  templateUrl: './warehouse-insulator-invoices.component.html',
-  styleUrls: ['./warehouse-insulator-invoices.component.scss']
+  selector: 'pek-warehouse-isolator-invoices',
+  templateUrl: './warehouse-isolator-invoices.component.html',
+  styleUrls: ['./warehouse-isolator-invoices.component.scss']
 })
-export class WarehouseInsulatorInvoicesComponent implements OnInit, OnDestroy {
+export class WarehouseIsolatorInvoicesComponent implements OnInit, OnDestroy {
 
   isLoading = true;
   invoiceProducts: InvoiceProduct[] = [];

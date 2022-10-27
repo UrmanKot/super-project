@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Warehouse} from '../../../warehouse/models/warehouse';
 import {Subject, takeUntil} from 'rxjs';
-import {WarehouseService} from '../../../warehouse/services/warehouse.service';
 import {Technology} from '../../../product-structure/models/technology';
 import {TechnologyService} from '../../../product-structure/services/technology.service';
 

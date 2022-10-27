@@ -21,6 +21,7 @@ export class Product {
   lft?: number;
   rght?: number;
   locator?: Locator;
+  level?: number;
   physical_inventory_nomenclature?: any;
 }
 

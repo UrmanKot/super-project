@@ -61,11 +61,24 @@
   padding: 0.25em 0.5rem;
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   letter-spacing: .3px;
+  color: #fff;
+  background: #64748B;
+
+  &_danger {
+    background: var(--theme-color-danger);
+  }
+
+  &_success {
+    background: var(--theme-color-success);
+  }
+
+  &_reserved {
+    background: #af89e7;
+  }
 
   &_warning {
-    color: #fff;
     background: var(--theme-color-warning);
   }
 }

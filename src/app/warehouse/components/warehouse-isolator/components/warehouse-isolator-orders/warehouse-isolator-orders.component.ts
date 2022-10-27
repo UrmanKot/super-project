@@ -8,11 +8,11 @@ import {OrderProduct} from '../../../../../procurement/models/order-product';
 import {OrderProductService} from '../../../../../procurement/services/order-product.service';
 
 @Component({
-  selector: 'pek-warehouse-insulator-orders',
-  templateUrl: './warehouse-insulator-orders.component.html',
-  styleUrls: ['./warehouse-insulator-orders.component.scss']
+  selector: 'pek-warehouse-isolator-orders',
+  templateUrl: './warehouse-isolator-orders.component.html',
+  styleUrls: ['./warehouse-isolator-orders.component.scss']
 })
-export class WarehouseInsulatorOrdersComponent implements OnInit, OnDestroy {
+export class WarehouseIsolatorOrdersComponent implements OnInit, OnDestroy {
 
   isLoading = true;
   orderProducts: OrderProduct[] = [];

@@ -2,7 +2,7 @@
   <div class="page__header">
     <div class="page__title">
       <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>Invoice Insulator Items</h1>
+      <h1>Order Isolator Items</h1>
     </div>
   </div>
 </div>
@@ -15,9 +15,9 @@
         selectionMode="single"
         scrollHeight="calc(100vh - 18.8rem)"
         [scrollable]="true"
-        [paginator]="invoiceProducts.length > 0"
+        [paginator]="orderProducts.length > 0"
         [rows]="10"
-        [value]="invoiceProducts"
+        [value]="orderProducts"
       >
         <ng-template pTemplate="caption">
           <div class="mt-1"></div>
@@ -58,7 +58,7 @@
         </ng-template>
       </p-table>
     </div>
-    <div *ngIf="!dt.paginator && !isLoading && invoiceProducts.length > 0" class="paginator-return-pagination">
+    <div *ngIf="!dt.paginator && !isLoading && orderProducts.length > 0" class="paginator-return-pagination">
       <p-button
         type="button"
         (click)="dt.paginator=true"

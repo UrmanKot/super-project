@@ -8,7 +8,7 @@ export class TreeService {
 
   constructor() { }
 
-  createTree(categories: any[], expanseMap: any): TreeNode[] {
+  createTree(categories: any[], expanseMap?: any): TreeNode[] {
     const prepareNodes: Partial<TreeNode>[] = [];
 
     categories.forEach(element => {

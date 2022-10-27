@@ -10,6 +10,8 @@ export class WarehouseLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Items', commands: ['items']},
+    {label: 'QC-Warehouse', commands: ['warehouse-qc']},
+    {label: 'Production Lists', commands: ['production-lists']},
     {label: 'Production Requests', commands: ['production-requests']},
     {label: 'Tool Requests', commands: ['tool-requests']},
     {label: 'Where Used', commands: ['where-used']},
@@ -18,7 +20,7 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Categories', commands: ['categories']},
     {label: 'Units of Measure', commands: ['measure']},
     {label: 'Serial Number Types', commands: ['serial-types']},
-    {label: 'Insulator', commands: ['insulator']},
+    {label: 'Isolator', commands: ['isolator']},
   ]
 
   constructor() { }

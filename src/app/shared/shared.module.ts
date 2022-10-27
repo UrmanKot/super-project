@@ -42,6 +42,10 @@ import { MultiLocatorPickerComponent } from './pickers/multi-locator-picker/mult
 import { GroupLocatorPickerComponent } from './pickers/group-locator-picker/group-locator-picker.component';
 import { TechnologyPickerComponent } from './pickers/technology-picker/technology-picker.component';
 import { NomenclaturePickerModalComponent } from './modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
+import {CalendarModule} from 'primeng/calendar';
+import { EmployeePickerComponent } from './pickers/employee-picker/employee-picker.component';
+import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
+import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
 
 
 @NgModule({
@@ -67,7 +71,10 @@ import { NomenclaturePickerModalComponent } from './modals/nomenclature-picker-m
     MultiLocatorPickerComponent,
     GroupLocatorPickerComponent,
     TechnologyPickerComponent,
-    NomenclaturePickerModalComponent
+    NomenclaturePickerModalComponent,
+    EmployeePickerComponent,
+    CompleteListComponent,
+    ListProductsComponent
   ],
   exports: [
     ButtonModule,
@@ -102,7 +109,9 @@ import { NomenclaturePickerModalComponent } from './modals/nomenclature-picker-m
     MultiWarehousePickerComponent,
     MultiLocatorPickerComponent,
     GroupLocatorPickerComponent,
-    TechnologyPickerComponent
+    TechnologyPickerComponent,
+    CalendarModule,
+    EmployeePickerComponent
   ],
   imports: [
     CommonModule,
@@ -123,6 +132,7 @@ import { NomenclaturePickerModalComponent } from './modals/nomenclature-picker-m
     TreeSelectModule,
     PaginatorModule,
     MultiSelectModule,
+    CalendarModule
   ]
 })
 export class SharedModule { }

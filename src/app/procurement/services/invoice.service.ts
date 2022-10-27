@@ -5,6 +5,14 @@ import {QuerySearch} from '@shared/models/other';
 import {map} from 'rxjs/operators';
 import {Invoice} from '../models/invoice';
 import {Observable} from 'rxjs';
+import {InvoiceProduct} from '../models/invoice-product';
+import {
+  CreatePhysicalInventoryComponent
+} from '../../warehouse/modals/create-physical-inventory/create-physical-inventory.component';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  QcAcceptToWarehouseComponent
+} from '../../warehouse/modals/qc-accept-to-warehouse/qc-accept-to-warehouse.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +24,7 @@ export class InvoiceService {
 
   constructor(
     private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -33,5 +42,24 @@ export class InvoiceService {
     return this.httpClient.get<{ data: Invoice[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
       map(response => response.data)
     );
+  }
+
+  getProductsToAccept(id: number): Observable<InvoiceProduct[]> {
+    return this.httpClient.get<{ data: InvoiceProduct[] }>(this.API_URL + this.url + id + '/products_to_accept/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  openAcceptToWarehouseModal(items: InvoiceProduct[], id: number, type = 'invoice'): Observable<any> {
+    return this.dialog
+      .open<QcAcceptToWarehouseComponent>(QcAcceptToWarehouseComponent, {
+        width: '40rem',
+        height: 'auto',
+        data: {items, id, type},
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

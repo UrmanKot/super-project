@@ -1,4 +1,4 @@
-import {ListProduct} from '@shared/models/list-product';
+import {ListProduct} from '../../warehouse/models/list-product';
 
 export class OrderSupplier {
   confirm_status: EOrderSupplierConfirmStatus;

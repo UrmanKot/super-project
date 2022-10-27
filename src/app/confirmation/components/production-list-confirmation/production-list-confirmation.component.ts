@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalService} from '@shared/services/modal.service';
-import {List} from '@shared/models/production-list';
-import {ListService} from '@shared/services/list.service';
+import {List} from '../../../warehouse/models/list';
+import {ListService} from '../../../warehouse/services/list.service';
 import {concat, finalize, Subject, takeUntil} from 'rxjs';
 
 @Component({
