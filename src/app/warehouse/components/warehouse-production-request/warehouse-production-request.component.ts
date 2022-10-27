@@ -15,8 +15,8 @@ import {TaskService} from '@shared/services/task.service';
 
 enum ViewMode {
   LIST = 0,
-  HIERARCHY= 1,
-  DETAILED_HIERARCHY= 2,
+  HIERARCHY = 1,
+  DETAILED_HIERARCHY = 2,
 }
 
 @Component({
@@ -53,7 +53,8 @@ export class WarehouseProductionRequestComponent implements OnInit {
     private router: Router,
     private readonly modalService: ModalService,
     private readonly tasksService: TaskService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.getOrderInfo(+this.orderId);
@@ -320,7 +321,16 @@ export class WarehouseProductionRequestComponent implements OnInit {
 
   showImages(node) {
     console.log(node);
-    const nomenclatureId = node.nomenclature.id
+    const nomenclatureId = node.nomenclature.id;
     this.modalService.showImageGallery([], nomenclatureId, 1).subscribe();
+  }
+
+  complete() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.isLoading = false;
+        this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigateByUrl('/warehouse/production-requests/').then());
+      }
+    });
   }
 }

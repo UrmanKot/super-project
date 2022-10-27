@@ -37,4 +37,7 @@ export class RequestService {
     );
   }
 
+  complete(id: number): Observable<any> {
+    return this.http.post(this.API_URL_PROCUREMENT + 'orders/' + id + '/' + 'complete/', id);
+  }
 }

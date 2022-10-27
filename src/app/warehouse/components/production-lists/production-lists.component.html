@@ -17,6 +17,14 @@
     </div>
     <div class="page__tools">
       <button
+        class="mt-auto mr-2"
+        pButton
+        type="button"
+        [icon]="'pi ' + (isHideFilters ? 'pi-angle-double-down' : 'pi-angle-double-up')"
+        [label]="(isHideFilters ? 'Show' : 'Hide') + ' filters'"
+        (click)="toggleFilterVisibility()">
+      </button>
+      <button
         class="mr-2"
         pButton
         type="button"
@@ -33,123 +41,107 @@
         [disabled]="viewMode === viewModeType.LIST"
         (click)="onChoiceViewType(viewModeType.LIST)"
       ></button>
+
     </div>
   </div>
 </div>
 
 <div class="page__content">
   <div class="page__card">
-    <form
-      [formGroup]="searchForm"
-      class="physical-inventory-products__form mb-3"
-    >
-      <div class="row">
-        <div class="col-3">
-          <div class="form-group">
-            <label>Code</label>
-            <input class="form-control" formControlName="code" pInputText #searchBoxCode>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Name</label>
-            <input class="form-control" formControlName="name" pInputText #searchBoxName>
-          </div>
-        </div>
-<!--        <div class="col-3">-->
-<!--          <div class="form-group">-->
-<!--            <label>Employee</label>-->
-<!--            <pek-employee-picker (selectEmployee)="onSelectEmployee($event)"></pek-employee-picker>-->
-<!--          </div>-->
-<!--        </div>-->
-        <div class="col-3">
-          <div class="form-group">
-            <label>Categories</label>
-            <pek-product-category-picker
-              [isAllIds]="true"
-              (choiceCategoryFolAllIds)="onSelectCategory($event)"
-            ></pek-product-category-picker>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Product Structure Category</label>
-            <pek-product-structure-category-picker
-              [isAllIds]="true"
-              (choiceCategoryFolAllIds)="onSelectProductStructureCategory($event)"
-            ></pek-product-structure-category-picker>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Created Date From</label>
-            <p-calendar
-              formControlName="date_created_after"
-              [showButtonBar]="true"
-              (ngModelChange)="searchLists()"
-              dataType="date"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-            ></p-calendar>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Created Date To</label>
-            <p-calendar
-              formControlName="date_created_before"
-              (ngModelChange)="searchLists()"
-              [showButtonBar]="true"
-              dataType="date"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-            ></p-calendar>
-          </div>
-        </div>
-<!--        <div class="col-3">-->
-<!--          <div class="form-group">-->
-<!--            <label>Categories</label>-->
-<!--            <pek-product-category-picker-->
-<!--              [isAllIds]="true"-->
-<!--              (choiceCategoryFolAllIds)="onSelectCategory($event)"-->
-<!--            ></pek-product-category-picker>-->
-<!--          </div>-->
-<!--        </div>-->
-        <div class="col-3"></div>
-        <div class="col-3">
-          <div class="action-buttons">
-            <a
-              class="ml-auto mt-auto mr-2"
-              [class.disabled]="!selectedList"
-              [routerLink]="[selectedList?.id]"
-              target="_blank"
-              pButton
-              type="button"
-              icon="pi pi-bars"
-              label="Production List"
-            >
-            </a>
-            <button
-              class="mt-auto"
-              pButton
-              type="button"
-              icon="pi pi-angle-double-right"
-              label="Set List Locator"
-              (click)="onSetListLocator()"
-              [disabled]="!selectedList"
-            >
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
 
+    <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
+      <div class="filters-visibility__header">
+        <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+      </div>
+      <form
+        [formGroup]="searchForm"
+        class="form mb-3"
+      >
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Code</label>
+              <input class="form-control" formControlName="code" pInputText #searchBoxCode>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Name</label>
+              <input class="form-control" formControlName="name" pInputText #searchBoxName>
+            </div>
+          </div>
+          <!--        <div class="col-3">-->
+          <!--          <div class="form-group">-->
+          <!--            <label>Employee</label>-->
+          <!--            <pek-employee-picker (selectEmployee)="onSelectEmployee($event)"></pek-employee-picker>-->
+          <!--          </div>-->
+          <!--        </div>-->
+          <div class="col-3">
+            <div class="form-group">
+              <label>Categories</label>
+              <pek-product-category-picker
+                [isAllIds]="true"
+                (choiceCategoryFolAllIds)="onSelectCategory($event)"
+              ></pek-product-category-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Product Structure Category</label>
+              <pek-product-structure-category-picker
+                [isAllIds]="true"
+                (choiceCategoryFolAllIds)="onSelectProductStructureCategory($event)"
+              ></pek-product-structure-category-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Created Date From</label>
+              <p-calendar
+                formControlName="date_created_after"
+                [showButtonBar]="true"
+                (ngModelChange)="searchLists()"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Created Date To</label>
+              <p-calendar
+                formControlName="date_created_before"
+                (ngModelChange)="searchLists()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <!--        <div class="col-3">-->
+          <!--          <div class="form-group">-->
+          <!--            <label>Categories</label>-->
+          <!--            <pek-product-category-picker-->
+          <!--              [isAllIds]="true"-->
+          <!--              (choiceCategoryFolAllIds)="onSelectCategory($event)"-->
+          <!--            ></pek-product-category-picker>-->
+          <!--          </div>-->
+          <!--        </div>-->
+          <div class="col-3"></div>
+          <div class="col-3">
+            <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
     <ng-container *ngIf="viewMode === viewModeType.LIST">
       <div class="table-pagination-preloader">
         <p-table
           #dt
           selectionMode="single"
-          scrollHeight="calc(100vh - 30.25rem)"
+          [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
           [scrollable]="true"
           dataKey="id"
           [rows]="10"
@@ -252,3 +244,29 @@
     </ng-container>
   </div>
 </div>
+
+<ng-template #actionButtons>
+  <div class="action-buttons">
+    <a
+      class="ml-auto mt-auto mr-2"
+      [class.disabled]="!selectedList"
+      [routerLink]="[selectedList?.id]"
+      target="_blank"
+      pButton
+      type="button"
+      icon="pi pi-bars"
+      label="Production List"
+    >
+    </a>
+    <button
+      class="mt-auto"
+      pButton
+      type="button"
+      icon="pi pi-angle-double-right"
+      label="Set List Locator"
+      (click)="onSetListLocator()"
+      [disabled]="!selectedList"
+    >
+    </button>
+  </div>
+</ng-template>

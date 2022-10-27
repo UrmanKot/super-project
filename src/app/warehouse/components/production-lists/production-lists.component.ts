@@ -28,6 +28,10 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   isStartOnePage = false;
   isLoading = true;
 
+  tableScrollHeight = '29.625rem';
+
+  isHideFilters = false;
+
   viewModeType = ViewMode;
   viewMode: ViewMode = ViewMode.LIST;
   queryKey = 'name:/code:/responsible_employee_id:null/date_created_after:null/date_created_before:null/category_ids:null';
@@ -232,10 +236,34 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       if (response) {
         this.searchLists();
       }
-    })
+    });
   }
 
   ngOnDestroy() {
     this.destroy$.next(true);
+  }
+
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.875rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.75rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.625rem';
+      return;
+    }
   }
 }

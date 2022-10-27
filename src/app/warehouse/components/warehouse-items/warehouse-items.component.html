@@ -40,6 +40,7 @@
               <p-tree
                 [metaKeySelection]="false"
                 [value]="categoriesTree"
+                (selectionChange)="onSelectCategory($event)"
                 selectionMode="single"
               >
                 <ng-template let-node pTemplate="default">
@@ -58,82 +59,87 @@
       </div>
       <div class="warehouse-items__right">
         <div class="page__table">
-          <form
-            [formGroup]="searchForm"
-            class="warehouse-items__form mb-3"
-          >
-            <div class="row">
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Code</label>
-                  <input class="form-control" formControlName="code" pInputText #searchBoxCode>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Name</label>
-                  <input class="form-control" formControlName="name" pInputText #searchBoxName>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Description</label>
-                  <input class="form-control" formControlName="description" pInputText #searchBoxDescription>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label>Warehouses</label>
-                      <pek-warehouse-picker (selectWarehouse)="selectWarehouse($event)"></pek-warehouse-picker>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label>Locator</label>
-                      <pek-locator-picker
-                        [warehouseId]="searchForm.get('warehouse').value"
-                        [isAllLocators]="false"
-                        [isDisabled]="true"
-                        (selectLocator)="onSelectLocator($event)"
-                      ></pek-locator-picker>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label>Type</label>
-                      <pek-nomenclature-type-picker
-                        (choiceNomenclatureType)="onSelectNomenclatureType($event)"
-                      ></pek-nomenclature-type-picker>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label>Accepted Type</label>
-                      <pek-accepted-type-picker
-                        (selectAcceptedType)="onSelectAcceptedType($event)"
-                      ></pek-accepted-type-picker>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Product Structure Category</label>
-                  <pek-product-structure-category-picker
-                    [isAllIds]="true"
-                    (choiceCategoryFolAllIds)="onSelectCategory($event)"
-                  ></pek-product-structure-category-picker>
-                </div>
-              </div>
+          <div class="filters-visibility" [class.filters-visibility_hide]="isShowFilters">
+            <div class="filters-visibility__header">
+              <button class="ml-auto" (click)="toggleFilterVisibility()">Hide</button>
             </div>
-          </form>
 
+            <form
+              [formGroup]="searchForm"
+              class="warehouse-items__form mb-3"
+            >
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Code</label>
+                    <input class="form-control" formControlName="code" pInputText #searchBoxCode>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input class="form-control" formControlName="name" pInputText #searchBoxName>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Description</label>
+                    <input class="form-control" formControlName="description" pInputText #searchBoxDescription>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label>Warehouses</label>
+                        <pek-warehouse-picker (selectWarehouse)="selectWarehouse($event)"></pek-warehouse-picker>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label>Locator</label>
+                        <pek-locator-picker
+                          [warehouseId]="searchForm.get('warehouse').value"
+                          [isAllLocators]="false"
+                          [isDisabled]="true"
+                          (selectLocator)="onSelectLocator($event)"
+                        ></pek-locator-picker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label>Type</label>
+                        <pek-nomenclature-type-picker
+                          (choiceNomenclatureType)="onSelectNomenclatureType($event)"
+                        ></pek-nomenclature-type-picker>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label>Accepted Type</label>
+                        <pek-accepted-type-picker
+                          (selectAcceptedType)="onSelectAcceptedType($event)"
+                        ></pek-accepted-type-picker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Product Structure Category</label>
+                    <pek-product-structure-category-picker
+                      [isAllIds]="true"
+                      (choiceCategoryFolAllIds)="onSelectProductStructureCategory($event)"
+                    ></pek-product-structure-category-picker>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
           <div class="table-pagination-preloader">
             <p-table
               #dt

@@ -312,3 +312,26 @@
     }
   }
 }
+
+.filters-visibility {
+  &_hide {
+    form {
+      display: none;
+    }
+
+    .filters-visibility__header {
+      display: flex;
+    }
+  }
+
+  &__header {
+    align-items: center;
+    width: 100%;
+    display: none;
+    margin-bottom: 0.75rem;
+
+    button, a {
+      margin-bottom: 0;
+    }
+  }
+}

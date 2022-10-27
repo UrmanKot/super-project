@@ -22,6 +22,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('searchBoxCode') searchBoxCode;
   @ViewChild('searchBoxDescription') searchBoxDescription;
 
+  isShowFilters = false;
   isShowAll = false;
   isLoading = false;
   isStartOnePage = false;
@@ -340,7 +341,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
 
-  onSelectCategory(ids: number[]) {
+  onSelectProductStructureCategory(ids: number[]) {
     if (ids) {
       this.searchForm.get('root_categories').patchValue(ids.join(','));
     } else {
@@ -352,5 +353,19 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy() {
     this.destroy$.next(true);
+  }
+
+  toggleFilterVisibility() {
+    this.isShowFilters = !this.isShowFilters;
+  }
+
+  onSelectCategory(node: TreeNode<Category>) {
+    if (node) {
+      this.searchForm.get('category').patchValue(node.data.id);
+    } else {
+      this.searchForm.get('category').patchValue(null);
+    }
+
+    this.searchProducts();
   }
 }
