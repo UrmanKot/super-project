@@ -13279,15 +13279,29 @@ textarea::-webkit-scrollbar {
 }
 .filters-visibility_hide .filters-visibility__header {
   display: flex;
+  padding-right: 2rem;
+}
+.filters-visibility_hide .icon {
+  top: 0.875rem !important;
 }
 .filters-visibility__header {
   align-items: center;
   width: 100%;
   display: none;
   margin-bottom: 0.75rem;
+  min-height: 2.375rem;
 }
 .filters-visibility__header button, .filters-visibility__header a {
   margin-bottom: 0 !important;
+}
+.filters-visibility .icon {
+  padding: 0.5rem;
+  cursor: pointer;
+  position: absolute;
+  right: 1.25rem;
+  top: 0.5625rem;
+  z-index: 3;
+  background: transparent;
 }
 .mat-dialog-actions {
   padding: 1rem 0 !important;
@@ -13463,6 +13477,7 @@ a.disabled {
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: flex-end;
 }
 .action-buttons button, .action-buttons a {
   height: 2.375rem;
