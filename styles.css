@@ -13274,6 +13274,21 @@ textarea::-webkit-scrollbar {
 .paginator-all button:focus {
   box-shadow: none !important;
 }
+.filters-visibility_hide form {
+  display: none;
+}
+.filters-visibility_hide .filters-visibility__header {
+  display: flex;
+}
+.filters-visibility__header {
+  align-items: center;
+  width: 100%;
+  display: none;
+  margin-bottom: 0.75rem;
+}
+.filters-visibility__header button, .filters-visibility__header a {
+  margin-bottom: 0;
+}
 .mat-dialog-actions {
   padding: 1rem 0 !important;
 }
