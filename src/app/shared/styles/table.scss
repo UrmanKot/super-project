@@ -321,6 +321,11 @@
 
     .filters-visibility__header {
       display: flex;
+      padding-right: 2rem;
+    }
+
+    .icon {
+      top: 0.875rem !important;
     }
   }
 
@@ -329,9 +334,20 @@
     width: 100%;
     display: none;
     margin-bottom: 0.75rem;
+    min-height: 2.375rem;
 
     button, a {
       margin-bottom: 0 !important;
     }
+  }
+
+  .icon {
+    padding: 0.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: 1.25rem;
+    top: 0.5625rem;
+    z-index: 3;
+    background: transparent;
   }
 }

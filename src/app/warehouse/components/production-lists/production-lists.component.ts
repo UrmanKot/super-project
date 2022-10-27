@@ -29,7 +29,6 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   isLoading = true;
 
   tableScrollHeight = '29.625rem';
-
   isHideFilters = false;
 
   viewModeType = ViewMode;

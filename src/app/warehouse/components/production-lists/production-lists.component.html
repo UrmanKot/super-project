@@ -17,15 +17,7 @@
     </div>
     <div class="page__tools">
       <button
-        class="mt-auto mr-2"
-        pButton
-        type="button"
-        [icon]="'pi ' + (isHideFilters ? 'pi-angle-double-down' : 'pi-angle-double-up')"
-        [label]="(isHideFilters ? 'Show' : 'Hide') + ' filters'"
-        (click)="toggleFilterVisibility()">
-      </button>
-      <button
-        class="mr-2"
+        class="ml-auto mr-2"
         pButton
         type="button"
         icon="pi pi-table"
@@ -41,7 +33,6 @@
         [disabled]="viewMode === viewModeType.LIST"
         (click)="onChoiceViewType(viewModeType.LIST)"
       ></button>
-
     </div>
   </div>
 </div>
@@ -53,6 +44,14 @@
       <div class="filters-visibility__header">
         <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
       </div>
+
+      <button
+        class="icon pi"
+        [class.pi-angle-double-up]="isHideFilters"
+        [class.pi-angle-double-down]="!isHideFilters"
+        (click)="toggleFilterVisibility()"
+      ></button>
+
       <form
         [formGroup]="searchForm"
         class="form mb-3"
@@ -70,12 +69,6 @@
               <input class="form-control" formControlName="name" pInputText #searchBoxName>
             </div>
           </div>
-          <!--        <div class="col-3">-->
-          <!--          <div class="form-group">-->
-          <!--            <label>Employee</label>-->
-          <!--            <pek-employee-picker (selectEmployee)="onSelectEmployee($event)"></pek-employee-picker>-->
-          <!--          </div>-->
-          <!--        </div>-->
           <div class="col-3">
             <div class="form-group">
               <label>Categories</label>
@@ -120,15 +113,6 @@
               ></p-calendar>
             </div>
           </div>
-          <!--        <div class="col-3">-->
-          <!--          <div class="form-group">-->
-          <!--            <label>Categories</label>-->
-          <!--            <pek-product-category-picker-->
-          <!--              [isAllIds]="true"-->
-          <!--              (choiceCategoryFolAllIds)="onSelectCategory($event)"-->
-          <!--            ></pek-product-category-picker>-->
-          <!--          </div>-->
-          <!--        </div>-->
           <div class="col-3"></div>
           <div class="col-3">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>

@@ -45,22 +45,28 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
+            <th style="width: 3%">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
             <th class="text-center" style="width: 5%;">#</th>
-            <th style="width: 20%;">Code</th>
+            <th style="width: 17%;">Code</th>
             <th style="width: 20%;">Name</th>
             <th style="width: 20%;" class="text-center">Technology</th>
             <th style="width: 20%;" class="text-center">Quantity</th>
             <th style="width: 15%;" class="text-center">Passed</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-          <tr [pSelectableRow]="invoice">
+        <ng-template pTemplate="body" let-order let-i="rowIndex">
+          <tr>
+            <td style="width: 3%">
+              <p-tableCheckbox [value]="order"></p-tableCheckbox>
+            </td>
             <td style="width: 5%;" class="text-center">{{i + 1}}</td>
-            <td style="width: 20%;">{{invoice.nomenclature.code}}</td>
-            <td style="width: 20%;">{{invoice.nomenclature.name}}</td>
-            <td style="width: 20%;" class="text-center">{{invoice.current_technology}}</td>
-            <td style="width: 20%;" class="text-center">{{invoice.quantity}}</td>
-            <td style="width: 15%;" class="text-center">{{invoice.passed_quantity}}</td>
+            <td style="width: 17%;">{{order.nomenclature.code}}</td>
+            <td style="width: 20%;">{{order.nomenclature.name}}</td>
+            <td style="width: 20%;" class="text-center">{{order.current_technology}}</td>
+            <td style="width: 20%;" class="text-center">{{order.quantity}}</td>
+            <td style="width: 15%;" class="text-center">{{order.passed_quantity}}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

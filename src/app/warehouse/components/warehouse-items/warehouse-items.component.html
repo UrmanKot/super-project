@@ -59,10 +59,15 @@
       </div>
       <div class="warehouse-items__right">
         <div class="page__table">
-          <div class="filters-visibility" [class.filters-visibility_hide]="isShowFilters">
-            <div class="filters-visibility__header">
-              <button class="ml-auto" (click)="toggleFilterVisibility()">Hide</button>
-            </div>
+          <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
+            <div class="filters-visibility__header"></div>
+
+            <button
+              class="icon pi"
+              [class.pi-angle-double-up]="isHideFilters"
+              [class.pi-angle-double-down]="!isHideFilters"
+              (click)="toggleFilterVisibility()"
+            ></button>
 
             <form
               [formGroup]="searchForm"
@@ -144,7 +149,7 @@
             <p-table
               #dt
               selectionMode="single"
-              scrollHeight="calc(100vh - 30.25rem)"
+              [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
               dataKey="uid"
               [scrollable]="true"
               [rows]="10"

@@ -22,7 +22,9 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('searchBoxCode') searchBoxCode;
   @ViewChild('searchBoxDescription') searchBoxDescription;
 
-  isShowFilters = false;
+  tableScrollHeight = '29.75rem';
+
+  isHideFilters = false;
   isShowAll = false;
   isLoading = false;
   isStartOnePage = false;
@@ -317,11 +319,13 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   onShowAll() {
     this.isShowAll = true;
+    this.setTableScrollHeight();
     this.searchProducts();
   }
 
   onShowPartial() {
     this.isShowAll = false;
+    this.setTableScrollHeight();
     this.searchProducts();
   }
 
@@ -356,7 +360,9 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   toggleFilterVisibility() {
-    this.isShowFilters = !this.isShowFilters;
+    this.isHideFilters = !this.isHideFilters;
+
+    this.setTableScrollHeight();
   }
 
   onSelectCategory(node: TreeNode<Category>) {
@@ -367,5 +373,27 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.searchProducts();
+  }
+
+  setTableScrollHeight() {
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.875rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.25rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.75rem';
+      return;
+    }
   }
 }
