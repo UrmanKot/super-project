@@ -188,11 +188,13 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
 
   onShowAll() {
     this.isShowAll = true;
+    this.setTableScrollHeight();
     this.searchLists();
   }
 
   onShowPartial() {
     this.isShowAll = false;
+    this.setTableScrollHeight();
     this.searchLists();
   }
 
@@ -239,20 +241,14 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-  }
-
-  toggleFilterVisibility() {
-    this.isHideFilters = !this.isHideFilters;
-
+  setTableScrollHeight() {
     if (this.isHideFilters && !this.isShowAll) {
       this.tableScrollHeight = '20.875rem';
       return;
     }
 
     if (this.isHideFilters && this.isShowAll) {
-      this.tableScrollHeight = '18.75rem';
+      this.tableScrollHeight = '19.25rem';
       return;
     }
 
@@ -265,5 +261,15 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       this.tableScrollHeight = '29.625rem';
       return;
     }
+  }
+
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+
+    this.setTableScrollHeight();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 }
