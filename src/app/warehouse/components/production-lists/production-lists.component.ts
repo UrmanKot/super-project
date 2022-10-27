@@ -248,7 +248,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     if (this.isHideFilters && this.isShowAll) {
-      this.tableScrollHeight = '19.25rem';
+      this.tableScrollHeight = '18.75rem';
       return;
     }
 
