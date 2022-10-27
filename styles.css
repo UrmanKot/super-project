@@ -12621,6 +12621,9 @@ body::-webkit-scrollbar {
 .layout-navigation__item .active::before {
   opacity: 0;
 }
+.layout-navigation_wh .layout-navigation__item a {
+  padding: 1.375rem 0.75rem;
+}
 .mat-dialog-container {
   padding: 1.5rem !important;
 }
@@ -13043,6 +13046,9 @@ textarea::-webkit-scrollbar {
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler {
   color: var(--theme-color-primary);
 }
+.p-calendar {
+  width: 100%;
+}
 .p-treetable .p-treetable-tbody tr:focus {
   outline: 0;
 }
@@ -13052,9 +13058,13 @@ textarea::-webkit-scrollbar {
 }
 .p-treetable .p-treetable-tbody > tr.p-highlight {
   color: var(--theme-color-primary);
+  background: #EFF6FF !important;
 }
 .p-treetable .p-treetable-tbody > tr.p-highlight .p-treetable-toggler {
   color: var(--theme-color-primary);
+}
+.p-treetable .p-treetable-tbody > tr:not(.p-highlight):hover {
+  background: #e9ecef !important;
 }
 .p-treetable .p-treetable-tbody > tr .p-treetable-toggler:focus {
   box-shadow: none !important;
@@ -13106,8 +13116,11 @@ textarea::-webkit-scrollbar {
   background: transparent !important;
 }
 .p-datatable .p-datatable-tbody > tr.p-highlight {
-  background: #EFF6FF;
+  background: #EFF6FF !important;
   color: var(--theme-color-primary);
+}
+.p-datatable .p-datatable-tbody > tr:not(.p-highlight):hover {
+  background: #e9ecef !important;
 }
 .p-datatable .p-datatable-tbody > tr:focus {
   outline: none;
@@ -13348,11 +13361,21 @@ textarea::-webkit-scrollbar {
   padding: 0.25em 0.5rem;
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   letter-spacing: 0.3px;
+  color: #fff;
+  background: #64748B;
+}
+.badge_danger {
+  background: var(--theme-color-danger);
+}
+.badge_success {
+  background: var(--theme-color-success);
+}
+.badge_reserved {
+  background: #af89e7;
 }
 .badge_warning {
-  color: #fff;
   background: var(--theme-color-warning);
 }
 .p-button {
@@ -13377,8 +13400,9 @@ textarea::-webkit-scrollbar {
   font-size: 0.875rem;
 }
 .p-button.p-button-rounded_small {
-  height: 1.625rem !important;
-  width: 1.625rem !important;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
+  padding: 0 !important;
 }
 .p-button.p-button-rounded_small .pi {
   font-weight: 600;
@@ -13415,6 +13439,19 @@ a {
 }
 .p-button-icon.p-button-loading .p-button-label {
   padding-left: 1.5rem !important;
+}
+a.disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
+.action-buttons {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.action-buttons button, .action-buttons a {
+  height: 2.375rem;
+  margin-bottom: 0.535rem;
 }
 
 /*# sourceMappingURL=styles.css.map*/
