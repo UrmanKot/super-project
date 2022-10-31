@@ -5,24 +5,27 @@
       <h1>
         Requests for Order
 
-        <a target="blank" *ngIf="order?.accounting_type == 1"
-           [routerLink]="['/dash/procurement/orders/products', order.id]">
+        <a  *ngIf="order?.accounting_type == 1"
+            (click)="goOrder(1, order.id)"
+        >
           {{orderId}}
         </a>
 
-        <a target="blank" *ngIf="order?.accounting_type == 2"
-           [routerLink]="['/dash/outsource/outsource-chain/products', order.id]">
+        <a *ngIf="order?.accounting_type == 2"
+           (click)="goOrder(2, order.id)"
+        >
           {{orderId}}
         </a>
 
-        <a target="blank" *ngIf="order?.accounting_type == 3"
-           [routerLink]="['/dash/production/orders/order', order.id]">
+        <a *ngIf="order?.accounting_type == 3"
+           (click)="goOrder(3, order.id)"
+        >
           {{orderId}}
         </a>
 
         <span *ngIf="order?.root_production_plans">
       <span *ngIf="order?.root_production_plans.length === 1">
-        <a [routerLink]="['/dash/production/plan/tasks/', order?.root_production_plans[0].id]" target="_blank">
+        <a (click)="onGoProd(order?.root_production_plans[0].id)">
           {{order?.root_production_plans[0].list_product.nomenclature.name}}
         </a>
       </span>

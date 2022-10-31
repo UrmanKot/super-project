@@ -30,19 +30,21 @@
           <div class="col-3">
             <div class="form-group">
               <label>Category</label>
-              <pek-product-category-picker
-                (choiceCategoryFolAllIds)="onSelectCategory($event)"
-                [isAllIds]="true"
-              ></pek-product-category-picker>
+              <pek-multi-categories-picker
+                (choiceCategories)="onSelectCategories($event)"
+              ></pek-multi-categories-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Product Structure Category</label>
-              <pek-product-structure-category-picker
-                (choiceCategoryFolAllIds)="onSelectRootCategory($event)"
-                [isAllIds]="true"
-              ></pek-product-structure-category-picker>
+<!--              <pek-product-structure-category-picker-->
+<!--                (choiceCategoryFolAllIds)="onSelectRootCategory($event)"-->
+<!--                [isAllIds]="true"-->
+<!--              ></pek-product-structure-category-picker>-->
+              <pek-multi-product-structure-categories-picker
+                (choiceCategories)="onSelectRootCategory($event)"
+              ></pek-multi-product-structure-categories-picker>
             </div>
           </div>
         </div>

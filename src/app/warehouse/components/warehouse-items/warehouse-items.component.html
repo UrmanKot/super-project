@@ -64,8 +64,8 @@
 
             <button
               class="icon pi"
-              [class.pi-angle-double-up]="isHideFilters"
-              [class.pi-angle-double-down]="!isHideFilters"
+              [class.pi-angle-double-up]="!isHideFilters"
+              [class.pi-angle-double-down]="isHideFilters"
               (click)="toggleFilterVisibility()"
             ></button>
 

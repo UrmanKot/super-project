@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
-import {Order} from '../models/order';
+import {Order, Orders} from '../models/order';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {OrderProduct} from '../models/order-product';
@@ -40,6 +40,24 @@ export class OrderService {
     }
 
     return this.httpClient.get<{ data: Order[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getForPagination(query?: QuerySearch[]): Observable<Orders> {
+    let queryParams = '';
+
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: Orders }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }

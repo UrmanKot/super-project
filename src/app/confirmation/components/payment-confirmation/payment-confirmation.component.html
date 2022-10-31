@@ -21,7 +21,7 @@
   <div class="page__tabs">
     <p-tabView class="custom-tabs">
       <p-tabPanel
-        [header]="'Manufacturing Procurement and Outsourcing Payments (' + (isLoadingPayments ? '...' : payments.length) + ')'"
+        [header]="'Production Lists Procurement and Outsourcing Payments (' + (isLoadingPayments ? '...' : payments.length) + ')'"
         [selected]="true"
       >
         <div class="page__table">
@@ -183,7 +183,7 @@
         </div>
       </p-tabPanel>
       <p-tabPanel
-        [header]="'Purchasing Payments (' + (isLoadingServiceInvoicePayments ? '...' : serviceInvoicePayments.length) + ')'"
+        [header]="'General Procurement Payments (' + (isLoadingServiceInvoicePayments ? '...' : serviceInvoicePayments.length) + ')'"
       >
         <div class="page__table">
           <p-treeTable

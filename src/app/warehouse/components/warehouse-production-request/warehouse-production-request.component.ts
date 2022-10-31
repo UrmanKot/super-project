@@ -12,6 +12,7 @@ import {List} from '../../models/list';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
+import {environment} from '@env/environment.prod';
 
 enum ViewMode {
   LIST = 0,
@@ -25,6 +26,7 @@ enum ViewMode {
   styleUrls: ['./warehouse-production-request.component.scss']
 })
 export class WarehouseProductionRequestComponent implements OnInit {
+  link = environment.link_url + 'dash/';
   viewModes = ViewMode;
   viewMode: ViewMode = ViewMode.LIST;
   @ViewChild('dt') dateTable: Table;
@@ -332,5 +334,27 @@ export class WarehouseProductionRequestComponent implements OnInit {
         this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigateByUrl('/warehouse/production-requests/').then());
       }
     });
+  }
+
+  onGoProd(id: number) {
+    window.open(`${this.link}production/plan/tasks/` + id, '_blank');
+  }
+
+  goOrder(type, id) {
+    let link = '';
+
+    if (type == 1) {
+      link = `${this.link}procurement/orders/products` + id;
+    }
+
+    if (type == 2) {
+      link = `${this.link}outsource/outsource-chain/products` + id;
+    }
+
+    if (type == 3) {
+      link = `${this.link}production/orders/order` + id;
+    }
+
+    window.open(link, '_blank');
   }
 }

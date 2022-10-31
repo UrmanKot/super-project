@@ -1,0 +1,17 @@
+<div class="multi-categories-picker">
+  <p-treeSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="categoriesTree"
+    selectionMode="checkbox"
+    [(ngModel)]="selectedCategories"
+    [showClear]="true"
+    placeholder="Select Category"
+    (ngModelChange)="onChoiceCategories()"
+  ></p-treeSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

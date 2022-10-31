@@ -47,8 +47,8 @@
 
       <button
         class="icon pi"
-        [class.pi-angle-double-up]="isHideFilters"
-        [class.pi-angle-double-down]="!isHideFilters"
+        [class.pi-angle-double-up]="!isHideFilters"
+        [class.pi-angle-double-down]="isHideFilters"
         (click)="toggleFilterVisibility()"
       ></button>
 
@@ -72,19 +72,17 @@
           <div class="col-3">
             <div class="form-group">
               <label>Categories</label>
-              <pek-product-category-picker
-                [isAllIds]="true"
-                (choiceCategoryFolAllIds)="onSelectCategory($event)"
-              ></pek-product-category-picker>
+              <pek-multi-categories-picker
+                (choiceCategories)="onSelectCategories($event)"
+              ></pek-multi-categories-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Product Structure Category</label>
-              <pek-product-structure-category-picker
-                [isAllIds]="true"
-                (choiceCategoryFolAllIds)="onSelectProductStructureCategory($event)"
-              ></pek-product-structure-category-picker>
+              <pek-multi-product-structure-categories-picker
+                (choiceCategories)="onSelectProductStructureCategories($event)"
+              ></pek-multi-product-structure-categories-picker>
             </div>
           </div>
           <div class="col-3">
@@ -154,7 +152,7 @@
               [class.deficit]="list.descendants_has_deficit_accepted"
               [class.free-products]="list.descendants_has_free_warehouse_products"
             >
-              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
               <td style="width: 15%">({{list.id}}) {{list.nomenclature.code}}</td>
               <td style="width: 15%">{{list.nomenclature.name}}</td>
               <td style="width: 10%" class="text-center">{{list.created|date:'dd/MM/yyyy'}}</td>

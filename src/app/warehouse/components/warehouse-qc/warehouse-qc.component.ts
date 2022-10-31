@@ -231,7 +231,7 @@ export class WarehouseQcComponent implements OnInit {
         if (invoice.order.accounting_type === 1) {
           const isAdded = categories.findIndex(el => el.id === -2);
           if (isAdded < 0) {
-            categories.push({name: 'Manufacturing Procurement', id: -2, description: '', level: 0});
+            categories.push({name: 'Production Lists Procurement', id: -2, description: '', level: 0});
           }
         }
         if (invoice.order.accounting_type === 2) {

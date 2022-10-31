@@ -2,6 +2,14 @@
   size: portrait !important;
 }
 
+a {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .request-info {
   display: flex;
   flex-wrap: wrap;

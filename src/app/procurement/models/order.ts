@@ -39,3 +39,10 @@ export class Order {
   is_hand_added?: boolean;
   accounting_type?: number;
 }
+
+export class Orders {
+  prev: string;
+  next: string;
+  count: number;
+  results: Order[];
+}

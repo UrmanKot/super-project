@@ -52,6 +52,10 @@ export class ListService {
     return this.httpClient.post(this.API_URL + this.url + list.id + '/bulk_deficit_request/', list.id);
   }
 
+  makeDeficitOne(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + `list_products/${id}/deficit_request/`, null);
+  }
+
   canceledActualQuantity(id: number): Observable<any> {
     return this.httpClient.post<{ data: any }>(this.API_URL + `list_products/${id}/set_actual_quantity_null/`, null).pipe(
       map(response => response.data)
@@ -104,7 +108,7 @@ export class ListService {
   }
 
   getNomenclatureInfo(id: number): Observable<any> {
-    return this.httpClient.get<{ data: any}>(environment.base_url + `product_structure/nomenclatures/${id}/available_on_stock/`).pipe(
+    return this.httpClient.get<{ data: any }>(environment.base_url + `product_structure/nomenclatures/${id}/available_on_stock/`).pipe(
       map(response => response.data)
     );
   }

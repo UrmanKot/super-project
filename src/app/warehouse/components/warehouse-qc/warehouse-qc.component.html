@@ -10,7 +10,7 @@
 <div class="page__content">
   <div class="page__tabs">
     <p-tabView class="custom-tabs">
-      <p-tabPanel header="Manufacturing Procurement and Outsourcing Invoices" [selected]="true">
+      <p-tabPanel header="Production Lists Procurement and Outsourcing Invoices" [selected]="true">
         <div class="page__table">
           <p-treeTable
             [value]="invoiceManufacturedTree"
@@ -24,7 +24,7 @@
                 <p
                   class="subtitle"
                   *ngIf="!selectedInvoiceNode">
-                  Choose the Manufacturing Procurement or Outsourcing Invoice to view Items
+                  Choose the Production Lists Procurement or Outsourcing Invoice to view Items
                 </p>
 
                 <a
@@ -246,7 +246,7 @@
           </p-treeTable>
         </div>
       </p-tabPanel>
-      <p-tabPanel header="Purchase Invoices">
+      <p-tabPanel header="General Procurement Invoices">
         <div class="page__table">
           <p-treeTable
             [value]="invoicePurchasedTree"
@@ -260,7 +260,7 @@
                 <p
                   class="subtitle"
                   *ngIf="!selectedOrderNode">
-                  Choose the Purchase Invoice to view Items
+                  Choose the General Procurement Invoice to view Items
                 </p>
 
                 <a

@@ -5,3 +5,11 @@
 form {
   margin-top: -0.25rem;
 }
+
+a {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

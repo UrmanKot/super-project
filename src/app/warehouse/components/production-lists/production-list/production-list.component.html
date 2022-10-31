@@ -5,7 +5,7 @@
       <h1>
         Production List
         <ng-container *ngIf="list">
-          ({{list.id}}) {{list.nomenclature.code}} <br>({{list.nomenclature.name}})
+          ({{list.id}}) {{list.nomenclature.code}} ({{list.nomenclature.name}})
         </ng-container>
         <ng-container *ngIf="!list">...</ng-container>
       </h1>
@@ -22,49 +22,44 @@
       </div>
     </div>
     <div class="page__tools">
-      <button
-        class="mr-2"
-        pButton
-        type="button"
-        icon="pi pi-print"
-        label="Print"
-        (click)="printPage()"
-      ></button>
-      <button
-        class="mr-2"
-        pButton
-        type="button"
-        icon="pi pi-check"
-        label="Complete"
-        [disabled]="list?.completed"
-        (click)="process()"
-      ></button>
-      <button
-        (click)="setQuantities()"
-        class="mr-2"
-        pButton
-        type="button"
-        icon="pi pi-angle-double-right"
-        label="Set Actual Quantities"
-        [disabled]="(selectedNodeTree && !selectedNodeTree.data.list_url) || list?.completed"
-      ></button>
-      <button
-        class="mr-2"
-        pButton
-        type="button"
-        label="Make Requests"
-        (click)="makeDeficit()"
-        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"
-      ></button>
+      <p-menubar
+        class="production-list-bar ml-auto mr-2"
+        [model]="menuItems"
+      ></p-menubar>
+<!--      <button-->
+<!--        class="mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-print"-->
+<!--        label="Print"-->
+<!--        (click)="printPage()"-->
+<!--      ></button>-->
+<!--      <button-->
+<!--        (click)="setQuantities()"-->
+<!--        class="mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-angle-double-right"-->
+<!--        label="Set Actual Quantities"-->
+<!--        [disabled]="(selectedNodeTree && !selectedNodeTree.data.list_url) || list?.completed"-->
+<!--      ></button>-->
+<!--      <button-->
+<!--        class="mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        label="Make Requests"-->
+<!--        (click)="makeDeficit()"-->
+<!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
+<!--      ></button>-->
 
-      <button
-        class="mr-2"
-        pButton
-        type="button"
-        label="Make request for all"
-        (click)="makeRequestsForAll()"
-        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"
-      ></button>
+<!--      <button-->
+<!--        class="mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        label="Make request for all"-->
+<!--        (click)="makeRequestsForAll()"-->
+<!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
+<!--      ></button>-->
       <button
         class="mr-2"
         pButton
@@ -72,7 +67,7 @@
         icon="pi pi-table"
         label="Hierarchy"
         [disabled]="mode === 'hierarchy'"
-        (click)="mode = 'hierarchy'"
+        (click)="selectMode('hierarchy')"
       ></button>
       <button
         pButton
@@ -80,7 +75,7 @@
         icon="pi pi-list"
         label="List"
         [disabled]="mode === 'list'"
-        (click)="mode = 'list'"
+        (click)="selectMode('list')"
       ></button>
     </div>
   </div>
@@ -92,39 +87,19 @@
       <p-table
         #dt
         [scrollable]="true"
-        scrollHeight="calc(100vh - 350px)"
+        scrollHeight="calc(100vh - 16.625rem)"
         [value]="products"
         selectionMode="single"
         [(selection)]="selectedNode"
+        (selectionChange)="onSelectTreeNode()"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex">
-            <button
-              class="ml-auto mr-2"
-              pButton
-              type="button"
-              icon="pi pi-images"
-              label="Show Images"
-              [disabled]="!selectedNode"
-              (click)="showImages(selectedNode)"
-            ></button>
-            <button
-              class="mr-2"
-              pButton
-              type="button"
-              icon="pi pi-angle-double-right"
-              label="Set Actual Quantity"
-              (click)="editQuantity(selectedNode)"
-              [disabled]="!selectedNode"
-            ></button>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-times"
-              label="Cancel Actual Quantities"
-              [disabled]="!selectedNode"
-              (click)="cancelQuantities(selectedNode)"
-            ></button>
+            <p-menubar
+              [class.disabled]="!selectedNode"
+              class="production-list-bar ml-auto"
+              [model]="selectedNodeMenuItems"
+            ></p-menubar>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -217,48 +192,36 @@
     </ng-container>
 
     <ng-container *ngIf="mode === 'hierarchy'">
-      <p-treeTable class="categories-tree" [value]="tree" selectionMode="single" [(selection)]="selectedNodeTree">
+      <p-treeTable
+        class="categories-tree"
+        [value]="tree"
+        selectionMode="single"
+        [(selection)]="selectedNodeTree"
+        scrollHeight="calc(100vh - 19.125rem)"
+        [scrollable]="true"
+        (selectionChange)="onSelectTreeNode()"
+      >
         <ng-template pTemplate="caption">
           <div class="d-flex">
+            <p-menubar
+              [class.disabled]="!selectedNodeTree"
+              class="production-list-bar ml-auto mr-2"
+              [model]="selectedNodeTreeMenuItems"
+            ></p-menubar>
             <button
-              class="ml-auto mr-2"
+              class=" mr-2"
               pButton
               type="button"
               label="Expand All"
+              icon="pi pi-angle-down"
               (click)="expandAll()"
             ></button>
             <button
-              class="mr-2"
               pButton
               type="button"
               label="Collapse All"
+              icon="pi pi-angle-up"
               (click)="collapseAll()"
-            ></button>
-            <button
-              class="mr-2"
-              pButton
-              type="button"
-              icon="pi pi-images"
-              label="Show Images"
-              [disabled]="!selectedNodeTree"
-              (click)="showImages(selectedNodeTree.data)"
-            ></button>
-            <button
-              class="mr-2"
-              pButton
-              type="button"
-              icon="pi pi-angle-double-right"
-              label="Set Actual Quantity"
-              (click)="editQuantity(selectedNodeTree.data)"
-              [disabled]="!selectedNodeTree"
-            ></button>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-times"
-              label="Cancel Actual Quantities"
-              [disabled]="!selectedNodeTree"
-              (click)="cancelQuantities(selectedNodeTree.data)"
             ></button>
           </div>
         </ng-template>

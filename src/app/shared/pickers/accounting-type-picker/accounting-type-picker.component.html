@@ -1,0 +1,12 @@
+<div class="accounting-type-picker">
+  <p-dropdown
+    [options]="accountingTypes"
+    optionLabel="label"
+    optionValue="value"
+    placeholder="Select Type"
+    [disabled]="isDisabled"
+    [showClear]="true"
+    [(ngModel)]="selectAccountingType"
+    (ngModelChange)="onSelectProductionType()"
+  ></p-dropdown>
+</div>

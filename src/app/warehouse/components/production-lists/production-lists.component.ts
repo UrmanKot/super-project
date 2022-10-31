@@ -33,7 +33,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
 
   viewModeType = ViewMode;
   viewMode: ViewMode = ViewMode.LIST;
-  queryKey = 'name:/code:/responsible_employee_id:null/date_created_after:null/date_created_before:null/category_ids:null';
+  queryKey = 'name:/code:/responsible_employee_id:null/date_created_after:null/date_created_before:null/category_ids:null/root_categories:null';
 
   searchForm: FormGroup = this.fb.group({
     page: [1],
@@ -126,7 +126,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     this.destroy$.next(true);
     this.selectedList = null;
 
-    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/responsible_employee_id:${this.searchForm.get('responsible_employee_id').value}/date_created_after:${this.searchForm.get('date_created_after').value}/date_created_before:${this.searchForm.get('date_created_before').value}/category_ids:${this.searchForm.get('category_ids').value}`;
+    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/responsible_employee_id:${this.searchForm.get('responsible_employee_id').value}/date_created_after:${this.searchForm.get('date_created_after').value}/date_created_before:${this.searchForm.get('date_created_before').value}/category_ids:${this.searchForm.get('category_ids').value}/root_categories:${this.searchForm.get('root_categories').value}`;
 
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
@@ -204,21 +204,13 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  onSelectProductStructureCategory(ids: number[]) {
-    if (ids) {
-      this.searchForm.get('root_categories').patchValue(ids.join(','));
-    } else {
-      this.searchForm.get('root_categories').patchValue('');
-    }
+  onSelectProductStructureCategories(ids: string) {
+    this.searchForm.get('root_categories').patchValue(ids);
     this.searchLists();
   }
 
-  onSelectCategory(ids: number[]) {
-    if (ids) {
-      this.searchForm.get('category_ids').patchValue(ids.join(','));
-    } else {
-      this.searchForm.get('category_ids').patchValue('');
-    }
+  onSelectCategories(ids: string) {
+    this.searchForm.get('category_ids').patchValue(ids);
     this.searchLists();
   }
 

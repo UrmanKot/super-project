@@ -7,8 +7,10 @@ import {ListService} from '../../../services/list.service';
 import {take} from 'rxjs/operators';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Location} from '@angular/common';
-import {TreeNode} from 'primeng/api';
+import {MenuItem, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
+import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ViewMode} from '../production-lists.component';
 
 export class TreePrint {
   data: ListProduct;
@@ -23,6 +25,62 @@ export class TreePrint {
 
 export class ProductionListComponent implements OnInit {
 
+  selectedNodeMenuItems: MenuItem[] = [
+    {
+      label: 'Selected Production List',
+      items: [
+        {
+          label: 'Show Images',
+          icon: 'pi pi-images',
+          command: () => this.showImages(this.selectedNode),
+        },
+        {
+          label: 'Set Actual Quantity',
+          icon: 'pi pi-angle-double-right',
+          command: () => this.editQuantity(this.selectedNode),
+        },
+        {
+          label: 'Cancel Actual Quantities',
+          icon: 'pi pi-times',
+          command: () => this.cancelQuantities(this.selectedNode),
+        },
+        {
+          label: 'Make Request',
+          icon: 'pi pi-caret-right',
+          command: () => this.makeDeficitOne(this.selectedNode),
+        },
+      ]
+    }
+  ];
+
+  selectedNodeTreeMenuItems: MenuItem[] = [
+    {
+      label: 'Selected Production List',
+      items: [
+        {
+          label: 'Show Images',
+          icon: 'pi pi-images',
+          command: () => this.showImages(this.selectedNodeTree.data),
+        },
+        {
+          label: 'Set Actual Quantity',
+          icon: 'pi pi-angle-double-right',
+          command: () => this.editQuantity(this.selectedNodeTree.data),
+        },
+        {
+          label: 'Cancel Actual Quantities',
+          icon: 'pi pi-times',
+          command: () => this.cancelQuantities(this.selectedNodeTree.data),
+        },
+        {
+          label: 'Make Request',
+          icon: 'pi pi-caret-right',
+          command: () => this.makeDeficitOne(this.selectedNodeTree.data),
+        },
+      ]
+    }
+  ];
+
   mode: 'hierarchy' | 'list' = 'hierarchy';
 
   addedTree = [];
@@ -32,7 +90,7 @@ export class ProductionListComponent implements OnInit {
   selectedNode;
   selectedNodeTree;
   isLoading = true;
-  list: List;
+  list: List = null;
   listId = this.route.snapshot.paramMap.get('id');
   statuses = {'0': 'Not Processed', '1': 'Completed', '2': 'Deficit', '3': 'Reserved'};
   showComplete = false;
@@ -47,6 +105,34 @@ export class ProductionListComponent implements OnInit {
 
   isLoadingListsForPrint = false;
   productsForPrint: TreePrint[];
+
+  menuItems: MenuItem[] = [
+    {
+      label: 'Root Production List',
+      items: [
+        {
+          label: 'Print',
+          icon: 'pi pi-print',
+          command: () => this.printPage(),
+        },
+        {
+          label: 'Set Actual Quantities',
+          icon: 'pi pi-angle-double-right',
+          command: () => this.setQuantities(),
+        },
+        {
+          label: 'Make Requests',
+          icon: 'pi pi-caret-right',
+          command: () => this.makeDeficit(),
+        },
+        {
+          label: 'Make request for all',
+          icon: 'pi pi-caret-right',
+          command: () => this.makeRequestsForAll(),
+        },
+      ]
+    }
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -361,6 +447,33 @@ export class ProductionListComponent implements OnInit {
           this.expandCollapseRecursive(childNode, isExpand);
         });
       }
+    }
+  }
+
+  selectMode(mode: any) {
+    this.mode = mode;
+    this.onSelectTreeNode()
+  }
+
+  makeDeficitOne(node: any) {
+    // /list_products/{id}/deficit_request/
+
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.listService.makeDeficitOne(node.id).subscribe(() => {
+          this.getAll();
+        })
+      }
+    })
+  }
+
+  onSelectTreeNode() {
+    if (this.mode === 'list' && this.selectedNode) {
+      this.menuItems[0].items[1].disabled = !this.selectedNode?.list_url;
+    } else if (this.mode === 'hierarchy' && this.selectedNodeTree) {
+      this.menuItems[0].items[1].disabled = !this.selectedNodeTree?.data?.list_url;
+    } else {
+      this.menuItems[0].items[1].disabled = false;
     }
   }
 }

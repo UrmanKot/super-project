@@ -81,3 +81,31 @@
     display: block;
   }
 }
+
+.production-list-bar {
+  &::ng-deep {
+    .p-menubar {
+      .p-menubar-root-list {
+        & > .p-menuitem {
+          width: 15rem !important;
+
+          .p-menuitem-link {
+            justify-content: space-between;
+          }
+        }
+      }
+
+      .p-submenu-list {
+        width: 15rem !important;
+
+        & > .p-menuitem {
+          width: 15rem !important;
+
+          .p-menuitem-link {
+            justify-content: flex-start;
+          }
+        }
+      }
+    }
+  }
+}

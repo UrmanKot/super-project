@@ -166,26 +166,17 @@ export class WarehouseWhereUsedComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  onSelectCategories(ids: string) {
+    this.searchForm.get('category').patchValue(ids);
+    this.searchNomenclatures();
+  }
+
+  onSelectRootCategory(ids: string) {
+    this.searchForm.get('root_categories').patchValue(ids);
+    this.searchNomenclatures();
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
-  }
-
-  onSelectCategory(ids: number[]) {
-    if (ids) {
-      this.searchForm.get('category').patchValue(ids.join(','));
-    } else {
-      this.searchForm.get('category').patchValue('');
-    }
-    this.searchNomenclatures();
-  }
-
-  onSelectRootCategory(ids: number[]) {
-    if (ids) {
-      this.searchForm.get('root_categories').patchValue(ids.join(','));
-    } else {
-      this.searchForm.get('root_categories').patchValue('');
-    }
-
-    this.searchNomenclatures();
   }
 }

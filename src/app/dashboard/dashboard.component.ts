@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
     routerLink: ['/external', `${environment.link_url}dash/admin/users-list`],
   }, {
     label: 'Corespondents',
-    icon: '',
+    icon: 'pi pi-users',
     routerLink: ['/external', `${environment.link_url}dash/correspondents`],
   }, {
     label: 'Reports',

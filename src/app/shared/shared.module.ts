@@ -46,6 +46,9 @@ import {CalendarModule} from 'primeng/calendar';
 import { EmployeePickerComponent } from './pickers/employee-picker/employee-picker.component';
 import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
 import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
+import {AccountingTypePickerComponent} from '@shared/pickers/accounting-type-picker/accounting-type-picker.component';
+import { MultiCategoriesPickerComponent } from './pickers/multi-categories-picker/multi-categories-picker.component';
+import { MultiProductStructureCategoriesPickerComponent } from './pickers/multi-product-structure-categories-picker/multi-product-structure-categories-picker.component';
 
 
 @NgModule({
@@ -74,7 +77,10 @@ import {ListProductsComponent} from '@shared/modals/refactoring/list-products/li
     NomenclaturePickerModalComponent,
     EmployeePickerComponent,
     CompleteListComponent,
-    ListProductsComponent
+    ListProductsComponent,
+    AccountingTypePickerComponent,
+    MultiCategoriesPickerComponent,
+    MultiProductStructureCategoriesPickerComponent
   ],
   exports: [
     ButtonModule,
@@ -111,7 +117,10 @@ import {ListProductsComponent} from '@shared/modals/refactoring/list-products/li
     GroupLocatorPickerComponent,
     TechnologyPickerComponent,
     CalendarModule,
-    EmployeePickerComponent
+    EmployeePickerComponent,
+    AccountingTypePickerComponent,
+    MultiCategoriesPickerComponent,
+    MultiProductStructureCategoriesPickerComponent
   ],
   imports: [
     CommonModule,
