@@ -92,7 +92,7 @@ class DashboardComponent {
                 routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/admin/users-list`],
             }, {
                 label: 'Corespondents',
-                icon: '',
+                icon: 'pi pi-users',
                 routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/correspondents`],
             }, {
                 label: 'Reports',
