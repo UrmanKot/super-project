@@ -471,7 +471,7 @@ export class ProductionListComponent implements OnInit {
     if (this.mode === 'list' && this.selectedNode) {
       this.menuItems[0].items[1].disabled = !this.selectedNode?.list_url;
     } else if (this.mode === 'hierarchy' && this.selectedNodeTree) {
-      this.menuItems[0].items[1].disabled = !this.selectedNodeTree?.data?.list_url;
+      this.menuItems[0].items[1].disabled = !this.selectedNodeTree?.data?.list_url || (this.selectedNodeTree?.data.status === '1' || this.selectedNodeTree.data.status === '3');
     } else {
       this.menuItems[0].items[1].disabled = false;
     }
