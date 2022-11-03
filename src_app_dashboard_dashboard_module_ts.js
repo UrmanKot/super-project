@@ -81,7 +81,8 @@ class DashboardComponent {
             }, {
                 label: 'Sales',
                 icon: 'icon-sales',
-                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/sales/lists`],
+                // routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
+                routerLink: ['/sales'],
             }, {
                 label: 'Payments',
                 icon: 'icon-payments',

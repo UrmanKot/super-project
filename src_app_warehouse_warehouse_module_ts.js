@@ -982,6 +982,7 @@ class PhysicalInventoryProductsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 PhysicalInventoryProductsComponent.ɵfac = function PhysicalInventoryProductsComponent_Factory(t) { return new (t || PhysicalInventoryProductsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_16__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_17__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_0__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_physical_inventory_service__WEBPACK_IMPORTED_MODULE_1__.PhysicalInventoryService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_16__.Router)); };
@@ -1283,6 +1284,7 @@ class PhysicalInventoryComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 PhysicalInventoryComponent.ɵfac = function PhysicalInventoryComponent_Factory(t) { return new (t || PhysicalInventoryComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_services_physical_inventory_service__WEBPACK_IMPORTED_MODULE_0__.PhysicalInventoryService)); };
@@ -2781,6 +2783,7 @@ class ProductionListsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 ProductionListsComponent.ɵfac = function ProductionListsComponent_Factory(t) { return new (t || ProductionListsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_0__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_list_service__WEBPACK_IMPORTED_MODULE_1__.ListService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_2__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_13__.FormBuilder)); };
@@ -3233,6 +3236,7 @@ class WarehouseCategoriesComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseCategoriesComponent.ɵfac = function WarehouseCategoriesComponent_Factory(t) { return new (t || WarehouseCategoriesComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_product_structure_services_categories_service__WEBPACK_IMPORTED_MODULE_0__.CategoriesService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_tree_service__WEBPACK_IMPORTED_MODULE_1__.TreeService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService)); };
@@ -3400,6 +3404,7 @@ class WarehouseIsolatorInvoicesComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseIsolatorInvoicesComponent.ɵfac = function WarehouseIsolatorInvoicesComponent_Factory(t) { return new (t || WarehouseIsolatorInvoicesComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_7__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_procurement_services_invoice_product_service__WEBPACK_IMPORTED_MODULE_0__.InvoiceProductService)); };
@@ -3569,6 +3574,7 @@ class WarehouseIsolatorOrdersComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseIsolatorOrdersComponent.ɵfac = function WarehouseIsolatorOrdersComponent_Factory(t) { return new (t || WarehouseIsolatorOrdersComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_7__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_procurement_services_order_product_service__WEBPACK_IMPORTED_MODULE_0__.OrderProductService)); };
@@ -3878,6 +3884,7 @@ class WarehouseIsolatorComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseIsolatorComponent.ɵfac = function WarehouseIsolatorComponent_Factory(t) { return new (t || WarehouseIsolatorComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_procurement_services_invoice_service__WEBPACK_IMPORTED_MODULE_0__.InvoiceService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_procurement_services_order_service__WEBPACK_IMPORTED_MODULE_1__.OrderService)); };
@@ -4479,6 +4486,7 @@ class WarehouseItemsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
     toggleFilterVisibility() {
         this.isHideFilters = !this.isHideFilters;
@@ -4915,6 +4923,7 @@ class WarehouseLocatorsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseLocatorsComponent.ɵfac = function WarehouseLocatorsComponent_Factory(t) { return new (t || WarehouseLocatorsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_10__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_locator_service__WEBPACK_IMPORTED_MODULE_0__.LocatorService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_warehouse_service__WEBPACK_IMPORTED_MODULE_1__.WarehouseService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService)); };
@@ -6855,6 +6864,7 @@ class WarehouseProductionRequestsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseProductionRequestsComponent.ɵfac = function WarehouseProductionRequestsComponent_Factory(t) { return new (t || WarehouseProductionRequestsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_procurement_services_order_service__WEBPACK_IMPORTED_MODULE_2__.OrderService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_11__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_3__.AdapterService)); };
@@ -7155,6 +7165,7 @@ class WarehouseQcInvoiceComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseQcInvoiceComponent.ɵfac = function WarehouseQcInvoiceComponent_Factory(t) { return new (t || WarehouseQcInvoiceComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_procurement_services_invoice_service__WEBPACK_IMPORTED_MODULE_0__.InvoiceService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService)); };
@@ -7384,6 +7395,7 @@ class WarehouseQcOrderComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseQcOrderComponent.ɵfac = function WarehouseQcOrderComponent_Factory(t) { return new (t || WarehouseQcOrderComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_procurement_services_order_service__WEBPACK_IMPORTED_MODULE_0__.OrderService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService)); };
@@ -9023,6 +9035,7 @@ class WarehouseToolRequestComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseToolRequestComponent.ɵfac = function WarehouseToolRequestComponent_Factory(t) { return new (t || WarehouseToolRequestComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_tool_request_service__WEBPACK_IMPORTED_MODULE_0__.ToolRequestService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_tool_order_service__WEBPACK_IMPORTED_MODULE_1__.ToolOrderService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.Router)); };
@@ -9191,6 +9204,7 @@ class WarehouseToolRequestsComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseToolRequestsComponent.ɵfac = function WarehouseToolRequestsComponent_Factory(t) { return new (t || WarehouseToolRequestsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_services_tool_order_service__WEBPACK_IMPORTED_MODULE_0__.ToolOrderService)); };
@@ -9406,6 +9420,7 @@ class WarehouseUnitsMeasureComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseUnitsMeasureComponent.ɵfac = function WarehouseUnitsMeasureComponent_Factory(t) { return new (t || WarehouseUnitsMeasureComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_unit_measure_service__WEBPACK_IMPORTED_MODULE_0__.UnitMeasureService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService)); };
@@ -9632,6 +9647,7 @@ class WarehouseWarehousesComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseWarehousesComponent.ɵfac = function WarehouseWarehousesComponent_Factory(t) { return new (t || WarehouseWarehousesComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_warehouse_service__WEBPACK_IMPORTED_MODULE_0__.WarehouseService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_6__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_6__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService)); };
@@ -9992,6 +10008,7 @@ class WarehouseWhereUsedComponent {
     }
     ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
 WarehouseWhereUsedComponent.ɵfac = function WarehouseWhereUsedComponent_Factory(t) { return new (t || WarehouseWhereUsedComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_12__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_shared_services_nomenclature_service__WEBPACK_IMPORTED_MODULE_1__.NomenclatureService)); };
