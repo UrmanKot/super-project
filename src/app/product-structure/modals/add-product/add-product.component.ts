@@ -307,6 +307,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.inputNameSub.unsubscribe();
     this.inputCodeSub.unsubscribe();
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onRemoveImage(idx: number) {

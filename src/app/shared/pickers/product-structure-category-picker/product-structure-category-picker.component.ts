@@ -128,5 +128,6 @@ export class ProductStructureCategoryPickerComponent implements OnInit, OnDestro
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

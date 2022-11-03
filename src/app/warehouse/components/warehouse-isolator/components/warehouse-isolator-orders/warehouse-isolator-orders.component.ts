@@ -43,5 +43,6 @@ export class WarehouseIsolatorOrdersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

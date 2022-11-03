@@ -258,5 +258,6 @@ export class ProductStructureCategoriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

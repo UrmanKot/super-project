@@ -153,5 +153,6 @@ export class NomenclaturePickerComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

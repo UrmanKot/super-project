@@ -502,6 +502,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
     this.inputCodeSub.unsubscribe();
     this.inputNameSub.unsubscribe();
   }

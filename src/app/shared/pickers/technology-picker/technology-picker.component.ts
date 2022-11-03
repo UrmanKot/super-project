@@ -63,6 +63,7 @@ export class TechnologyPickerComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

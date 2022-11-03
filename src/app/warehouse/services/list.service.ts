@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
-import {forkJoin, Observable} from 'rxjs';
+import {concat, forkJoin, Observable, toArray} from 'rxjs';
 import {List, Lists} from '../models/list';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
@@ -56,6 +56,12 @@ export class ListService {
     return this.httpClient.post(this.API_URL + `list_products/${id}/deficit_request/`, null);
   }
 
+  makeProductionList(entity: Partial<List>): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'list_creation_requests/', entity).pipe(
+        map(response => response
+      ));
+  }
+
   canceledActualQuantity(id: number): Observable<any> {
     return this.httpClient.post<{ data: any }>(this.API_URL + `list_products/${id}/set_actual_quantity_null/`, null).pipe(
       map(response => response.data)
@@ -101,10 +107,10 @@ export class ListService {
     return this.httpClient.post(this.API_URL + this.url + id + '/process/', list);
   }
 
-  updateListSeveral(lists: List[]): Observable<List[]> {
-    return forkJoin(...lists.map(list => this.httpClient.patch<{ data: List }>(this.API_URL + 'list_creation_requests/' + list.id + '/', list).pipe(
-      map(response => response.data),
-    )));
+  updateListSeveral(lists: List[]): Observable<any> {
+    return concat(...lists.map(list => this.httpClient.patch<{ data: List }>(this.API_URL + 'list_creation_requests/' + list.id + '/', list))).pipe(
+      toArray()
+    )
   }
 
   getNomenclatureInfo(id: number): Observable<any> {

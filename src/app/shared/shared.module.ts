@@ -49,6 +49,10 @@ import {ListProductsComponent} from '@shared/modals/refactoring/list-products/li
 import {AccountingTypePickerComponent} from '@shared/pickers/accounting-type-picker/accounting-type-picker.component';
 import { MultiCategoriesPickerComponent } from './pickers/multi-categories-picker/multi-categories-picker.component';
 import { MultiProductStructureCategoriesPickerComponent } from './pickers/multi-product-structure-categories-picker/multi-product-structure-categories-picker.component';
+import { MultiCompanyPickerComponent } from './pickers/multi-company-picker/multi-company-picker.component';
+import { MultiSalesStatusPickerComponent } from './pickers/multi-sales-status-picker/multi-sales-status-picker.component';
+import { MultiCompanyCategoryPickerComponent } from './pickers/multi-company-category-picker/multi-company-category-picker.component';
+import { CompanyPickerComponent } from './pickers/company-picker/company-picker.component';
 
 
 @NgModule({
@@ -80,7 +84,11 @@ import { MultiProductStructureCategoriesPickerComponent } from './pickers/multi-
     ListProductsComponent,
     AccountingTypePickerComponent,
     MultiCategoriesPickerComponent,
-    MultiProductStructureCategoriesPickerComponent
+    MultiProductStructureCategoriesPickerComponent,
+    MultiCompanyPickerComponent,
+    MultiSalesStatusPickerComponent,
+    MultiCompanyCategoryPickerComponent,
+    CompanyPickerComponent
   ],
   exports: [
     ButtonModule,
@@ -120,7 +128,11 @@ import { MultiProductStructureCategoriesPickerComponent } from './pickers/multi-
     EmployeePickerComponent,
     AccountingTypePickerComponent,
     MultiCategoriesPickerComponent,
-    MultiProductStructureCategoriesPickerComponent
+    MultiProductStructureCategoriesPickerComponent,
+    MultiCompanyPickerComponent,
+    MultiSalesStatusPickerComponent,
+    MultiCompanyCategoryPickerComponent,
+    CompanyPickerComponent
   ],
   imports: [
     CommonModule,

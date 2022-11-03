@@ -1,0 +1,53 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'sales'" [isActive]="true"></pek-module-icon>
+      <h1>Statuses Types</h1>
+    </div>
+    <div class="page__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Status Type" (click)="onAddSalesStatus()"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="d-flex actions">
+      <p class="subtitle" *ngIf="!selectedSalesStatus">Choose the Sales Status to edit</p>
+      <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedSalesStatus"></p-menubar>
+    </div>
+    <div class="order-statuses">
+      <div class="order-statuses-header">
+        <div class="table-col text-center" style="width: 5%;">#</div>
+        <div class="table-col" style="width: 95%;">Name</div>
+      </div>
+      <div class="order-statuses-body" *ngIf="!isLoading">
+        <div class="order-statuses-list order-statuses_dragging"
+             cdkDropList
+             [cdkDropListData]="statuses"
+             (cdkDropListDropped)="drop($event)"
+        >
+          <div
+            class="order-statuses-line order-statuses-line_dragging"
+            *ngFor="let status of statuses; let idx = index" cdkDrag
+            cdkDragBoundary=".workloads_dragging"
+            [class.active]="selectedSalesStatus && selectedSalesStatus.id === status.id"
+            (click)="toggleLine(status)"
+          >
+            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+            <div class="order-statuses-item">
+              <div class="table-col text-center" style="width: 5%;">{{idx + 1}}</div>
+              <div class=" table-col" style="width: 80%;">
+                {{status.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="p-4 order-statuses-loading">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 
 @Component({
@@ -10,6 +10,7 @@ export class NomenclatureTypePickerComponent implements OnInit {
   @Input() currentNomenclatureType: ENomenclatureType = null;
   @Input() isDisabled = false;
   @Output() choiceNomenclatureType: EventEmitter<ENomenclatureType> = new EventEmitter<ENomenclatureType>();
+  @Input() filteredNomenclatureTypes: ENomenclatureType[] = [];
 
   selectNomenclatureType: ENomenclatureType = null;
 
@@ -23,6 +24,17 @@ export class NomenclatureTypePickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    if (this.filteredNomenclatureTypes.length > 0) {
+      let types = [];
+
+      this.filteredNomenclatureTypes.forEach(type => {
+        types = [...types, ...this.nomenclatureTypes.filter(t => t.value === type)];
+      });
+
+      this.nomenclatureTypes = types;
+    }
+
     this.setCurrentNomenclatureType();
   }
 

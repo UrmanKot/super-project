@@ -78,5 +78,6 @@ export class MultiCategoriesPickerComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

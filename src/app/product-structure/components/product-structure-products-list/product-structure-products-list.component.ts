@@ -299,5 +299,6 @@ export class ProductStructureProductsListComponent implements OnInit, AfterViewI
     this.inputCodeSub.unsubscribe();
     this.inputNameSub.unsubscribe();
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

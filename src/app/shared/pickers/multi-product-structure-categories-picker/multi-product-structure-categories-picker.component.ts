@@ -79,6 +79,7 @@ export class MultiProductStructureCategoriesPickerComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

@@ -58,5 +58,6 @@ export class MultiWarehousePickerComponent implements OnInit, OnChanges, OnDestr
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

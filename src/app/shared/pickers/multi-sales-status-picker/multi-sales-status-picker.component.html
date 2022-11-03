@@ -1,0 +1,18 @@
+<div class="multi-sales-status-picker">
+  <p-multiSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="companies"
+    [(ngModel)]="selectedStatuses"
+    optionLabel="name"
+    placeholder="Select Companies"
+    (ngModelChange)="onSelectStatuses()"
+    [disabled]="isDisabled"
+    [showClear]="true"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

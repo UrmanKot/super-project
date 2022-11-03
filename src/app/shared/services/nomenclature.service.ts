@@ -18,6 +18,22 @@ export class NomenclatureService {
   ) {
   }
 
+  get(query?: QuerySearch[]): Observable<Nomenclature[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+    return this.httpClient.get<{ data: Nomenclature[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
   getForPagination(query?: QuerySearch[]): Observable<Nomenclatures> {
     let queryParams = '';
     if (query) {

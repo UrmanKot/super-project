@@ -23,6 +23,7 @@ export class Nomenclature {
   bulk_or_serial?: '1' | '0';
   tasks?: Task[];
   root_category?: Category;
+  price?: any
 }
 
 export class NomenclatureImage {

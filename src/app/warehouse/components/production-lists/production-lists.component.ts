@@ -262,5 +262,6 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

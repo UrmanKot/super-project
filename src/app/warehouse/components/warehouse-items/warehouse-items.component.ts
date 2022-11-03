@@ -357,6 +357,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   toggleFilterVisibility() {

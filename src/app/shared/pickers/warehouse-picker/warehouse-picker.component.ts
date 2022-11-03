@@ -68,5 +68,6 @@ export class WarehousePickerComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

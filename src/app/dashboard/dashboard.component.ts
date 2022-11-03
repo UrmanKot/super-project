@@ -53,7 +53,8 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Sales',
     icon: 'icon-sales',
-    routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
+    // routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
+    routerLink: ['/sales'],
   }, {
     label: 'Payments',
     icon: 'icon-payments',

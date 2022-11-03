@@ -48,5 +48,6 @@ export class UnitMeasurePickerComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

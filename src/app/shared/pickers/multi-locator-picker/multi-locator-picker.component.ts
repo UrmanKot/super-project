@@ -60,6 +60,7 @@ export class MultiLocatorPickerComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

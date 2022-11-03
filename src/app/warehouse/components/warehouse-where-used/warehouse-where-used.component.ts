@@ -178,5 +178,6 @@ export class WarehouseWhereUsedComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }
