@@ -13411,6 +13411,12 @@ textarea::-webkit-scrollbar {
 .badge_warning {
   background: var(--theme-color-warning);
 }
+.island {
+  box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  background: #fff;
+  padding: 1rem 1.5rem;
+}
 .p-button {
   border-radius: 0.625rem;
   line-height: 1;

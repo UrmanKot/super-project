@@ -69,7 +69,8 @@ class DashboardComponent {
             }, {
                 label: 'Contacts & Events',
                 icon: 'icon-contacts-events',
-                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/crm/businnes-partners`],
+                routerLink: ['/crm'],
+                // routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
             }, {
                 label: 'QC',
                 icon: 'icon-quality-control',

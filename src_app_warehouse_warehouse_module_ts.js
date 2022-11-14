@@ -6066,7 +6066,7 @@ class WarehouseProductionRequestComponent {
         this.getRequests();
     }
     onCancel() {
-        this.modalService.confirm('danger').subscribe(res => {
+        this.modalService.confirm('danger', 'Confirm').subscribe(res => {
             if (res) {
                 this.requestsService.cancel(+this.orderId).subscribe();
             }
@@ -11478,7 +11478,7 @@ const routes = [
             {
                 path: 'production-requests', children: [
                     { path: '', title: 'Production Requests', component: _components_warehouse_production_requests_warehouse_production_requests_component__WEBPACK_IMPORTED_MODULE_12__.WarehouseProductionRequestsComponent },
-                    { path: ':id', title: 'Tool Request', component: _components_warehouse_production_request_warehouse_production_request_component__WEBPACK_IMPORTED_MODULE_13__.WarehouseProductionRequestComponent }
+                    { path: ':id', title: 'Production Request', component: _components_warehouse_production_request_warehouse_production_request_component__WEBPACK_IMPORTED_MODULE_13__.WarehouseProductionRequestComponent }
                 ]
             },
             {
