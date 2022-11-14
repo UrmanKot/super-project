@@ -1,0 +1,90 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
+      <h1>Event Types</h1>
+    </div>
+    <div class="page__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Event Type" (click)="onAddEventType()"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="eventTypes.length > 0"
+        [rows]="10"
+        [(selection)]="selectedEventType"
+        [value]="eventTypes"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedEventType">Choose the Event Type to edit</p>
+            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedEventType"></p-menubar>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="text-center">#</th>
+            <th style="width: 25%">Name</th>
+            <th style="width: 35%">Description</th>
+            <th style="width: 25%" class="text-center">User Profiles</th>
+            <th style="width: 10%" class="text-center">Color</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-event let-i="rowIndex">
+          <tr [pSelectableRow]="event">
+            <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+            <td style="width: 25%">{{ event.name }}</td>
+            <td style="width: 35%">{{ event.description }}</td>
+            <td style="width: 25%" class="text-center">
+              <ng-container *ngIf="event.access_users.length === 0">
+                <div>Not Related</div>
+              </ng-container>
+
+              <ng-container *ngIf="event.access_users.length > 0">
+                <div *ngFor="let user of event.access_users">
+                  {{user.user_profile.first_name + " " + user.user_profile.last_name + ", " + user.user_profile.gmail}}
+                </div>
+              </ng-container>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <div class="event-color" [style.backgroundColor]="event.color_hex ? event.color_hex : '#3788d8'"></div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="5">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && eventTypes.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

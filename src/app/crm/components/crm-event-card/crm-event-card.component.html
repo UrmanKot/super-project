@@ -1,0 +1,123 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
+      <h1>Event Card</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+
+  <h2 class="mb-4">Event Information</h2>
+
+  <div class="page__card  event-card mb-4">
+    <div class="event-card__info">
+      <div class="row">
+        <div class="col-md-5" *ngIf="event">
+          <h4>Name: <span>{{ event.event_type.name }}</span></h4>
+          <h4>Event Start: <span>{{ event.start | date: "dd/MM/yyyy, HH:mm" }}</span></h4>
+          <h4>Event End: <span>{{ event.end | date: "dd/MM/yyyy, HH:mm" }}</span></h4>
+          <h4>Event Description: <span>{{ event.description }}</span></h4>
+          <h4 *ngIf="event.employee.length === 1">
+            Employee:
+            <span *ngFor="let employee of event.employee">
+              {{ employee.first_name + " " + employee.last_name }}
+            </span>
+          </h4>
+          <h4 *ngIf="event.employee.length > 1">
+            Employees:
+            <span *ngFor="let employee of event.employee">
+              {{ employee.first_name + " " + employee.last_name  }},
+            </span>
+          </h4>
+          <h4 *ngIf="event.employee.length === 0">
+            Employee:
+            <span> Not Related </span>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Event Companies</h2>
+
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="event?.on_companies.length > 0"
+        [rows]="10"
+        [(selection)]="selectedEventCompany"
+        [value]="event?.on_companies"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedEventCompany">Choose the Company to edit</p>
+            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedEventCompany"></p-menubar>
+            <button (click)="onAddCompanyToEvent()" pButton type="button" icon="pi pi-plus" class="ml-2" label="Add Company"></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%;">#</th>
+            <th style="width: 35%;">Name</th>
+            <th style="width: 45%;">Comment</th>
+            <th class="text-center" style="width: 15%;">Is Done</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-company let-i="rowIndex">
+          <tr [pSelectableRow]="company">
+            <td class="text-center">{{ i + 1 }}</td>
+            <td>
+              <a [routerLink]="'/dash/crm/businnes-partners/company-page/' + company.company.id">
+                {{ company.company.name }}
+              </a>
+            </td>
+            <td>
+              {{ company.comment }}
+            </td>
+            <td class="text-center">
+              <div class="icons">
+                <i class="pi pi-check text-success" *ngIf="company.is_done; else notGrouped"></i>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="4">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && event?.on_companies.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notGrouped>
+  <i class="pi pi-times text-danger"></i>
+</ng-template>

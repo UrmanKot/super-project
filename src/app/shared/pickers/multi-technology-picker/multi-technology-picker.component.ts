@@ -47,11 +47,11 @@ export class MultiTechnologyPickerComponent implements OnInit, OnChanges, OnDest
   findTechnologies() {
     if (this.currentTechnologiesIds.length > 0) {
       this.currentTechnologiesIds.forEach(id => {
-          const findTechnology = this.technologies.find(t => t.id === id);
+        const findTechnology = this.technologies.find(t => t.id === id);
 
-          if (findTechnology) {
-            this.selectedTechnologies.push(findTechnology);
-          }
+        if (findTechnology) {
+          this.selectedTechnologies.push(findTechnology);
+        }
       });
     }
   }

@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Company} from '../../../sales/models/company';
 import {Subject, takeUntil} from 'rxjs';
-import {CompanyService} from '../../../sales/services/company.service';
 import {SalesStatus} from '../../../sales/models/sales-chain';
 import {SalesStatusService} from '../../../sales/services/sales-status.service';
 

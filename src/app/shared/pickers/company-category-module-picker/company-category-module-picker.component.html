@@ -1,0 +1,16 @@
+<div class="company-category-module-picker">
+  <p-multiSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="modules"
+    [(ngModel)]="selectedModules"
+    optionLabel="name"
+    placeholder="Select Modules"
+    (ngModelChange)="onSelectModule($event)"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

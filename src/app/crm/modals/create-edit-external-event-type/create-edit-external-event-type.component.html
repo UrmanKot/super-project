@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Company Category
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="calendar">Google Calendar ID*</label>
+      <input
+        pInputText
+        formControlName="google_calendar_id"
+        class="form-control"
+        type="text"
+        id="calendar"
+      />
+    </div>
+    <div class="form-group">
+      <label for="first-name">First Name</label>
+      <input
+        pInputText
+        formControlName="google_owner_first_name"
+        class="form-control"
+        type="text"
+        id="first-name"
+      />
+    </div>
+    <div class="form-group">
+      <label for="last-name">Last Name</label>
+      <input
+        pInputText
+        formControlName="google_owner_last_name"
+        class="form-control"
+        type="text"
+        id="last-name"
+      />
+    </div>
+    <div class="form-group">
+      <label for="gmail">Gmail</label>
+      <input
+        pInputText
+        formControlName="google_owner_gmail"
+        class="form-control"
+        type="text"
+        id="gmail"
+      />
+    </div>
+
+    <div class="form-group form-group_color">
+      <label> Color </label>
+      <p-colorPicker formControlName="color_hex"></p-colorPicker>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

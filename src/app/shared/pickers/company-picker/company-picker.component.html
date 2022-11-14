@@ -2,7 +2,7 @@
   <p-dropdown
     *ngIf="!isLoading; else spinner"
     [options]="companies"
-    placeholder="Select Warehouse"
+    placeholder="Select Company"
     [(ngModel)]="selectedCompanyId"
     (ngModelChange)="onSelectCompany()"
     optionLabel="name"

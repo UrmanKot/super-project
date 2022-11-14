@@ -64,7 +64,7 @@ export class WarehouseProductionRequestComponent implements OnInit {
   }
 
   onCancel() {
-    this.modalService.confirm('danger').subscribe(res => {
+    this.modalService.confirm('danger', 'Confirm').subscribe(res => {
       if (res) {
         this.requestsService.cancel(+this.orderId).subscribe();
       }

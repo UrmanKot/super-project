@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
-import {Company} from '../../../sales/models/company';
-import {CompanyService} from '../../../sales/services/company.service';
+import {Company} from '../../../crm/models/company';
+import {CompanyService} from '../../../crm/services/company.service';
 
 @Component({
   selector: 'pek-company-picker',

@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Company} from '../../../sales/models/company';
+import {Company} from '../../../crm/models/company';
 import {Subject, takeUntil} from 'rxjs';
-import {CompanyService} from '../../../sales/services/company.service';
-import {CompanyCategory} from '../../../sales/models/company-category';
-import {CompanyCategoryService} from '../../../sales/services/company-category.service';
+import {CompanyService} from '../../../crm/services/company.service';
+import {CompanyCategory} from '../../../crm/models/company-category';
+import {CompanyCategoryService} from '../../../crm/services/company-category.service';
 
 @Component({
   selector: 'pek-multi-company-category-picker',

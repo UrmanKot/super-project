@@ -1,0 +1,41 @@
+.row-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .form-group {
+    &:first-child {
+      width: 100%;
+    }
+  }
+}
+
+.employees-col {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .form-group {
+    width: 45%;
+  }
+
+  button {
+    margin-top: auto;
+    margin-bottom: 0.6875rem;
+  }
+}
+
+.add-button {
+  font-weight: 600;
+  padding: 0.5rem 1.125rem;
+  color: var(--theme-color-primary);
+  background: rgba(59, 130, 246, 0.04);
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 0.625rem;
+  border: none;
+
+  i {
+    margin-right: 0.5rem;
+  }
+}

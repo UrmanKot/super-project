@@ -53,6 +53,11 @@ import { MultiCompanyPickerComponent } from './pickers/multi-company-picker/mult
 import { MultiSalesStatusPickerComponent } from './pickers/multi-sales-status-picker/multi-sales-status-picker.component';
 import { MultiCompanyCategoryPickerComponent } from './pickers/multi-company-category-picker/multi-company-category-picker.component';
 import { CompanyPickerComponent } from './pickers/company-picker/company-picker.component';
+import { CompanyCategoryPickerComponent } from './pickers/company-category-picker/company-category-picker.component';
+import { RegionPickerComponent } from './pickers/region-picker/region-picker.component';
+import { CompanyCategoryModulePickerComponent } from './pickers/company-category-module-picker/company-category-module-picker.component';
+import { UserProfilePickerComponent } from './pickers/user-profile-picker/user-profile-picker.component';
+import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
 
 
 @NgModule({
@@ -88,7 +93,12 @@ import { CompanyPickerComponent } from './pickers/company-picker/company-picker.
     MultiCompanyPickerComponent,
     MultiSalesStatusPickerComponent,
     MultiCompanyCategoryPickerComponent,
-    CompanyPickerComponent
+    CompanyPickerComponent,
+    CompanyCategoryPickerComponent,
+    RegionPickerComponent,
+    CompanyCategoryModulePickerComponent,
+    UserProfilePickerComponent,
+    SortIconComponent
   ],
   exports: [
     ButtonModule,
@@ -132,7 +142,12 @@ import { CompanyPickerComponent } from './pickers/company-picker/company-picker.
     MultiCompanyPickerComponent,
     MultiSalesStatusPickerComponent,
     MultiCompanyCategoryPickerComponent,
-    CompanyPickerComponent
+    CompanyPickerComponent,
+    CompanyCategoryPickerComponent,
+    RegionPickerComponent,
+    CompanyCategoryModulePickerComponent,
+    UserProfilePickerComponent,
+    SortIconComponent
   ],
   imports: [
     CommonModule,

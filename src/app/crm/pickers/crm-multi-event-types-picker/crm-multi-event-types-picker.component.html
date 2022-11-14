@@ -1,0 +1,18 @@
+<div class="crm-multi-event-types-picker">
+  <p-multiSelect
+    *ngIf="!isLoading; else spinner"
+    [options]="eventTypes"
+    [(ngModel)]="selectedEventType"
+    optionLabel="name"
+    optionValue="id"
+    placeholder="Select Event Types"
+    (ngModelChange)="onSelectEventTypes($event)"
+    [showClear]="true"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

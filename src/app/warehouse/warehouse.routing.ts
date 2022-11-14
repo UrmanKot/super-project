@@ -57,7 +57,7 @@ const routes: Routes = [
       {
         path: 'production-requests', children: [
           {path: '', title: 'Production Requests', component: WarehouseProductionRequestsComponent},
-          {path: ':id', title: 'Tool Request', component: WarehouseProductionRequestComponent}
+          {path: ':id', title: 'Production Request', component: WarehouseProductionRequestComponent}
         ]
       },
       {

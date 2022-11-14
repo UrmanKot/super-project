@@ -1,0 +1,87 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Company Category
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row-1">
+      <div class="form-group">
+        <label for="name">Name*</label>
+        <input
+          pInputText
+          formControlName="name"
+          class="form-control"
+          type="text"
+          id="name"
+        />
+      </div>
+      <div class="form-group ml-3 form-group_color">
+        <label for="name"> Color </label>
+        <p-colorPicker formControlName="color_hex"></p-colorPicker>
+      </div>
+    </div>
+
+    <div class="employees" formArrayName="profiles_ids">
+      <div class="employees-row" *ngFor="let user of users.controls; let idx = index" [formGroupName]="idx">
+        <div class="employees-col">
+          <div class="form-group">
+            <label>User Profiles*</label>
+            <pek-user-profile-picker
+              [currentUserProfileId]="user.get('profile_id').value"
+              (selectUserProfile)="onSelectUserProfile($event, user)"
+            ></pek-user-profile-picker>
+          </div>
+          <div class="form-group">
+            <label>Employees*</label>
+            <pek-crm-employee-picker
+              (selectEmployees)="onSelectEmployees($event, user)"
+              [currentEmployeeIds]="user.get('employees_ids').value"
+            ></pek-crm-employee-picker>
+          </div>
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger mr-2"
+            (click)="removeUser(idx)"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      class="add-button mt-2 mb-2"
+      label="Add User"
+      (click)="addUser()"
+    >
+    </button>
+    <div class="form-group">
+      <label for="description">Description*</label>
+      <textarea
+        id="description"
+        [rows]="2"
+        pInputTextarea
+        [autoResize]="false"
+        formControlName="description"
+      ></textarea>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -1,0 +1,19 @@
+<div class="user-profile-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="userProfiles"
+    placeholder="Select User Profile"
+    [(ngModel)]="selectedUserProfileId"
+    (ngModelChange)="onSelectCompany()"
+    optionLabel="fullName"
+    optionValue="id"
+    [showClear]="true"
+  >
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

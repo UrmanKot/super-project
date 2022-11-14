@@ -1,0 +1,85 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Schedule
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Employees</label>
+      <pek-crm-employee-picker
+        (selectEmployees)="onSelectEmployees($event)"
+        [currentEmployeeIds]="form.get('employee').value"
+      ></pek-crm-employee-picker>
+    </div>
+    <div class="form-group">
+      <label>Event Type*</label>
+      <pek-crm-event-type-picker
+        [currentEventTypeId]="form.get('event_type').value"
+        (selectEventType)="onSelectEventType($event)"
+      ></pek-crm-event-type-picker>
+    </div>
+    <div class="form-group">
+      <label for="description">Description*</label>
+      <textarea
+        id="description"
+        [rows]="2"
+        pInputTextarea
+        [autoResize]="false"
+        formControlName="description"
+      ></textarea>
+    </div>
+
+    <div class="col-group">
+      <div class="form-group">
+        <label for="start">Start Time*</label>
+        <p-calendar
+          id="start"
+          [showButtonBar]="true"
+          formControlName="start"
+          [showTime]="true"
+          [timeOnly]="true"
+          [hourFormat]="'24'"
+          inputId="timeonly"
+        >
+        </p-calendar>
+      </div>
+      <div class="form-group col-6">
+        <label for="end">End Time*</label>
+        <p-calendar
+          id="end"
+          [showButtonBar]="true"
+          formControlName="end"
+          [showTime]="true"
+          [timeOnly]="true"
+          [hourFormat]="'24'"
+          inputId="timeonly"
+        >
+        </p-calendar>
+      </div>
+    </div>
+    <div class="form-group">
+      <label> Week days* </label>
+      <p-multiSelect
+        formControlName="schedule_values"
+        optionLabel="name"
+        optionValue="value"
+        [options]="scheduleDays"
+      ></p-multiSelect>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

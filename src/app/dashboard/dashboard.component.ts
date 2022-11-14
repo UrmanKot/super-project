@@ -41,7 +41,8 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Contacts & Events',
     icon: 'icon-contacts-events',
-    routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
+    routerLink: ['/crm'],
+    // routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
   }, {
     label: 'QC',
     icon: 'icon-quality-control',
