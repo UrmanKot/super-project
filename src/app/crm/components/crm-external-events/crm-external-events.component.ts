@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EventTypesService} from '../../services/event-types.service';
 import {EventType} from '../../models/event-type';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-crm-external-events',
   templateUrl: './crm-external-events.component.html',
   styleUrls: ['./crm-external-events.component.scss']
 })
-export class CrmExternalEventsComponent implements OnInit {
+export class CrmExternalEventsComponent implements OnInit, OnDestroy {
 
   menuItems: MenuItem[] = [{
     label: 'Selected External Event Type',
@@ -27,6 +28,8 @@ export class CrmExternalEventsComponent implements OnInit {
     ]
   }];
 
+  private destroy$ = new Subject();
+
   isLoading = true;
   externalEvents: EventType[] = [];
   selectedExternalEvent: EventType;
@@ -41,7 +44,9 @@ export class CrmExternalEventsComponent implements OnInit {
   }
 
   getEventTypes() {
-    this.eventTypesService.get([{name: 'is_inner', value: false}]).subscribe(eventTypes => {
+    this.eventTypesService.get([{name: 'is_inner', value: false}]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(eventTypes => {
       this.externalEvents = eventTypes;
       this.isLoading = false;
     })
@@ -82,5 +87,10 @@ export class CrmExternalEventsComponent implements OnInit {
 
   renderTable() {
     this.externalEvents = this.externalEvents.map(el => el);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

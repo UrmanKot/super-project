@@ -39,6 +39,7 @@
             <div class="form-group">
               <label for="name">Name</label>
               <input
+                #searchBoxName
                 id="name"
                 class="form-control"
                 type="text"
@@ -49,20 +50,22 @@
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label for="name">Category</label>
-              <pek-company-category-picker></pek-company-category-picker>
+              <label>Category</label>
+              <pek-company-category-picker
+                (selectCompanyCategory)="onSelectCompanyCategory($event)"></pek-company-category-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label for="name">Region</label>
-              <pek-region-picker></pek-region-picker>
+              <label>Region</label>
+              <pek-region-picker (selectRegion)="onSelectRegion($event)"></pek-region-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label for="person-name">Contact Person Name</label>
               <input
+                #searchBoxPersonName
                 id="person-name"
                 class="form-control"
                 type="text"
@@ -72,6 +75,23 @@
             </div>
           </div>
           <div class="col-3">
+            <div class="form-group">
+              <label for="name">Ordered Nomenclature</label>
+              <div class="input-wrapper">
+                <input
+                  #nomenclatureInput
+                  (click)="onOpenNomenclaturePickerModal()"
+                  class="form-control"
+                  placeholder="Select Ordered Nomenclature"
+                  type="text"
+                  pInputText
+                  formControlName="selectedNomenclature"
+                >
+                <button *ngIf="searchForm.get('nomenclature').value" (click)="clearNomenclatureFilter()">
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="col-3">
           </div>
@@ -93,25 +113,24 @@
         [scrollable]="true"
         dataKey="id"
         [rows]="10"
-        [(selection)]="selectedSalesChain"
-        [value]="salesChain"
+        [(selection)]="selectedCompany"
+        [value]="companies"
       >
         <ng-template pTemplate="header">
           <tr>
-            <th class="text-center " style="width: 5%">#</th>
-            <th style="width: 30%">Company Name</th>
-            <th style="width: 15%" class="text-center">Created Date</th>
+            <th class="text-center" style="width: 5%">#</th>
+            <th style="width: 45%">Name</th>
+            <th style="width: 50%">Description</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-chain let-i="rowIndex">
-          <tr [pSelectableRow]="chain" class="table-row">
-            <td class="text-center" style="width: 5%">{{ i + 1 }}</td>
-
-            <td style="width: 30%">
-
+        <ng-template pTemplate="body" let-supplier let-i="rowIndex">
+          <tr [pSelectableRow]="supplier">
+            <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
+            <td style="width: 45%">
+              {{ supplier.name }}
             </td>
-            <td style="width: 15%" class="text-center">
-              {{ chain.created_at | date: 'dd/MM/y'}}
+            <td style="width: 50%">
+              {{ supplier.comment }}
             </td>
           </tr>
         </ng-template>
@@ -131,12 +150,12 @@
     <div
       class="paginator-wrapper"
       *ngIf="!isShowAll"
-      [class.paginator-wrapper_hide]="salesChain.length === 0"
+      [class.paginator-wrapper_hide]="companies.length === 0"
     >
       <p-paginator
         #paginator
         [rows]="10"
-        [totalRecords]="countChains"
+        [totalRecords]="countCompanies"
         (onPageChange)="paginate($event)"
       >
       </p-paginator>
@@ -164,6 +183,6 @@
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedSalesChain"></p-menubar>
+    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedCompany"></p-menubar>
   </div>
 </ng-template>

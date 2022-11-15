@@ -3,6 +3,7 @@ import {UserProfile} from '../../models/user-profile';
 import {ModalService} from '@shared/services/modal.service';
 import {UserProfileService} from '../../services/user-profile.service';
 import {MenuItem} from 'primeng/api';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-crm-users-profiles',
@@ -11,6 +12,7 @@ import {MenuItem} from 'primeng/api';
 })
 export class CrmUsersProfilesComponent implements OnInit {
   isLoading = true;
+  destroy$ = new Subject();
 
   menuItems: MenuItem[] = [{
     label: 'Selected User Profile',
@@ -42,7 +44,9 @@ export class CrmUsersProfilesComponent implements OnInit {
   }
 
   getUserProfiles() {
-    this.userProfileService.get().subscribe(usersProfiles => {
+    this.userProfileService.get().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(usersProfiles => {
       this.usersProfiles = usersProfiles;
       this.isLoading = false;
     })
@@ -83,5 +87,10 @@ export class CrmUsersProfilesComponent implements OnInit {
 
   renderTable() {
     this.usersProfiles = this.usersProfiles.map(el => el);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

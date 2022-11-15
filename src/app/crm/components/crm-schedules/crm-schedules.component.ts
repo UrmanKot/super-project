@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Schedule} from '../../models/schedule';
 import {MenuItem} from 'primeng/api';
 import {CrmScheduleService} from '../../services/crm-schedule.service';
 import {ModalService} from '@shared/services/modal.service';
+import {Subject, takeUntil} from 'rxjs';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'pek-crm-schedules',
@@ -10,7 +12,7 @@ import {ModalService} from '@shared/services/modal.service';
   styleUrls: ['./crm-schedules.component.scss']
 })
 
-export class CrmSchedulesComponent implements OnInit {
+export class CrmSchedulesComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [{
     label: 'Selected Schedule',
     items: [
@@ -27,6 +29,7 @@ export class CrmSchedulesComponent implements OnInit {
     ]
   }];
 
+  destroy$ = new Subject();
   isLoading = true;
   schedules: Schedule[] = [];
   selectedSchedule: Schedule;
@@ -42,7 +45,9 @@ export class CrmSchedulesComponent implements OnInit {
   }
 
   getSchedules() {
-    this.crmSchedulesService.get().subscribe(schedules => {
+    this.crmSchedulesService.get().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(schedules => {
       this.schedules = schedules;
       this.isLoading = false;
     })
@@ -83,5 +88,10 @@ export class CrmSchedulesComponent implements OnInit {
 
   renderTable() {
     this.schedules = this.schedules.map(el => el);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

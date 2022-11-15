@@ -5,6 +5,8 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EventCompany} from '../models/event-company';
 import {QuerySearch} from '@shared/models/other';
+import {MatDialog} from '@angular/material/dialog';
+import {EditCrmEventCompanyComponent} from '../modals/edit-crm-event-company/edit-crm-event-company.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class EventCompanyService {
   readonly url = 'event_companies/';
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -44,18 +47,31 @@ export class EventCompanyService {
   }
 
   create(company: Partial<EventCompany>): Observable<EventCompany> {
-    return this.httpClient.post<{ data: EventCompany}>(this.API_URL + this.url, company).pipe(
+    return this.httpClient.post<{ data: EventCompany }>(this.API_URL + this.url, company).pipe(
       map(response => response.data)
     );
   }
 
-  update(id: number, company: Partial<EventCompany>): Observable<EventCompany>  {
-    return this.httpClient.patch<{ data: EventCompany}>(this.API_URL + this.url + id + '/', company).pipe(
+  update(id: number, company: Partial<EventCompany>): Observable<EventCompany> {
+    return this.httpClient.patch<{ data: EventCompany }>(this.API_URL + this.url + id + '/', company).pipe(
       map(response => response.data)
     );
   }
 
-  delete(entity: EventCompany): Observable<any>  {
-    return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.API_URL + this.url + id + '/');
+  }
+
+  openEditModal(eventCompany: EventCompany): Observable<EventCompany> {
+    return this.dialog
+      .open<EditCrmEventCompanyComponent>(EditCrmEventCompanyComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: eventCompany,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

@@ -7,6 +7,10 @@ import {map} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
 import {AddCompanyToEventComponent} from '../modals/add-company-to-event/add-company-to-event.component';
 import {MatDialog} from '@angular/material/dialog';
+import {
+  AddContactPersonToEventComponent
+} from '../modals/add-contact-person-to-event/add-contact-person-to-event.component';
+import {CreateEditLinkedEventComponent} from '../modals/create-edit-linked-event/create-edit-linked-event.component';
 
 @Injectable({
   providedIn: 'root'
@@ -52,9 +56,41 @@ export class EventsListService {
     );
   }
 
+  addContact(id: number, event: Partial<EventItem>[]): Observable<EventItem> {
+    return this.httpClient.post<{ data: EventItem }>(this.API_URL + this.url + id + '/add_contacts/', event).pipe(
+      map(response => response.data)
+    );
+  }
+
   openAddCompanyToEventModal(eventId: number): Observable<EventItem> {
     return this.dialog
       .open<AddCompanyToEventComponent>(AddCompanyToEventComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: eventId,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openAddContactPersonToEventModal(eventId: number): Observable<EventItem> {
+    return this.dialog
+      .open<AddContactPersonToEventComponent>(AddContactPersonToEventComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: eventId,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openCreateLinkedEventModal(eventId: number): Observable<EventItem> {
+    return this.dialog
+      .open<CreateEditLinkedEventComponent>(CreateEditLinkedEventComponent, {
         width: '35rem',
         height: 'auto',
         data: eventId,

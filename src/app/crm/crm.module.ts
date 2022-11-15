@@ -26,6 +26,11 @@ import { CrmEventsReportsComponent } from './components/crm-events-reports/crm-e
 import { CrmMultiEventTypesPickerComponent } from './pickers/crm-multi-event-types-picker/crm-multi-event-types-picker.component';
 import { CrmEventCardComponent } from './components/crm-event-card/crm-event-card.component';
 import { AddCompanyToEventComponent } from './modals/add-company-to-event/add-company-to-event.component';
+import { AddContactPersonToEventComponent } from './modals/add-contact-person-to-event/add-contact-person-to-event.component';
+import { CrmContactPersonPickerComponent } from './pickers/crm-contact-person-picker/crm-contact-person-picker.component';
+import { EditCrmEventContactPersonComponent } from './modals/edit-crm-event-contact-person/edit-crm-event-contact-person.component';
+import {EditCrmEventCompanyComponent} from './modals/edit-crm-event-company/edit-crm-event-company.component';
+import {CreateEditLinkedEventComponent} from './modals/create-edit-linked-event/create-edit-linked-event.component';
 
 
 @NgModule({
@@ -50,6 +55,11 @@ import { AddCompanyToEventComponent } from './modals/add-company-to-event/add-co
     CrmMultiEventTypesPickerComponent,
     CrmEventCardComponent,
     AddCompanyToEventComponent,
+    EditCrmEventCompanyComponent,
+    AddContactPersonToEventComponent,
+    CrmContactPersonPickerComponent,
+    EditCrmEventContactPersonComponent,
+    CreateEditLinkedEventComponent,
   ],
   imports: [
     CommonModule,

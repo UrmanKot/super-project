@@ -4,13 +4,14 @@ import {ConfirmComponent, ConfirmType} from '@shared/modals/confirm/confirm.comp
 import {Observable} from 'rxjs';
 import {GuideComponent} from '../../guide/guide/guide.component';
 import {PasteImageComponent} from '@shared/modals/paste-image/paste-image.component';
-import {NomenclatureImage} from '@shared/models/nomenclature';
+import {ENomenclatureType, Nomenclature, NomenclatureImage} from '@shared/models/nomenclature';
 import {ImageGalleryComponent} from '@shared/modals/image-gallery/image-gallery.component';
 import {
   NomenclaturePickerModalComponent
 } from '@shared/modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
 import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
 import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
+import {Overlay} from '@angular/cdk/overlay';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,7 @@ export class ModalService {
       .pipe();
   }
 
-  showGuide() {
+  showGuide(): Observable<any> {
     return this.dialog
       .open<GuideComponent>(GuideComponent, {
         width: '100%',
@@ -74,13 +75,15 @@ export class ModalService {
       .pipe();
   }
 
-  choiceNomenclatureModal() {
+  choiceNomenclatureModal(type: ENomenclatureType = null): Observable<Nomenclature> {
     return this.dialog
       .open<NomenclaturePickerModalComponent>(NomenclaturePickerModalComponent, {
         width: '90rem',
         height: 'auto',
+        data: {type},
         autoFocus: false,
-        enterAnimationDuration: '250ms'
+        enterAnimationDuration: '250ms',
+        panelClass: 'modal-overflow-visible',
       })
       .afterClosed()
       .pipe();

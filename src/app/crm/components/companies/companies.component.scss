@@ -1,0 +1,23 @@
+.form {
+  margin-top: -0.25rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+  }
+
+  button {
+    position: absolute;
+    bottom: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #6c757d;
+    right: 0.6rem;
+    top: 0.275rem;
+  }
+}

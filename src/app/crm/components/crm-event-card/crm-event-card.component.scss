@@ -1,5 +1,6 @@
 .event-card {
   padding: 1rem 1.75rem 1.125rem;
+  line-height: 1.4;
 
   h4 {
     margin-bottom: 0.625rem;
@@ -24,4 +25,14 @@
 h2 {
   font-size: 1.1875rem;
   font-weight: 600;
+}
+
+.card-event {
+  &::ng-deep {
+    .p-menubar {
+      .p-submenu-list {
+        width: 13.5rem !important;
+      }
+    }
+  }
 }

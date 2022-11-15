@@ -147,7 +147,8 @@ import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
     RegionPickerComponent,
     CompanyCategoryModulePickerComponent,
     UserProfilePickerComponent,
-    SortIconComponent
+    SortIconComponent,
+    NomenclaturePickerModalComponent
   ],
   imports: [
     CommonModule,

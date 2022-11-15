@@ -42,7 +42,7 @@
 
   <h2 class="mb-4">Event Companies</h2>
 
-  <div class="page__card">
+  <div class="page__card mb-4 card-event">
     <div class="page__table">
       <p-table
         #dt
@@ -53,12 +53,14 @@
         [rows]="10"
         [(selection)]="selectedEventCompany"
         [value]="event?.on_companies"
+        (selectionChange)="onEventCompanySelectionChange()"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex">
             <p class="subtitle" *ngIf="!selectedEventCompany">Choose the Company to edit</p>
-            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedEventCompany"></p-menubar>
-            <button (click)="onAddCompanyToEvent()" pButton type="button" icon="pi pi-plus" class="ml-2" label="Add Company"></button>
+            <p-menubar class="ml-auto" [model]="eventCompanyMenuItems" [class.disabled]="!selectedEventCompany"></p-menubar>
+            <button (click)="onAddCompanyToEvent()" pButton type="button" icon="pi pi-plus" class="ml-2"
+                    label="Add Company"></button>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -110,6 +112,83 @@
       <p-button
         type="button"
         (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Contact Persons</h2>
+
+  <div class="page__card mb-4">
+    <div class="page__table">
+      <p-table
+        #st
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="event?.on_contacts.length > 0"
+        [rows]="10"
+        [(selection)]="selectedContactPerson"
+        [value]="event?.on_contacts"
+        (selectionChange)="onEventContactPersonSelectionChange()"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedContactPerson">Choose the Contact Person to edit</p>
+            <p-menubar class="ml-auto" [model]="contactPersonMenuItems" [class.disabled]="!selectedContactPerson"></p-menubar>
+            <button (click)="onAddContactPerson()" pButton type="button" icon="pi pi-plus" class="ml-2"
+                    label="Add Contact Person"></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%;" class="text-center">#</th>
+            <th style="width: 35%;">Name</th>
+            <th style="width: 45%;">Comment</th>
+            <th style="width: 15%;" class="text-center">Is Done</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contact_person let-i="rowIndex">
+          <tr [pSelectableRow]="contact_person">
+            <td class="text-center" style="width: 5%;">{{ i + 1 }}</td>
+            <td style="width: 35%;">
+              {{ contact_person.contact_person.first_name }} {{ contact_person.contact_person.last_name }}
+            </td>
+            <td style="width: 45%;">
+              {{ contact_person.comment }}
+            </td>
+            <td style="width: 15%;" class="text-center">
+              <div class="icons">
+                <i class="pi pi-check text-success" *ngIf="contact_person.is_done; else notGrouped"></i>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="4">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="st.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!st.paginator && !isLoading && event?.on_contacts.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="st.paginator=true"
         styleClass="p-button-text"
       >
         Return pagination

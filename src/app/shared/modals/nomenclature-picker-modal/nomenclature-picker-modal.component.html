@@ -8,7 +8,9 @@
   >
     <div class="nomenclature-picker-modal__form">
       <form [formGroup]="searchForm">
-        <div class="form-box form-box_3">
+        <div
+          class="form-box form-box_3"
+        >
           <div class="form-group">
             <label for="code">Code</label>
             <input type="text" id="code" pInputText formControlName="code" #searchBoxCode>
@@ -17,11 +19,16 @@
             <label for="name">Name</label>
             <input type="text" id="name" pInputText formControlName="name" #searchBoxName>
           </div>
-          <div class="form-group">
+          <div class="form-group" *ngIf="data.type === null">
             <label>Type</label>
             <pek-nomenclature-type-picker
               (choiceNomenclatureType)="selectNomenclatureType($event)"
             ></pek-nomenclature-type-picker>
+          </div>
+
+          <div class="form-group" *ngIf="data.type === nomenclatureType.PURCHASED">
+            <label>Category</label>
+            <pek-product-category-picker (choiceCategory)="onSelectCategory($event)"></pek-product-category-picker>
           </div>
         </div>
       </form>
@@ -44,10 +51,16 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-nomenclature let-i="rowIndex">
-          <tr [pSelectableRow]="nomenclature">
+          <tr
+            [pSelectableRow]="nomenclature"
+            [pSelectableRowDisabled]="nomenclature.approved === '0' && nomenclature.type === '0'"
+          >
             <td style="width: 7%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
             <td style="width: 22%">{{nomenclature.code}}</td>
-            <td style="width: 30%">{{nomenclature.name}}</td>
+            <td style="width: 30%">
+              <span *ngIf="nomenclature.approved === '0' && nomenclature.type === '0'" class="badge badge_warning">NEW</span>
+              {{nomenclature.name}}
+            </td>
             <td
               style="width: 10%">{{nomenclature.category?.unit_of_measure?.symbol ? nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}</td>
             <td style="width: 15%">

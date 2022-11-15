@@ -4,10 +4,12 @@ import {EventsListService} from '../../services/events-list.service';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {Company} from '../../models/company';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {EventCompanyService} from '../../services/event-company.service';
+import {EventCompany} from '../../models/event-company';
+import {EventContactPerson} from '../../models/event-contact-person';
+import {EventContactPersonService} from '../../services/event-contact-person.service';
 
 @Component({
   selector: 'pek-crm-event-card',
@@ -16,9 +18,14 @@ import {EventCompanyService} from '../../services/event-company.service';
 })
 export class CrmEventCardComponent implements OnInit, OnDestroy {
 
-  menuItems: MenuItem[] = [{
+  eventCompanyMenuItems: MenuItem[] = [{
     label: 'Selected Company',
     items: [
+      {
+        label: 'Create Linked Event',
+        icon: 'pi pi-share-alt',
+        command: () => this.onCreateLinkedEvent()
+      },
       {
         label: 'Done',
         icon: 'pi pi-check',
@@ -37,7 +44,29 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
     ]
   }];
 
-  selectedEventCompany: Company;
+  contactPersonMenuItems: MenuItem[] = [{
+    label: 'Selected Contact Person',
+    items: [
+      {
+        label: 'Done',
+        icon: 'pi pi-check',
+        command: () => this.onDoneContactPerson()
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.onEditContactPerson()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.onRemoveContactPerson()
+      }
+    ]
+  }];
+
+  selectedEventCompany: EventCompany;
+  selectedContactPerson: EventContactPerson;
 
   event: EventItem;
   eventId: number;
@@ -49,7 +78,8 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
     private readonly eventListService: EventsListService,
     private readonly route: ActivatedRoute,
     private readonly modalService: ModalService,
-    private readonly eventCompanyService: EventCompanyService
+    private readonly eventCompanyService: EventCompanyService,
+    private readonly eventContactPersonService: EventContactPersonService,
   ) {
   }
 
@@ -65,16 +95,23 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(event => {
       this.event = event;
+
+      if (this.selectedEventCompany) {
+        this.selectedEventCompany = event.on_companies.find(c => c.id === this.selectedEventCompany.id) as EventCompany;
+        this.onEventCompanySelectionChange();
+      }
+
+      if (this.selectedContactPerson) {
+        // @ts-ignore
+        this.selectedContactPerson = event.on_contacts.find(c => c.id === this.selectedContactPerson.id) as EventContactPerson;
+        this.onEventContactPersonSelectionChange();
+      }
+
       this.isLoading = false;
     });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.complete();
-  }
-
-  private onDoneCompany() {
+  onDoneCompany() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.eventCompanyService.update(this.selectedEventCompany.id, {is_done: true}).subscribe(() => this.getEvent());
@@ -82,12 +119,23 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private onEditTechnology() {
-    return undefined;
+  onEditTechnology() {
+    if (this.selectedEventCompany) {
+      this.eventCompanyService.openEditModal(this.selectedEventCompany).subscribe(company => {
+        if (company) {
+          this.getEvent();
+        }
+      });
+    }
   }
 
-  private onRemoveTechnology() {
-    return undefined;
+  onRemoveTechnology() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.eventCompanyService.delete(this.selectedEventCompany.id).subscribe(() => this.getEvent());
+        this.selectedEventCompany = null;
+      }
+    });
   }
 
   onAddCompanyToEvent() {
@@ -96,5 +144,61 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
         this.getEvent();
       }
     });
+  }
+
+  onEventCompanySelectionChange() {
+    this.eventCompanyMenuItems[0].items[0].disabled = !!this.selectedEventCompany?.is_done;
+  }
+
+  onEventContactPersonSelectionChange() {
+    this.contactPersonMenuItems[0].items[0].disabled = !!this.selectedContactPerson?.is_done;
+  }
+
+  onDoneContactPerson() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.eventContactPersonService.update(this.selectedContactPerson.id, {is_done: true}).subscribe(() => this.getEvent());
+      }
+    });
+  }
+
+  onEditContactPerson() {
+    if (this.selectedContactPerson) {
+      this.eventContactPersonService.openEditModal(this.selectedContactPerson).subscribe(contactPerson => {
+        if (contactPerson) {
+          this.getEvent();
+        }
+      });
+    }
+  }
+
+  onRemoveContactPerson() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.eventContactPersonService.delete(this.selectedContactPerson.id).subscribe(() => this.getEvent());
+        this.selectedContactPerson = null;
+      }
+    });
+  }
+
+  onAddContactPerson() {
+    this.eventListService.openAddContactPersonToEventModal(this.eventId).subscribe(event => {
+      if (event) {
+        this.getEvent();
+      }
+    });
+  }
+
+  onCreateLinkedEvent() {
+    this.eventListService.openCreateLinkedEventModal(this.eventId).subscribe(event => {
+      if (event) {
+        this.getEvent();
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

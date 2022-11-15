@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialogRef} from '@angular/material/dialog';
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Paginator} from 'primeng/paginator';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -7,6 +7,7 @@ import {QuerySearch} from '@shared/models/other';
 import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {debounceTime, map, tap} from 'rxjs/operators';
+import {Category} from '../../../product-structure/models/category';
 
 @Component({
   selector: 'pek-nomenclature-picker-modal',
@@ -25,18 +26,21 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
   nomenclatures: Nomenclature[] = [];
   selectedNomenclature: Nomenclature;
 
+  nomenclatureType = ENomenclatureType;
+
   searchForm: FormGroup = this.fb.group({
     page: [1],
     name: [''],
     code: [''],
     type: [null],
+    categories: [null],
   });
 
-  queryKey = 'name:/code:/type:null';
+  queryKey = 'name:/code:/type:null/categories:null';
 
   query: QuerySearch[] = [
     {name: 'page', value: this.searchForm.get('page').value},
-    {name: 'paginated', value: true}
+    {name: 'paginated', value: true},
   ];
 
   private destroy$ = new Subject();
@@ -45,7 +49,7 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
     private readonly fb: FormBuilder,
     private readonly nomenclatureService: NomenclatureService,
     private dialogRef: MatDialogRef<NomenclaturePickerModalComponent>,
-    // @Inject(MAT_DIALOG_DATA) public data:
+    @Inject(MAT_DIALOG_DATA) public data: { type: ENomenclatureType }
   ) {
   }
 
@@ -72,6 +76,13 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
   }
 
   ngOnInit(): void {
+    if (this.data.type !== null) {
+      this.searchForm.get('type').patchValue(this.data.type);
+
+      this.searchNomenclatures();
+      return;
+    }
+
     this.getNomenclatures();
   }
 
@@ -96,7 +107,7 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
     this.destroy$.next(true);
     this.selectedNomenclature = null;
 
-    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/type:${this.searchForm.get('type').value}`;
+    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/type:${this.searchForm.get('type').value}/categories:${this.searchForm.get('categories').value}`;
 
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
@@ -130,6 +141,13 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
       });
     }
 
+    if (this.searchForm.get('categories').value !== null) {
+      this.query.push({
+        name: 'categories',
+        value: this.searchForm.get('categories').value
+      });
+    }
+
     this.getNomenclatures();
   }
 
@@ -154,4 +172,13 @@ export class NomenclaturePickerModalComponent implements OnInit, AfterViewInit, 
     this.destroy$.complete();
   }
 
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('categories').patchValue(category.id)
+    } else {
+      this.searchForm.get('categories').patchValue(null)
+    }
+
+    this.searchNomenclatures();
+  }
 }

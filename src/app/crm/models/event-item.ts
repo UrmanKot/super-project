@@ -1,6 +1,7 @@
 import {EventType} from './event-type';
 import {CRMEmployee} from './crm-employee';
 import {Company} from './company';
+import {ContactPerson} from '@shared/models/contact-person';
 
 export class EventItem {
   readonly id: number;
@@ -17,7 +18,7 @@ export class EventItem {
   on_companies: Company[];
   contact_ids?: number[];
   company_ids?: number[];
-  // on_contacts: ContactPerson[];
+  on_contacts: ContactPerson[];
   is_complete: boolean;
   is_inner: boolean;
   is_locked_by_company: boolean;
