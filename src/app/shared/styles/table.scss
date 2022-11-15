@@ -1,4 +1,17 @@
 .p-treetable {
+  .p-treetable-wrapper {
+    &::-webkit-scrollbar-thumb {
+      border-radius: 0.625rem;
+      background-color: #d1d2d8;
+    }
+
+    &::-webkit-scrollbar {
+      cursor: auto;
+      width: 0.5rem;
+      background-color: #f8f9fa;
+    }
+  }
+
   .p-treetable-tbody {
     tr:focus {
       outline: 0;

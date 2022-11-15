@@ -116,7 +116,7 @@ a {
 ::ng-deep {
   .orders-tree {
     .p-treetable-wrapper {
-      max-height: calc(100vh - 300px);
+      max-height: calc(100vh - 16.625rem);
       overflow: auto;
     }
   }
@@ -127,5 +127,5 @@ a {
 }
 
 .placeholder {
-  background-color: #d7d7d752 !important;
+  //background-color: #d7d7d752 !important;
 }

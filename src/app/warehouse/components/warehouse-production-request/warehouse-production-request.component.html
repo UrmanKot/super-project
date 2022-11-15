@@ -5,8 +5,9 @@
       <h1>
         Requests for Order
 
-        <a  *ngIf="order?.accounting_type == 1"
-            (click)="goOrder(1, order.id)"
+        <a
+          *ngIf="order?.accounting_type == 1"
+          (click)="goOrder(1, order.id)"
         >
           {{orderId}}
         </a>
@@ -37,42 +38,66 @@
       </h1>
     </div>
     <div class="page__tools">
-      <button pButton type="button" icon="pi pi-check" label="Complete" (click)="complete()"></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-check"
+        label="Complete"
+        (click)="complete()"
+      ></button>
 
-      <button pButton class="p-button-danger ml-2" type="button" label="Cancelation" (click)="onCancel()"></button>
+      <button
+        pButton
+        class="p-button-danger ml-2"
+        icon="pi pi-times"
+        type="button"
+        label="Cancelation"
+        (click)="onCancel()"
+      ></button>
 
       <a
         pButton
         class="ml-2"
         type="button"
-        target="blank"
-        *ngIf="order?.accounting_type == 1"
-        [routerLink]="['/dash/procurement/orders/products', order.id]"
+        icon="pi pi-angle-double-right"
+        [class.disabled]="!order"
         label="Go to Order"
+        (click)="goToOrder()"
       >
       </a>
 
-      <a
-        pButton
-        class="ml-2"
-        type="button"
-        target="blank"
-        *ngIf="order?.accounting_type == 2"
-        [routerLink]="['/dash/outsource/outsource-chain/products', order.id]"
-        label="Go to Order"
-      >
-      </a>
+      <!--      <a-->
+      <!--        pButton-->
+      <!--        class="ml-2"-->
+      <!--        type="button"-->
+      <!--        target="blank"-->
+      <!--        *ngIf="order?.accounting_type == 1"-->
+      <!--        [routerLink]="['/dash/procurement/orders/products', order.id]"-->
+      <!--        label="Go to Order"-->
+      <!--      >-->
+      <!--      </a>-->
 
-      <a
-        pButton
-        class="ml-2"
-        type="button"
-        target="blank"
-        *ngIf="order?.accounting_type == 3"
-        [routerLink]="['/dash/production/orders/order', order.id]"
-        label="Go to Order"
-      >
-      </a>
+      <!--      <a-->
+      <!--        pButton-->
+      <!--        class="ml-2"-->
+      <!--        type="button"-->
+      <!--        target="blank"-->
+      <!--        *ngIf="order?.accounting_type == 2"-->
+      <!--        [routerLink]="['/dash/outsource/outsource-chain/products', order.id]"-->
+      <!--        label="Go to Order"-->
+      <!--      >-->
+      <!--      </a>-->
+
+      <!--      <a-->
+      <!--        pButton-->
+      <!--        class="ml-2"-->
+      <!--        type="button"-->
+      <!--        target="blank"-->
+      <!--        *ngIf="order?.accounting_type == 3"-->
+      <!--        [routerLink]="['/dash/production/orders/order', order.id]"-->
+      <!--        label="Go to Order"-->
+      <!--      >-->
+      <!--      </a>-->
     </div>
   </div>
 </div>
@@ -94,30 +119,16 @@
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
-              <button
-                pButton
-                type="button"
-                class="ml-auto mr-2 p-button-warning"
-                label="Cancel"
-                [disabled]="!selectedRequest"
-                (click)="onCancelItem(selectedRequest)"
-              ></button>
+              <p class="subtitle" *ngIf="!selectedRequest">Choose the Request to edit</p>
+              <p-menubar class="ml-auto mr-2" [model]="requestMenuItems" [class.disabled]="!selectedRequest"></p-menubar>
 
               <button
-                pButton
-                type="button"
-                class="mr-2"
-                icon="pi pi-images"
-                label="Show Images"
-                [disabled]="!selectedRequest"
-                (click)="showImages(selectedRequest.list_product)"
-              ></button>
-
-              <button
+                [disabled]="viewMode === viewModes.LIST"
                 pButton
                 type="button"
                 class="mr-2"
                 label="List"
+                icon="pi pi-list"
                 (click)="changeView(viewModes.LIST)"
               ></button>
               <button
@@ -125,12 +136,13 @@
                 type="button"
                 class="mr-2"
                 label="Hierarchy"
+                icon="pi pi-table"
                 (click)="changeView(viewModes.HIERARCHY)"
               ></button>
               <button
                 pButton
                 type="button"
-                class="mr-2"
+                icon="pi pi-th-large"
                 label="Detailed Hierarchy"
                 (click)="changeView(viewModes.DETAILED_HIERARCHY)"
               ></button>
@@ -147,7 +159,7 @@
               <th class="text-center" style="width: 5%;">ID</th>
               <th style="width: 18%;">Code</th>
               <th style="width: 21%;">Name</th>
-              <th style="width: 12%;">Technology</th>
+              <th style="width: 12%;" class="text-center">Technology</th>
               <th class="text-center" style="width: 14%;">Required Quantity</th>
               <th class="text-center" style="width: 13%;">Locator</th>
               <th class="text-center" style="width: 12%;">Available Quantity</th>
@@ -185,7 +197,7 @@
                   {{request.list_product.nomenclature.name}}
                 </div>
               </td>
-              <td style="width: 12%">
+              <td style="width: 12%" class="text-center">
                 <span *ngIf="request.technology">{{request.technology}}</span>
               </td>
               <td style="width: 14%;" class="text-center">
@@ -233,37 +245,22 @@
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModes.HIERARCHY">
-      <p-treeTable class="orders-tree"
-                   [value]="requestTree"
-                   selectionMode="single"
-                   [(selection)]="selectedRequestNode"
-                   scrollHeight="calc(100vh - 300px)"
+      <p-treeTable
+        class="orders-tree"
+        [value]="requestTree"
+        selectionMode="single"
+        [(selection)]="selectedRequestNode"
+        scrollHeight="calc(100vh - 16.5rem)"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex">
-            <button
-              pButton
-              type="button"
-              class="ml-auto mr-2 p-button-warning"
-              label="Cancel"
-              [disabled]="!selectedRequestNode"
-              (click)="onCancelItem(selectedRequestNode.data.request)"
-            ></button>
-
+            <p class="subtitle" *ngIf="!selectedRequestNode">Choose the Request to edit</p>
+            <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems" [class.disabled]="!selectedRequestNode"></p-menubar>
             <button
               pButton
               type="button"
               class="mr-2"
-              icon="pi pi-images"
-              label="Show Images"
-              [disabled]="!selectedRequestNode"
-              (click)="showImages(selectedRequestNode.data.request.list_product)"
-            ></button>
-
-            <button
-              pButton
-              type="button"
-              class="mr-2"
+              icon="pi pi-angle-down"
               label="Expand all"
               (click)="expandCollapseAllOrders()"
             ></button>
@@ -271,6 +268,7 @@
               pButton
               type="button"
               class="mr-2"
+              icon="pi pi-angle-up"
               label="Collapse all"
               (click)="expandCollapseAllOrders(false)"
             ></button>
@@ -278,6 +276,7 @@
               pButton
               type="button"
               class="mr-2"
+              icon="pi pi-list"
               label="List"
               (click)="changeView(viewModes.LIST)"
             ></button>
@@ -286,23 +285,25 @@
               type="button"
               class="mr-2"
               label="Hierarchy"
+              icon="pi pi-table"
               (click)="changeView(viewModes.HIERARCHY)"
+              [disabled]="viewMode === viewModes.HIERARCHY"
             ></button>
             <button
               pButton
               type="button"
-              class="mr-2"
               label="Detailed Hierarchy"
+              icon="pi pi-th-large"
               (click)="changeView(viewModes.DETAILED_HIERARCHY)"
             ></button>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 16%;">ID</th>
+            <th style="width: 16%; padding-left: 3.3125rem">ID</th>
             <th style="width: 18%;">Code</th>
             <th style="width: 20%;">Name</th>
-            <th style="width: 10%;">Technology</th>
+            <th style="width: 10%;" class="text-center">Technology</th>
             <th class="text-center" style="width: 14%;">Required Quantity</th>
             <th class="text-center" style="width: 10%;">Locator</th>
             <th class="text-center" style="width: 12%;">Available Quantity</th>
@@ -353,7 +354,7 @@
                 </div>
               </div>
             </td>
-            <td style="width: 10%">
+            <td style="width: 10%" class="text-center">
               <div *ngIf="rowData.level === 4">
                 <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
               </div>
@@ -396,7 +397,7 @@
           class="orders-tree"
           [value]="detailedRequestTree"
           (onNodeExpand)="onNodeExpand($event)"
-          scrollHeight="calc(100vh - 300px)"
+          scrollHeight="calc(100vh - 16.5rem)"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
@@ -405,6 +406,7 @@
                 type="button"
                 class="ml-auto mr-2"
                 label="Expand all"
+                icon="pi pi-angle-down"
                 (click)="expandCollapseDetailedView()"
               ></button>
               <button
@@ -412,6 +414,7 @@
                 type="button"
                 class="mr-2"
                 label="Collapse all"
+                icon="pi pi-angle-up"
                 (click)="expandCollapseDetailedView(false)"
               ></button>
               <button
@@ -419,6 +422,7 @@
                 type="button"
                 class="mr-2"
                 label="List"
+                icon="pi pi-list"
                 (click)="changeView(viewModes.LIST)"
               ></button>
               <button
@@ -426,23 +430,25 @@
                 type="button"
                 class="mr-2"
                 label="Hierarchy"
+                icon="pi pi-table"
                 (click)="changeView(viewModes.HIERARCHY)"
               ></button>
               <button
                 pButton
                 type="button"
-                class="mr-2"
                 label="Detailed Hierarchy"
+                icon="pi pi-th-large"
+                [disabled]="viewMode === viewModes.DETAILED_HIERARCHY"
                 (click)="changeView(viewModes.DETAILED_HIERARCHY)"
               ></button>
             </div>
           </ng-template>
           <ng-template pTemplate="header">
             <tr>
-              <th style="width: 16%;">ID</th>
+              <th style="width: 16%; padding-left: 3.3125rem">ID</th>
               <th style="width: 18%;">Code</th>
               <th style="width: 20%;">Name</th>
-              <th style="width: 10%;">Technology</th>
+              <th style="width: 10%;" class="text-center">Technology</th>
               <th class="text-center" style="width: 14%;">Required Quantity</th>
               <th class="text-center" style="width: 10%;">Locator</th>
               <th class="text-center" style="width: 12%;">Available Quantity</th>
@@ -505,7 +511,7 @@
                   </div>
                 </div>
               </td>
-              <td style="width: 10%">
+              <td style="width: 10%" class="text-center">
                 <div *ngIf="rowData.request">
                   <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
                 </div>

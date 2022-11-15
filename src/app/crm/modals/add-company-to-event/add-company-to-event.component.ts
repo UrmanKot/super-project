@@ -27,7 +27,7 @@ export class AddCompanyToEventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.eventId);
+
   }
 
   onSave() {

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {AuthService} from '../../../auth/auth.service';
 import {OrderService} from '../../../procurement/services/order.service';
@@ -6,13 +6,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {RequestService} from '../../services/request.service';
 import {Table} from 'primeng/table';
-import {TreeNode} from 'primeng/api';
+import {MenuItem, TreeNode} from 'primeng/api';
 import {Request} from '../../models/request';
 import {List} from '../../models/list';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {environment} from '@env/environment.prod';
+import {Subject, takeUntil} from 'rxjs';
 
 enum ViewMode {
   LIST = 0,
@@ -25,11 +26,45 @@ enum ViewMode {
   templateUrl: './warehouse-production-request.component.html',
   styleUrls: ['./warehouse-production-request.component.scss']
 })
-export class WarehouseProductionRequestComponent implements OnInit {
+export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   link = environment.link_url + 'dash/';
   viewModes = ViewMode;
   viewMode: ViewMode = ViewMode.LIST;
   @ViewChild('dt') dateTable: Table;
+
+  destroy$ = new Subject();
+
+  requestNodeMenuItems: MenuItem[] = [{
+    label: 'Selected Request',
+    items: [
+      {
+        label: 'Show Images',
+        icon: 'pi pi-images',
+        command: () => this.showImages(this.selectedRequestNode.data.request.list_product)
+      },
+      {
+        label: 'Cancel',
+        icon: 'pi pi-times',
+        command: () => this.onCancelItem(this.selectedRequestNode.data.request)
+      }
+    ]
+  }];
+
+  requestMenuItems: MenuItem[] = [{
+    label: 'Selected Request',
+    items: [
+      {
+        label: 'Show Images',
+        icon: 'pi pi-images',
+        command: () => this.showImages(this.selectedRequest.list_product)
+      },
+      {
+        label: 'Cancel',
+        icon: 'pi pi-times',
+        command: () => this.onCancelItem(this.selectedRequest)
+      }
+    ]
+  }];
 
   rootList: any = null;
   currentDate: Date = new Date();
@@ -72,7 +107,9 @@ export class WarehouseProductionRequestComponent implements OnInit {
   }
 
   getOrderInfo(orderId: number): void {
-    this.ordersService.getById(orderId).subscribe(order => {
+    this.ordersService.getById(orderId).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(order => {
       this.order = order;
       this.prepareDetailedCategoryTree();
     });
@@ -140,7 +177,9 @@ export class WarehouseProductionRequestComponent implements OnInit {
     this.requests = [];
     // this.requestTree = [];
 
-    this.requestsService.getByOrder(+this.orderId).subscribe(requests => {
+    this.requestsService.getByOrder(+this.orderId).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(requests => {
       this.isLoading = false;
       this.requests = requests;
       this.prepareTreeCategories();
@@ -247,7 +286,9 @@ export class WarehouseProductionRequestComponent implements OnInit {
   }
 
   loadRootListTree(planId: number) {
-    this.tasksService.get([{name: 'for_root', value: planId}]).subscribe(res => {
+    this.tasksService.get([{name: 'for_root', value: planId}]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(res => {
       this.buildDetailedPlanTree(res, planId);
     });
   }
@@ -304,7 +345,7 @@ export class WarehouseProductionRequestComponent implements OnInit {
 
   onCancelItem(node) {
     const requestId = node.id;
-    this.modalService.confirm('danger').subscribe(res => {
+    this.modalService.confirm('danger', 'Confirm').subscribe(res => {
       if (res) {
         this.requestsService.cancelRequest(requestId).subscribe(() => {
           this.selectedRequest = null;
@@ -344,17 +385,40 @@ export class WarehouseProductionRequestComponent implements OnInit {
     let link = '';
 
     if (type == 1) {
-      link = `${this.link}procurement/orders/products` + id;
+      link = `${this.link}procurement/orders/products/` + id;
     }
 
     if (type == 2) {
-      link = `${this.link}outsource/outsource-chain/products` + id;
+      link = `${this.link}outsource/outsource-chain/products/` + id;
     }
 
     if (type == 3) {
-      link = `${this.link}production/orders/order` + id;
+      link = `${this.link}production/orders/order/` + id;
     }
 
     window.open(link, '_blank');
+  }
+
+  goToOrder() {
+    let link = '';
+
+    if (this.order.accounting_type == 1) {
+      link = `${this.link}procurement/orders/products/` + this.order.id;
+    }
+
+    if (this.order.accounting_type == 2) {
+      link = `${this.link}outsource/outsource-chain/products/` + this.order.id;
+    }
+
+    if (this.order.accounting_type == 3) {
+      link = `${this.link}production/orders/order/` + this.order.id;
+    }
+
+    window.open(link, '_blank');
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

@@ -9,7 +9,7 @@ import {NavigationLink} from '../../../layout/navigation-route';
 export class SalesLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
-    {label: 'Make Production List', commands: ['lists']},
+    // {label: 'Make Production List', commands: ['lists']},
     {label: 'Sales Chains', commands: ['sales-chains']},
     // {label: 'Configs', commands: ['configs/nomenclature-price']},
     {label: 'Statuses', commands: ['statuses']},

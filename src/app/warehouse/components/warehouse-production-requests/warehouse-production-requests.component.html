@@ -261,14 +261,15 @@
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <button
+    <a
       pButton
       class="ml-auto"
       type="button"
       icon="pi pi-bars"
       label="Parts/Materials List"
-      [disabled]="!selectedOrder"
+      target="_blank"
+      [class.disabled]="!selectedOrder"
       [routerLink]="[selectedOrder?.id]"
-    ></button>
+    ></a>
   </div>
 </ng-template>
