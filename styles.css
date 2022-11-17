@@ -13050,6 +13050,15 @@ textarea::-webkit-scrollbar {
 .p-calendar {
   width: 100%;
 }
+.p-treetable .p-treetable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 0.625rem;
+  background-color: #d1d2d8;
+}
+.p-treetable .p-treetable-wrapper::-webkit-scrollbar {
+  cursor: auto;
+  width: 0.5rem;
+  background-color: #f8f9fa;
+}
 .p-treetable .p-treetable-tbody tr:focus {
   outline: 0;
 }
@@ -13426,6 +13435,7 @@ textarea::-webkit-scrollbar {
   padding: 0.625rem 1.125rem;
   background: var(--theme-color-primary);
   border: 1px solid var(--theme-color-primary);
+  text-decoration: none !important;
 }
 .p-button:enabled:hover {
   background: var(--theme-color-primary-hover);
@@ -13455,6 +13465,10 @@ textarea::-webkit-scrollbar {
 }
 a {
   color: var(--theme-color-primary);
+}
+a.p-button:hover {
+  background: var(--theme-color-primary-hover);
+  border-color: var(--theme-color-primary-hover);
 }
 .p-button-label {
   font: inherit;

@@ -992,7 +992,7 @@ __webpack_require__.r(__webpack_exports__);
 class SalesLayoutComponent {
     constructor() {
         this.routes = [
-            { label: 'Make Production List', commands: ['lists'] },
+            // {label: 'Make Production List', commands: ['lists']},
             { label: 'Sales Chains', commands: ['sales-chains'] },
             // {label: 'Configs', commands: ['configs/nomenclature-price']},
             { label: 'Statuses', commands: ['statuses'] },
@@ -1783,15 +1783,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SalesRouting": () => (/* binding */ SalesRouting)
 /* harmony export */ });
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/router */ 60124);
-/* harmony import */ var _components_sales_lists_sales_lists_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/sales-lists/sales-lists.component */ 20894);
-/* harmony import */ var _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sales-layout/sales-layout.component */ 51026);
-/* harmony import */ var _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/sales-chains/sales-chains.component */ 61867);
-/* harmony import */ var _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/configs/nomenclature-price/nomenclature-price.component */ 83166);
-/* harmony import */ var _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/sales-statuses/sales-statuses.component */ 6398);
-/* harmony import */ var _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/regions/regions.component */ 87571);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ 22560);
-
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/router */ 60124);
+/* harmony import */ var _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/sales-layout/sales-layout.component */ 51026);
+/* harmony import */ var _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sales-chains/sales-chains.component */ 61867);
+/* harmony import */ var _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/configs/nomenclature-price/nomenclature-price.component */ 83166);
+/* harmony import */ var _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/sales-statuses/sales-statuses.component */ 6398);
+/* harmony import */ var _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/regions/regions.component */ 87571);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 22560);
 
 
 
@@ -1803,18 +1801,18 @@ __webpack_require__.r(__webpack_exports__);
 const routes = [
     {
         path: '',
-        component: _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_1__.SalesLayoutComponent,
+        component: _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_0__.SalesLayoutComponent,
         children: [
-            { path: '', redirectTo: 'lists', pathMatch: 'full' },
-            { path: 'lists', title: 'Make Production List', component: _components_sales_lists_sales_lists_component__WEBPACK_IMPORTED_MODULE_0__.SalesListsComponent },
-            { path: 'sales-chains', title: 'Sales Chains', component: _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_2__.SalesChainsComponent },
-            { path: 'statuses', title: 'Statuses Type', component: _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_4__.SalesStatusesComponent },
-            { path: 'regions', title: 'Countries & Regions', component: _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_5__.RegionsComponent },
+            { path: '', redirectTo: 'sales-chains', pathMatch: 'full' },
+            // {path: 'lists', title: 'Make Production List', component: SalesListsComponent},
+            { path: 'sales-chains', title: 'Sales Chains', component: _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_1__.SalesChainsComponent },
+            { path: 'statuses', title: 'Statuses Type', component: _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_3__.SalesStatusesComponent },
+            { path: 'regions', title: 'Countries & Regions', component: _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_4__.RegionsComponent },
             {
                 path: 'configs',
                 children: [
                     { path: '', redirectTo: 'nomenclature-price', pathMatch: 'full' },
-                    { path: 'nomenclature-price', title: 'Nomenclature Price', component: _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_3__.NomenclaturePriceComponent }
+                    { path: 'nomenclature-price', title: 'Nomenclature Price', component: _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_2__.NomenclaturePriceComponent }
                 ]
             }
         ]
@@ -1823,9 +1821,9 @@ const routes = [
 class SalesRouting {
 }
 SalesRouting.ɵfac = function SalesRouting_Factory(t) { return new (t || SalesRouting)(); };
-SalesRouting.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineNgModule"]({ type: SalesRouting });
-SalesRouting.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineInjector"]({ imports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule.forChild(routes), _angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵsetNgModuleScope"](SalesRouting, { imports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule], exports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule] }); })();
+SalesRouting.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineNgModule"]({ type: SalesRouting });
+SalesRouting.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineInjector"]({ imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule.forChild(routes), _angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵsetNgModuleScope"](SalesRouting, { imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule], exports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule] }); })();
 
 
 /***/ }),
