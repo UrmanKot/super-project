@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {EventType} from '../../models/event-type';
 import {EventTypesService} from '../../services/event-types.service';
+import {QuerySearch} from '@shared/models/other';
 
 @Component({
   selector: 'pek-crm-event-type-picker',
@@ -11,6 +12,7 @@ import {EventTypesService} from '../../services/event-types.service';
 export class CrmEventTypePickerComponent implements OnInit {
   @Output() selectEventType: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentEventTypeId: any;
+  @Input() filters: QuerySearch[] = [];
   isLoading = true;
   eventTypes: EventType[] = [];
   selectedEventTypeId: number;
@@ -23,17 +25,31 @@ export class CrmEventTypePickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.eventTypeService.get().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(eventTypes => {
-      this.eventTypes = eventTypes;
+    if (this.filters.length > 0) {
+      this.eventTypeService.getByFilters(this.filters).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(eventTypes => {
+        this.eventTypes = eventTypes;
 
-      if (this.currentEventTypeId) {
-        this.selectedEventTypeId = this.currentEventTypeId;
-      }
+        if (this.currentEventTypeId) {
+          this.selectedEventTypeId = this.currentEventTypeId;
+        }
 
-      this.isLoading = false;
-    });
+        this.isLoading = false;
+      });
+    } else {
+      this.eventTypeService.get().pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(eventTypes => {
+        this.eventTypes = eventTypes;
+
+        if (this.currentEventTypeId) {
+          this.selectedEventTypeId = this.currentEventTypeId;
+        }
+
+        this.isLoading = false;
+      });
+    }
   }
 
   onSelectEventType() {

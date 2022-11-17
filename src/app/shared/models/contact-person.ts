@@ -14,4 +14,5 @@ export class ContactPerson {
   linked_contacts: ContactPerson[];
   activities?;
   fullName?: string;
+  is_done?: boolean;
 }

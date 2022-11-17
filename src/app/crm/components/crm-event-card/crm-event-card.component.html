@@ -11,8 +11,8 @@
 
   <h2 class="mb-4">Event Information</h2>
 
-  <div class="page__card  event-card mb-4">
-    <div class="event-card__info">
+  <div class="page__card event-card mb-4">
+    <div class="event-card__info" *ngIf="!isLoading; else infoLoading">
       <div class="row">
         <div class="col-md-5" *ngIf="event">
           <h4>Name: <span>{{ event.event_type.name }}</span></h4>
@@ -58,7 +58,8 @@
         <ng-template pTemplate="caption">
           <div class="d-flex">
             <p class="subtitle" *ngIf="!selectedEventCompany">Choose the Company to edit</p>
-            <p-menubar class="ml-auto" [model]="eventCompanyMenuItems" [class.disabled]="!selectedEventCompany"></p-menubar>
+            <p-menubar class="ml-auto" [model]="eventCompanyMenuItems"
+                       [class.disabled]="!selectedEventCompany"></p-menubar>
             <button (click)="onAddCompanyToEvent()" pButton type="button" icon="pi pi-plus" class="ml-2"
                     label="Add Company"></button>
           </div>
@@ -121,7 +122,7 @@
 
   <h2 class="mb-4">Contact Persons</h2>
 
-  <div class="page__card mb-4">
+  <div class="page__card">
     <div class="page__table">
       <p-table
         #st
@@ -137,7 +138,8 @@
         <ng-template pTemplate="caption">
           <div class="d-flex">
             <p class="subtitle" *ngIf="!selectedContactPerson">Choose the Contact Person to edit</p>
-            <p-menubar class="ml-auto" [model]="contactPersonMenuItems" [class.disabled]="!selectedContactPerson"></p-menubar>
+            <p-menubar class="ml-auto" [model]="contactPersonMenuItems"
+                       [class.disabled]="!selectedContactPerson"></p-menubar>
             <button (click)="onAddContactPerson()" pButton type="button" icon="pi pi-plus" class="ml-2"
                     label="Add Contact Person"></button>
           </div>
@@ -199,4 +201,10 @@
 
 <ng-template #notGrouped>
   <i class="pi pi-times text-danger"></i>
+</ng-template>
+
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
 </ng-template>

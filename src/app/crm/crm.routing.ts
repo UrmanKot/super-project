@@ -10,6 +10,9 @@ import {CrmUsersProfilesComponent} from './components/crm-users-profiles/crm-use
 import {CrmSchedulesComponent} from './components/crm-schedules/crm-schedules.component';
 import {CrmEventsReportsComponent} from './components/crm-events-reports/crm-events-reports.component';
 import {CrmEventCardComponent} from './components/crm-event-card/crm-event-card.component';
+import {CompanyPageComponent} from './components/company-page/company-page.component';
+import {ContactPersonPageComponent} from './components/contact-person-page/contact-person-page.component';
+import {CrmEventsComponent} from './components/crm-events/crm-events.component';
 
 const routes: Routes = [
   {
@@ -17,7 +20,14 @@ const routes: Routes = [
     component: CrmLayoutComponent,
     children: [
       {path: '', redirectTo: 'business-partners', pathMatch: 'full'},
-      {path: 'business-partners', title: 'Company card', component: CompaniesComponent},
+      {
+        path: 'business-partners',
+        children: [
+          {path: '', title: 'Business partners', component: CompaniesComponent},
+          {path: 'company-page/:id', title: 'Company card', component: CompanyPageComponent},
+          {path: 'contact-person/:id', title: 'Contact Person Card', component: ContactPersonPageComponent},
+        ]
+      },
       {path: 'events-reports', title: 'Events Reports', component: CrmEventsReportsComponent},
       {path: 'schedules', title: 'Schedules', component: CrmSchedulesComponent},
       {path: 'company-categories', title: 'Company categories', component: CompanyCategoriesComponent},
@@ -28,6 +38,7 @@ const routes: Routes = [
       {
         path: 'events',
         children: [
+          {path: '', title: 'Events', component: CrmEventsComponent},
           {path: ':id', title: 'Event Card', component: CrmEventCardComponent}
         ]
       },

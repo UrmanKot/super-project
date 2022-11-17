@@ -1,0 +1,73 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Contact Person
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="first_name">First Name*</label>
+          <input
+            pInputText
+            formControlName="first_name"
+            class="form-control"
+            type="text"
+            id="first_name"
+            required="required"
+          >
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="last_name">Last Name*</label>
+          <input
+            pInputText
+            formControlName="last_name"
+            class="form-control"
+            type="text"
+            id="last_name"
+            required="required"
+          >
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email"> Email </label>
+      <input pInputText formControlName="email" class="form-control" type="text" id="email">
+    </div>
+    <div class="form-group">
+      <label for="position"> Position </label>
+      <input pInputText formControlName="position" class="form-control" type="text" id="position">
+    </div>
+    <div class="form-group">
+      <label for="phone_number"> Phone</label>
+      <input pInputText formControlName="phone_number" class="form-control" type="text" id="phone_number">
+    </div>
+    <div class="form-group">
+      <label for="comment"> Comment </label>
+      <textarea
+        id="comment"
+        [rows]="2"
+        pInputTextarea
+        [autoResize]="false"
+        formControlName="comment"
+      ></textarea>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

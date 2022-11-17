@@ -9,6 +9,7 @@ import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ModalService} from '@shared/services/modal.service';
 import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'pek-companies',
@@ -53,8 +54,8 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     items: [
       {
         label: 'Company Card',
-        icon: 'pi pi-card',
-        // command: () => this.onGoToChainPage()
+        icon: 'pi pi-folder',
+        command: () => this.onGoToChainPage()
       },
       {
         label: 'Remove',
@@ -75,6 +76,8 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly companyService: CompanyService,
     private readonly modalService: ModalService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -183,6 +186,14 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onAddCompany() {
+    this.companyService.createEditCompanyModal('create').subscribe(company => {
+      if (company) {
+        this.searchCompanies();
+      }
+    });
+  }
+
   toggleFilterVisibility() {
     this.isHideFilters = !this.isHideFilters;
     this.setTableScrollHeight();
@@ -255,7 +266,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
         this.searchForm.get('nomenclature').patchValue(nomenclature.id);
         this.searchCompanies();
       }
-    })
+    });
   }
 
   clearNomenclatureFilter() {
@@ -268,7 +279,12 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
         this.companyService.delete(this.selectedCompany.id).subscribe(() => this.searchCompanies());
+        this.selectedCompany = null;
       }
     });
+  }
+
+  onGoToChainPage() {
+    this.router.navigate(['company-page', this.selectedCompany.id], {relativeTo: this.route});
   }
 }

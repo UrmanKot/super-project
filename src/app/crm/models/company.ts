@@ -1,3 +1,5 @@
+import {ContactPerson} from '@shared/models/contact-person';
+
 export class Company {
   readonly id: number;
   categories?: any | null;
@@ -7,13 +9,13 @@ export class Company {
   comment?: string;
   tax_number?: string;
   registration_number?: string;
-  linked_companies?: number[];
+  linked_companies?: any[];
   website?: string;
   phone_number?: string;
   email?: string;
   supplier_nomenclature?: string;
   filter_id?;
-  contact_persons?;
+  contact_persons?: ContactPerson[];
   activities?;
   // files?: CompanyFile[];
   accounting_number?: number;
@@ -24,6 +26,9 @@ export class Company {
   company_id?: number;
   country?: any;
   region?: any;
+  link_weight?: number;
+  contact_person?: ContactPerson;
+  to_company?: any;
 }
 
 export class Companies {
@@ -40,3 +45,5 @@ export enum ECompanyCategories {
   COMPETITOR = '3',
   FORWARDER = '4',
 }
+
+export type AddEventToCompanyModalType = 'withEmployee' | 'withoutEmployee';

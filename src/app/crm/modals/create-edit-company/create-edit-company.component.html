@@ -1,0 +1,177 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Supplier
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="name">Name*</label>
+      <input
+        pInputText
+        formControlName="name"
+        class="form-control"
+        type="text"
+        id="name"
+      />
+    </div>
+    <div class="form-group">
+      <label>Category*</label>
+      <pek-multi-company-category-picker
+        [currentCompanyCategoriesIds]="currentCategoriesIds"
+        (selectCompanyCategories)="onSelectCompanyCategories($event)">
+      </pek-multi-company-category-picker>
+    </div>
+    <div class="form-group">
+      <label for="tax"> Tax Number </label>
+      <input
+        pInputText
+        formControlName="tax_number"
+        class="form-control"
+        type="text"
+        id="tax"
+      />
+    </div>
+    <div class="form-group">
+      <label for="address">Address </label>
+      <input
+        pInputText
+        formControlName="address"
+        class="form-control"
+        type="text"
+        id="address"
+      />
+    </div>
+    <div class="form-group">
+      <label for="email"> Email</label>
+      <input
+        pInputText
+        formControlName="email"
+        class="form-control"
+        type="text"
+        id="email"
+      />
+    </div>
+    <div class="form-group">
+      <label for="phone_number"> Phone Number </label>
+      <input
+        pInputText
+        formControlName="phone_number"
+        class="form-control"
+        type="text"
+        id="phone_number"
+      />
+    </div>
+    <div class="form-group">
+      <label for="website"> Website </label>
+      <input
+        pInputText
+        formControlName="website"
+        class="form-control"
+        type="text"
+        id="website"
+      />
+    </div>
+    <div class="form-group">
+      <label for="reg"> Registration Number </label>
+      <input
+        pInputText
+        formControlName="registration_number"
+        class="form-control"
+        type="text"
+        id="reg"
+      />
+    </div>
+    <div class="form-group">
+      <label for="supplier_nomenclature">Nomenclature</label>
+      <textarea
+        pInputTextarea
+        formControlName="supplier_nomenclature"
+        class="form-control"
+        id="supplier_nomenclature"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <label for="comment">Description</label>
+      <textarea
+        id="comment"
+        [rows]="2"
+        pInputTextarea
+        [autoResize]="false"
+        formControlName="comment"
+      ></textarea>
+    </div>
+    <div class="form-group checkbox">
+      <p-checkbox
+        class="checkbox-big"
+        name="vat"
+        [binary]="true"
+        inputId="vat"
+        formControlName="has_not_vat"
+      >
+      </p-checkbox>
+      <label for="vat">Dont Have VAT</label>
+    </div>
+<!--    <div class="form-group">-->
+<!--      <label>Country</label>-->
+<!--      <div class="countries">-->
+<!--        <app-regions-picker [selectedNode]="selectedCountry" [isPicker]="true"-->
+<!--                            (pickRegion)="pickCountry($event)"></app-regions-picker>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label>Region</label>-->
+<!--      <div *ngIf="!form.get('country').value" class="message">Choose a country</div>-->
+<!--      <div class="countries" *ngIf="form.get('country').value">-->
+<!--        <p-table-->
+<!--          [value]="regions"-->
+<!--          selectionMode="single"-->
+<!--          [(selection)]="selectedRegion"-->
+<!--          (selectionChange)="pickRegion()"-->
+<!--        >-->
+<!--          <ng-template pTemplate="header">-->
+<!--            <tr>-->
+<!--              <th class="index-header text-center" style="width: 10%">#</th>-->
+<!--              <th pSortableColumn="name" style="width: 90%">-->
+<!--                Name-->
+<!--              </th>-->
+<!--            </tr>-->
+<!--          </ng-template>-->
+
+<!--          <ng-template pTemplate="body" let-region let-i="rowIndex">-->
+<!--            <tr [pSelectableRow]="region">-->
+<!--              <td style="width: 10%" class="text-center">{{i + 1}}</td>-->
+<!--              <td style="width: 90%">-->
+<!--                {{ region.name }}-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--          </ng-template>-->
+<!--          <ng-template pTemplate="emptymessage" let-columns>-->
+<!--            <tr>-->
+<!--              <td style="width: 100%;" class="text-center p-4" [attr.colspan]="2">-->
+<!--                <i *ngIf="isLoadingRegions" class="fas fa-circle-notch fa-spin fa-3x "></i>-->
+<!--                <span *ngIf="!isLoadingRegions">-->
+<!--              No Records Found-->
+<!--            </span>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--          </ng-template>-->
+<!--        </p-table>-->
+<!--      </div>-->
+<!--    </div>-->
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

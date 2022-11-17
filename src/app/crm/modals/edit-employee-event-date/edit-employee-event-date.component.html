@@ -1,0 +1,134 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Check Employees Free Time
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="mb-3">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Start Date and Time*</label>
+          <p-calendar
+            [minDate]="form.get('end')?.value"
+            [showTime]="true"
+            [showClear]="true"
+            [showButtonBar]="true"
+            dateFormat="dd/mm/yy"
+            hourFormat="24"
+            formControlName="start"
+            placeholder="Choice Start Date and Time"
+            (ngModelChange)="search()"
+          >
+          </p-calendar>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>End Date and Time*</label>
+          <p-calendar
+            [minDate]="form.get('start')?.value"
+            [showTime]="true"
+            [showClear]="true"
+            [showButtonBar]="true"
+            dateFormat="dd/mm/yy"
+            hourFormat="24"
+            formControlName="end"
+            placeholder="Choice End Date and Time"
+            (ngModelChange)="search()"
+          >
+          </p-calendar>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="page__table">
+    <p-table
+      selectionMode="single"
+      scrollHeight="calc(100vh - 26rem)"
+      [scrollable]="true"
+      [paginator]="false"
+      [value]="events"
+      [(selection)]="selectedEvent"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5%" class="text-center">#</th>
+          <th style="width: 30%">Event Name</th>
+          <th style="width: 25%" class="text-center">Employee Name</th>
+          <th
+            style="width: 20%"
+            pSortableColumn="start"
+            class="text-center"
+          >
+            Event Start
+            <p-sortIcon field="start">
+            </p-sortIcon>
+          </th>
+          <th
+            style="width: 20%"
+            class="text-center"
+            pSortableColumn="end"
+          >
+            Event End
+            <p-sortIcon field="end">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-event let-i="rowIndex">
+        <tr [pSelectableRow]="event" [class.overlap]="event.isDatesColliding">
+          <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+          <td style="width: 30%">
+            <a
+              [routerLink]="'/crm/events/' + event?.id"
+              target="_blank"
+            >
+              {{ event.event_type?.name }}
+            </a>
+          </td>
+          <td style="width: 25%" class="text-center">
+            <ng-container *ngIf="event.employee.length === 0">
+              Not Related
+            </ng-container>
+
+            <ng-container *ngIf="event.employee.length > 0">
+              <div *ngFor="let employee of event.employee">
+                {{ employee.first_name + " " + employee.last_name }}
+              </div>
+            </ng-container>
+          </td>
+          <td style="width: 20%" class="text-center">
+            {{ event.start | date: "dd/MM/yyyy, HH:mm" }}
+          </td>
+          <td style="width: 20%" class="text-center">
+            {{ event.end | date: "dd/MM/yyyy, HH:mm" }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="8">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Accept'"
+    [disabled]="!selectedEvent"
+    (click)="onAccept()"
+  ></button>
+</mat-dialog-actions>
+

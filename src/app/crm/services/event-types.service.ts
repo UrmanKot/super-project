@@ -52,6 +52,24 @@ export class EventTypesService {
       }));
   }
 
+  getByFilters(query?: QuerySearch[]): Observable<EventType[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: EventType[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+
   create(eventType: EventType): Observable<EventType> {
     return this.httpClient.post<{ data: EventType }>(this.API_URL + this.url, eventType).pipe(
       map(response => response.data)

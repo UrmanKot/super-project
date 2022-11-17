@@ -5,6 +5,11 @@ import {QuerySearch} from '@shared/models/other';
 import {ContactPerson} from '@shared/models/contact-person';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {ModalActionType} from '@shared/models/modal-action';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  CreateEditContactPersonComponent
+} from '../modals/create-edit-contact-person/create-edit-contact-person.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +21,8 @@ export class ContactPersonService {
   contactPersons: ContactPerson[];
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -44,9 +50,37 @@ export class ContactPersonService {
             fullName: `${p.first_name} ${p.last_name}`
           };
         });
-        this.contactPersons = contactPersons
+        this.contactPersons = contactPersons;
         return contactPersons;
       })
     );
+  }
+
+  create(contactPerson: ContactPerson): Observable<ContactPerson> {
+    return this.httpClient.post<{ data: ContactPerson }>(this.API_URL + this.url, contactPerson).pipe(
+      map(response => response.data)
+    );
+  }
+
+  update(contactPerson: ContactPerson): Observable<ContactPerson> {
+    return this.httpClient.put<{ data: ContactPerson }>(this.API_URL + this.url + contactPerson.id + '/', contactPerson).pipe(
+      map(response => response.data)
+    );
+  }
+
+  delete(id: number): any {
+    return this.httpClient.delete(this.API_URL + this.url + id + '/');
+  }
+
+  createEditContactPersonModal(companyId: number, type: ModalActionType, contactPerson?: ContactPerson): Observable<ContactPerson> {
+    return this.dialog
+      .open<CreateEditContactPersonComponent>(CreateEditContactPersonComponent, {
+        width: '50rem',
+        height: 'auto',
+        data: {companyId, type, contactPerson},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Event
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="comment">Comment</label>
+      <textarea
+        id="comment"
+        [rows]="2"
+        pInputTextarea
+        [autoResize]="true"
+        formControlName="comment"
+      ></textarea>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Save'"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

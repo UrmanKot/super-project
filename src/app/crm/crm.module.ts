@@ -31,7 +31,33 @@ import { CrmContactPersonPickerComponent } from './pickers/crm-contact-person-pi
 import { EditCrmEventContactPersonComponent } from './modals/edit-crm-event-contact-person/edit-crm-event-contact-person.component';
 import {EditCrmEventCompanyComponent} from './modals/edit-crm-event-company/edit-crm-event-company.component';
 import {CreateEditLinkedEventComponent} from './modals/create-edit-linked-event/create-edit-linked-event.component';
+import { CreateEditCompanyComponent } from './modals/create-edit-company/create-edit-company.component';
+import { CompanyPageComponent } from './components/company-page/company-page.component';
+import { CreateEditContactPersonComponent } from './modals/create-edit-contact-person/create-edit-contact-person.component';
+import { CreateEditLinkedCompanyComponent } from './modals/create-edit-linked-company/create-edit-linked-company.component';
+import {SliderModule} from 'primeng/slider';
+import { AddCompanyFileModalComponent } from './modals/add-company-file-modal/add-company-file-modal.component';
+import {
+  CrmEditCompanyActivityComponent
+} from './modals/crm-edit-company-activity-event/crm-edit-company-activity.component';
+import { AddEventToCompanyComponent } from './modals/add-event-to-company/add-event-to-company.component';
+import { CrmMultiContactPersonsPickerComponent } from './pickers/crm-multi-contact-persons-picker/crm-multi-contact-persons-picker.component';
+import { EditEmployeeEventDateComponent } from './modals/edit-employee-event-date/edit-employee-event-date.component';
+import { ContactPersonPageComponent } from './components/contact-person-page/contact-person-page.component';
+import { CrmEventsComponent } from './components/crm-events/crm-events.component';
+import { CrmFullCalendarComponent } from './components/crm-full-calendar/crm-full-calendar.component';
+import {FullCalendarModule} from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 
+FullCalendarModule.registerPlugins([
+  dayGridPlugin,
+  timeGridPlugin,
+  listPlugin,
+  interactionPlugin,
+]);
 
 @NgModule({
   declarations: [
@@ -60,6 +86,18 @@ import {CreateEditLinkedEventComponent} from './modals/create-edit-linked-event/
     CrmContactPersonPickerComponent,
     EditCrmEventContactPersonComponent,
     CreateEditLinkedEventComponent,
+    CreateEditCompanyComponent,
+    CompanyPageComponent,
+    CreateEditContactPersonComponent,
+    CreateEditLinkedCompanyComponent,
+    AddCompanyFileModalComponent,
+    CrmEditCompanyActivityComponent,
+    AddEventToCompanyComponent,
+    CrmMultiContactPersonsPickerComponent,
+    EditEmployeeEventDateComponent,
+    ContactPersonPageComponent,
+    CrmEventsComponent,
+    CrmFullCalendarComponent,
   ],
   imports: [
     CommonModule,
@@ -67,7 +105,9 @@ import {CreateEditLinkedEventComponent} from './modals/create-edit-linked-event/
     SharedModule,
     LayoutModule,
     ColorPickerModule,
-    MultiSelectModule
+    MultiSelectModule,
+    SliderModule,
+    FullCalendarModule
   ]
 })
 export class CrmModule { }

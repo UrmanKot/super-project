@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
-import {CRMEmployee} from '../../models/crm-employee';
 import {Subject, takeUntil} from 'rxjs';
 import {CrmEmployeeService} from '../../services/crm-employee.service';
 import {EventType} from '../../models/event-type';
@@ -11,7 +10,8 @@ import {EventTypesService} from '../../services/event-types.service';
   styleUrls: ['./crm-multi-event-types-picker.component.scss']
 })
 export class CrmMultiEventTypesPickerComponent implements OnInit {
-
+  @Input() isInner = false;
+  @Input() isExternal = false;
   @Input() currentEventTypesIds: number[] = [];
   @Output() selectEventTypes: EventEmitter<EventType[]> = new EventEmitter<EventType[]>();
 
@@ -32,6 +32,13 @@ export class CrmMultiEventTypesPickerComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(eventTypes => {
       this.eventTypes = eventTypes;
+
+      if (this.isInner) {
+        this.eventTypes = this.eventTypes.filter(e => e.is_inner);
+      }
+
+      if (this.isExternal) this.eventTypes = this.eventTypes.filter(e => !e.is_inner);
+
       this.findEventTypes();
       this.isLoading = false;
     });

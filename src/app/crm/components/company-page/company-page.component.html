@@ -1,0 +1,598 @@
+<div class="company-page">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
+        <h1>Company Card</h1>
+      </div>
+      <div class="page__tools">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Edit Company Information"
+          (click)="onEditCompany()"
+          class="mr-2"
+          [disabled]="isLoading"
+        >
+        </button>
+        <button
+          pButton
+          type="button"
+          class="p-button-danger p-button-icon"
+          icon="pi pi-times"
+          label="Remove Company"
+          [loading]="isRemoving"
+          (click)="onRemoveCompany()"
+          [disabled]="isLoading"
+        >
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Company Information</h2>
+
+    <div class="page__card company-information-card mb-4">
+      <div class="company-information" *ngIf="!isLoading; else infoLoading">
+        <div class="row">
+          <div class="col-md-5">
+            <h4>Name: <span>{{ company.name }}</span></h4>
+            <h4>
+              Category:
+              <ng-container *ngFor="let item of company.categories; let idx = index">
+                <span>{{ item.name }}</span>
+                <span *ngIf="idx !== company.categories.length - 1">,</span>
+              </ng-container>
+            </h4>
+            <h4>Address: <span>{{ company.address }}</span></h4>
+            <h4>Email: <span>{{ company.email }}</span></h4>
+            <h4>Phone Number: <span>{{ company.phone_number }}</span></h4>
+            <h4>Website:
+              <span>
+              <a [href]="company.website" target="_blank">{{ company.website }}</a>
+            </span>
+            </h4>
+            <h4>Tax Number: <span>{{ company.tax_number }}</span></h4>
+            <h4>Register Number: <span>{{ company.registration_number }}</span></h4>
+          </div>
+          <div class="col-md-7">
+            <h4>Nomenclature: <span>{{ company.supplier_nomenclature }}</span></h4>
+            <h4>Description: <span>{{ company.comment }}</span></h4>
+            <h4>
+              Country:
+              <span *ngIf="company.country">{{company.country.name}}</span>
+            </h4>
+
+            <h4>
+              Region:
+              <span *ngIf="company.region">{{company.region.name}}</span>
+            </h4>
+            <h4>Connected Companies:</h4>
+            <p *ngFor="let linked_company of company.linked_companies">
+              <span>{{ linked_company.name }}</span>
+            </p>
+            <h4>
+              Dont have VAT:
+              <i class="pi pi-check text-success" *ngIf="company.has_not_vat"></i>
+              <i class="pi pi-times text-danger" *ngIf="!company.has_not_vat"></i>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Contact Persons</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #dt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="company?.contact_persons.length > 0"
+          [rows]="10"
+          [(selection)]="selectedContactPerson"
+          [value]="company?.contact_persons"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedContactPerson">Choose the Contact Person to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="contactPersonMenuItems"
+                [class.disabled]="!selectedContactPerson"></p-menubar>
+              <button
+                (click)="onAddContactPerson()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Create Contact Person"
+                [disabled]="isLoading"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center" style="width: 5%">#</th>
+              <th style="width: 20%">Name</th>
+              <th style="width: 20%">Email</th>
+              <th style="width: 20%">Position</th>
+              <th style="width: 15%">Phone</th>
+              <th style="width: 20%">Comment</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-contact let-i="rowIndex">
+            <tr [pSelectableRow]="contact">
+              <td class="text-center" style="width: 5%">{{ i + 1 }}</td>
+              <td style="width: 20%">{{ contact.first_name }} {{ contact.last_name }}</td>
+              <td style="width: 20%">{{ contact.email }}</td>
+              <td style="width: 20%">{{ contact.position }}</td>
+              <td style="width: 15%">{{ contact.phone_number }}</td>
+              <td style="width: 20%">{{ contact.comment }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoading && company?.contact_persons.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Linked Companies</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #st
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="company?.linked_companies.length > 0"
+          [rows]="10"
+          [(selection)]="selectedLinkedCompany"
+          [value]="company?.linked_companies"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedLinkedCompany">Choose the Linked Company to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="linkedCompanyMenuItems"
+                [class.disabled]="!selectedLinkedCompany"></p-menubar>
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Connection"
+                (click)="onAddLinkedCompany()"
+                [disabled]="isLoading"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="text-center">#</th>
+              <th style="width: 15%">Company Name</th>
+              <th style="width: 15%">Company Email</th>
+              <th style="width: 15%">Contact Name</th>
+              <th style="width: 15%">Contact Email</th>
+              <th style="width: 15%">Contact Position</th>
+              <th style="width: 10%">Contact Phone</th>
+              <th style="width: 10%" class="text-center">Link Weight</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-link let-i="rowIndex">
+            <tr [pSelectableRow]="link">
+              <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+              <td>
+                {{ link.to_company.name }}
+              </td>
+              <td style="width: 15%">
+                {{ link.to_company.email }}
+              </td>
+              <td style="width: 15%">
+                {{ link.contact_person?.first_name }}
+                {{ link.contact_person?.last_name }}
+              </td>
+              <td style="width: 15%">
+                {{ link.contact_person?.email }}
+              </td>
+              <td style="width: 15%">
+                {{ link.contact_person?.position }}
+              </td>
+              <td style="width: 10%">
+                {{ link.contact_person?.phone_number }}
+              </td>
+              <td style="width: 10%" class="text-center">
+                {{ link.link_weight }}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="8">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="st.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!st.paginator && !isLoading && company?.linked_companies.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="st.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Events</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #at
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="companyActivities.length > 0"
+          [rows]="10"
+          [(selection)]="selectedCompanyActivity"
+          [value]="companyActivities"
+          (selectionChange)="onEventSelectionChange()"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedCompanyActivity">Choose the Event to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="eventMenuItems"
+                [class.disabled]="!selectedCompanyActivity"></p-menubar>
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2 mr-2"
+                label="Add Event to Company with Employee"
+                (click)="onAddEventToCompany('withEmployee')"
+                [disabled]="isLoading"
+              >
+              </button>
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Event to Company without Employee"
+                (click)="onAddEventToCompany('withoutEmployee')"
+                [disabled]="isLoading"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="index-header text-center" style="width: 5%">#</th>
+              <th style="width: 15%">Event Name</th>
+              <th pSortableColumn="event.start" style="width: 12%">
+                Event Start
+                <p-sortIcon field="event.start">
+                </p-sortIcon>
+              </th>
+              <th pSortableColumn="event.end" style="width: 12%">
+                Event End
+                <p-sortIcon field="event.end">
+                </p-sortIcon>
+              </th>
+              <th style="width: 20%">Event Description</th>
+              <th style="width: 11%">Employee</th>
+              <th style="width: 15%">Event Comment</th>
+              <th style="width: 10%" class="text-center">Is Done</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-activity let-i="rowIndex">
+            <tr
+              [pSelectableRow]="activity">
+              <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+              <td style="width: 15%">{{ activity.event.event_type.name }}</td>
+
+              <td
+                style="width: 12%"
+                [routerLink]="['/dash/crm/events-list/event-card/', activity.event.id]"
+              >
+                {{ activity.event.start | date: "dd/MM/yyyy, HH:mm" }}
+              </td>
+              <td style="width: 12%">
+                {{ activity.event.end | date: "dd/MM/yyyy, HH:mm" }}
+              </td>
+              <td style="width: 20%">
+                <span *ngIf="activity.event.sales_chain else emptySale">
+                  <a target="blank"
+                     [routerLink]="['/dash/sales/sales-chains/chain-page', activity.event.sales_chain]">
+                    {{ activity.event.description }}
+                  </a>
+                </span>
+                <ng-template #emptySale>
+                  {{ activity.event.description }}
+                </ng-template>
+              </td>
+
+              <td style="width: 11%">
+                <ng-container *ngIf="activity.event.employee.length === 0">
+                  Not Related
+                </ng-container>
+
+                <ng-container *ngIf="activity.event.employee.length > 0">
+                  <span *ngFor="let employee of activity.event.employee">
+                    {{ employee.first_name + " " + employee.last_name }} <br>
+                  </span>
+                </ng-container>
+              </td>
+
+              <td style="width: 15%">
+                {{ activity.comment }}
+              </td>
+              <td class="text-center" style="width: 10%">
+                <div class="icons">
+                  <i class="pi pi-check text-success" *ngIf="activity.is_done; else notGrouped"></i>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="8">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="at.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!at.paginator && !isLoading && companyActivities.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="at.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Invoices</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #ft
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="invoices.length > 0"
+          [rows]="10"
+          [value]="invoices"
+          [(selection)]="selectedInvoice"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                (click)="goToInvoice()"
+                pButton type="button"
+                icon="pi pi-eye"
+                class="ml-auto"
+                label="View Invoice"
+                [disabled]="isLoadingInvoice || !selectedInvoice"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="text-center">#</th>
+              <th style="width: 10%" class="text-center">Creation Date</th>
+              <th style="width: 50%" class="text-center">Proforma Number</th>
+              <th style="width: 35%" class="text-center">Total Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+            <tr [pSelectableRow]="invoice">
+              <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+              <td style="width: 10%" class="text-center">
+                {{ invoice.system_creation_date | date: "dd/MM/yyyy" }}
+                <i *ngIf="invoice.related_files" class="pi pi-link"></i>
+              </td>
+              <td style="width: 50%" class="text-center">
+                {{ invoice.self_proforma_serial_number }}
+              </td>
+              <td style="width: 35%" class="text-center">
+                {{ invoice.total_price | moneyFormat }}
+                {{ invoice.currency?.symbol }}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="ft.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!ft.paginator && !isLoading && invoices.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="ft.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Files</h2>
+
+    <div class="page__card">
+      <div class="page__table">
+        <p-table
+          #mt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="files.length > 0"
+          [rows]="10"
+          [value]="files"
+          [(selection)]="selectedFile"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                (click)="onAddFile()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-auto"
+                label="Add File"
+                [disabled]="isLoadingFiles"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="text-center">#</th>
+              <th style="width: 85%">Name</th>
+              <th style="width: 10%" class="text-center">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+            <tr [pSelectableRow]="file">
+              <td style="width: 5%" class="text-center">{{ rowIndex + 1 }}</td>
+              <td style="width: 85%">
+                <a (click)="onDownloadFile(file)">{{ getFileName(file.file) }}</a>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div class="d-flex justify-content-center">
+                  <button
+                    pButton
+                    (click)="onDownloadFile(file)"
+                    [loading]="addition.has(file.id)"
+                    type="button"
+                    class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                    icon="pi pi-download"
+                  ></button>
+                  <button
+                    pButton
+                    (click)="onRemoveFile(file.id)"
+                    [loading]="deletion.has(file.id)"
+                    type="button"
+                    class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                    icon="pi pi-trash"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="3">
+                <i *ngIf="isLoadingFiles" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingFiles">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="mt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!mt.paginator && !isLoading && files.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="mt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>
+
+<ng-template #notGrouped>
+  <i class="pi pi-times text-danger"></i>
+</ng-template>

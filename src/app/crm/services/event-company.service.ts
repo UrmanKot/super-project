@@ -7,6 +7,10 @@ import {EventCompany} from '../models/event-company';
 import {QuerySearch} from '@shared/models/other';
 import {MatDialog} from '@angular/material/dialog';
 import {EditCrmEventCompanyComponent} from '../modals/edit-crm-event-company/edit-crm-event-company.component';
+import {CompanyActivity} from '../models/company-activity';
+import {
+  CrmEditCompanyActivityComponent
+} from '../modals/crm-edit-company-activity-event/crm-edit-company-activity.component';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +72,19 @@ export class EventCompanyService {
         width: '35rem',
         height: 'auto',
         data: eventCompany,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openEditCompanyActivityModal(companyActivity: CompanyActivity): Observable<CompanyActivity> {
+    return this.dialog
+      .open<CrmEditCompanyActivityComponent>(CrmEditCompanyActivityComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: companyActivity,
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

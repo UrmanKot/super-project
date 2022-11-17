@@ -11,6 +11,7 @@ import {
   AddContactPersonToEventComponent
 } from '../modals/add-contact-person-to-event/add-contact-person-to-event.component';
 import {CreateEditLinkedEventComponent} from '../modals/create-edit-linked-event/create-edit-linked-event.component';
+import {EditEmployeeEventDateComponent} from '../modals/edit-employee-event-date/edit-employee-event-date.component';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,35 @@ export class EventsListService {
     );
   }
 
+  getShorts(query?: QuerySearch[]): Observable<EventItem[]> {
+    let queryParams = '';
+
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+    return this.httpClient.get<{ data: EventItem[] }>(this.API_URL + this.url + 'get_short_events_list/' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getByEventsDays(): Observable<any[]> {
+    return this.httpClient.get<{ data: any[] }>(this.API_URL + this.url + 'events_by_days/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  create(event: EventItem): Observable<EventItem> {
+    return this.httpClient.post<{ data: EventItem }>(this.API_URL + this.url, event).pipe(
+      map(response => response.data)
+    );
+  }
+
   addCompany(id: number, event: Partial<EventItem>[]): Observable<EventItem> {
     return this.httpClient.post<{ data: EventItem }>(this.API_URL + this.url + id + '/add_companies/', event).pipe(
       map(response => response.data)
@@ -60,6 +90,10 @@ export class EventsListService {
     return this.httpClient.post<{ data: EventItem }>(this.API_URL + this.url + id + '/add_contacts/', event).pipe(
       map(response => response.data)
     );
+  }
+
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.API_URL + this.url + id + '/');
   }
 
   openAddCompanyToEventModal(eventId: number): Observable<EventItem> {
@@ -94,6 +128,19 @@ export class EventsListService {
         width: '35rem',
         height: 'auto',
         data: eventId,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openEditEmployeeEventDatesModal(employeeIds: number[]): Observable<{ start: Date, end: Date }> {
+    return this.dialog
+      .open<EditEmployeeEventDateComponent>(EditEmployeeEventDateComponent, {
+        width: '70rem',
+        height: 'auto',
+        data: employeeIds,
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

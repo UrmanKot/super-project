@@ -1,0 +1,11 @@
+.checkbox {
+  flex-direction: row;
+  cursor: pointer;
+  width: fit-content;
+
+  label {
+    margin-left: 0.5rem;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+}

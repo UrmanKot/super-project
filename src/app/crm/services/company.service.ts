@@ -2,10 +2,18 @@ import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {Companies, Company} from '../models/company';
+import {AddEventToCompanyModalType, Companies, Company} from '../models/company';
 import {map} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
-import {Technology} from '../../product-structure/models/technology';
+import {ModalActionType} from '@shared/models/modal-action';
+import {MatDialog} from '@angular/material/dialog';
+import {CreateEditCompanyComponent} from '../modals/create-edit-company/create-edit-company.component';
+import {
+  CreateEditLinkedCompanyComponent
+} from '../modals/create-edit-linked-company/create-edit-linked-company.component';
+import {AddCompanyToEventComponent} from '../modals/add-company-to-event/add-company-to-event.component';
+import {AddEventToCompanyComponent} from '../modals/add-event-to-company/add-event-to-company.component';
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +26,8 @@ export class CompanyService {
   readonly url = 'companies/';
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -54,11 +63,17 @@ export class CompanyService {
     );
   }
 
+  getById(id: number): Observable<Company> {
+    return this.httpClient.get<{ data: Company }>(this.API_URL + this.url + id + '/').pipe(
+      map(response => response.data)
+    );
+  }
+
   delete(id): Observable<any> {
     return this.httpClient.delete(this.API_URL + this.url + id + '/');
   }
 
-  getShorts() {
+  getShorts(): Observable<Partial<Company>[]> {
     if (this.shortCompanies) {
       return of(this.shortCompanies);
     }
@@ -69,5 +84,65 @@ export class CompanyService {
         this.shortCompanies = shortCompanies;
         return shortCompanies;
       }));
+  }
+
+  create(company: Partial<Company>): Observable<Company> {
+    return this.httpClient.post<{ data: Company }>(this.API_URL + this.url, company).pipe(
+      map(response => response.data)
+    );
+  }
+
+  updatePartial(company: Partial<Company>): Observable<Company> {
+    return this.httpClient.patch<{ data: Company }>(this.API_URL + this.url + company.id + '/', company).pipe(
+      map(response => response.data)
+    );
+  }
+
+  deleteLinkedCompany(id: number): Observable<any> {
+    return this.httpClient.delete(this.API_URL + 'linked_companies/' + id + '/');
+  }
+
+  createEditLinkCompany(id: number, company: Partial<Company>): Observable<Company> {
+    return this.httpClient.post<{ data: Company }>(this.API_URL + this.url + id + '/link_company/', company).pipe(
+      map(response => response.data)
+    );
+  }
+
+  createEditCompanyModal(type: ModalActionType, company?: Company): Observable<Company> {
+    return this.dialog
+      .open<CreateEditCompanyComponent>(CreateEditCompanyComponent, {
+        width: '45rem',
+        height: 'auto',
+        data: {type, company},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  createEditLinkedCompanyModal(companyId: number, type: ModalActionType, company?: Company): Observable<Company> {
+    return this.dialog
+      .open<CreateEditLinkedCompanyComponent>(CreateEditLinkedCompanyComponent, {
+        width: '45rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {companyId, type, company},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openAddEventToCompanyModal(type: AddEventToCompanyModalType, company: Company): Observable<any> {
+    return this.dialog
+      .open<AddEventToCompanyComponent>(AddEventToCompanyComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {type, company},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

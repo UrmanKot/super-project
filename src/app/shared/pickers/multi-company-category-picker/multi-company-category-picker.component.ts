@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Company} from '../../../crm/models/company';
 import {Subject, takeUntil} from 'rxjs';
 import {CompanyService} from '../../../crm/services/company.service';
@@ -10,9 +10,10 @@ import {CompanyCategoryService} from '../../../crm/services/company-category.ser
   templateUrl: './multi-company-category-picker.component.html',
   styleUrls: ['./multi-company-category-picker.component.scss']
 })
-export class MultiCompanyCategoryPickerComponent implements OnInit {
+export class MultiCompanyCategoryPickerComponent implements OnInit, OnChanges {
   @Input() isDisabled = false;
   @Output() selectCompanyCategories: EventEmitter<string> = new EventEmitter<string>();
+  @Input() currentCompanyCategoriesIds: number[] = [];
 
   isLoading = true;
   companies: Partial<CompanyCategory>[] = [];
@@ -30,8 +31,28 @@ export class MultiCompanyCategoryPickerComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(categories => {
       this.companies = categories;
+      this.findCompanyCategories();
       this.isLoading = false;
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ('currentCompanyCategoriesIds' in changes) {
+      this.selectedCompanyCategories = [];
+      this.findCompanyCategories();
+    }
+  }
+
+  findCompanyCategories() {
+    if (this.currentCompanyCategoriesIds.length > 0) {
+      this.currentCompanyCategoriesIds.forEach(id => {
+        const findCompany = this.companies.find(t => t.id === id);
+
+        if (findCompany) {
+          this.selectedCompanyCategories.push(findCompany);
+        }
+      });
+    }
   }
 
   onSelectCompanyCategories() {

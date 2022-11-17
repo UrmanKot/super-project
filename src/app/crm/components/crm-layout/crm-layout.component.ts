@@ -10,6 +10,7 @@ export class CrmLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Company Card', commands: ['business-partners']},
+    {label: 'Events', commands: ['events']},
     {label: 'Events Reports', commands: ['events-reports']},
     {label: 'Schedules', commands: ['schedules']},
     {label: 'Company Categories', commands: ['company-categories']},

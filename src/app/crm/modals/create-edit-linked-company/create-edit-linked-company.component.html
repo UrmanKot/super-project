@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Linked Company
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Company*</label>
+      <pek-company-picker
+        (selectCompany)="onSelectCompany($event)"
+        [currentCompanyId]="form.get('to_company_id').value"
+      ></pek-company-picker>
+    </div>
+    <div class="form-group">
+      <label>Contact Person* (First, choose a Company)</label>
+      <p-dropdown
+        *ngIf="!isLoading; else spinner"
+        [options]="contactPersons"
+        formControlName="contact_person_id"
+        placeholder="Select Contact Person"
+        optionLabel="fullName"
+        optionValue="id"
+        [showClear]="true"
+      >
+      </p-dropdown>
+    </div>
+
+    <div class="form-group">
+      <label>Connection Weight: {{ form.get('link_weight').value }}</label>
+      <p-slider formControlName="link_weight" [min]="0" [max]="10"></p-slider>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

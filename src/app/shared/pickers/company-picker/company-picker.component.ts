@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {Company} from '../../../crm/models/company';
 import {CompanyService} from '../../../crm/services/company.service';
@@ -10,6 +10,7 @@ import {CompanyService} from '../../../crm/services/company.service';
 })
 export class CompanyPickerComponent implements OnInit, OnDestroy {
   @Output() selectCompany: EventEmitter<number> = new EventEmitter<number>();
+  @Input() currentCompanyId: any;
   isLoading = true;
   companies: Partial<Company>[] = [];
   selectedCompanyId: number;
@@ -25,6 +26,11 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(companies => {
       this.companies = companies;
+
+      if (this.currentCompanyId) {
+        this.selectedCompanyId = this.currentCompanyId;
+      }
+
       this.isLoading = false;
     });
   }

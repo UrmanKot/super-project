@@ -5,7 +5,7 @@
     [(ngModel)]="selectedEventType"
     optionLabel="name"
     optionValue="id"
-    placeholder="Select Event Types"
+    [placeholder]="isExternal ? 'Select External Type' : 'Select Event Types'"
     (ngModelChange)="onSelectEventTypes($event)"
     [showClear]="true"
   ></p-multiSelect>
