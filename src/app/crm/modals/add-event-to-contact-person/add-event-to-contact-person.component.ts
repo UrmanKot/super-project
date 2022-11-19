@@ -1,45 +1,43 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {AddEventModalType, Company} from '../../models/company';
 import {EventsListService} from '../../services/events-list.service';
 import {AdapterService} from '@shared/services/adapter.service';
+import {AddEventModalType, Company} from '../../models/company';
 import {finalize} from 'rxjs';
-import {CRMEmployee} from '../../models/crm-employee';
+import {ContactPerson} from '@shared/models/contact-person';
 
 @Component({
-  selector: 'pek-add-event-to-company',
-  templateUrl: './add-event-to-company.component.html',
-  styleUrls: ['./add-event-to-company.component.scss']
+  selector: 'pek-add-event-to-contact-person',
+  templateUrl: './add-event-to-contact-person.component.html',
+  styleUrls: ['./add-event-to-contact-person.component.scss']
 })
-export class AddEventToCompanyComponent implements OnInit {
+export class AddEventToContactPersonComponent implements OnInit {
 
   isSaving = false;
 
   form: FormGroup = this.fb.group({
     event_type: [null, [Validators.required]],
-    start: [null, [Validators.required]],
-    end: [null, [Validators.required]],
-    company_ids: [[this.data.company.id]],
+    start: [null, Validators.required],
+    end: [null, Validators.required],
+    contact_person_ids: [[this.data.contactPerson.id]],
     description: [''],
+    company_ids: [[]],
+    contact_ids: [[this.data.contactPerson.id]],
     employee_ids: [[]],
-    contact_ids: [[]],
-    is_locked_by_company: [true],
   });
 
   constructor(
-    private dialogRef: MatDialogRef<AddEventToCompanyComponent>,
+    private dialogRef: MatDialogRef<AddEventToContactPersonComponent>,
     private readonly fb: FormBuilder,
     private readonly eventListService: EventsListService,
     private readonly adapterService: AdapterService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: AddEventModalType, company: Company },
+    @Inject(MAT_DIALOG_DATA) public data: { type: AddEventModalType, contactPerson: ContactPerson },
   ) {
   }
 
   ngOnInit(): void {
-    // if (this.data.type === 'withEmployee') {
-    //   this.form.addControl('employee_ids', new FormControl([], Validators.required));
-    // }
+
   }
 
   onSave() {
@@ -58,14 +56,6 @@ export class AddEventToCompanyComponent implements OnInit {
     this.form.get('event_type').patchValue(id);
   }
 
-  onSelectContactPersons(contactPersonsIds: number[]) {
-    if (contactPersonsIds) {
-      this.form.get('contact_ids').patchValue(contactPersonsIds);
-    } else {
-      this.form.get('contact_ids').patchValue([]);
-    }
-  }
-
   onSelectEmployees(ids: number[]) {
     if (ids) {
       this.form.get('employee_ids').patchValue(ids);
@@ -81,4 +71,5 @@ export class AddEventToCompanyComponent implements OnInit {
       }
     })
   }
+
 }

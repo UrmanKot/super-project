@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {CompanyService} from '../../services/company.service';
 import {ContactPerson} from '@shared/models/contact-person';
@@ -12,6 +12,7 @@ import {ContactPersonService} from '../../services/contact-person.service';
 })
 export class CrmContactPersonPickerComponent implements OnInit {
   @Output() selectContactPerson: EventEmitter<number> = new EventEmitter<number>();
+  @Input() currentContactPersonId: any;
   isLoading = true;
   contactPersons: Partial<ContactPerson>[] = [];
   selectedContactPersonId: number;
@@ -28,7 +29,13 @@ export class CrmContactPersonPickerComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(contactPersons => {
       this.contactPersons = contactPersons;
-      console.log(this.contactPersons);
+
+      console.log(this.currentContactPersonId);
+
+      if (this.currentContactPersonId) {
+        this.selectedContactPersonId = this.currentContactPersonId;
+      }
+
       this.isLoading = false;
     });
   }

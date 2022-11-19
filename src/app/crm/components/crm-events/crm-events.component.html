@@ -14,8 +14,23 @@
         [label]="hideAutoEvents ? 'Show Auto Events' : 'Hide Auto Events'"
       >
       </button>
-      <button class="mr-2" pButton type="button" icon="pi pi-plus" label="New Event with Employee"></button>
-      <button pButton type="button" icon="pi pi-plus" label="New Event without Employee"></button>
+      <button
+        class="mr-2"
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="New Event with Employee"
+        (click)="onAddEvent('withEmployee')"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="New Event without Employee"
+        (click)="onAddEvent('withoutEmployee')"
+      >
+      </button>
     </div>
   </div>
 </div>

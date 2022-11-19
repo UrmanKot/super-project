@@ -10,8 +10,10 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   AddContactPersonToEventComponent
 } from '../modals/add-contact-person-to-event/add-contact-person-to-event.component';
-import {CreateEditLinkedEventComponent} from '../modals/create-edit-linked-event/create-edit-linked-event.component';
 import {EditEmployeeEventDateComponent} from '../modals/edit-employee-event-date/edit-employee-event-date.component';
+import {ModalActionType} from '@shared/models/modal-action';
+import {CreateEditEventComponent} from '../modals/create-edit-event/create-edit-event.component';
+import {AddEventModalType} from '../models/company';
 
 @Injectable({
   providedIn: 'root'
@@ -92,8 +94,20 @@ export class EventsListService {
     );
   }
 
+  changeEvent(id: number, event: EventItem): Observable<EventItem> {
+    return this.httpClient.patch<{ data: EventItem }>(this.API_URL + this.url + id + '/', event).pipe(
+      map(response => response.data)
+    );
+  }
+
   delete(id: number): Observable<any> {
     return this.httpClient.delete(this.API_URL + this.url + id + '/');
+  }
+
+  createScheduleFromEvent(id: number, data: any): Observable<any> {
+    return this.httpClient.post<{ data: EventItem }>(this.API_URL + 'schedule_from_event/' + id + '/', data).pipe(
+      map(response => response.data)
+    );
   }
 
   openAddCompanyToEventModal(eventId: number): Observable<EventItem> {
@@ -122,23 +136,10 @@ export class EventsListService {
       .afterClosed();
   }
 
-  openCreateLinkedEventModal(eventId: number): Observable<EventItem> {
-    return this.dialog
-      .open<CreateEditLinkedEventComponent>(CreateEditLinkedEventComponent, {
-        width: '35rem',
-        height: 'auto',
-        data: eventId,
-        autoFocus: false,
-        panelClass: 'modal-overflow-visible',
-        enterAnimationDuration: '250ms'
-      })
-      .afterClosed();
-  }
-
   openEditEmployeeEventDatesModal(employeeIds: number[]): Observable<{ start: Date, end: Date }> {
     return this.dialog
       .open<EditEmployeeEventDateComponent>(EditEmployeeEventDateComponent, {
-        width: '70rem',
+        width: '76rem',
         height: 'auto',
         data: employeeIds,
         autoFocus: false,
@@ -147,4 +148,18 @@ export class EventsListService {
       })
       .afterClosed();
   }
+
+  openCreateEventEventModal(modalType: ModalActionType, type: AddEventModalType, event?: EventItem, companyId?: number): Observable<EventItem> {
+    return this.dialog
+      .open<CreateEditEventComponent>(CreateEditEventComponent, {
+        width: '60rem',
+        height: 'auto',
+        data: {modalType, type, event, companyId},
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
 }
+

@@ -116,9 +116,9 @@ export class CreateEditEventTypeComponent implements OnInit {
     user.get('profile_id').patchValue(userProfileId);
   }
 
-  onSelectEmployees(employees: CRMEmployee[], user: AbstractControl<any>) {
-    if (employees) {
-      user.get('employees_ids').patchValue(employees.map(e => e.id));
+  onSelectEmployees(ids: number[], user: AbstractControl<any>) {
+    if (ids) {
+      user.get('employees_ids').patchValue(ids);
     } else {
       user.get('employees_ids').patchValue(null);
     }

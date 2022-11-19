@@ -190,7 +190,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   }
 
   onCreateLinkedEvent() {
-    this.eventListService.openCreateLinkedEventModal(this.eventId).subscribe(event => {
+    this.eventListService.openCreateEventEventModal('create', 'withEmployee', this.event, this.selectedEventCompany.company.id).subscribe(event => {
       if (event) {
         this.getEvent();
       }

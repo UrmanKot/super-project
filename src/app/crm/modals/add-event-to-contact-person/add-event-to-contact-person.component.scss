@@ -1,0 +1,22 @@
+.select-date {
+  cursor: pointer;
+
+  .form-group {
+    label {
+      cursor: pointer;
+    }
+
+    p-calendar {
+      pointer-events: none;
+    }
+  }
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: default;
+
+  p-calendar {
+    opacity: 0.7;
+  }
+}

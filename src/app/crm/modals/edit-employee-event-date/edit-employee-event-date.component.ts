@@ -6,7 +6,7 @@ import {QuerySearch} from '@shared/models/other';
 import {Subject} from 'rxjs';
 import {AdapterService} from '@shared/services/adapter.service';
 import {EventItem} from '../../models/event-item';
-import {MessageService} from 'primeng/api';
+import {MenuItem, MessageService} from 'primeng/api';
 
 @Component({
   selector: 'pek-edit-employee-event-date',
@@ -14,6 +14,24 @@ import {MessageService} from 'primeng/api';
   styleUrls: ['./edit-employee-event-date.component.scss']
 })
 export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
+
+  menuItems: MenuItem[] = [
+    {
+      label: 'Selected Event',
+      items: [
+        {
+          label: 'Event Card',
+          icon: 'pi pi-calendar',
+          command: () => this.onGoEvent()
+        },
+        {
+          label: 'Edit',
+          icon: 'pi pi-pencil',
+          command: () => this.onEditEvent()
+        },
+      ]
+    }
+  ];
 
   isLoading = false;
 
@@ -41,28 +59,34 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
     this.form.get('employee_ids').patchValue(this.employeeIds.join(','));
   }
 
-  events: Partial<EventItem>[] = [];
-  selectedEvent: Partial<EventItem>;
+  events: EventItem[] = [];
+  selectedEvent: EventItem;
 
   search() {
-    this.isLoading = true;
-    this.selectedEvent = null;
-    this.destroy$.next(true);
+    if (this.form.get('start').value && this.form.get('end').value) {
+      this.isLoading = true;
+      this.selectedEvent = null;
+      this.events = [];
+      this.destroy$.next(true);
 
-    this.query = [
-      {name: 'employee_ids', value: this.form.get('employee_ids').value},
-      {name: 'get_colliding_events_events', value: true},
-    ];
+      this.query = [
+        {name: 'employee_ids', value: this.form.get('employee_ids').value},
+        {name: 'get_colliding_events_events', value: true},
+      ];
 
-    if (this.form.get('start').value) {
-      this.query.push({name: 'from_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('start').value)});
+      if (this.form.get('start').value) {
+        this.query.push({
+          name: 'from_datetime',
+          value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
+        });
+      }
+
+      if (this.form.get('end').value) {
+        this.query.push({name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value)});
+      }
+
+      this.getEvents();
     }
-
-    if (this.form.get('end').value) {
-      this.query.push({name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value)});
-    }
-
-    this.getEvents();
   }
 
   getEvents() {
@@ -70,7 +94,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       this.events = events;
 
       this.events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
-      this.findCollidingAndSortEvents()
+      this.findCollidingAndSortEvents();
       this.isLoading = false;
     });
   }
@@ -90,7 +114,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
 
   onAccept() {
     if (this.events.filter(el => el.isDatesColliding).length > 0) {
-      this.messageService.add({ severity: 'error', summary: 'Dates colliding.', detail: `Check for colliding dates!` });
+      this.messageService.add({severity: 'error', summary: 'Dates colliding.', detail: `Check for colliding dates!`});
       return;
     }
 
@@ -100,5 +124,18 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  private onEditEvent() {
+    this.eventsListService.openCreateEventEventModal('edit', 'withEmployee', this.selectedEvent).subscribe(event => {
+      if (event) {
+        this.search();
+      }
+    })
+  }
+
+  private onGoEvent() {
+    const link = 'crm/events/' + this.selectedEvent.id;
+    window.open(link, '_blank');
   }
 }

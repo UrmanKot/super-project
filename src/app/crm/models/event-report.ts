@@ -11,6 +11,9 @@ export class EventReport {
   lastDateEventsEnd?: Date;
   nextDateEventsStart?: Date;
   nextDateEventsEnd?: Date;
+
+  groupedLastEvents?: any;
+  groupedNextEvents?: any;
 }
 
 export class EventsReports {

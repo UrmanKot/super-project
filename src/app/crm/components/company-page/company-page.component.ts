@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {finalize, Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AddEventToCompanyModalType, Company} from '../../models/company';
+import {AddEventModalType, Company} from '../../models/company';
 import {CompanyService} from '../../services/company.service';
 import {ModalService} from '@shared/services/modal.service';
 import {MenuItem} from 'primeng/api';
@@ -377,7 +377,7 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddEventToCompany(type: AddEventToCompanyModalType) {
+  onAddEventToCompany(type: AddEventModalType) {
     this.companyService.openAddEventToCompanyModal(type, this.company).subscribe(response => {
       if (response) {
         this.getCompany();

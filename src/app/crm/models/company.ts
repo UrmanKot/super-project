@@ -46,4 +46,4 @@ export enum ECompanyCategories {
   FORWARDER = '4',
 }
 
-export type AddEventToCompanyModalType = 'withEmployee' | 'withoutEmployee';
+export type AddEventModalType = 'withEmployee' | 'withoutEmployee';

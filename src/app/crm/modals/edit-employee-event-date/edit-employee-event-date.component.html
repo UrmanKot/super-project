@@ -7,11 +7,11 @@
 <mat-dialog-content>
   <form [formGroup]="form" class="mb-3">
     <div class="row">
-      <div class="col-6">
+      <div class="col-5">
         <div class="form-group">
           <label>Start Date and Time*</label>
           <p-calendar
-            [minDate]="form.get('end')?.value"
+            [maxDate]="form.get('end')?.value"
             [showTime]="true"
             [showClear]="true"
             [showButtonBar]="true"
@@ -24,7 +24,7 @@
           </p-calendar>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-5">
         <div class="form-group">
           <label>End Date and Time*</label>
           <p-calendar
@@ -39,6 +39,11 @@
             (ngModelChange)="search()"
           >
           </p-calendar>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="bar">
+          <p-menubar [model]="menuItems" [class.disabled]="!selectedEvent"></p-menubar>
         </div>
       </div>
     </div>
@@ -127,7 +132,7 @@
     type="button"
     class="p-button-success"
     [label]="'Accept'"
-    [disabled]="!selectedEvent"
+    [disabled]="!selectedEvent || selectedEvent?.isDatesColliding"
     (click)="onAccept()"
   ></button>
 </mat-dialog-actions>

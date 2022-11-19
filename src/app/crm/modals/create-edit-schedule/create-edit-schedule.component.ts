@@ -89,9 +89,9 @@ export class CreateEditScheduleComponent implements OnInit {
     this.form.get('event_type').patchValue(<any>id);
   }
 
-  onSelectEmployees(employees: CRMEmployee[]) {
-    if (employees) {
-      this.form.get('employee').patchValue(employees.map(e => e.id));
+  onSelectEmployees(ids: number[]) {
+    if (ids) {
+      this.form.get('employee').patchValue(ids);
     } else {
       this.form.get('employee').patchValue([]);
     }

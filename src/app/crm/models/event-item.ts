@@ -23,4 +23,7 @@ export class EventItem {
   is_inner: boolean;
   is_locked_by_company: boolean;
   isDatesColliding?: boolean;
+  scheduler?: any;
+  root?: any;
+  is_done?: boolean;
 }

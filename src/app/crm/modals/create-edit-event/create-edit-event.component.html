@@ -1,0 +1,217 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <ng-container *ngIf="data.modalType === 'create'">
+      Add Event {{data.type === 'withEmployee' ? 'with' : 'without'}} Employee
+    </ng-container>
+    <ng-container *ngIf="data.modalType === 'edit'">
+      Edit Event
+    </ng-container>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Event Type*</label>
+      <pek-crm-event-type-picker
+        [currentEventTypeId]="form.get('event_type').value"
+        [filters]="[
+          {name: 'is_inner', value: true},
+          {name: 'is_auto', value: false}
+        ]"
+        (selectEventType)="onSelectEventType($event)"
+      >
+      </pek-crm-event-type-picker>
+    </div>
+    <div class="form-group" *ngIf="data.type === 'withEmployee'">
+      <label>Employees</label>
+      <pek-crm-employee-picker
+        [currentEmployeeIds]="this.form.get('employee_ids').value"
+        (selectEmployees)="onSelectEmployees($event)"
+      ></pek-crm-employee-picker>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Companies</label>
+          <pek-multi-company-picker
+            [currentCompaniesIds]="form.get('company_ids').value"
+            (selectCompanies)="onSelectCompanies($event)">
+          </pek-multi-company-picker>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Contacts</label>
+          <pek-crm-multi-contact-persons-picker
+            [currentContactPersonsIds]="form.get('contact_ids').value"
+            (selectContactPersons)="onSelectContactPersons($event)"
+          ></pek-crm-multi-contact-persons-picker>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="data.type === 'withoutEmployee'">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Start Date and Time*</label>
+            <p-calendar
+              [minDate]="form.get('end')?.value"
+              [showTime]="true"
+              [showClear]="true"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              hourFormat="24"
+              formControlName="start"
+              placeholder="Choice Start Date and Time"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>End Date and Time*</label>
+            <p-calendar
+              [minDate]="form.get('start')?.value"
+              [showTime]="true"
+              [showClear]="true"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              hourFormat="24"
+              formControlName="end"
+              placeholder="Choice End Date and Time"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.type === 'withEmployee'">
+      <div
+        (click)="onOpenDatesEmployees()"
+        [class.disabled]="form.get('employee_ids').value.length === 0"
+        class="row select-date"
+      >
+        <div class="col-6">
+          <div class="form-group">
+            <label>Start Date and Time*</label>
+            <p-calendar
+              [minDate]="form.get('end')?.value"
+              [showTime]="true"
+              [showClear]="true"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              hourFormat="24"
+              formControlName="start"
+              placeholder="Choice Start Date and Time"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>End Date and Time*</label>
+            <p-calendar
+              [minDate]="form.get('start')?.value"
+              [showTime]="true"
+              [showClear]="true"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              hourFormat="24"
+              formControlName="end"
+              placeholder="Choice End Date and Time"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        [rows]="2"
+        pInputTextarea
+        formControlName="description"
+        [autoResize]="true"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="is_scheduled"> Is Scheduled </label>
+      <p-inputSwitch
+        id="is_scheduled"
+        formControlName="is_scheduled"
+      >
+      </p-inputSwitch>
+    </div>
+  </form>
+
+  <form *ngIf="form.get('is_scheduled').value" [formGroup]="scheduleForm">
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="start">Start*</label>
+          <p-calendar
+            placeholder="Choice Start Time"
+            [showButtonBar]="true"
+            id="start"
+            formControlName="start"
+            [showTime]="true"
+            [timeOnly]="true"
+            [hourFormat]="'24'"
+            inputId="timeonly"
+          >
+          </p-calendar>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="end">End*</label>
+          <p-calendar
+            id="end"
+            placeholder="Choice End Time"
+            [showButtonBar]="true"
+            formControlName="end"
+            [showTime]="true"
+            [timeOnly]="true"
+            [hourFormat]="'24'"
+            [dateFormat]="'hh:mm'" inputId="timeonly"
+          >
+          </p-calendar>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label> Week days* </label>
+          <p-multiSelect
+            placeholder="Choice Week Days"
+            formControlName="schedule_values"
+            optionLabel="name"
+            optionValue="value"
+            [options]="scheduleDays"
+          ></p-multiSelect>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.modalType"
+    [loading]="isSaving"
+    [disabled]="form.invalid || (form.get('is_scheduled').value && scheduleForm.invalid)"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

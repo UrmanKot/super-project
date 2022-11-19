@@ -10,7 +10,7 @@ import {CRMEmployee} from '../../models/crm-employee';
 })
 export class CrmEmployeePickerComponent implements OnInit, OnDestroy {
   @Input() currentEmployeeIds: number[] = [];
-  @Output() selectEmployees: EventEmitter<CRMEmployee[]> = new EventEmitter<CRMEmployee[]>();
+  @Output() selectEmployees: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   isLoading = true;
   employees: CRMEmployee[] = [];
@@ -41,7 +41,11 @@ export class CrmEmployeePickerComponent implements OnInit, OnDestroy {
   }
 
   onSelectEmployees(employees: CRMEmployee[]) {
-    this.selectEmployees.emit(employees);
+    if (employees) {
+      this.selectEmployees.emit(employees.map(e => e.id));
+    } else {
+      this.selectEmployees.emit(null);
+    }
   }
 
   findEmployees() {

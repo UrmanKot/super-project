@@ -28,6 +28,7 @@ export class CrmMultiContactPersonsPickerComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(contactPersons => {
       this.contactPersons = contactPersons;
+      this.findContactPersons();
       this.isLoading = false;
     });
   }
@@ -35,15 +36,19 @@ export class CrmMultiContactPersonsPickerComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if ('currentContactPersonsIds' in changes) {
       this.selectedContactPersons = [];
-      this.findEventTypes();
+      this.findContactPersons();
     }
   }
 
-  onSelectEventTypes(contactPersons: number[]) {
-    this.selectContactPersons.emit(contactPersons);
+  onSelectEventTypes(contactPersons: ContactPerson[]) {
+    if (contactPersons) {
+      this.selectContactPersons.emit(contactPersons.map(c => c.id));
+    } else {
+      this.selectContactPersons.emit(null);
+    }
   }
 
-  findEventTypes() {
+  findContactPersons() {
     if (this.currentContactPersonsIds.length > 0) {
       this.currentContactPersonsIds.forEach(id => {
         const findContactPerson = this.contactPersons.find(t => t.id === id);
@@ -51,6 +56,8 @@ export class CrmMultiContactPersonsPickerComponent implements OnInit {
         if (findContactPerson) {
           this.selectedContactPersons.push(findContactPerson);
         }
+
+        console.log(this.selectedContactPersons);
       });
     }
   }

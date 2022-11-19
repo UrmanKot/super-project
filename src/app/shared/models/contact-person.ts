@@ -15,4 +15,6 @@ export class ContactPerson {
   activities?;
   fullName?: string;
   is_done?: boolean;
+  contact_person_id?: number;
+
 }

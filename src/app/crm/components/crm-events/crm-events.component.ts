@@ -13,6 +13,7 @@ import {debounceTime, map, tap} from 'rxjs/operators';
 import {MenuItem} from 'primeng/api';
 import {CRMEmployee} from '../../models/crm-employee';
 import {EventType} from '../../models/event-type';
+import {AddEventModalType} from '../../models/company';
 
 @Component({
   selector: 'pek-crm-events',
@@ -34,6 +35,7 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onEditEvent(),
       },
       {
         label: 'Remove',
@@ -300,7 +302,7 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroy$.complete();
   }
 
-  onSelectEmployees(ids: CRMEmployee[]) {
+  onSelectEmployees(ids: number[]) {
     if (ids) {
       this.searchForm.get('employee').patchValue(ids);
     } else {
@@ -334,8 +336,8 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
         this.eventsListService.delete(this.selectedEventItem.id).subscribe(() => {
-          this.getEventsDays();
           this.search();
+          this.getEventsDays();
         });
       }
     });
@@ -344,5 +346,21 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
   onGoEventCard() {
     const link = `/crm/events/${this.selectedEventItem.id}`;
     window.open(link, '_blank');
+  }
+
+  onAddEvent(type: AddEventModalType) {
+    this.eventsListService.openCreateEventEventModal('create', type).subscribe(event => {
+      if (event) {
+        this.search();
+      }
+    })
+  }
+
+  private onEditEvent() {
+    this.eventsListService.openCreateEventEventModal('edit', 'withEmployee', this.selectedEventItem).subscribe(event => {
+      if (event) {
+        this.search();
+      }
+    })
   }
 }

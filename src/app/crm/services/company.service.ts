@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {AddEventToCompanyModalType, Companies, Company} from '../models/company';
+import {AddEventModalType, Companies, Company} from '../models/company';
 import {map} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
 import {ModalActionType} from '@shared/models/modal-action';
@@ -133,7 +133,7 @@ export class CompanyService {
       .afterClosed();
   }
 
-  openAddEventToCompanyModal(type: AddEventToCompanyModalType, company: Company): Observable<any> {
+  openAddEventToCompanyModal(type: AddEventModalType, company: Company): Observable<any> {
     return this.dialog
       .open<AddEventToCompanyComponent>(AddEventToCompanyComponent, {
         width: '50rem',

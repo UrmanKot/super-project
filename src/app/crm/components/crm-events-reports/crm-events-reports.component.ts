@@ -6,7 +6,6 @@ import {EventsReportService} from '../../services/events-report.service';
 import {Paginator} from 'primeng/paginator';
 import {Table} from 'primeng/table';
 import {EventType} from '../../models/event-type';
-import {CRMEmployee} from '../../models/crm-employee';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
@@ -38,7 +37,121 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       }
 
       this.isStartOnePage = false;
+
+      this.breakForGroupedEvents();
+
       this.isLoading = false;
+    });
+  }
+
+  breakForGroupedEvents(): void {
+    this.eventsReports.forEach(report => {
+      report.groupedLastEvents = [];
+      report.groupedNextEvents = [];
+      this.createGroups(report);
+      this.groupLastEvents(report);
+      this.groupNextEvents(report);
+
+      report.groupedLastEvents.filter(group => group.root_id >= 0).forEach(group => {
+        const groupInNextEvents = report.groupedNextEvents.find(el => el.root_id === group.root_id);
+        if (groupInNextEvents) {
+          const groupedLastEventsAmount = group.events.length;
+          const groupedNextEventsAmount = groupInNextEvents.events.length;
+          if (groupedLastEventsAmount > groupedNextEventsAmount) {
+            const difference = groupedLastEventsAmount - groupedNextEventsAmount;
+            const emptyCell = Array(difference).fill(null);
+            groupInNextEvents.events.push(...emptyCell);
+          } else {
+            const difference = groupedNextEventsAmount - groupedLastEventsAmount;
+            const emptyCell = Array(difference).fill(null);
+            group.events.push(...emptyCell);
+          }
+        }
+      });
+
+      report.groupedLastEvents.sort((a, b) => b.root_id - a.root_id);
+      report.groupedNextEvents.sort((a, b) => b.root_id - a.root_id);
+      report.groupedLastEvents.forEach(group => {
+        group.events = group.events.sort((a, b) => {
+          if (a && b) {
+            b.start = new Date(b.start);
+            a.start = new Date(a.start);
+            return a.start.getTime() - b.start.getTime();
+          }
+        });
+      });
+      report.groupedNextEvents.forEach(group => {
+        group.events = group.events.sort((a, b) => {
+          if (a && b) {
+            b.start = new Date(b.start);
+            a.start = new Date(a.start);
+            return a.start.getTime() - b.start.getTime();
+          }
+        });
+      });
+    });
+  }
+
+  createGroups(report: EventReport): void {
+    const lastRootIds = report.last_events.map(event => event.root);
+    const nextRootIds = report.next_events.map(event => event.root);
+    const allIds = [...lastRootIds, ...nextRootIds];
+    allIds.filter((id, index) =>
+      allIds.findIndex(inId => inId === id) === index
+    ).forEach(id => {
+      const rootId = id ? id : -1;
+      report.groupedLastEvents.push({
+        root_id: rootId,
+        label: rootId > -1 ? 'Connected Events' : 'Events',
+        events: []
+      });
+      report.groupedNextEvents.push({
+        root_id: rootId,
+        label: rootId > -1 ? 'Connected Events' : 'Events',
+        events: []
+      });
+    });
+  }
+
+  groupLastEvents(report: EventReport): void {
+    // group by last event root id
+    report.last_events.forEach(event => {
+      const isGroupRootEvent = report.groupedLastEvents.find(el => el.root_id === event.id);
+      if (!isGroupRootEvent) {
+        const rootId = event.root ? event.root : -1;
+        const isInListIndex = report.groupedLastEvents.findIndex(eventInside => eventInside.root_id === rootId);
+        if (isInListIndex > -1) {
+          report.groupedLastEvents[isInListIndex].events.push(event);
+        }
+      }
+    });
+    // find last event root if it is existing
+    report.groupedLastEvents.forEach(group => {
+      const groupRootEvent = report.last_events.find(event => event.id === group.root_id);
+      if (groupRootEvent) {
+        group.events.splice(0, 0, groupRootEvent);
+      }
+    });
+  }
+
+  groupNextEvents(report: EventReport): void {
+    // group by next event root id
+    report.next_events.forEach(event => {
+      const isGroupRootEvent = report.groupedNextEvents.find(el => el.root_id === event.id);
+      if (!isGroupRootEvent) {
+        const rootId = event.root ? event.root : -1;
+        const isInListIndex = report.groupedNextEvents.findIndex(eventInside => eventInside.root_id === rootId);
+        if (isInListIndex > -1) {
+          report.groupedNextEvents[isInListIndex].events.push(event);
+        }
+      }
+    });
+    // find event root if it is existing
+    report.groupedNextEvents.forEach(group => {
+      const groupRootEvent = report.next_events.find(event => event.id === group.root_id);
+      if (groupRootEvent) {
+        group.events.splice(0, 0, groupRootEvent);
+      }
     });
   }
 
@@ -54,6 +167,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       }
 
       this.isStartOnePage = false;
+      this.breakForGroupedEvents();
 
       this.isLoading = false;
     });
@@ -81,6 +195,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     datesLastFilterType: [null],
     datesFutureFilterType: [null],
     autoEvents: [true],
+    groupView: [false]
   });
 
   rangeCalendar: any = [new Date(), new Date()];
@@ -131,7 +246,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    // this.destroy$.next(true);
+    this.destroy$.next(true);
     // console.log('search');
 
     const hour = new Date().getHours();
@@ -169,10 +284,18 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
 
     if (this.searchForm.get('datesLastFilterType').value) {
-      const startDateValue = new Date(this.searchForm.get('last_events_date_start')
-        .value.setHours(hour, minutes)).toISOString();
-      const endDateValue = new Date(this.searchForm.get('last_events_date_end')
-        .value.setHours(hour, minutes)).toISOString();
+      let startDateValue = null;
+      let endDateValue = null;
+
+      if (this.searchForm.get('last_events_date_start').value) {
+        startDateValue = new Date(this.searchForm.get('last_events_date_start')
+          .value.setHours(hour, minutes)).toISOString();
+      }
+
+      if (this.searchForm.get('last_events_date_end').value) {
+        endDateValue = new Date(this.searchForm.get('last_events_date_end')
+          .value.setHours(hour, minutes)).toISOString();
+      }
 
       if (startDateValue && endDateValue) {
         if (this.searchForm.get('datesLastFilterType').value === 'lastStart') {
@@ -209,10 +332,19 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
 
     if (this.searchForm.get('datesFutureFilterType').value) {
-      const startDateValue = new Date(this.searchForm.get('feature_events_date_start')
-        .value.setHours(hour, minutes)).toISOString();
-      const endDateValue = new Date(this.searchForm.get('feature_events_date_end')
-        .value.setHours(hour, minutes)).toISOString();
+      let startDateValue = null;
+      let endDateValue = null;
+
+      if (this.searchForm.get('feature_events_date_start').value) {
+        startDateValue = new Date(this.searchForm.get('feature_events_date_start')
+          .value.setHours(hour, minutes)).toISOString();
+      }
+
+      if (this.searchForm.get('feature_events_date_end').value) {
+        endDateValue = new Date(this.searchForm.get('feature_events_date_end')
+          .value.setHours(hour, minutes)).toISOString();
+      }
+
       if (startDateValue && endDateValue) {
         if (this.searchForm.get('datesFutureFilterType').value === 'futureStart') {
           this.query.push({
@@ -424,9 +556,9 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.search();
   }
 
-  onSelectEmployees(evt: CRMEmployee[]) {
-    if (evt) {
-      this.searchForm.get('employees_ids').patchValue(evt);
+  onSelectEmployees(ids: number[]) {
+    if (ids) {
+      this.searchForm.get('employees_ids').patchValue(ids);
     } else {
       this.searchForm.get('employees_ids').patchValue(null);
     }

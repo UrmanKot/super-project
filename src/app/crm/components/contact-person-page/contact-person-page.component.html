@@ -1,1 +1,325 @@
-<p>contact-person-page works!</p>
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
+      <h1>Contact Page</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <h2 class="mb-4">Contact Information</h2>
+
+  <div class="page__card contact-information-card mb-4">
+    <div class="contact-information" *ngIf="!isLoading; else infoLoading">
+      <div class="row">
+        <div class="col-md-5">
+          <h4>Name: {{ contact.first_name }} {{ contact.last_name }}</h4>
+          <h4>Email: {{ contact.email }}</h4>
+          <h4>Phone Number: {{ contact.phone_number }}</h4>
+        </div>
+        <div class="col-md-7">
+          <h4>Description:</h4>
+          <p>{{ contact.comment }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Linked Contacts</h2>
+
+  <div class="page__card mb-4">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="contact?.linked_contacts.length > 0"
+        [rows]="10"
+        [(selection)]="selectedLinkedContact"
+        [value]="contact?.linked_contacts"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedLinkedContact">Choose the Linked Contact to edit</p>
+            <p-menubar
+              class="ml-auto"
+              [model]="contactPersonMenuItems"
+              [class.disabled]="!selectedLinkedContact"></p-menubar>
+            <button
+              pButton type="button"
+              icon="pi pi-plus"
+              class="ml-2"
+              label="Add Connection"
+              (click)="onAddLinkedContact()"
+              [disabled]="isLoading"
+            >
+            </button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%">#</th>
+            <th style="width: 20%">Name</th>
+            <th style="width: 15%">Email</th>
+            <th style="width: 15%">Position</th>
+            <th style="width: 15%">Phone</th>
+            <th style="width: 20%">Comment</th>
+            <th class="text-center" style="width: 10%">Link Weight</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contact let-i="rowIndex">
+          <tr [pSelectableRow]="contact">
+            <td class="text-center" style="width: 5%">{{ i + 1 }}</td>
+            <td style="width: 20%">
+              {{ contact.from_contact.first_name }} {{ contact.from_contact.last_name }}
+            </td>
+            <td style="width: 15%">{{ contact.from_contact.email }}</td>
+            <td style="width: 15%">{{ contact.from_contact.position }}</td>
+            <td style="width: 15%">{{ contact.from_contact.phone_number }}</td>
+            <td style="width: 20%">{{ contact.from_contact.comment }}</td>
+            <td class="text-center" style="width: 10%">{{ contact.link_weight }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="7">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && contact?.linked_contacts.length > 0"
+         class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Linked Companies</h2>
+
+  <div class="page__card mb-4">
+    <div class="page__table">
+      <p-table
+        #st
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="contact?.linked_companies.length > 0"
+        [rows]="10"
+        [(selection)]="selectedLinkedCompany"
+        [value]="contact?.linked_companies"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedLinkedCompany">Choose the Linked Company to edit</p>
+            <p-menubar
+              class="ml-auto"
+              [model]="companyMenuItems"
+              [class.disabled]="!selectedLinkedCompany">
+            </p-menubar>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="text-center">#</th>
+            <th style="width: 20%">Company Name</th>
+            <th style="width: 15%">Company Email</th>
+            <th style="width: 20%">Company Address</th>
+            <th style="width: 15%">Phone</th>
+            <th style="width: 10%">Tax Number</th>
+            <th style="width: 15%">Website</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-company let-i="rowIndex">
+          <tr [pSelectableRow]="company">
+            <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+            <td style="width: 20%">{{ company.to_company.name }}</td>
+            <td style="width: 15%">{{ company.to_company.email }}</td>
+            <td style="width: 20%">{{ company.to_company.address }}</td>
+            <td style="width: 15%">{{ company.to_company.phone_number }}</td>
+            <td style="width: 10%">{{ company.to_company.tax_number }}</td>
+            <td style="width: 15%" class="word-break">
+              <a [href]="company.to_company.website" target="_blank">{{ company.to_company.website }}</a>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="7">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="st.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!st.paginator && !isLoading && contact?.linked_companies.length > 0"
+         class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="st.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Events</h2>
+
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #et
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="contact?.activities.length > 0"
+        [rows]="10"
+        [(selection)]="selectedEvent"
+        [value]="contact?.activities"
+        (selectionChange)="onEventSelect()"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedEvent">Choose the Event to edit</p>
+            <p-menubar
+              class="ml-auto"
+              [model]="eventMenuItems"
+              [class.disabled]="!selectedEvent">
+            </p-menubar>
+            <button
+              pButton type="button"
+              icon="pi pi-plus"
+              class="ml-2 mr-2"
+              label="Add Event to Contact with Employee"
+              [disabled]="isLoading"
+              (click)="onAddEventToCompany('withEmployee')"
+            >
+            </button>
+            <button
+              pButton type="button"
+              icon="pi pi-plus"
+              class="ml-2"
+              label="Add Event to Contact without Employee"
+              [disabled]="isLoading"
+              (click)="onAddEventToCompany('withoutEmployee')"
+            >
+            </button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class=" text-center" style="width: 5%">#</th>
+            <th style="width: 15%">Event Name</th>
+            <th style="width: 20%">Event Description</th>
+            <th style="width: 12%" pSortableColumn="event.start">
+              Event Start
+              <p-sortIcon field="event.start">
+              </p-sortIcon>
+            </th>
+            <th style="width: 12%" pSortableColumn="event.end">
+              Event End
+              <p-sortIcon field="event.end">
+              </p-sortIcon>
+            </th>
+            <th style="width: 11%">Employee</th>
+            <th style="width: 15%">Comment</th>
+            <th style="width: 10%" class=" text-center">Is Done</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-activity let-i="rowIndex">
+          <tr [pSelectableRow]="activity">
+            <td class=" text-center" style="width: 5%">{{ i + 1 }}</td>
+            <td style="width: 15%">{{ activity.event.event_type.name }}</td>
+            <td style="width: 20%">{{ activity.event.description }}</td>
+            <td style="width: 12%">{{ activity.event.start | date: "dd/MM/yyyy, HH:mm" }}</td>
+            <td style="width: 12%">{{ activity.event.end | date: "dd/MM/yyyy, HH:mm" }}</td>
+
+            <td style="width: 11%">
+              <ng-container *ngIf="activity.event.employee.length === 0"
+              >Not Related
+              </ng-container>
+
+              <ng-container *ngIf="activity.event.employee.length > 0">
+                <span *ngFor="let employee of activity.event.employee">
+                  {{ employee.first_name + " " + employee.last_name }} <br>
+                </span>
+              </ng-container>
+            </td>
+            <td style="width: 15%">{{ activity.comment }}</td>
+            <td style="width: 10%"  class=" text-center">
+              <div class="icons">
+                <i class="pi pi-check text-success" *ngIf="activity.is_done; else notGrouped"></i>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="8">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="et.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!et.paginator && !isLoading && contact?.activities.length > 0"
+         class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="et.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>
+
+<ng-template #notGrouped>
+  <i class="pi pi-times text-danger"></i>
+</ng-template>

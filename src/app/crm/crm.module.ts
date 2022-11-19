@@ -30,7 +30,6 @@ import { AddContactPersonToEventComponent } from './modals/add-contact-person-to
 import { CrmContactPersonPickerComponent } from './pickers/crm-contact-person-picker/crm-contact-person-picker.component';
 import { EditCrmEventContactPersonComponent } from './modals/edit-crm-event-contact-person/edit-crm-event-contact-person.component';
 import {EditCrmEventCompanyComponent} from './modals/edit-crm-event-company/edit-crm-event-company.component';
-import {CreateEditLinkedEventComponent} from './modals/create-edit-linked-event/create-edit-linked-event.component';
 import { CreateEditCompanyComponent } from './modals/create-edit-company/create-edit-company.component';
 import { CompanyPageComponent } from './components/company-page/company-page.component';
 import { CreateEditContactPersonComponent } from './modals/create-edit-contact-person/create-edit-contact-person.component';
@@ -51,6 +50,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
+import { CreateEditEventComponent } from './modals/create-edit-event/create-edit-event.component';
+import {InputSwitchModule} from 'primeng/inputswitch';
+import { CreateEditLinkedContactComponent } from './modals/create-edit-linked-contact/create-edit-linked-contact.component';
+import { AddEventToContactPersonComponent } from './modals/add-event-to-contact-person/add-event-to-contact-person.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -85,7 +88,6 @@ FullCalendarModule.registerPlugins([
     AddContactPersonToEventComponent,
     CrmContactPersonPickerComponent,
     EditCrmEventContactPersonComponent,
-    CreateEditLinkedEventComponent,
     CreateEditCompanyComponent,
     CompanyPageComponent,
     CreateEditContactPersonComponent,
@@ -98,6 +100,9 @@ FullCalendarModule.registerPlugins([
     ContactPersonPageComponent,
     CrmEventsComponent,
     CrmFullCalendarComponent,
+    CreateEditEventComponent,
+    CreateEditLinkedContactComponent,
+    AddEventToContactPersonComponent,
   ],
   imports: [
     CommonModule,
@@ -107,7 +112,8 @@ FullCalendarModule.registerPlugins([
     ColorPickerModule,
     MultiSelectModule,
     SliderModule,
-    FullCalendarModule
+    FullCalendarModule,
+    InputSwitchModule
   ]
 })
 export class CrmModule { }
