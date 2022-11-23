@@ -8,6 +8,7 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {EventItem} from '../../models/event-item';
 import {MenuItem, MessageService} from 'primeng/api';
 
+
 @Component({
   selector: 'pek-edit-employee-event-date',
   templateUrl: './edit-employee-event-date.component.html',
@@ -63,7 +64,6 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   selectedEvent: EventItem;
 
   search() {
-    if (this.form.get('start').value && this.form.get('end').value) {
       this.isLoading = true;
       this.selectedEvent = null;
       this.events = [];
@@ -79,6 +79,11 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
           name: 'from_datetime',
           value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
         });
+      } else {
+        this.query.push({
+          name: 'from_datetime',
+          value: this.adapterService.dateTimeAdapter(new Date())
+        });
       }
 
       if (this.form.get('end').value) {
@@ -86,7 +91,6 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       }
 
       this.getEvents();
-    }
   }
 
   getEvents() {
@@ -97,6 +101,10 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       this.findCollidingAndSortEvents();
       this.isLoading = false;
     });
+  }
+
+  disableEmployees() {
+    return this.events.some(e => e.isDatesColliding);
   }
 
   findCollidingAndSortEvents(): void {
@@ -118,7 +126,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.dialogRef.close({start: new Date(this.selectedEvent.start), end: new Date(this.selectedEvent.end)});
+    this.dialogRef.close({start: this.form.get('start').value, end: this.form.get('end').value});
   }
 
   ngOnDestroy() {
@@ -131,7 +139,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       if (event) {
         this.search();
       }
-    })
+    });
   }
 
   private onGoEvent() {

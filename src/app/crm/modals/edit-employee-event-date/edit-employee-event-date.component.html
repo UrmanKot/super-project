@@ -132,7 +132,7 @@
     type="button"
     class="p-button-success"
     [label]="'Accept'"
-    [disabled]="!selectedEvent || selectedEvent?.isDatesColliding"
+    [disabled]="disableEmployees()"
     (click)="onAccept()"
   ></button>
 </mat-dialog-actions>
