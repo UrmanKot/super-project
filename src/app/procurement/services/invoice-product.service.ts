@@ -3,7 +3,7 @@ import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {QuerySearch} from '@shared/models/other';
 import {InvoiceProduct} from '../models/invoice-product';
-import {forkJoin, Observable} from 'rxjs';
+import {concat, forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -39,7 +39,7 @@ export class InvoiceProductService {
   }
 
   acceptSeveral(send: any[]): Observable<any> {
-    return forkJoin(...send.map(product => this.httpClient.post(environment.base_url + environment.warehouse_url + 'invoice_product_to_warehouse/', [product.data]).pipe(
+    return concat(...send.map(product => this.httpClient.post(environment.base_url + environment.warehouse_url + 'invoice_product_to_warehouse/', [product.data]).pipe(
       map(response => response)
     )));
   }
