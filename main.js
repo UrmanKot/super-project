@@ -4844,26 +4844,30 @@ class EditEmployeeEventDateComponent {
         this.form.get('employee_ids').patchValue(this.employeeIds.join(','));
     }
     search() {
-        if (this.form.get('start').value && this.form.get('end').value) {
-            this.isLoading = true;
-            this.selectedEvent = null;
-            this.events = [];
-            this.destroy$.next(true);
-            this.query = [
-                { name: 'employee_ids', value: this.form.get('employee_ids').value },
-                { name: 'get_colliding_events_events', value: true },
-            ];
-            if (this.form.get('start').value) {
-                this.query.push({
-                    name: 'from_datetime',
-                    value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
-                });
-            }
-            if (this.form.get('end').value) {
-                this.query.push({ name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value) });
-            }
-            this.getEvents();
+        this.isLoading = true;
+        this.selectedEvent = null;
+        this.events = [];
+        this.destroy$.next(true);
+        this.query = [
+            { name: 'employee_ids', value: this.form.get('employee_ids').value },
+            { name: 'get_colliding_events_events', value: true },
+        ];
+        if (this.form.get('start').value) {
+            this.query.push({
+                name: 'from_datetime',
+                value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
+            });
         }
+        else {
+            this.query.push({
+                name: 'from_datetime',
+                value: this.adapterService.dateTimeAdapter(new Date())
+            });
+        }
+        if (this.form.get('end').value) {
+            this.query.push({ name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value) });
+        }
+        this.getEvents();
     }
     getEvents() {
         this.eventsListService.getShorts(this.query).subscribe(events => {
@@ -4872,6 +4876,9 @@ class EditEmployeeEventDateComponent {
             this.findCollidingAndSortEvents();
             this.isLoading = false;
         });
+    }
+    disableEmployees() {
+        return this.events.some(e => e.isDatesColliding);
     }
     findCollidingAndSortEvents() {
         this.events.forEach(event => {
@@ -4891,7 +4898,7 @@ class EditEmployeeEventDateComponent {
             this.messageService.add({ severity: 'error', summary: 'Dates colliding.', detail: `Check for colliding dates!` });
             return;
         }
-        this.dialogRef.close({ start: new Date(this.selectedEvent.start), end: new Date(this.selectedEvent.end) });
+        this.dialogRef.close({ start: this.form.get('start').value, end: this.form.get('end').value });
     }
     ngOnDestroy() {
         this.destroy$.next(true);
@@ -4957,7 +4964,7 @@ EditEmployeeEventDateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPO
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](5);
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("mat-dialog-close", false);
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("label", "Accept")("disabled", !ctx.selectedEvent || (ctx.selectedEvent == null ? null : ctx.selectedEvent.isDatesColliding));
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("label", "Accept")("disabled", ctx.disableEmployees());
     } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_7__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_7__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_8__.RouterLinkWithHref, primeng_button__WEBPACK_IMPORTED_MODULE_9__.ButtonDirective, primeng_api__WEBPACK_IMPORTED_MODULE_6__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_3__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_3__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_3__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_3__.FormControlName, primeng_menubar__WEBPACK_IMPORTED_MODULE_10__.Menubar, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_5__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_5__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_5__.MatDialogActions, primeng_table__WEBPACK_IMPORTED_MODULE_11__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_11__.SortableColumn, primeng_table__WEBPACK_IMPORTED_MODULE_11__.SelectableRow, primeng_table__WEBPACK_IMPORTED_MODULE_11__.SortIcon, primeng_calendar__WEBPACK_IMPORTED_MODULE_12__.Calendar, _angular_common__WEBPACK_IMPORTED_MODULE_7__.DatePipe], styles: [".overlap[_ngcontent-%COMP%] {\n  background: #f5dfe1 !important;\n}\n\n.bar[_ngcontent-%COMP%] {\n  height: 100%;\n  margin-top: 2.6rem;\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVkaXQtZW1wbG95ZWUtZXZlbnQtZGF0ZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLDhCQUFBO0FBQ0Y7O0FBRUE7RUFDRSxZQUFBO0VBQ0Esa0JBQUE7RUFDQSxhQUFBO0VBQ0EseUJBQUE7QUFDRiIsImZpbGUiOiJlZGl0LWVtcGxveWVlLWV2ZW50LWRhdGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIub3ZlcmxhcCB7XHJcbiAgYmFja2dyb3VuZDogI2Y1ZGZlMSAhaW1wb3J0YW50O1xyXG59XHJcblxyXG4uYmFyIHtcclxuICBoZWlnaHQ6IDEwMCU7XHJcbiAgbWFyZ2luLXRvcDogMi42cmVtO1xyXG4gIGRpc3BsYXk6IGZsZXg7XHJcbiAganVzdGlmeS1jb250ZW50OiBmbGV4LWVuZDtcclxufVxyXG4iXX0= */"] });
 
 

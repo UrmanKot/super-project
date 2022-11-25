@@ -12569,6 +12569,11 @@ body::-webkit-scrollbar {
   width: 0.5rem;
   background-color: #f8f9fa;
 }
+@media print {
+  body {
+    background: #fff;
+  }
+}
 .subtitle {
   display: flex;
   align-items: center;
