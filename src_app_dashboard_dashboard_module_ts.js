@@ -107,7 +107,7 @@ class DashboardComponent {
             }, {
                 label: 'Business Trips',
                 icon: 'icon-delivery-chains',
-                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/business-trips`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/business-trips/trips`],
             }];
         this.router.events.subscribe(evt => {
             if (evt instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__.NavigationEnd)
