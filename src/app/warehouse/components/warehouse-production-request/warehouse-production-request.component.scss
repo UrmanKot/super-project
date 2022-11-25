@@ -2,6 +2,13 @@
   size: portrait !important;
 }
 
+.page,
+.page__content {
+  @media print {
+    display: none;
+  }
+}
+
 a {
   cursor: pointer;
 
@@ -88,16 +95,6 @@ a {
   display: none;
 }
 
-@media print {
-  .user-info {
-    display: flex;
-  }
-
-  .print-info {
-    display: block;
-  }
-}
-
 .root-plans {
   cursor: pointer;
 
@@ -126,6 +123,26 @@ a {
   background-color: rgb(124 133 245 / 52%) !important;
 }
 
-.placeholder {
-  //background-color: #d7d7d752 !important;
+.print-page {
+  z-index: 9999;
+  background: #fff;
+  //position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  display: none;
+  height: 100%;
+
+  @media print {
+    display: block;
+  }
+}
+
+
+::ng-deep {
+  @media print {
+    .layout-header {
+      display: none;
+    }
+  }
 }

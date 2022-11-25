@@ -37,6 +37,7 @@
     </span>
       </h1>
     </div>
+    <button (click)="printPage()" [disabled]="isLoading">Print</button>
     <div class="page__tools">
       <button
         pButton
@@ -548,5 +549,16 @@
         </p-treeTable>
       </div>
     </ng-container>
+  </div>
+</div>
+
+<div class="print-page" *ngIf="isShowPrint">
+  <div>
+  <pek-warehouse-production-request-print-page
+    [rootList]="rootList"
+    [orderId]="+orderId"
+    [requests]="requests"
+    [currentReqDate]="currentReqDate"
+  ></pek-warehouse-production-request-print-page>
   </div>
 </div>

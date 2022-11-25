@@ -32,6 +32,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   viewMode: ViewMode = ViewMode.LIST;
   @ViewChild('dt') dateTable: Table;
 
+  isShowPrint = true;
+
   destroy$ = new Subject();
 
   requestNodeMenuItems: MenuItem[] = [{
@@ -415,6 +417,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     }
 
     window.open(link, '_blank');
+  }
+
+  printPage() {
+    this.isShowPrint = true;
+    setTimeout(() => {
+      window.print();
+    });
   }
 
   ngOnDestroy() {

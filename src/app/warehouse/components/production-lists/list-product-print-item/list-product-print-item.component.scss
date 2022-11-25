@@ -1,6 +1,11 @@
 .list-product-print-item {
   margin-bottom: 20px;
 
+  h2 {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
   &__row {
     width: 100%;
     display: flex;

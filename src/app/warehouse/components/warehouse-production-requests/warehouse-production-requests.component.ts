@@ -264,6 +264,12 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     this.searchProducts();
   }
 
+  goProductionList(id: number) {
+    const link = `${this.link}production/plan/tasks/${id}`;
+    window.open(link, '_blank')
+  }
+
+
   onGoProd(id: number) {
     window.open(`${this.link}production/plan/tasks/` + id, '_blank');
   }

@@ -10,6 +10,8 @@ import {OrderService} from '../../../procurement/services/order.service';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {forkJoin} from 'rxjs';
 
+type ViewType = 'list' | 'hierarchy'
+
 @Component({
   selector: 'pek-warehouse-qc',
   templateUrl: './warehouse-qc.component.html',
@@ -25,14 +27,26 @@ export class WarehouseQcComponent implements OnInit {
 
   invoiceTree: TreeNode<Invoice>[];
 
+  selectedInvoiceItem: Invoice;
+  selectedInvoicePurchaseItem: Invoice;
+  selectedOrderItem: Order;
+
   invoiceManufacturedTree: TreeNode<Invoice>[];
   invoicePurchasedTree: TreeNode<Invoice>[];
+
+  invoicesViewType: ViewType = 'hierarchy';
+  invoicesOrderType: ViewType = 'hierarchy';
+  invoicesPurchasedType: ViewType = 'hierarchy';
 
   selectedInvoiceNode: TreeNode<Invoice>;
   selectedOrderNode: TreeNode;
   selectedPurchasedInvoiceNode: TreeNode;
 
   ownProductionCategorizedList: TreeNode[];
+
+  invoicesList: Invoice[] = [];
+  ordersList: Order[] = [];
+  purchasedInvoicesList: Invoice[] = [];
 
   constructor(
     private readonly invoiceService: InvoiceService,
@@ -70,6 +84,10 @@ export class WarehouseQcComponent implements OnInit {
       this.orders = orders;
       this.makeUniqueProductionPlansInvoice(<Order[]>this.orders);
       this.fillOwnProductionWithData();
+
+      this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
+      this.invoicesList = this.invoices.filter(i => !i.purchase_category)
+      this.ordersList = this.orders.map(o => o);
 
       this.isLoading = false;
     })
@@ -396,6 +414,8 @@ export class WarehouseQcComponent implements OnInit {
   separatePurchasedAndManufactured(): void {
     this.invoicePurchasedTree = this.invoiceTree.filter(invoice => invoice.data.id >= 0);
     this.invoiceManufacturedTree = this.invoiceTree.filter(invoice => invoice.data.id < 0);
+
+    console.log(this.invoiceTree);
   }
 
   appendCategories(node: TreeNode, categoriesTemp: { id: number, level: number, parentId: number, name: string }[]): void {
@@ -539,5 +559,21 @@ export class WarehouseQcComponent implements OnInit {
       this.expandCollapseRecursive(node, isToExpand);
     });
     this.invoicePurchasedTree = temp;
+  }
+
+  onSelectInvoiceType(view: ViewType) {
+    this.invoicesViewType = view;
+  }
+
+  onSelectOrderType(view: ViewType) {
+    this.invoicesOrderType = view;
+  }
+
+  onSelectPurchaseType(view: ViewType) {
+    this.invoicesPurchasedType = view;
+  }
+
+  test() {
+    console.log(this.selectedInvoiceItem);
   }
 }

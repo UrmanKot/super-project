@@ -114,6 +114,7 @@ export class ProductionListComponent implements OnInit {
           label: 'Print',
           icon: 'pi pi-print',
           command: () => this.printPage(),
+          disabled: true,
         },
         {
           label: 'Set Actual Quantities',
@@ -163,12 +164,16 @@ export class ProductionListComponent implements OnInit {
     this.tree = [];
     this.addedTree = [];
     this.copyProducts = [];
+
+    this.menuItems[0].items[0].disabled = true;
+
     this.products = [];
     this.isLoading = true;
     this.isLoadingTree = true;
     this.listService.getById(+this.listId).pipe(take(1)).subscribe(res => {
       this.list = JSON.parse(JSON.stringify(res));
     });
+
     this.listProductService.get([{name: 'list', value: this.listId}]).pipe(take(1)).subscribe(res => {
         this.products = res.filter(x => {
           return x.level > 0;
@@ -184,9 +189,12 @@ export class ProductionListComponent implements OnInit {
         this.products.sort((a, b) => ss[a.nomenclature.type] - ss[b.nomenclature.type]);
 
         this.copyProducts = [...this.products];
-        this.isLoading = false;
 
         this.getTree();
+
+        this.menuItems[0].items[0].disabled = false;
+
+        this.isLoading = false;
       }
     );
   }
@@ -283,6 +291,8 @@ export class ProductionListComponent implements OnInit {
       children: this.products
     });
 
+    console.log(this.productsForPrint);
+
     const getProducts = (products) => {
       const ids = products.filter(p => p.list_url).map(p => p.list) as number[];
 
@@ -300,7 +310,7 @@ export class ProductionListComponent implements OnInit {
             }
 
             const index = this.productsForPrint.findIndex(p => p.data.id === product.parent);
-            this.productsForPrint[index].children.push(product);
+            this.productsForPrint[index]?.children.push(product);
           });
 
           getProducts(newProducts.filter(p => p.list_url));

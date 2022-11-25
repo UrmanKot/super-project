@@ -1,0 +1,129 @@
+<div class="warehouse-production-request-print-page">
+  <div class="warehouse-production-request-print-page__header">
+    <div>
+      <h2>Code</h2>
+      <p>{{rootList.nomenclature.code}}</p>
+    </div>
+    <div>
+      <h2>Name</h2>
+      <p>{{rootList.nomenclature.name}}</p>
+    </div>
+    <div>
+      <h2>Id</h2>
+      <p>{{rootList.list.id}}</p>
+    </div>
+    <div>
+      <h2>Order</h2>
+      <p>{{orderId}}</p>
+    </div>
+    <div>
+      <h2>Production List Creation Date</h2>
+      <p>{{rootList.list.created | date: 'dd.MM.y' }}</p>
+    </div>
+    <div>
+      <h2>Request Creation Date</h2>
+      <p>
+        <ng-container *ngIf="currentReqDate">
+          {{currentReqDate | date: 'dd.MM.y' }}
+        </ng-container>
+      </p>
+    </div>
+  </div>
+
+
+  <div class="warehouse-production-request-print-page__table">
+    <div
+      *ngFor="let request of requests"
+      class="warehouse-production-request-print-page__row"
+    >
+      <div class="warehouse-production-request-print-page__box">
+        <div class="warehouse-production-request-print-page__col">
+          <h3>ID</h3>
+          <p>{{request.id}}</p>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Code</h3>
+          <div *ngIf="request.material_nomenclature">
+            {{request.material_nomenclature.code}}
+          </div>
+          <div *ngIf="request.order_product_nomenclature">
+            {{request.order_product_nomenclature.code}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            {{request.list_product.nomenclature.code}}
+          </div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Name</h3>
+          <div *ngIf="request.material_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.material_nomenclature.name}}
+          </div>
+          <div *ngIf="request.order_product_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.order_product_nomenclature.name}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.list_product.nomenclature.name}}
+          </div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Technology</h3>
+          <span *ngIf="request.technology">{{request.technology}}</span>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Required Quantity</h3>
+          {{request.required_quantity}}
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Locator</h3>
+          <div *ngIf="request.locators">
+            <div *ngFor="let locator of request.locators">
+              {{locator.name}}
+            </div>
+          </div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Available Quantity</h3>
+          {{request.warehouse_quantity}}
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Type</h3>
+          <p>{{getType(request.list_product.nomenclature.type)}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warehouse-production-request-print-page__bottom">
+    <div class="warehouse-production-request-print-page__column">
+      <div class="warehouse-production-request-print-page__left">
+        <div>
+          <h3>Sent</h3>
+          <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p>{{currentDate | date: 'dd.MM.y'}}</p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+      <div class="warehouse-production-request-print-page__right">
+        <div>
+          <h3>Retrieved</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

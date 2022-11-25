@@ -15,4 +15,6 @@ export class Request {
   list_product: ListProduct;
   parent_task?: number;
   task?: number;
+  locators?: any;
+  warehouse_quantity?: any;
 }

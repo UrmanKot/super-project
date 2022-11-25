@@ -156,44 +156,46 @@
                   {{order.production_requests_fully_completed | date:'dd/MM/yyyy HH:MM'}}
                 </td>
                 <td style="width: 45%;">
-
-                  <div class="d-block"
-                       *ngFor="let item of getRootLists(order.root_production_plans); let idx = index">
-
-                    <ng-template [ngIf]="item.count === 1">
-                      <a
-                        *ngIf="item.list.serial_numbers.length < 1"
-                        (click)="onGoProd(item.list.id)"
-                      >
-                        {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
-                        ({{item.count}})
-                      </a>
-
-                      <ng-template *ngIf="item.list.serial_numbers.length >= 1">
-                        <a
-                          *ngFor="let serial of item.list.serial_numbers"
-                          (click)="onGoProd(item.list.id)"
-                        >
-                          {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
-                          ({{item.count}})
-                        </a>
-                      </ng-template>
-                    </ng-template>
-
-                    <ng-template [ngIf]="item.count > 1">
-                      <a (click)="showProductionLists(order.root_production_plans)">
-                        {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
-                        ({{item.count}})
-                      </a>
-
-                      <ng-template *ngIf="item.list.serial_numbers.length >= 1">
-                        <a (click)="showProductionLists(order.root_production_plans)">
-                          {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
-                          ({{item.count}})
-                        </a>
-                      </ng-template>
-                    </ng-template>
+                  <div *ngFor="let plan of order.root_production_plans">
+                    <a (click)="goProductionList(plan.id)">{{plan.list_product.nomenclature.name}}</a>
                   </div>
+                  <!--                  <div class="d-block"-->
+                  <!--                       *ngFor="let item of getRootLists(order.root_production_plans); let idx = index">-->
+
+                  <!--                    <ng-template [ngIf]="item.count === 1">-->
+                  <!--                      <a-->
+                  <!--                        *ngIf="item.list.serial_numbers.length < 1"-->
+                  <!--                        (click)="onGoProd(item.list.id)"-->
+                  <!--                      >-->
+                  <!--                        {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}-->
+                  <!--                        ({{item.count}})-->
+                  <!--                      </a>-->
+
+                  <!--                      <ng-template *ngIf="item.list.serial_numbers.length >= 1">-->
+                  <!--                        <a-->
+                  <!--                          *ngFor="let serial of item.list.serial_numbers"-->
+                  <!--                          (click)="onGoProd(item.list.id)"-->
+                  <!--                        >-->
+                  <!--                          {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}-->
+                  <!--                          ({{item.count}})-->
+                  <!--                        </a>-->
+                  <!--                      </ng-template>-->
+                  <!--                    </ng-template>-->
+
+                  <!--                    <ng-template [ngIf]="item.count > 1">-->
+                  <!--                      <a (click)="showProductionLists(order.root_production_plans)">-->
+                  <!--                        {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}-->
+                  <!--                        ({{item.count}})-->
+                  <!--                      </a>-->
+
+                  <!--                      <ng-template *ngIf="item.list.serial_numbers.length >= 1">-->
+                  <!--                        <a (click)="showProductionLists(order.root_production_plans)">-->
+                  <!--                          {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}-->
+                  <!--                          ({{item.count}})-->
+                  <!--                        </a>-->
+                  <!--                      </ng-template>-->
+                  <!--                    </ng-template>-->
+                  <!--                  </div>-->
                 </td>
               </tr>
             </ng-template>

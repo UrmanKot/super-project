@@ -47,6 +47,7 @@ import {
 import {
   WarehouseIsolatorOrdersComponent
 } from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
+import { WarehouseProductionRequestPrintPageComponent } from './components/warehouse-production-request-print-page/warehouse-production-request-print-page.component';
 
 
 
@@ -86,7 +87,8 @@ import {
     WarehouseQcComponent,
     WarehouseQcInvoiceComponent,
     QcAcceptToWarehouseComponent,
-    WarehouseQcOrderComponent
+    WarehouseQcOrderComponent,
+    WarehouseProductionRequestPrintPageComponent
   ],
   imports: [
     CommonModule,
