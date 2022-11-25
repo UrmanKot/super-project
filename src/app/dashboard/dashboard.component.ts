@@ -76,6 +76,10 @@ export class DashboardComponent implements OnInit {
     label: 'Delivery',
     icon: 'icon-delivery-chains',
     routerLink: '/delivery-chains',
+  }, {
+    label: 'Business Trips',
+    icon: 'icon-delivery-chains',
+    routerLink: ['/external', `${environment.link_url}dash/business-trips`],
   }];
 
   constructor(

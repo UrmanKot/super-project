@@ -13,11 +13,15 @@
 
   &__item {
     &_log-out {
-      grid-area: 6/3;
+      //grid-area: 6/3;
 
       a {
-        margin-top: 3rem;
+        margin-top: 5rem;
       }
+    }
+
+    &:nth-child(16) {
+      grid-area: 6/2;
     }
   }
 
@@ -63,7 +67,7 @@
     }
 
     &_guide {
-      margin-top: 3rem;
+      margin-top: 5rem;
       background: #55b157;
       border-color: #55b157;
 
