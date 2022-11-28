@@ -37,8 +37,17 @@
     </span>
       </h1>
     </div>
-    <button (click)="printPage()" [disabled]="isLoading">Print</button>
     <div class="page__tools">
+      <button
+        pButton
+        icon="pi pi-print"
+        class="mr-2"
+        type="button"
+        label="Print"
+        (click)="printPage()"
+        [disabled]="isLoading"
+      >
+      </button>
       <button
         pButton
         type="button"
