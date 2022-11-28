@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  base_url: '/api/',
+  base_url: 'https://rwave.pekauto.com/api/',
   product_structure_url: 'product_structure/',
   warehouse_url: 'warehouse/',
   production_url: 'production/',
