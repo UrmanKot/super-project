@@ -58,6 +58,8 @@ import { RegionPickerComponent } from './pickers/region-picker/region-picker.com
 import { CompanyCategoryModulePickerComponent } from './pickers/company-category-module-picker/company-category-module-picker.component';
 import { UserProfilePickerComponent } from './pickers/user-profile-picker/user-profile-picker.component';
 import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
+import { DateTimePickerComponent } from './pickers/date-time-picker/date-time-picker.component';
+import {NgxMaskModule} from 'ngx-mask';
 
 
 @NgModule({
@@ -98,7 +100,8 @@ import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
     RegionPickerComponent,
     CompanyCategoryModulePickerComponent,
     UserProfilePickerComponent,
-    SortIconComponent
+    SortIconComponent,
+    DateTimePickerComponent
   ],
   exports: [
     ButtonModule,
@@ -148,7 +151,8 @@ import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
     CompanyCategoryModulePickerComponent,
     UserProfilePickerComponent,
     SortIconComponent,
-    NomenclaturePickerModalComponent
+    NomenclaturePickerModalComponent,
+    DateTimePickerComponent
   ],
   imports: [
     CommonModule,
@@ -169,7 +173,8 @@ import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
     TreeSelectModule,
     PaginatorModule,
     MultiSelectModule,
-    CalendarModule
+    CalendarModule,
+    NgxMaskModule.forRoot(),
   ]
 })
 export class SharedModule { }

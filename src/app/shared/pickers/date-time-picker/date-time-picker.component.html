@@ -1,0 +1,43 @@
+<div class="date-time-picker">
+  <p-calendar
+    [maxDate]="maxDate"
+    [minDate]="minDate"
+    [showTime]="true"
+    [showClear]="true"
+    [showButtonBar]="true"
+    [(ngModel)]="date"
+    [readonlyInput]="true"
+    [hideOnDateTimeSelect]="false"
+    (onShow)="show()"
+    (onClickOutside)="clickOutside()"
+    (onClear)="clear()"
+    (onClearClick)="clearClick()"
+    (onSelect)="onSelect()"
+    (onClose)="onClose()"
+    #dateInput
+    dateFormat="dd/mm/yy"
+    hourFormat="24"
+    [placeholder]="placeholder"
+  >
+    <p-footer>
+      <div class="date-time-picker__footer">
+        <input
+          type="text"
+          [class.disabled]="!date"
+          [(ngModel)]="inputValue"
+          mask="Hh:m0"
+          [leadZeroDateTime]="true"
+          (input)="onChange()"
+        >
+        <button
+          pButton
+          type="button"
+          [disabled]="inputValue.length < 4 || !date"
+          (click)="setValue(); dateInput.toggle()"
+        >
+          Set Date
+        </button>
+      </div>
+    </p-footer>
+  </p-calendar>
+</div>

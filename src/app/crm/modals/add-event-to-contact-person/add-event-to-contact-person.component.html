@@ -27,33 +27,23 @@
         <div class="col-6">
           <div class="form-group">
             <label>Start Date and Time*</label>
-            <p-calendar
-              [minDate]="form.get('end')?.value"
-              [showTime]="true"
-              [showClear]="true"
-              [showButtonBar]="true"
-              dateFormat="dd/mm/yy"
-              hourFormat="24"
-              formControlName="start"
+            <pek-date-time-picker
+              [maxDate]="form.get('end')?.value"
+              (clearDate)="onClearStartDate()"
+              (setDate)="onSetStartDate($event)"
               placeholder="Choice Start Date and Time"
-            >
-            </p-calendar>
+            ></pek-date-time-picker>
           </div>
         </div>
         <div class="col-6">
           <div class="form-group">
             <label>End Date and Time*</label>
-            <p-calendar
+            <pek-date-time-picker
               [minDate]="form.get('start')?.value"
-              [showTime]="true"
-              [showClear]="true"
-              [showButtonBar]="true"
-              dateFormat="dd/mm/yy"
-              hourFormat="24"
-              formControlName="end"
+              (clearDate)="onClearEndDate()"
+              (setDate)="onSetEndDate($event)"
               placeholder="Choice End Date and Time"
-            >
-            </p-calendar>
+            ></pek-date-time-picker>
           </div>
         </div>
       </div>

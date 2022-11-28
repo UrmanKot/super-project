@@ -64,33 +64,33 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   selectedEvent: EventItem;
 
   search() {
-      this.isLoading = true;
-      this.selectedEvent = null;
-      this.events = [];
-      this.destroy$.next(true);
+    this.isLoading = true;
+    this.selectedEvent = null;
+    this.events = [];
+    this.destroy$.next(true);
 
-      this.query = [
-        {name: 'employee_ids', value: this.form.get('employee_ids').value},
-        {name: 'get_colliding_events_events', value: true},
-      ];
+    this.query = [
+      {name: 'employee_ids', value: this.form.get('employee_ids').value},
+      {name: 'get_colliding_events_events', value: true},
+    ];
 
-      if (this.form.get('start').value) {
-        this.query.push({
-          name: 'from_datetime',
-          value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
-        });
-      } else {
-        this.query.push({
-          name: 'from_datetime',
-          value: this.adapterService.dateTimeAdapter(new Date())
-        });
-      }
+    if (this.form.get('start').value) {
+      this.query.push({
+        name: 'from_datetime',
+        value: this.adapterService.dateTimeAdapter(this.form.get('start').value)
+      });
+    } else {
+      this.query.push({
+        name: 'from_datetime',
+        value: this.adapterService.dateTimeAdapter(new Date())
+      });
+    }
 
-      if (this.form.get('end').value) {
-        this.query.push({name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value)});
-      }
+    if (this.form.get('end').value) {
+      this.query.push({name: 'to_datetime', value: this.adapterService.dateTimeAdapter(this.form.get('end').value)});
+    }
 
-      this.getEvents();
+    this.getEvents();
   }
 
   getEvents() {
@@ -104,7 +104,13 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   disableEmployees() {
-    return this.events.some(e => e.isDatesColliding);
+    if (this.events.length === 0) return true;
+
+    if (this.events.some(e => e.isDatesColliding) || !this.form.get('end').value || !this.form.get('start').value) {
+      return true;
+    }
+
+    return false;
   }
 
   findCollidingAndSortEvents(): void {
@@ -145,5 +151,40 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   private onGoEvent() {
     const link = 'crm/events/' + this.selectedEvent.id;
     window.open(link, '_blank');
+  }
+
+  onSetStartDate(date: Date) {
+    this.form.get('start').patchValue(date);
+    // this.search();
+  }
+
+  onSetEndDate(date: Date) {
+    this.form.get('end').patchValue(date);
+    // this.search();
+  }
+
+  onClearStartDate() {
+    this.form.get('start').patchValue(null);
+    this.search();
+  }
+
+  onClearEndDate() {
+    this.form.get('end').patchValue(null);
+    this.search();
+  }
+
+  onSelectStartDate(date: Date) {
+    this.form.get('start').patchValue(date);
+    this.search();
+  }
+
+  onSelectEndDate(date: Date) {
+    this.form.get('end').patchValue(null);
+    this.search();
+  }
+
+  onCloseStartDate(date: Date) {
+    // this.form.get('start').patchValue(date);
+    // this.search();
   }
 }

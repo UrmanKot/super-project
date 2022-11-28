@@ -16,6 +16,7 @@ import {ErrorInterceptor} from '@shared/interceptors/error-interceptor';
 import { MessageService } from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {ProductStructureModule} from './product-structure/product-structure.module';
+import {NgxMaskModule} from 'ngx-mask';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,

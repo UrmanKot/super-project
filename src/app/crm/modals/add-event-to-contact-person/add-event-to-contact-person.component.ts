@@ -72,4 +72,19 @@ export class AddEventToContactPersonComponent implements OnInit {
     })
   }
 
+  onSetStartDate(date: Date) {
+    this.form.get('start').patchValue(date);
+  }
+
+  onSetEndDate(date: Date) {
+    this.form.get('end').patchValue(date);
+  }
+
+  onClearStartDate() {
+    this.form.get('start').patchValue(null);
+  }
+
+  onClearEndDate() {
+    this.form.get('end').patchValue(null);
+  }
 }

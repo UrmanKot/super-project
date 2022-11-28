@@ -103,6 +103,32 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe(() => {
         this.searchCompanies();
       });
+
+    // const element = document.getElementById('selector');
+    //
+    // let maskOptions = {
+    //   overwrite: true,
+    //   autofix: true,
+    //   mask: 'HH:MM',
+    //   blocks: {
+    //     HH: {
+    //       mask: IMask.MaskedRange,
+    //       placeholderChar: 'HH',
+    //       from: 0,
+    //       to: 23,
+    //       maxLength: 2
+    //     },
+    //     MM: {
+    //       mask: IMask.MaskedRange,
+    //       placeholderChar: 'MM',
+    //       from: 0,
+    //       to: 59,
+    //       maxLength: 2
+    //     }
+    //   }
+    // }
+    //
+    // const mask = IMask(element, maskOptions);
   }
 
   getCompaniesForPagination() {

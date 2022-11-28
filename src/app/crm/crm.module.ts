@@ -54,6 +54,7 @@ import { CreateEditEventComponent } from './modals/create-edit-event/create-edit
 import {InputSwitchModule} from 'primeng/inputswitch';
 import { CreateEditLinkedContactComponent } from './modals/create-edit-linked-contact/create-edit-linked-contact.component';
 import { AddEventToContactPersonComponent } from './modals/add-event-to-contact-person/add-event-to-contact-person.component';
+import {NgxMaskModule} from 'ngx-mask';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -113,7 +114,7 @@ FullCalendarModule.registerPlugins([
     MultiSelectModule,
     SliderModule,
     FullCalendarModule,
-    InputSwitchModule
+    InputSwitchModule,
   ]
 })
 export class CrmModule { }
