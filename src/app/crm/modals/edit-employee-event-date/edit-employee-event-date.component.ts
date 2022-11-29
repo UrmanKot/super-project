@@ -179,7 +179,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   onSelectEndDate(date: Date) {
-    this.form.get('end').patchValue(null);
+    this.form.get('end').patchValue(date);
     this.search();
   }
 
