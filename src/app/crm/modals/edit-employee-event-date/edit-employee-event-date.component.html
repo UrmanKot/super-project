@@ -7,7 +7,7 @@
 <mat-dialog-content>
   <form [formGroup]="form" class="mb-3">
     <div class="row">
-      <div class="col-5">
+      <div class="col-4 edit-start-date">
         <div class="form-group">
           <label>Start Date and Time*</label>
           <pek-date-time-picker
@@ -19,7 +19,7 @@
           ></pek-date-time-picker>
         </div>
       </div>
-      <div class="col-5">
+      <div class="col-4 edit-end-date">
         <div class="form-group">
           <label>End Date and Time*</label>
           <pek-date-time-picker
@@ -31,7 +31,7 @@
           ></pek-date-time-picker>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-4">
         <div class="bar">
           <p-menubar [model]="menuItems" [class.disabled]="!selectedEvent"></p-menubar>
         </div>
@@ -42,7 +42,7 @@
   <div class="page__table">
     <p-table
       selectionMode="single"
-      scrollHeight="calc(100vh - 26rem)"
+      scrollHeight="calc(100vh - 28rem)"
       [scrollable]="true"
       [paginator]="false"
       [value]="events"

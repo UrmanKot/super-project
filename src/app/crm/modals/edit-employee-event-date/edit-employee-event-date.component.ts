@@ -104,7 +104,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   disableEmployees() {
-    if (this.events.length === 0) return true;
+    if (this.events.length === 0 && this.form.get('end').value && this.form.get('start').value) return false;
 
     if (this.events.some(e => e.isDatesColliding) || !this.form.get('end').value || !this.form.get('start').value) {
       return true;

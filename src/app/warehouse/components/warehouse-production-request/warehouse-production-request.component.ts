@@ -374,7 +374,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.isLoading = false;
-        this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigateByUrl('/warehouse/production-requests/').then());
+        this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigate(['../'], {relativeTo: this.route}));
       }
     });
   }

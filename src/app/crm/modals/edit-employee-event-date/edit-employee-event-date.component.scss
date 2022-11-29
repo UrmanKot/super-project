@@ -8,3 +8,21 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.edit-start-date {
+  &::ng-deep {
+    .p-datepicker {
+      left: -400px !important;
+      top: -104px !important;
+    }
+  }
+}
+
+.edit-end-date {
+  &::ng-deep {
+    .p-datepicker {
+      left: 620px !important;
+      top: -104px !important;
+    }
+  }
+}

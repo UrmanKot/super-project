@@ -139,7 +139,7 @@ export class EventsListService {
   openEditEmployeeEventDatesModal(employeeIds: number[]): Observable<{ start: Date, end: Date }> {
     return this.dialog
       .open<EditEmployeeEventDateComponent>(EditEmployeeEventDateComponent, {
-        width: '76rem',
+        width: '64rem',
         height: 'auto',
         data: employeeIds,
         autoFocus: false,
