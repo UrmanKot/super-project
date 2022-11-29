@@ -5004,7 +5004,7 @@ function WarehouseProductionRequestPrintPageComponent_div_0_div_34_Template(rf, 
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate1"](" ", request_r3.warehouse_quantity, " ");
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate"](ctx_r2.getType(request_r3.list_product.nomenclature.type));
+    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate"](ctx_r2.getType(request_r3.list_product == null ? null : request_r3.list_product.nomenclature == null ? null : request_r3.list_product.nomenclature.type));
 } }
 function WarehouseProductionRequestPrintPageComponent_div_0_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "div", 1)(1, "div", 2)(2, "div")(3, "h2");
@@ -6504,7 +6504,7 @@ class WarehouseProductionRequestComponent {
         this.modalService.confirm('success').subscribe(confirm => {
             if (confirm) {
                 this.isLoading = false;
-                this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigateByUrl('/warehouse/production-requests/').then());
+                this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigate(['../'], { relativeTo: this.route }));
             }
         });
     }

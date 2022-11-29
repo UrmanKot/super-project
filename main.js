@@ -4733,22 +4733,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function EditEmployeeEventDateComponent_ng_template_21_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr")(1, "th", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr")(1, "th", 20);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2, "#");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "th", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "th", 21);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](4, "Event Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "th", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "th", 22);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](6, "Employee Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](7, "th", 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](7, "th", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](8, " Event Start ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](9, "p-sortIcon", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](9, "p-sortIcon", 24);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](10, "th", 24);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](10, "th", 25);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](11, " Event End ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](12, "p-sortIcon", 25);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](12, "p-sortIcon", 26);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
 } }
 function EditEmployeeEventDateComponent_ng_template_22_ng_container_7_Template(rf, ctx) { if (rf & 1) {
@@ -4767,7 +4767,7 @@ function EditEmployeeEventDateComponent_ng_template_22_ng_container_8_div_1_Temp
 } }
 function EditEmployeeEventDateComponent_ng_template_22_ng_container_8_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementContainerStart"](0);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](1, EditEmployeeEventDateComponent_ng_template_22_ng_container_8_div_1_Template, 2, 1, "div", 30);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](1, EditEmployeeEventDateComponent_ng_template_22_ng_container_8_div_1_Template, 2, 1, "div", 31);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementContainerEnd"]();
 } if (rf & 2) {
     const event_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"]().$implicit;
@@ -4775,21 +4775,21 @@ function EditEmployeeEventDateComponent_ng_template_22_ng_container_8_Template(r
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("ngForOf", event_r3.employee);
 } }
 function EditEmployeeEventDateComponent_ng_template_22_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr", 26)(1, "td", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr", 27)(1, "td", 20);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "td", 20)(4, "a", 27);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "td", 21)(4, "a", 28);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](5);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](6, "td", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](7, EditEmployeeEventDateComponent_ng_template_22_ng_container_7_Template, 2, 0, "ng-container", 28);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](8, EditEmployeeEventDateComponent_ng_template_22_ng_container_8_Template, 2, 1, "ng-container", 28);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](6, "td", 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](7, EditEmployeeEventDateComponent_ng_template_22_ng_container_7_Template, 2, 0, "ng-container", 29);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](8, EditEmployeeEventDateComponent_ng_template_22_ng_container_8_Template, 2, 1, "ng-container", 29);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](9, "td", 29);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](9, "td", 30);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](10);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpipe"](11, "date");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](12, "td", 29);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](12, "td", 30);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](13);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpipe"](14, "date");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
@@ -4814,7 +4814,7 @@ function EditEmployeeEventDateComponent_ng_template_22_Template(rf, ctx) { if (r
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate1"](" ", _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpipeBind2"](14, 13, event_r3.end, "dd/MM/yyyy, HH:mm"), " ");
 } }
 function EditEmployeeEventDateComponent_ng_template_23_i_2_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](0, "i", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](0, "i", 34);
 } }
 function EditEmployeeEventDateComponent_ng_template_23_span_3_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "span");
@@ -4822,9 +4822,9 @@ function EditEmployeeEventDateComponent_ng_template_23_span_3_Template(rf, ctx) 
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
 } }
 function EditEmployeeEventDateComponent_ng_template_23_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr")(1, "td", 31);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](2, EditEmployeeEventDateComponent_ng_template_23_i_2_Template, 1, 0, "i", 32);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](3, EditEmployeeEventDateComponent_ng_template_23_span_3_Template, 2, 0, "span", 28);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr")(1, "td", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](2, EditEmployeeEventDateComponent_ng_template_23_i_2_Template, 1, 0, "i", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](3, EditEmployeeEventDateComponent_ng_template_23_span_3_Template, 2, 0, "span", 29);
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
 } if (rf & 2) {
     const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"]();
@@ -4908,8 +4908,8 @@ class EditEmployeeEventDateComponent {
         });
     }
     disableEmployees() {
-        if (this.events.length === 0)
-            return true;
+        if (this.events.length === 0 && this.form.get('end').value && this.form.get('start').value)
+            return false;
         if (this.events.some(e => e.isDatesColliding) || !this.form.get('end').value || !this.form.get('start').value) {
             return true;
         }
@@ -4980,7 +4980,7 @@ class EditEmployeeEventDateComponent {
     }
 }
 EditEmployeeEventDateComponent.ɵfac = function EditEmployeeEventDateComponent_Factory(t) { return new (t || EditEmployeeEventDateComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_events_list_service__WEBPACK_IMPORTED_MODULE_0__.EventsListService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_4__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_7__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_1__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MAT_DIALOG_DATA)); };
-EditEmployeeEventDateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: EditEmployeeEventDateComponent, selectors: [["pek-edit-employee-event-date"]], decls: 27, vars: 13, consts: [[1, "modal-header"], [1, "modal-header__title"], [1, "mb-3", 3, "formGroup"], [1, "row"], [1, "col-5"], [1, "form-group"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "select", "clearDate", "setDate"], ["placeholder", "Choice End Date and Time", 3, "minDate", "select", "clearDate", "setDate"], [1, "col-2"], [1, "bar"], [3, "model"], [1, "page__table"], ["selectionMode", "single", "scrollHeight", "calc(100vh - 26rem)", 3, "scrollable", "paginator", "value", "selection", "selectionChange"], ["pTemplate", "header"], ["pTemplate", "body"], ["pTemplate", "emptymessage"], [1, "justify-content-between"], ["pButton", "", "type", "button", "label", "Cancel", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "disabled", "click"], [1, "text-center", 2, "width", "5%"], [2, "width", "30%"], [1, "text-center", 2, "width", "25%"], ["pSortableColumn", "start", 1, "text-center", 2, "width", "20%"], ["field", "start"], ["pSortableColumn", "end", 1, "text-center", 2, "width", "20%"], ["field", "end"], [3, "pSelectableRow"], ["target", "_blank", 3, "routerLink"], [4, "ngIf"], [1, "text-center", 2, "width", "20%"], [4, "ngFor", "ngForOf"], [1, "text-center", "p-4"], ["class", "pi pi-spin pi-spinner", "style", "font-size: 2.25rem", 4, "ngIf"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditEmployeeEventDateComponent_Template(rf, ctx) { if (rf & 1) {
+EditEmployeeEventDateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: EditEmployeeEventDateComponent, selectors: [["pek-edit-employee-event-date"]], decls: 27, vars: 13, consts: [[1, "modal-header"], [1, "modal-header__title"], [1, "mb-3", 3, "formGroup"], [1, "row"], [1, "col-4", "edit-start-date"], [1, "form-group"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "select", "clearDate", "setDate"], [1, "col-4", "edit-end-date"], ["placeholder", "Choice End Date and Time", 3, "minDate", "select", "clearDate", "setDate"], [1, "col-4"], [1, "bar"], [3, "model"], [1, "page__table"], ["selectionMode", "single", "scrollHeight", "calc(100vh - 28rem)", 3, "scrollable", "paginator", "value", "selection", "selectionChange"], ["pTemplate", "header"], ["pTemplate", "body"], ["pTemplate", "emptymessage"], [1, "justify-content-between"], ["pButton", "", "type", "button", "label", "Cancel", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "disabled", "click"], [1, "text-center", 2, "width", "5%"], [2, "width", "30%"], [1, "text-center", 2, "width", "25%"], ["pSortableColumn", "start", 1, "text-center", 2, "width", "20%"], ["field", "start"], ["pSortableColumn", "end", 1, "text-center", 2, "width", "20%"], ["field", "end"], [3, "pSelectableRow"], ["target", "_blank", 3, "routerLink"], [4, "ngIf"], [1, "text-center", 2, "width", "20%"], [4, "ngFor", "ngForOf"], [1, "text-center", "p-4"], ["class", "pi pi-spin pi-spinner", "style", "font-size: 2.25rem", 4, "ngIf"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditEmployeeEventDateComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2, " Check Employees Free Time ");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
@@ -4990,24 +4990,24 @@ EditEmployeeEventDateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPO
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](10, "pek-date-time-picker", 6);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("select", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_select_10_listener($event) { return ctx.onSelectStartDate($event); })("clearDate", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_clearDate_10_listener() { return ctx.onClearStartDate(); })("setDate", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_setDate_10_listener($event) { return ctx.onSetStartDate($event); });
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](11, "div", 4)(12, "div", 5)(13, "label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](11, "div", 7)(12, "div", 5)(13, "label");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](14, "End Date and Time*");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](15, "pek-date-time-picker", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](15, "pek-date-time-picker", 8);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("select", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_select_15_listener($event) { return ctx.onSelectEndDate($event); })("clearDate", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_clearDate_15_listener() { return ctx.onClearEndDate(); })("setDate", function EditEmployeeEventDateComponent_Template_pek_date_time_picker_setDate_15_listener($event) { return ctx.onSetEndDate($event); });
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](16, "div", 8)(17, "div", 9);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](18, "p-menubar", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](16, "div", 9)(17, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](18, "p-menubar", 11);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](19, "div", 11)(20, "p-table", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](19, "div", 12)(20, "p-table", 13);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("selectionChange", function EditEmployeeEventDateComponent_Template_p_table_selectionChange_20_listener($event) { return ctx.selectedEvent = $event; });
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](21, EditEmployeeEventDateComponent_ng_template_21_Template, 13, 0, "ng-template", 13);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](22, EditEmployeeEventDateComponent_ng_template_22_Template, 15, 16, "ng-template", 14);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](23, EditEmployeeEventDateComponent_ng_template_23_Template, 4, 3, "ng-template", 15);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](21, EditEmployeeEventDateComponent_ng_template_21_Template, 13, 0, "ng-template", 14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](22, EditEmployeeEventDateComponent_ng_template_22_Template, 15, 16, "ng-template", 15);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](23, EditEmployeeEventDateComponent_ng_template_23_Template, 4, 3, "ng-template", 16);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](24, "mat-dialog-actions", 16);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](25, "button", 17);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](26, "button", 18);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](24, "mat-dialog-actions", 17);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](25, "button", 18);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](26, "button", 19);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function EditEmployeeEventDateComponent_Template_button_click_26_listener() { return ctx.onAccept(); });
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
     } if (rf & 2) {
@@ -5028,7 +5028,7 @@ EditEmployeeEventDateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPO
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("mat-dialog-close", false);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("label", "Accept")("disabled", ctx.disableEmployees());
-    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_8__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_9__.RouterLinkWithHref, primeng_button__WEBPACK_IMPORTED_MODULE_10__.ButtonDirective, primeng_api__WEBPACK_IMPORTED_MODULE_7__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.FormGroupDirective, primeng_menubar__WEBPACK_IMPORTED_MODULE_11__.Menubar, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogActions, primeng_table__WEBPACK_IMPORTED_MODULE_12__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SortableColumn, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SelectableRow, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SortIcon, _shared_pickers_date_time_picker_date_time_picker_component__WEBPACK_IMPORTED_MODULE_2__.DateTimePickerComponent, _angular_common__WEBPACK_IMPORTED_MODULE_8__.DatePipe], styles: [".overlap[_ngcontent-%COMP%] {\n  background: #f5dfe1 !important;\n}\n\n.bar[_ngcontent-%COMP%] {\n  height: 100%;\n  margin-top: 2.6rem;\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVkaXQtZW1wbG95ZWUtZXZlbnQtZGF0ZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLDhCQUFBO0FBQ0Y7O0FBRUE7RUFDRSxZQUFBO0VBQ0Esa0JBQUE7RUFDQSxhQUFBO0VBQ0EseUJBQUE7QUFDRiIsImZpbGUiOiJlZGl0LWVtcGxveWVlLWV2ZW50LWRhdGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIub3ZlcmxhcCB7XHJcbiAgYmFja2dyb3VuZDogI2Y1ZGZlMSAhaW1wb3J0YW50O1xyXG59XHJcblxyXG4uYmFyIHtcclxuICBoZWlnaHQ6IDEwMCU7XHJcbiAgbWFyZ2luLXRvcDogMi42cmVtO1xyXG4gIGRpc3BsYXk6IGZsZXg7XHJcbiAganVzdGlmeS1jb250ZW50OiBmbGV4LWVuZDtcclxufVxyXG4iXX0= */"] });
+    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_8__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_9__.RouterLinkWithHref, primeng_button__WEBPACK_IMPORTED_MODULE_10__.ButtonDirective, primeng_api__WEBPACK_IMPORTED_MODULE_7__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.FormGroupDirective, primeng_menubar__WEBPACK_IMPORTED_MODULE_11__.Menubar, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogActions, primeng_table__WEBPACK_IMPORTED_MODULE_12__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SortableColumn, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SelectableRow, primeng_table__WEBPACK_IMPORTED_MODULE_12__.SortIcon, _shared_pickers_date_time_picker_date_time_picker_component__WEBPACK_IMPORTED_MODULE_2__.DateTimePickerComponent, _angular_common__WEBPACK_IMPORTED_MODULE_8__.DatePipe], styles: [".overlap[_ngcontent-%COMP%] {\n  background: #f5dfe1 !important;\n}\n\n.bar[_ngcontent-%COMP%] {\n  height: 100%;\n  margin-top: 2.6rem;\n  display: flex;\n  justify-content: flex-end;\n}\n\n.edit-start-date[_ngcontent-%COMP%]  .p-datepicker {\n  left: -400px !important;\n  top: -104px !important;\n}\n\n.edit-end-date[_ngcontent-%COMP%]  .p-datepicker {\n  left: 620px !important;\n  top: -104px !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVkaXQtZW1wbG95ZWUtZXZlbnQtZGF0ZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLDhCQUFBO0FBQ0Y7O0FBRUE7RUFDRSxZQUFBO0VBQ0Esa0JBQUE7RUFDQSxhQUFBO0VBQ0EseUJBQUE7QUFDRjs7QUFJSTtFQUNFLHVCQUFBO0VBQ0Esc0JBQUE7QUFETjs7QUFRSTtFQUNFLHNCQUFBO0VBQ0Esc0JBQUE7QUFMTiIsImZpbGUiOiJlZGl0LWVtcGxveWVlLWV2ZW50LWRhdGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIub3ZlcmxhcCB7XHJcbiAgYmFja2dyb3VuZDogI2Y1ZGZlMSAhaW1wb3J0YW50O1xyXG59XHJcblxyXG4uYmFyIHtcclxuICBoZWlnaHQ6IDEwMCU7XHJcbiAgbWFyZ2luLXRvcDogMi42cmVtO1xyXG4gIGRpc3BsYXk6IGZsZXg7XHJcbiAganVzdGlmeS1jb250ZW50OiBmbGV4LWVuZDtcclxufVxyXG5cclxuLmVkaXQtc3RhcnQtZGF0ZSB7XHJcbiAgJjo6bmctZGVlcCB7XHJcbiAgICAucC1kYXRlcGlja2VyIHtcclxuICAgICAgbGVmdDogLTQwMHB4ICFpbXBvcnRhbnQ7XHJcbiAgICAgIHRvcDogLTEwNHB4ICFpbXBvcnRhbnQ7XHJcbiAgICB9XHJcbiAgfVxyXG59XHJcblxyXG4uZWRpdC1lbmQtZGF0ZSB7XHJcbiAgJjo6bmctZGVlcCB7XHJcbiAgICAucC1kYXRlcGlja2VyIHtcclxuICAgICAgbGVmdDogNjIwcHggIWltcG9ydGFudDtcclxuICAgICAgdG9wOiAtMTA0cHggIWltcG9ydGFudDtcclxuICAgIH1cclxuICB9XHJcbn1cclxuIl19 */"] });
 
 
 /***/ }),
@@ -5378,7 +5378,7 @@ class EventsListService {
     openEditEmployeeEventDatesModal(employeeIds) {
         return this.dialog
             .open(_modals_edit_employee_event_date_edit_employee_event_date_component__WEBPACK_IMPORTED_MODULE_3__.EditEmployeeEventDateComponent, {
-            width: '76rem',
+            width: '64rem',
             height: 'auto',
             data: employeeIds,
             autoFocus: false,
