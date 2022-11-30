@@ -1,4 +1,5 @@
 import {Nomenclature} from '@shared/models/nomenclature';
+import {Locator} from '../../warehouse/models/locator';
 
 export class OrderProduct {
   readonly id: number;
@@ -19,6 +20,7 @@ export class OrderProduct {
   technologies?;
   root_lists?;
   root_production_list_products?: any[];
+  exists_on_locators?: Locator[];
   production_list_products?: any[];
   is_technology_ready?: boolean;
   quality_control?: number;

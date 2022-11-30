@@ -13,7 +13,8 @@
     <div class="form-group">
       <label>Locator*</label>
       <pek-group-locator-picker
-        (selectLocator)="onSelectLocator($event)"
+        [uniqueLocators]="existingLocators"
+        (selectLocatorFull)="onSelectLocator($event)"
       ></pek-group-locator-picker>
     </div>
   </form>

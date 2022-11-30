@@ -14,6 +14,11 @@
         <span>{{group.label}}</span>
       </div>
     </ng-template>
+    <ng-template let-item pTemplate="item">
+      <div class="country-item">
+        <div [class.unique]="item.isUnique">{{item.label}}</div>
+      </div>
+    </ng-template>
   </p-dropdown>
 </div>
 
