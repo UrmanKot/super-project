@@ -995,6 +995,10 @@ class SalesLayoutComponent {
             // {label: 'Make Production List', commands: ['lists']},
             { label: 'Sales Chains', commands: ['sales-chains'] },
             // {label: 'Configs', commands: ['configs/nomenclature-price']},
+            // {label: 'Statuses', commands: ['statuses']},
+            // {label: 'Countries & Regions', commands: ['regions']},
+        ];
+        this.settingsRoutes = [
             { label: 'Statuses', commands: ['statuses'] },
             { label: 'Countries & Regions', commands: ['regions'] },
         ];
@@ -1003,10 +1007,10 @@ class SalesLayoutComponent {
     }
 }
 SalesLayoutComponent.ɵfac = function SalesLayoutComponent_Factory(t) { return new (t || SalesLayoutComponent)(); };
-SalesLayoutComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({ type: SalesLayoutComponent, selectors: [["pek-sales-layout"]], decls: 2, vars: 2, consts: [[3, "module", "routes"]], template: function SalesLayoutComponent_Template(rf, ctx) { if (rf & 1) {
+SalesLayoutComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({ type: SalesLayoutComponent, selectors: [["pek-sales-layout"]], decls: 2, vars: 3, consts: [[3, "module", "routes", "settingsRoutes"]], template: function SalesLayoutComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](0, "pek-header", 0)(1, "router-outlet");
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("module", "Sales")("routes", ctx.routes);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("module", "Sales")("routes", ctx.routes)("settingsRoutes", ctx.settingsRoutes);
     } }, dependencies: [_angular_router__WEBPACK_IMPORTED_MODULE_2__.RouterOutlet, _layout_components_header_header_component__WEBPACK_IMPORTED_MODULE_0__.HeaderComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzYWxlcy1sYXlvdXQuY29tcG9uZW50LnNjc3MifQ== */"] });
 
 
