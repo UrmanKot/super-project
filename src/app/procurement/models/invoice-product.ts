@@ -1,5 +1,6 @@
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Invoice} from './invoice';
+import {Locator} from '../../warehouse/models/locator';
 
 export class InvoiceProduct {
   readonly id: number;
@@ -18,6 +19,7 @@ export class InvoiceProduct {
   checkedForGeneration?: boolean;
   nomenclature?: Nomenclature;
   products: InvoiceProduct[];
+  exists_on_locators: Locator[];
 }
 
 export enum EInvoiceProductQualityControl {

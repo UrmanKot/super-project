@@ -5,6 +5,7 @@ import {ModalService} from '@shared/services/modal.service';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {OrderProduct} from '../../../../procurement/models/order-product';
 import {OrderService} from '../../../../procurement/services/order.service';
+import {QcListModalService} from '../../../services/qc-list-modal.service';
 
 @Component({
   selector: 'pek-warehouse-qc-order',
@@ -26,11 +27,23 @@ export class WarehouseQcOrderComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly modalService: ModalService,
+    private qcListModalService: QcListModalService
   ) {
   }
 
   ngOnInit(): void {
     this.getInvoices();
+
+    this.qcListModalService.notCompatibleItems$
+      .pipe(takeUntil(this.destroy$)).subscribe(items => {
+      items.forEach(item => {
+        const foundIndex = this.selectedOrderProducts.findIndex(product => product.id === item.id);
+        if (foundIndex > -1) {
+          this.selectedOrderProducts.splice(foundIndex, 1);
+          this.selectedOrderProducts = [...this.selectedOrderProducts];
+        }
+      });
+    });
   }
 
   getInvoices() {

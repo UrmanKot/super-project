@@ -7,6 +7,8 @@ import {OrderProduct} from '../../../procurement/models/order-product';
 import {InvoiceProductService} from '../../../procurement/services/invoice-product.service';
 import {finalize} from 'rxjs';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
+import {Locator} from '../../models/locator';
+import {QcListModalService} from '../../services/qc-list-modal.service';
 
 @Component({
   selector: 'pek-qc-accept-to-warehouse',
@@ -20,6 +22,8 @@ export class QcAcceptToWarehouseComponent implements OnInit {
   form = this.fb.group({
     locator: [null, Validators.required]
   });
+  items: InvoiceProduct[] | OrderProduct[];
+  existingLocators: Locator[] = [];
 
   constructor(
     private readonly invoiceProductService: InvoiceProductService,
@@ -27,9 +31,12 @@ export class QcAcceptToWarehouseComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<QcAcceptToWarehouseComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {items: InvoiceProduct[] | OrderProduct[], id: number, type: 'invoice' | 'order'},
+    private qcListModalService: QcListModalService
   ) { }
 
   ngOnInit(): void {
+    this.items = this.data.items;
+    this.getExistingLocatorsAndWarehouses(this.items);
   }
 
   onAccept() {
@@ -45,15 +52,13 @@ export class QcAcceptToWarehouseComponent implements OnInit {
   acceptOrderProducts() {
     this.isSaving = true;
 
-    const send = this.data.items.map(item => {
+    const send = this.items.map(item => {
       return {
-        data: {
           order_product_id: item.id,
           quantity: item.passed_quantity,
           locator: this.form.get('locator').value
-        }
       }
-    })
+    });
 
     this.orderProductService.acceptSeveral(send).pipe(
       finalize(() => this.isSaving = false)
@@ -63,22 +68,53 @@ export class QcAcceptToWarehouseComponent implements OnInit {
   acceptInvoiceProducts() {
     this.isSaving = true;
 
-    const send = this.data.items.map(item => {
+    const send = this.items.map(item => {
       return {
-        data: {
           invoice_product_id: item.id,
           quantity: item.passed_quantity,
           locator: this.form.get('locator').value
-        }
       }
-    })
+    });
 
     this.invoiceProductService.acceptSeveral(send).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(() => this.dialogRef.close(true));
   }
 
-  onSelectLocator(id: number) {
-    this.form.get('locator').patchValue(<any>id);
+  getExistingLocatorsAndWarehouses(items: InvoiceProduct[] | OrderProduct[]): void {
+    this.existingLocators = null;
+    this.existingLocators = [];
+    items.forEach(item => {
+      item.exists_on_locators.forEach(locator => {
+        const foundLocator = this.existingLocators.find(locatorIn => locatorIn.id == locator.id);
+        if (!foundLocator) {
+          this.existingLocators.push(locator);
+        }
+      });
+    });
+  }
+
+  onSelectLocator(locator: Locator) {
+    // find other locators on this warehouse
+    let unsupportedItemsForLocator: InvoiceProduct[] | OrderProduct[] = [];
+    this.items.forEach(item => {
+
+      const foundItem = item.exists_on_locators.find(inLocator => inLocator.warehouse.id === locator.warehouse.id && inLocator.id !== locator.id );
+      if (foundItem) {
+        unsupportedItemsForLocator.push(item);
+      }
+    });
+
+    if (unsupportedItemsForLocator.length > 0) {
+      this.qcListModalService.updateOrderInvoiceList(unsupportedItemsForLocator);
+    }
+    unsupportedItemsForLocator.forEach(item => {
+      const foundIndex = this.items.findIndex(product => product.id === item.id);
+      if (foundIndex > -1) {
+        this.items.splice(foundIndex, 1);
+      }
+    });
+    this.getExistingLocatorsAndWarehouses(this.items);
+    this.form.get('locator').patchValue(<any>locator.id);
   }
 }

@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Subject, takeUntil} from 'rxjs';
 import {ModalService} from '@shared/services/modal.service';
+import {QcListModalService} from '../../../services/qc-list-modal.service';
 
 @Component({
   selector: 'pek-warehouse-qc-invoice',
@@ -25,11 +26,23 @@ export class WarehouseQcInvoiceComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly modalService: ModalService,
+    private qcListModalService: QcListModalService
   ) {
   }
 
   ngOnInit(): void {
     this.getInvoices();
+
+    this.qcListModalService.notCompatibleItems$
+      .pipe(takeUntil(this.destroy$)).subscribe(items => {
+      items.forEach(item => {
+        const foundIndex = this.selectedInvoiceProducts.findIndex(product => product.id === item.id);
+        if (foundIndex > -1) {
+          this.selectedInvoiceProducts.splice(foundIndex, 1);
+          this.selectedInvoiceProducts = [...this.selectedInvoiceProducts];
+        }
+      });
+    });
   }
 
   getInvoices() {

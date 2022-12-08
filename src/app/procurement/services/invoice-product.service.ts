@@ -39,8 +39,8 @@ export class InvoiceProductService {
   }
 
   acceptSeveral(send: any[]): Observable<any> {
-    return concat(...send.map(product => this.httpClient.post(environment.base_url + environment.warehouse_url + 'invoice_product_to_warehouse/', [product.data]).pipe(
+    return this.httpClient.post(environment.base_url + environment.warehouse_url + 'invoice_product_to_warehouse/', send).pipe(
       map(response => response)
-    )));
+    )
   }
 }
