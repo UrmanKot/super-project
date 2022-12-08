@@ -43,6 +43,7 @@
       }
 
       & > td {
+        line-height: 1.3;
         vertical-align: middle;
         padding: 0.125rem 0.75rem;
       }
@@ -131,6 +132,7 @@
       & > td {
         vertical-align: middle;
         padding: 0.375rem 0.75rem;
+        line-height: 1.3;
 
         a {
           color: var(--theme-color-primary);
@@ -362,5 +364,22 @@
     top: 0.5625rem;
     z-index: 3;
     background: transparent;
+  }
+}
+
+.locators {
+  .p-datatable,
+  .p-treetable {
+    .p-datatable-tbody,
+    .p-treetable-tbody {
+      & > tr.p-highlight {
+        background: #6f97d7 !important;
+        color: #fff !important;
+
+        a, i {
+          color: #fff !important;
+        }
+      }
+    }
   }
 }

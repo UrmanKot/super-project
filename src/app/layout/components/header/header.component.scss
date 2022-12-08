@@ -23,3 +23,42 @@
     margin-right: 0.25rem;
   }
 }
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.layout-navigation {
+  &__item {
+    &_settings {
+      display: none;
+
+      a {
+        color: #31a894;
+
+        &.active {
+          color: #106d5e;
+        }
+      }
+
+      &-show {
+        display: block;
+      }
+    }
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  margin-top: 0.375rem;
+
+  span {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-top: -0.375rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+  }
+}

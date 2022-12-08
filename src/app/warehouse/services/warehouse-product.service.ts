@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {WarehouseProduct, WarehouseProducts} from '../models/warehouse-product';
+import {WarehouseProduct, WarehouseProductExtraInfo, WarehouseProducts} from '../models/warehouse-product';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
@@ -12,6 +12,8 @@ import {
 } from '../modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
 import {MatDialog} from '@angular/material/dialog';
 import {MoveWarehouseProductComponent} from '../modals/move-warehouse-product/move-warehouse-product.component';
+import {Nomenclature} from '@shared/models/nomenclature';
+import {NomenclatureSerialInfoComponent} from '../modals/nomenclature-serial-info/nomenclature-serial-info.component';
 
 @Injectable({
   providedIn: 'root'
@@ -124,5 +126,18 @@ export class WarehouseProductService {
 
   moveSerial(product: Partial<WarehouseProduct>): Observable<any> {
     return this.httpClient.post(this.API_URL + 'bulk_move_serial_products/', product);
+  }
+
+  openNomenclatureInfoModal(extraInfo: WarehouseProductExtraInfo[], nomenclature: Nomenclature) {
+    return this.dialog
+      .open<NomenclatureSerialInfoComponent>(NomenclatureSerialInfoComponent, {
+        width: '650px',
+        height: 'auto',
+        data: {extraInfo, nomenclature},
+        disableClose: true,
+        autoFocus: false,
+      })
+      .afterClosed()
+      .pipe();
   }
 }

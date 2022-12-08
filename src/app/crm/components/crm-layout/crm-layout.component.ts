@@ -13,12 +13,15 @@ export class CrmLayoutComponent implements OnInit {
     {label: 'Events', commands: ['events']},
     {label: 'Events Reports', commands: ['events-reports']},
     {label: 'Schedules', commands: ['schedules']},
+  ];
+
+  settingsRoutes: NavigationLink[] = [
     {label: 'Company Categories', commands: ['company-categories']},
     {label: 'Event Types', commands: ['event-types']},
     {label: 'Employees', commands: ['employees']},
     {label: 'External Event Types', commands: ['external-events']},
     {label: 'Users Profiles', commands: ['users-profiles']},
-  ];
+  ]
 
   constructor() {
   }

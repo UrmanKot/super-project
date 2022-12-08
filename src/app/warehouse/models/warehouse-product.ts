@@ -19,7 +19,7 @@ export class WarehouseProduct {
   uid?: number;
   uom?: string;
   freeQuantity?: number;
-  // extra_info: WarehouseProductExtraInfo[];
+  extra_info: WarehouseProductExtraInfo[];
   checkedForGeneration?: boolean;
 }
 
@@ -28,4 +28,16 @@ export class WarehouseProducts {
   next: string;
   count: number;
   results: WarehouseProduct[]
+}
+
+export class WarehouseProductExtraInfo {
+  id: number;
+  is_reserved_for_sale: boolean;
+  quantity: number;
+  serial_number_str: string;
+  serial_number_id: number;
+  invoice_id: number;
+  order_id: number;
+  reserved_by_opened_production_lists_quantity: number;
+  warehouseproductqcprotocol: number;
 }

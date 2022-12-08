@@ -400,6 +400,26 @@ textarea {
   }
 }
 
+.p-inputswitch {
+  &.p-inputswitch-checked {
+    .p-inputswitch-slider {
+      background: var(--theme-color-primary);
+    }
+
+    &:not(.p-disabled):hover {
+      .p-inputswitch-slider {
+        background: var(--theme-color-primary-hover);
+      }
+    }
+  }
+}
+
+.p-inputswitch {
+    .p-inputswitch-slider {
+      //background: var(--theme-color-primary);
+    }
+}
+
 .p-calendar {
   width: 100%;
 }
