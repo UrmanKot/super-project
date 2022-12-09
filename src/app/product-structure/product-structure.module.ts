@@ -30,6 +30,9 @@ import { ProductStructureCategoriesComponent } from './components/product-struct
 import {
   CreateEditProductStructureCategoryComponent
 } from './modals/create-edit-product-structure-category/create-edit-product-structure-category.component';
+import {AddTechnicalEquipmentComponent} from './modals/add-technical-equipment/add-technical-equipment.component';
+import { TechnicalEquipmentsTableComponent } from './components/create-edit-product-form/components/technical-equipments-table/technical-equipments-table.component';
+import { EditTechnicalEquipmentComponent } from './components/create-edit-product-form/components/technical-equipments-table/edit-technical-equipment/edit-technical-equipment.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +53,9 @@ import {
     CreateEditProductFormComponent,
     ProductStructureCategoriesComponent,
     CreateEditProductStructureCategoryComponent,
+    AddTechnicalEquipmentComponent,
+    TechnicalEquipmentsTableComponent,
+    EditTechnicalEquipmentComponent,
   ],
   exports: [
     CreateEditProductFormComponent

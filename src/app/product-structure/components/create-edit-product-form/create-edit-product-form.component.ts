@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ENomenclatureBulk, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {Technology} from '../../models/technology';
 import {Product} from '../../models/product';
 import {Category} from '../../models/category';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Subject, takeUntil} from 'rxjs';
+import {TechnicalEquipmentService} from '../../services/technical-equipment.service';
+import {TechnicalEquipment} from '../../models/technical-equipment';
 
 @Component({
   selector: 'pek-create-edit-form',
@@ -13,6 +15,8 @@ import {Subject, takeUntil} from 'rxjs';
   styleUrls: ['./create-edit-product-form.component.scss']
 })
 export class CreateEditProductFormComponent implements OnInit, OnDestroy {
+  technicalEquipments: TechnicalEquipment[] = [];
+  deleted_technical_equipments_ids: number[] = [];
   @Input() isShowQuantity = true;
   @Input() type: 'edit' | 'create' = 'edit';
   @Input() product: Partial<Product>;
@@ -36,15 +40,20 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
     description: [''],
     quantity: [1, [Validators.required, Validators.min(1)]],
     category: [null],
+    canAddTechnicalEquipment: [false],
     bulk_or_serial: ['0', Validators.required],
     codeId: [{value: '', disabled: true}],
     technologies: [[]],
+    technical_equipments: this.fb.array([]),
+    deleted_technical_equipments_ids: [[]],
   });
 
   private destroy$ = new Subject();
+  isItemSelected: boolean;
 
   constructor(
     private readonly fb: FormBuilder,
+    private technicalEquipmentService: TechnicalEquipmentService
   ) {
   }
 
@@ -58,7 +67,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
     if (this.product) {
       if (this.product.nomenclature.technologies.length > 0) {
         this.selectedTechnologiesIds = this.product.nomenclature.technologies.map(t => t.id);
-        this.form.get('technologies').patchValue([...this.product.nomenclature.technologies])
+        this.form.get('technologies').patchValue([...this.product.nomenclature.technologies]);
       }
 
       this.form.patchValue(this.product.nomenclature);
@@ -78,7 +87,39 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         this.form.removeControl('code');
       }
+
+      this.getTechnicalEquipments();
     }
+  }
+
+  getTechnicalEquipments(): void {
+    this.technicalEquipmentService.get([{
+      name: 'nomenclature',
+      value: this.product.nomenclature.id
+    }]).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.technicalEquipments = res.map(equipment => {
+          return {
+            id: equipment.id,
+            technical_equipment: {
+              id: equipment.technical_equipment.id,
+              code: equipment.technical_equipment.code,
+              name: equipment.technical_equipment.name,
+            },
+            quantity: equipment.quantity
+          };
+        });
+        if (this.technicalEquipments.length > 0) {
+          this.form.get('canAddTechnicalEquipment').patchValue(true);
+          this.technicalEquipments.forEach(equipment => {
+            (this.form.controls['technical_equipments'] as FormArray).push(this.fb.group({
+              ...equipment
+            }));
+          });
+        }
+      }
+
+    });
   }
 
   onSelectCategory(category: Category) {
@@ -94,7 +135,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
   }
 
   onRemoveImage(idx: number) {
-    this.removeImage.emit(idx)
+    this.removeImage.emit(idx);
   }
 
   drop(event: CdkDragDrop<Technology[]>) {
@@ -114,5 +155,40 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  addTechnicalEquipment() {
+    this.technicalEquipmentService.openAddTechnicalEquipment().pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        (this.form.controls['technical_equipments'] as FormArray).push(this.fb.group({
+          ...res
+        }));
+        this.refreshTechnicalEquipments();
+      }
+    });
+  }
+
+  refreshTechnicalEquipments(): void {
+    this.technicalEquipments = [];
+    (this.form.controls['technical_equipments'] as FormArray).controls.forEach(group => {
+      this.technicalEquipments.push(group.value);
+    });
+  }
+
+  equipmentChanged(data: { index: number; technicalEquipment: TechnicalEquipment }) {
+    (this.form.controls['technical_equipments'] as FormArray).controls[data.index].setValue(data.technicalEquipment);
+    this.refreshTechnicalEquipments();
+  }
+
+  equipmentDeleted(index: number) {
+    if (index > -1) {
+      const equipmentId = this.technicalEquipments[index].id;
+      if (equipmentId) {
+        this.deleted_technical_equipments_ids.push(this.technicalEquipments[index].id);
+        this.form.get('deleted_technical_equipments_ids').patchValue([...this.deleted_technical_equipments_ids]);
+      }
+      this.technicalEquipments.splice(index, 1);
+      (this.form.controls['technical_equipments'] as FormArray).removeAt(index);
+    }
   }
 }

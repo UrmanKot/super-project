@@ -1,0 +1,33 @@
+<!--<div *ngIf="technicalEquipment">-->
+<!--  <p>edit-technical-equipment works!</p>-->
+<!--  {{technicalEquipment.technicalEquipment.technical_equipment.code}}-->
+<!--  /-->
+<!--  {{technicalEquipment.technicalEquipment.quantity}}-->
+<!--</div>-->
+
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Technical Equipment
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="quantity">Quantity</label>
+      <input type="text" id="quantity" pInputText formControlName="quantity">
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Update"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

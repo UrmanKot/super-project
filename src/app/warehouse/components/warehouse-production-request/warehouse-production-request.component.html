@@ -561,6 +561,69 @@
   </div>
 </div>
 
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table selectionMode="single" [value]="technicalEquipments">
+        <ng-template pTemplate="caption">
+          <div class="table-tools" *ngIf="technicalEquipments">
+            <h2 class="subtitle">Technical Equipments</h2>
+            <div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="index-header text-center">#</th>
+            <th style="width: 35%">Code</th>
+            <th style="width: 30%">Name</th>
+            <th style="width: 30%">Locator</th>
+            <th style="width: 30%" class="text-center">Quantity</th>
+            <!--              <th>Price Per Unit</th>-->
+            <!--              <th>Total Price</th>-->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
+          <tr [pSelectableRow]="technicalEquipment" class="table-row">
+            <td class="text-center">{{i + 1}}</td>
+            <td>{{technicalEquipment.nomenclature.code}}</td>
+            <td>{{technicalEquipment.nomenclature.name}}</td>
+            <td>
+              <div *ngIf="technicalEquipment.locators.length > 0">
+                <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+                  {{locator.name}}<span *ngIf="!last">, </span>
+                </div>
+              </div>
+              <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{locator.name}}<span *ngIf="!last">, </span>
+                </span>
+              </div>
+<!--              {{technicalEquipment.warehouse_product ? technicalEquipment.warehouse_product.locator.name : ''}}-->
+            </td>
+            <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">
+              Choice ordered item
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td class="text-center p-5" [attr.colspan]="6">
+              <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin fa-3x "></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
 <div class="print-page" *ngIf="isShowPrint">
   <div>
   <pek-warehouse-production-request-print-page

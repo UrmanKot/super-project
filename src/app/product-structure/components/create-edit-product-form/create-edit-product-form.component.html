@@ -96,6 +96,27 @@
             <label for="quantity">Quantity*</label>
             <input type="number" min="1" step="1" id="quantity" pInputText formControlName="quantity">
           </div>
+          <div *ngIf="product.nomenclature.type !== nomenclatureType.PURCHASED" class="form-group">
+            <label for="technicalEquipment">Required Technical Equipment</label>
+            <p-checkbox id="technicalEquipment" formControlName="canAddTechnicalEquipment" [binary]="true"
+                        inputId="binary"></p-checkbox>
+          </div>
+          <div class="d-flex justify-content-end mb-3"
+               *ngIf="form.get('canAddTechnicalEquipment').value && !isItemSelected">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              class="p-button-rounded"
+              (click)="addTechnicalEquipment()"
+            ></button>
+          </div>
+          <div *ngIf="form.get('canAddTechnicalEquipment').value">
+            <pek-technical-equipments-table
+              (isSelectedEquipmentEmitter)="isItemSelected = $event" [technicalEquipments]="technicalEquipments"
+              (deleteEquipmentIndex)="equipmentDeleted($event)"
+              (equipmentChanged)="equipmentChanged($event)"></pek-technical-equipments-table>
+          </div>
         </div>
       </div>
     </div>

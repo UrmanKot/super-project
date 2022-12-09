@@ -5,7 +5,9 @@ import {FormBuilder} from '@angular/forms';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ProductService} from '../../services/product.service';
-import {finalize, forkJoin} from 'rxjs';
+import {finalize, forkJoin, of} from 'rxjs';
+import {TechnicalEquipmentService} from '../../services/technical-equipment.service';
+import {TechnicalEquipment} from '../../models/technical-equipment';
 
 @Component({
   selector: 'pek-edit-product',
@@ -23,6 +25,7 @@ export class EditProductComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly nomenclatureService: NomenclatureService,
     private readonly productService: ProductService,
+    private readonly technicalEquipmentService: TechnicalEquipmentService,
     private readonly dialogRef: MatDialogRef<EditProductComponent>,
     @Inject(MAT_DIALOG_DATA) public product: Product,
   ) {
@@ -73,7 +76,7 @@ export class EditProductComponent implements OnInit {
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         send.category = this.formValue.category;
         send.bulk_or_serial = this.formValue.bulk_or_serial;
-        delete send.code
+        delete send.code;
       } else {
         send.technologies = [...this.formValue.technologies];
         send.category = null;
@@ -84,19 +87,39 @@ export class EditProductComponent implements OnInit {
         quantity: this.formValue.quantity,
       };
 
+      const technicalEquipments = this.formValue.technical_equipments;
+      const createUpdateTechnicalEquipments = {
+        updated_created_technical_equipment: technicalEquipments.map(equipment => {
+          return {
+            id: equipment.id,
+            technical_equipment: equipment.technical_equipment.id,
+            quantity: equipment.quantity
+          };
+        }),
+        deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,
+      };
+
       if (this.product.parent && this.product.nomenclature.type !== ENomenclatureType.ASSEMBLY) {
         forkJoin({
           nomenclature: this.nomenclatureService.update(send),
           product: this.productService.updatePartly(sendUpdateQuantity),
+          technicalEquipment: this.product.nomenclature.type !== ENomenclatureType.PURCHASED ?
+            this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(this.product.nomenclature.id, createUpdateTechnicalEquipments) :
+            of(true),
         }).pipe(
           finalize(() => this.isSaving = false)
-        ).subscribe(({nomenclature, product}) => {
+        ).subscribe(({nomenclature, product, technicalEquipment}) => {
           this.dialogRef.close({nomenclature, product});
         });
       } else {
-        this.nomenclatureService.update(send).pipe(
+        forkJoin({
+          nomenclature: this.nomenclatureService.update(send),
+          technicalEquipment: this.product.nomenclature.type !== ENomenclatureType.PURCHASED ?
+            this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(this.product.nomenclature.id, createUpdateTechnicalEquipments) :
+            of(true),
+        }).pipe(
           finalize(() => this.isSaving = false)
-        ).subscribe(nomenclature => {
+        ).subscribe(({nomenclature, technicalEquipment}) => {
           this.dialogRef.close({nomenclature, product: null});
         });
       }

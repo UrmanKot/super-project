@@ -6,11 +6,14 @@ import {Order, Orders} from '../models/order';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {OrderProduct} from '../models/order-product';
-import {InvoiceProduct} from '../models/invoice-product';
 import {
   QcAcceptToWarehouseComponent
 } from '../../warehouse/modals/qc-accept-to-warehouse/qc-accept-to-warehouse.component';
 import {MatDialog} from '@angular/material/dialog';
+import {OrderTechnicalEquipment} from '../../warehouse/models/order-technical-equipment';
+import {
+  QcAcceptTechnicalEquipmentComponent
+} from '../../warehouse/modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 
 @Injectable({
   providedIn: 'root'
@@ -74,12 +77,31 @@ export class OrderService {
     );
   }
 
+  getTechnicalEquipmentToAccept(id: number): Observable<OrderTechnicalEquipment[]> {
+    return this.httpClient.get<{ data: OrderTechnicalEquipment[] }>(this.API_URL + this.url + id + '/order_technical_equipment_to_accept/').pipe(
+      map(response => response.data)
+    );
+  }
+
   openAcceptToWarehouseModal(items: OrderProduct[], id: number, type = 'order'): Observable<any> {
     return this.dialog
       .open<QcAcceptToWarehouseComponent>(QcAcceptToWarehouseComponent, {
         width: '40rem',
         height: 'auto',
         data: {items, id, type},
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openAcceptToWarehouseModalTechnicalEquipment(items: OrderTechnicalEquipment[], id: number): Observable<any> {
+    return this.dialog
+      .open<QcAcceptTechnicalEquipmentComponent>(QcAcceptTechnicalEquipmentComponent, {
+        width: '40rem',
+        height: 'auto',
+        data: {items, id},
         panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'

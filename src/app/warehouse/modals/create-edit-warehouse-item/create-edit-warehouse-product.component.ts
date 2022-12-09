@@ -4,7 +4,7 @@ import {ModalActionType} from '@shared/models/modal-action';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureType, Nomenclature, NomenclatureImage} from '@shared/models/nomenclature';
 import {Product} from '../../../product-structure/models/product';
-import {finalize} from 'rxjs';
+import {finalize, forkJoin, of} from 'rxjs';
 
 @Component({
   selector: 'pek-create-edit-warehouse-product',
@@ -182,7 +182,7 @@ export class CreateEditWarehouseProductComponent implements OnInit {
         description: this.formValue.description,
         type: this.formValue.type,
       };
-
+      let createUpdateTechnicalEquipments;
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         send.category = this.formValue.category;
         send.bulk_or_serial = this.formValue.bulk_or_serial;
@@ -190,9 +190,25 @@ export class CreateEditWarehouseProductComponent implements OnInit {
       } else {
         send.technologies = [...this.formValue.technologies];
         send.category = null;
+        const technicalEquipments = this.formValue.technical_equipments;
+        createUpdateTechnicalEquipments = {
+          updated_created_technical_equipment: technicalEquipments.map(equipment => {
+            return {
+              id: equipment.id,
+              technical_equipment: equipment.technical_equipment.id,
+              quantity: equipment.quantity
+            };
+          }),
+          deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,
+        };
       }
 
-      this.nomenclatureService.update(send).pipe(
+      forkJoin({
+        nomenclature: this.nomenclatureService.update(send),
+        technicalEquipment: this.product.nomenclature.type !== ENomenclatureType.PURCHASED ?
+          this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(this.product.nomenclature.id, createUpdateTechnicalEquipments) :
+          of(true),
+      }).pipe(
         finalize(() => this.isSaving = false)
       ).subscribe(() => {
         this.dialogRef.close(true);

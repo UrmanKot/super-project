@@ -5,6 +5,7 @@ import {NewNomenclature, Nomenclature, NomenclatureImage, Nomenclatures} from '@
 import {map} from 'rxjs/operators';
 import {forkJoin, Observable} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
+import {TechnicalEquipment} from '../../product-structure/models/technical-equipment';
 
 @Injectable({
   providedIn: 'root'
@@ -197,5 +198,11 @@ export class NomenclatureService {
 
   removeImage(id: number): Observable<any> {
     return this.httpClient.delete(this.API_URL + `nomenclature_images/${id}/`);
+  }
+
+  bulkCreateUpdateTechnicalEquipments(nomenclatureId: number, data): Observable<any> {
+    return this.httpClient.post<{ data: TechnicalEquipment }>(this.API_URL  + this.url + nomenclatureId + '/bulk_update_technical_equipments/', data).pipe(
+      map(response => response.data)
+    );
   }
 }

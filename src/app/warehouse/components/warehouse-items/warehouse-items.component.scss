@@ -97,3 +97,30 @@
 .page__card {
   position: relative;
 }
+
+.in-use {
+  position: relative;
+
+  &:hover {
+    .in-use-info {
+      opacity: 1;
+      pointer-events: initial;
+    }
+  }
+}
+
+
+.in-use-info {
+  position: absolute;
+  transition: 0.25s ease;
+  opacity: 0;
+  background: #fff;
+  z-index: 3;
+  width: 9rem;
+  right: -3rem;
+  top: -1.5rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 0 7px 1px rgb(0 0 0 / 15%);
+  border-radius: 0.5rem;
+  pointer-events: none;
+}

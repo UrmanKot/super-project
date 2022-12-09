@@ -131,7 +131,9 @@
                   </span>
                 </div>
               </td>
-              <td style="width: 20%" [class.font-italic]="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.name}}</td>
+              <td style="width: 20%" [class.font-italic]="rowData.nomenclature.type !== '1'">
+                <b *ngIf="rowData.nomenclature.has_technical_equipment">(T)</b>
+                {{rowData.nomenclature.name}}</td>
               <td
                 style="width: 7%"
                 class="text-center"
