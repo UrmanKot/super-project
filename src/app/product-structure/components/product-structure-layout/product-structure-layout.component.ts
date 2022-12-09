@@ -10,9 +10,12 @@ export class ProductStructureLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Products', commands: ['products']},
+    {label: 'Categories', commands: ['categories']},
+  ]
+
+  settingRoutes: NavigationLink[] = [
     {label: 'Technologies', commands: ['technologies']},
     {label: 'Prefixes', commands: ['prefixes']},
-    {label: 'Categories', commands: ['categories']},
   ]
 
   constructor() { }

@@ -12,11 +12,51 @@
         {{route.label}}
       </a>
     </li>
+
+    <li
+      *ngFor="let route of settingsRoutes"
+      class="layout-navigation__item layout-navigation__item_settings"
+      [class.layout-navigation__item_settings-show]="isShowSettings"
+    >
+      <a
+        [routerLink]="route.commands"
+        routerLinkActive="active"
+      >
+        {{route.label}}
+      </a>
+    </li>
   </ul>
 
-  <button class="ml-auto guide-button">
-    <i class="pi pi-book"></i>
-<!--    Show business guide-->
-    Business Guide
-  </button>
+<!--  <ul-->
+<!--    class="layout-navigation layout-navigation_settings"-->
+<!--    [class.layout-navigation_settings-show]="isShowSettings"-->
+<!--    [class.layout-navigation_wh]="module === 'Warehouse'"-->
+<!--  >-->
+<!--    <li-->
+<!--      *ngFor="let route of settingsRoutes"-->
+<!--      class="layout-navigation__item"-->
+<!--    >-->
+<!--      <a-->
+<!--        [routerLink]="route.commands"-->
+<!--        routerLinkActive="active"-->
+<!--      >-->
+<!--        {{route.label}}-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ul>-->
+
+  <div class="actions ml-auto">
+    <div class="toggle mr-3" *ngIf="isShowSwitcher">
+    <span (click)="toggleVisibleSettingMenu()">
+      {{isShowSettings ? 'Hide' : 'Show'}} settings menu
+    </span>
+      <p-inputSwitch title="Show Settings Menu" [(ngModel)]="isShowSettings"></p-inputSwitch>
+    </div>
+    <button
+      class="guide-button"
+    >
+      <i class="pi pi-book"></i>
+      Business Guide
+    </button>
+  </div>
 </div>

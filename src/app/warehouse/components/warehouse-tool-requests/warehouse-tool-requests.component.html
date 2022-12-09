@@ -36,7 +36,10 @@
             <th class="text-center" style="width: 5%">#</th>
             <th style="width: 35%" class="text-center">Area</th>
             <th style="width: 30%" class="text-center">Locator</th>
-            <th style="width: 30%" class="text-center">Creation Date</th>
+            <th style="width: 30%" class="text-center" pSortableColumn="created">
+              Creation Date
+              <p-sortIcon field="created"></p-sortIcon>
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-order let-i="rowIndex">

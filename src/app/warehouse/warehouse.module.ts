@@ -51,6 +51,7 @@ import { WarehouseProductionRequestPrintPageComponent } from './components/wareh
 import {
   QcAcceptTechnicalEquipmentComponent
 } from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
+import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
 
 
 
@@ -92,7 +93,8 @@ import {
     QcAcceptToWarehouseComponent,
     QcAcceptTechnicalEquipmentComponent,
     WarehouseQcOrderComponent,
-    WarehouseProductionRequestPrintPageComponent
+    WarehouseProductionRequestPrintPageComponent,
+    NomenclatureSerialInfoComponent
   ],
   imports: [
     CommonModule,

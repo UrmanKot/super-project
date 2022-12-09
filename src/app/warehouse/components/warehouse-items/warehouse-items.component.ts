@@ -9,7 +9,7 @@ import {WarehouseProductService} from '../../services/warehouse-product.service'
 import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
-import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {environment} from '@env/environment.prod';
 
 @Component({
@@ -351,6 +351,12 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.isHideFilters && !this.isShowAll) {
       this.tableScrollHeight = '29.75rem';
       return;
+    }
+  }
+
+  showSerialsInfo() {
+    if (this.selectedProduct) {
+      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct.extra_info, this.selectedProduct.nomenclature as Nomenclature).subscribe();
     }
   }
 }

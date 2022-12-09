@@ -12,6 +12,11 @@ export class SalesLayoutComponent implements OnInit {
     // {label: 'Make Production List', commands: ['lists']},
     {label: 'Sales Chains', commands: ['sales-chains']},
     // {label: 'Configs', commands: ['configs/nomenclature-price']},
+    // {label: 'Statuses', commands: ['statuses']},
+    // {label: 'Countries & Regions', commands: ['regions']},
+  ]
+
+  settingsRoutes: NavigationLink[] = [
     {label: 'Statuses', commands: ['statuses']},
     {label: 'Countries & Regions', commands: ['regions']},
   ]

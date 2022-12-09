@@ -9,6 +9,16 @@
         class="mr-2"
         pButton
         type="button"
+        icon="pi pi-info-circle"
+        label="Serial Info"
+        [disabled]="selectedProduct?.nomenclature.bulk_or_serial !== '1'"
+        (click)="showSerialsInfo()"
+      >
+      </button>
+      <button
+        class="mr-2"
+        pButton
+        type="button"
         icon="pi pi-angle-double-right"
         label="Move"
         [disabled]="!selectedProduct || (!selectedProduct?.total_locator_quantity && !selectedProduct?.total_area_locator_quantity)"

@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Payment} from '../models/payment';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +24,15 @@ export class PaymentService {
   }
 
   severalConfirm(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `confirm/${id}/`, null)));
+    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `confirm/${id}/`, null).pipe(
+      catchError(() => of(null)),
+    )));
   }
 
   severalDecline(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `decline/${id}/`, null)));
+    return forkJoin(...ids.map(id => this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `decline/${id}/`, null).pipe(
+      catchError(() => of(null)),
+    )));
   }
 
   getLimit(): Observable<{ id: number; value: string }[]> {

@@ -8,6 +8,7 @@ import { LogoComponent } from './components/logo/logo.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {SharedModule} from '@shared/shared.module';
+import {InputSwitchModule} from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import {SharedModule} from '@shared/shared.module';
     MatButtonModule,
     MatIconModule,
     SharedModule,
+    InputSwitchModule,
   ]
 })
 export class LayoutModule { }
