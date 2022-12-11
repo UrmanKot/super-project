@@ -92,6 +92,9 @@ class InvoiceService {
         }
         return this.httpClient.get(this.API_URL + this.url + 'all/' + queryParams).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)(response => response.data));
     }
+    getById(id) {
+        return this.httpClient.get(this.API_URL + this.url + id + '/').pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)(response => response.data));
+    }
     getProductsToAccept(id) {
         return this.httpClient.get(this.API_URL + this.url + id + '/products_to_accept/').pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)(response => response.data));
     }
@@ -321,9 +324,13 @@ __webpack_require__.r(__webpack_exports__);
 class QcListModalService {
     constructor() {
         this.notCompatibleItems$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+        this.notCompatibleTechnicalEquipments$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
     }
     updateOrderInvoiceList(items) {
         this.notCompatibleItems$.next(items);
+    }
+    updateTechnicalEquipmentList(items) {
+        this.notCompatibleTechnicalEquipments$.next(items);
     }
 }
 QcListModalService.ɵfac = function QcListModalService_Factory(t) { return new (t || QcListModalService)(); };
