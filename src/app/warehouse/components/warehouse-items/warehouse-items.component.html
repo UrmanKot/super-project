@@ -44,27 +44,7 @@
     <div class="warehouse-items">
       <div class="warehouse-items__left">
         <div class="form-group">
-          <label>Categories</label>
-          <div class="warehouse-items__tree-wrapper" *ngIf="!isLoadingCategories; else spinner">
-            <div class="warehouse-items__tree">
-              <p-tree
-                [metaKeySelection]="false"
-                [value]="categoriesTree"
-                (selectionChange)="onSelectCategory($event)"
-                selectionMode="single"
-              >
-                <ng-template let-node pTemplate="default">
-                  {{node.data.name}}
-                </ng-template>
-              </p-tree>
-            </div>
-          </div>
-
-          <ng-template #spinner>
-            <div class="warehouse-items__spinner">
-              <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-            </div>
-          </ng-template>
+          <pek-categories-tree-picker (categorySelected)="onSelectCategory($event)"></pek-categories-tree-picker>
         </div>
       </div>
       <div class="warehouse-items__right">
@@ -187,9 +167,25 @@
                   <td style="width: 15%">
                     {{product.nomenclature.code}}
                   </td>
-                  <td style="width: 15%">
+                  <td style="width: 15%" class="in-use">
                     <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+                    <b *ngIf="product.nomenclature.has_technical_equipment">(T)</b>
                     {{product.nomenclature.name}}
+                    <span class="text-danger" *ngIf="product.used_by_order && product.used_by_order.length > 0">
+                      <b>In Use</b>
+
+                      <div class="in-use-info">
+                        <p>In use by orders:</p>
+                        <div *ngFor="let order of product.used_by_order">
+                          <a *ngIf="order.accounting_type === 3" [href]="link + 'production/orders/order/' + order.order_id"
+                              target="_blank">{{order.order_id}}
+                          </a>
+                          <a *ngIf="order.accounting_type === 2" [href]="link + 'outsource/outsource-chain/products/' + order.order_id"
+                             target="_blank">{{order.order_id}}
+                          </a>
+                        </div>
+                      </div>
+                    </span>
                   </td>
                   <td style="width: 10%" class="text-center">
                     {{product.current_technology?.name}}

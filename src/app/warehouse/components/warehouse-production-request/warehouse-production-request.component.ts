@@ -14,6 +14,9 @@ import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {environment} from '@env/environment.prod';
 import {Subject, takeUntil} from 'rxjs';
+import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
+import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
+import {take} from 'rxjs/operators';
 
 enum ViewMode {
   LIST = 0,
@@ -84,6 +87,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   detailedRequestTree: TreeNode[] = [];
   selectedDetailedRequestNode: TreeNode;
 
+  technicalEquipments: OrderTechnicalEquipment[] = [];
+
   constructor(
     private requestsService: RequestService,
     public readonly auth: AuthService,
@@ -92,12 +97,21 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     private router: Router,
     private readonly modalService: ModalService,
     private readonly tasksService: TaskService,
+    private orderTechnicalEquipmentsService: OrderTechnicalEquipmentsService,
   ) {
   }
 
   ngOnInit(): void {
     this.getOrderInfo(+this.orderId);
     this.getRequests();
+    this.getOrderTechnicalEquipments();
+  }
+
+  getOrderTechnicalEquipments() {
+    const query = [{name: 'order_id', value: +this.orderId}, {name: 'in_use', value: false}];
+    this.orderTechnicalEquipmentsService.get(query).pipe(take(1)).subscribe(technicalEquipments => {
+      this.technicalEquipments = technicalEquipments;
+    });
   }
 
   onCancel() {

@@ -1,8 +1,9 @@
 import {Category} from '../../product-structure/models/category';
 import {Technology} from '../../product-structure/models/technology';
+import {TechnicalEquipment} from '../../product-structure/models/technical-equipment';
 
 export class Nomenclature {
-  readonly id: number;
+  readonly id?: number;
   code?: string;
   name?: string;
   status?: string;
@@ -19,6 +20,9 @@ export class Nomenclature {
   accounting_number?: string;
   is_fixed_asset?: boolean;
   is_non_ressivable?: boolean;
+  has_technical_equipment?: boolean;
+  technical_equipments?: TechnicalEquipment[];
+  deleted_technical_equipments_ids?: number[];
   qc_protocol?: number;
   bulk_or_serial?: '1' | '0';
   tasks?: Task[];

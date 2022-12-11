@@ -1,0 +1,40 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Accept Technical Equipment to Warehouse
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Locator*</label>
+      <pek-group-locator-picker
+        [uniqueLocators]="existingLocators"
+        (selectLocatorFull)="onSelectLocator($event)"
+      ></pek-group-locator-picker>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    pButton
+    type="button"
+    label="Accept"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onAccept()"
+  ></button>
+</mat-dialog-actions>

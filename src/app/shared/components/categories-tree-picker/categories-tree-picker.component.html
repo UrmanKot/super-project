@@ -1,0 +1,21 @@
+<label>Categories</label>
+<div class="warehouse-items__tree-wrapper" *ngIf="!isLoadingCategories; else spinner">
+  <div class="warehouse-items__tree" [class.modal]="isModal">
+    <p-tree
+      [metaKeySelection]="false"
+      [value]="categoriesTree"
+      (selectionChange)="onSelectCategory($event)"
+      selectionMode="single"
+    >
+      <ng-template let-node pTemplate="default">
+        {{node.data.name}}
+      </ng-template>
+    </p-tree>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <div class="warehouse-items__spinner">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>

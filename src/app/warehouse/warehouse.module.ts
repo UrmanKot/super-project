@@ -48,6 +48,9 @@ import {
   WarehouseIsolatorOrdersComponent
 } from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
 import { WarehouseProductionRequestPrintPageComponent } from './components/warehouse-production-request-print-page/warehouse-production-request-print-page.component';
+import {
+  QcAcceptTechnicalEquipmentComponent
+} from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
 
 
@@ -88,6 +91,7 @@ import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-in
     WarehouseQcComponent,
     WarehouseQcInvoiceComponent,
     QcAcceptToWarehouseComponent,
+    QcAcceptTechnicalEquipmentComponent,
     WarehouseQcOrderComponent,
     WarehouseProductionRequestPrintPageComponent,
     NomenclatureSerialInfoComponent

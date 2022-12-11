@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-end mb-3" *ngIf="selectedTechnicalEquipment">
+  <button
+    pButton
+    type="button"
+    icon="pi pi-pencil"
+    class="p-button-rounded mr-2"
+    (click)="editTechnicalEquipment()"
+  ></button>
+  <button
+    pButton
+    type="button"
+    icon="pi pi-trash"
+    class="p-button-rounded p-button-danger"
+    (click)="emitDeletedIndex()"
+  ></button>
+</div>
+
+<div class="table-pagination-preloader">
+  <p-table
+    #dt
+    selectionMode="single"
+    [scrollable]="true"
+    [rows]="10"
+    [(selection)]="selectedTechnicalEquipment"
+    (selectionChange)="emitItemSelected()"
+    [value]="technicalEquipments"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="index-header text-center" style="width: 5%">#</th>
+        <th style="width: 23.75%">Code</th>
+        <th style="width: 23.75%">Name</th>
+        <th class="text-center" style="width: 23.75%">Quantity</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
+      <tr [pSelectableRow]="technicalEquipment">
+        <td style="width: 5%" class="text-center">
+          {{i + 1}}
+        </td>
+        <td style="width: 23.75%">
+          {{technicalEquipment.technical_equipment.code}}
+        </td>
+        <td style="width: 23.75%">
+          <b *ngIf="technicalEquipment.technical_equipment.bulk_or_serial === '1'">(S)</b>
+          {{technicalEquipment.technical_equipment.name}}
+        </td>
+        <td style="width: 23.75%" class="text-center">
+          {{technicalEquipment.quantity}}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="9">
+          <span >No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

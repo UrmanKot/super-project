@@ -10,6 +10,7 @@ import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
+import {environment} from '@env/environment.prod';
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -33,11 +34,6 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   products: WarehouseProduct[] = [];
   countProducts: number = 0;
 
-  categoriesTree: TreeNode<Category>[] = [];
-  isLoadingCategories = true;
-
-  categories: Category[];
-
   searchForm: FormGroup = this.fb.group({
     name: [null],
     code: [null],
@@ -60,6 +56,8 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   queryKey = 'name:null/code:null/description:null/type:null/acceptedByInvoices:null/warehouse:null/locator:null/category:null';
 
   private destroy$ = new Subject();
+
+  link = environment.link_url + 'dash/';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -98,18 +96,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.getCategories();
     // this.getProductsForPagination();
-  }
-
-  getCategories() {
-    this.productCategoriesService.get([{name: 'is_for_root', value: false}]).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(categories => {
-      this.categories = categories;
-      this.createTree();
-      this.isLoadingCategories = false;
-    });
   }
 
   getProductsForPagination() {
@@ -254,37 +241,6 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
         this.searchProducts();
       }
     });
-  }
-
-  createTree() {
-    const getChildren = (nodes: TreeNode<Category>[]) => {
-      nodes.forEach(node => {
-        const children = this.categories.filter(c => c.parent === node.data.id);
-
-        if (children.length > 0) {
-          node.children = children.map(category => {
-            return {
-              label: category.name,
-              data: category,
-              children: []
-            };
-          });
-
-          getChildren(node.children);
-        }
-      });
-    };
-
-    const tree: TreeNode<Category>[] = this.categories.filter(c => !c.parent).map(category => {
-      return {
-        label: category.name,
-        data: <Category>category,
-        children: [],
-      };
-    });
-
-    getChildren(tree);
-    this.categoriesTree = [...tree];
   }
 
   selectWarehouse(warehouseId: number) {

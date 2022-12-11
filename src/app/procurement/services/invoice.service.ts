@@ -6,13 +6,11 @@ import {map} from 'rxjs/operators';
 import {Invoice} from '../models/invoice';
 import {Observable} from 'rxjs';
 import {InvoiceProduct} from '../models/invoice-product';
-import {
-  CreatePhysicalInventoryComponent
-} from '../../warehouse/modals/create-physical-inventory/create-physical-inventory.component';
 import {MatDialog} from '@angular/material/dialog';
 import {
   QcAcceptToWarehouseComponent
 } from '../../warehouse/modals/qc-accept-to-warehouse/qc-accept-to-warehouse.component';
+import {Order} from '../models/order';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +38,12 @@ export class InvoiceService {
       });
     }
     return this.httpClient.get<{ data: Invoice[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getById(id: number): Observable<Invoice> {
+    return this.httpClient.get<{ data: Invoice }>(this.API_URL + this.url + id + '/').pipe(
       map(response => response.data)
     );
   }
