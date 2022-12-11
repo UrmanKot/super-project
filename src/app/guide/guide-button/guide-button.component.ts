@@ -7,7 +7,7 @@ import {environment} from '@env/environment.prod';
   styleUrls: ['./guide-button.component.scss']
 })
 export class GuideButtonComponent implements OnInit {
-  @Input() btnStyle: 'primary' | 'secondary' = 'primary';
+  @Input() btnStyle: 'primary' | 'secondary' | 'outline' = 'primary';
   @Input() title: string;
   @Input() routeUrl: string;
   @Input() buttonsPosition: 'left' | 'right' | 'top' | 'bottom';

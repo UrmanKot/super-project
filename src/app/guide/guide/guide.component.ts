@@ -1,10 +1,19 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialogRef} from '@angular/material/dialog';
 import {environment} from '@env/environment.prod';
 
-export type GuideType = 'all' | 'qc' | 'sales' | 'outsource' | 'procurement' | 'production';
+export type GuideType =
+  'all'
+  | 'qc'
+  | 'sales'
+  | 'outsource'
+  | 'procurement'
+  | 'production'
+  | 'warehouse'
+  | 'confirmation'
+  | 'product-structure';
 
 @Component({
   selector: 'app-guide',
@@ -38,21 +47,25 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
     this.choiceType(url);
   }
 
-  goToLink(link: string) {
+  goToLinkWindow(link: string) {
     this.hideGuide();
 
     setTimeout(() => {
       window.open(environment.link_url + link.slice(1) + '?showGuide=true', '_self');
     }, 400);
+  }
 
-    // setTimeout(() => {
-    //   this.router.navigate([link]);
-    //   this.changeRoute(link);
-    // }, 600);
-    //
-    // setTimeout(() => {
-    //   this.openGuide();
-    // }, 1500);
+  goToLink(link: string) {
+    this.hideGuide();
+
+    setTimeout(() => {
+      this.router.navigate([link]);
+      this.changeRoute(link);
+    }, 600);
+
+    setTimeout(() => {
+      this.openGuide();
+    }, 1500);
   }
 
   hideGuide() {
@@ -119,6 +132,12 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
       this.guideType = 'procurement';
     } else if (url.includes('production')) {
       this.guideType = 'production';
+    } else if (url.includes('confirmation')) {
+      this.guideType = 'confirmation';
+    } else if (url.includes('warehouse')) {
+      this.guideType = 'warehouse';
+    } else if (url.includes('product-structure')) {
+      this.guideType = 'product-structure';
     } else {
       this.showLorem = false;
     }
@@ -133,9 +152,16 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onBack() {
-    this.guideType = 'all';
-    this.showLorem = false;
-    this.router.navigate(['/dash']);
+    this.hideGuide();
+
+    setTimeout(() => {
+      this.guideType = 'all';
+      this.router.navigate(['/dash']);
+    }, 600);
+
+    setTimeout(() => {
+      this.openGuide();
+    }, 1500);
   }
 
   plusScale() {
@@ -144,5 +170,18 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   minusScale() {
     this.zoom -= 0.1;
+  }
+
+  @HostListener('window:keydown.escape', ['$event'])
+  closeImageModalKeyDown() {
+    const imageBlock = document.querySelector('.guide__image-box');
+    if (imageBlock.classList.contains('guide__image-box_open')) {
+      imageBlock.classList.remove('guide__image-box_open');
+    }
+  }
+
+  closeImageModal() {
+    const imageBlock = document.querySelector('.guide__image-box');
+    imageBlock.classList.remove('guide__image-box_open');
   }
 }

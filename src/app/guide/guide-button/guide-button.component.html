@@ -1,6 +1,7 @@
 <button
   class="guide-button"
   [class.guide-button_secondary]="btnStyle === 'secondary'"
+  [class.guide-button_outline]="btnStyle === 'outline'"
   [class.guide-button_disabled]="disabled"
   [routerLinkActive]="routeUrl ? 'guide-button_active' : ''"
 >

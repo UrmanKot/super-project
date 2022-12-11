@@ -113,6 +113,6 @@ export class DashboardComponent implements OnInit {
   }
 
   showGuide() {
-    this.modalService.showGuide();
+    this.modalService.showBusinessGuide();
   }
 }

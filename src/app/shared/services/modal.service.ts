@@ -62,7 +62,7 @@ export class ModalService {
       .pipe();
   }
 
-  showGuide(): Observable<any> {
+  showBusinessGuide(): Observable<any> {
     return this.dialog
       .open<GuideComponent>(GuideComponent, {
         width: '100%',

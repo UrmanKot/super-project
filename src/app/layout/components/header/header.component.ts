@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NavigationLink} from '../../navigation-route';
 import {NavigationStart, Router} from '@angular/router';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-header',
@@ -61,6 +62,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private readonly modalService: ModalService,
   ) {
     router.events.forEach(event => {
       if (event instanceof NavigationStart) {
@@ -89,5 +91,9 @@ export class HeaderComponent implements OnInit {
 
   toggleVisibleSettingMenu() {
     this.isShowSettings = !this.isShowSettings;
+  }
+
+  onOpenBusinessGuide() {
+    this.modalService.showBusinessGuide();
   }
 }
