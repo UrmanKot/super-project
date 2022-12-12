@@ -108,7 +108,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   getOrderTechnicalEquipments() {
-    const query = [{name: 'order_id', value: +this.orderId}, {name: 'in_use', value: false}];
+    const query = [{name: 'order', value: +this.orderId}, {name: 'in_use', value: false}];
     this.orderTechnicalEquipmentsService.get(query).pipe(take(1)).subscribe(technicalEquipments => {
       this.technicalEquipments = technicalEquipments;
     });

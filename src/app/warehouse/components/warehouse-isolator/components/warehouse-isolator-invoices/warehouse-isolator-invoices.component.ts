@@ -66,7 +66,7 @@ export class WarehouseIsolatorInvoicesComponent implements OnInit, OnDestroy {
 
   getOrderTechnicalEquipments() {
     this.orderTechnicalEquipmentsService.get([
-      {name: 'order_id', value: this.orderId},
+      {name: 'order', value: this.orderId},
       {name: 'not_passed_quantity__gt', value: 0},
     ]).pipe(take(1), takeUntil(this.destroy$)).subscribe(technicalEquipments => {
       this.orderTechnicalEquipments = technicalEquipments;
