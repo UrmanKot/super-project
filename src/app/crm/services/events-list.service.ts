@@ -136,12 +136,12 @@ export class EventsListService {
       .afterClosed();
   }
 
-  openEditEmployeeEventDatesModal(employeeIds: number[]): Observable<{ start: Date, end: Date }> {
+  openEditEmployeeEventDatesModal(employeeIds: number[], event: EventItem): Observable<{ start: Date, end: Date }> {
     return this.dialog
       .open<EditEmployeeEventDateComponent>(EditEmployeeEventDateComponent, {
         width: '64rem',
         height: 'auto',
-        data: employeeIds,
+        data: {employeeIds, event},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

@@ -46,18 +46,31 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
 
   query: QuerySearch[] = [];
 
+  eventId: number;
+
   constructor(
     private eventsListService: EventsListService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditEmployeeEventDateComponent>,
     private messageService: MessageService,
     private readonly adapterService: AdapterService,
-    @Inject(MAT_DIALOG_DATA) public employeeIds: number[],
+    @Inject(MAT_DIALOG_DATA) public data: { employeeIds: number[], event: EventItem },
   ) {
   }
 
   ngOnInit(): void {
-    this.form.get('employee_ids').patchValue(this.employeeIds.join(','));
+    this.form.get('employee_ids').patchValue(this.data.employeeIds.join(','));
+    if (this.data.event.id) {
+      this.eventId = this.data.event.id;
+
+    }
+    if (this.data.event.start) {
+      this.form.get('start').patchValue(this.data.event.start);
+    }
+    if (this.data.event.end) {
+      this.form.get('end').patchValue(this.data.event.end);
+    }
+    this.search();
   }
 
   events: EventItem[] = [];
@@ -73,7 +86,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       {name: 'employee_ids', value: this.form.get('employee_ids').value},
       {name: 'get_colliding_events_events', value: true},
     ];
-
+    console.log('this.form.get(\'start\').value', this.form.get('start').value);
     if (this.form.get('start').value) {
       this.query.push({
         name: 'from_datetime',
@@ -114,6 +127,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   findCollidingAndSortEvents(): void {
+    this.events  = this.events.filter(event => event.id !== this.eventId);
     this.events.forEach(event => {
       event.startDate = new Date(event.start);
       if (this.form.get('start').value) {
@@ -174,13 +188,17 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   onSelectStartDate(date: Date) {
-    this.form.get('start').patchValue(date);
-    this.search();
+    if (date instanceof Date) {
+      this.form.get('start').patchValue(date);
+      this.search();
+    }
   }
 
   onSelectEndDate(date: Date) {
-    this.form.get('end').patchValue(date);
-    this.search();
+    if (date instanceof Date) {
+      this.form.get('end').patchValue(date);
+      this.search();
+    }
   }
 
   onCloseStartDate(date: Date) {

@@ -61,6 +61,7 @@
               [maxDate]="form.get('end')?.value"
               (clearDate)="onClearStartDate()"
               (setDate)="onSetStartDate($event)"
+              [date]="form.get('start')?.value"
               placeholder="Choice Start Date and Time"
             ></pek-date-time-picker>
           </div>
@@ -72,6 +73,7 @@
               [minDate]="form.get('start')?.value"
               (clearDate)="onClearEndDate()"
               (setDate)="onSetEndDate($event)"
+              [date]="form.get('end')?.value"
               placeholder="Choice End Date and Time"
             ></pek-date-time-picker>
           </div>

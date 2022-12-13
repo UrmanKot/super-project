@@ -101,10 +101,10 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
         this.technicalEquipments = res.map(equipment => {
           return {
             id: equipment.id,
-            technical_equipment: {
-              id: equipment.technical_equipment.id,
-              code: equipment.technical_equipment.code,
-              name: equipment.technical_equipment.name,
+            used_by_nomenclature: {
+              id: equipment.used_by_nomenclature.id,
+              code: equipment.used_by_nomenclature.code,
+              name: equipment.used_by_nomenclature.name,
             },
             quantity: equipment.quantity
           };

@@ -34,6 +34,7 @@ export class CreateEditEventComponent implements OnInit {
   ];
 
   form: FormGroup = this.fb.group({
+    id: [null],
     event_type: [null, [Validators.required]],
     start: [null, [Validators.required]],
     end: [null, [Validators.required]],
@@ -70,6 +71,7 @@ export class CreateEditEventComponent implements OnInit {
 
     if (this.data.modalType === 'edit') {
       this.eventId = this.data.event.id;
+      this.form.get('id').patchValue(this.data.event.id);
       this.form.get('event_type').patchValue(this.data.event.event_type?.id);
       this.form.get('contact_ids').patchValue(this.data.event.on_contacts.map(el => +el.contact_person_id));
       this.form.get('company_ids').patchValue(this.data.event.on_companies.map(el => +el.company_id));
@@ -126,6 +128,25 @@ export class CreateEditEventComponent implements OnInit {
   }
 
   onCreateEvent() {
+    if (this.form.get('employee_ids').value.length > 0) {
+      this.checkEmployeesDatesBeforeAddingUpdating().subscribe(res => {
+        if (res) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Dates colliding.',
+            detail: `Check for colliding dates!`
+          });
+          return;
+        } else {
+          this.addEvent();
+        }
+      });
+    } else {
+      this.addEvent();
+    }
+  }
+
+  addEvent() {
     this.isSaving = true;
     const send = this.form.value;
     send.start = this.adapterService.dateTimeAdapter(this.form.value.start);
@@ -164,8 +185,7 @@ export class CreateEditEventComponent implements OnInit {
           }
         );
       }
-
-      return this.eventListService.getShorts(query).pipe(
+      const res = this.eventListService.getShorts(query).pipe(
         map(events => {
           this.eventsLists = events;
           this.eventsLists = this.eventsLists.filter(event => event.id !== this.eventId);
@@ -179,21 +199,25 @@ export class CreateEditEventComponent implements OnInit {
               event.isDatesColliding = false;
             }
           });
+          console.log('this.eventsLists', this.eventsLists);
           return this.eventsLists.filter(el => el.isDatesColliding).length > 0;
         }));
+      return res;
     }
   }
 
   onEditEvent() {
-    const startDate = new Date(<any>this.scheduleForm.get('start').value);
-    const endDate = new Date(<any>this.scheduleForm.get('end').value);
-    if (startDate.getTime() >= endDate.getTime()) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: `Start time date cannot be greater than End time`
-      });
-      return;
+    if (this.form.get('is_scheduled').value) {
+      const startDate = new Date(<any>this.scheduleForm.get('start').value);
+      const endDate = new Date(<any>this.scheduleForm.get('end').value);
+      if (startDate.getTime() >= endDate.getTime()) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Validation Error',
+          detail: `Start time date cannot be greater than End time`
+        });
+        return;
+      }
     }
 
     this.isSaving = true;
@@ -249,7 +273,7 @@ export class CreateEditEventComponent implements OnInit {
   }
 
   onOpenDatesEmployees() {
-    this.eventListService.openEditEmployeeEventDatesModal(this.form.get('employee_ids').value).subscribe(data => {
+    this.eventListService.openEditEmployeeEventDatesModal(this.form.get('employee_ids').value, this.form.value).subscribe(data => {
       if (data) {
         this.form.patchValue(data);
       }

@@ -30,7 +30,7 @@ export class EditTechnicalEquipmentComponent implements OnInit {
     if (this.form.valid) {
       const data: TechnicalEquipment = {
         id: this.equipment.id,
-        technical_equipment: this.equipment.technical_equipment,
+        used_by_nomenclature: this.equipment.used_by_nomenclature,
         quantity: this.form.get('quantity').value
       }
       this.dialogRef.close(data);

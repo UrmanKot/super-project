@@ -39,11 +39,11 @@
           {{i + 1}}
         </td>
         <td style="width: 23.75%">
-          {{technicalEquipment.technical_equipment.code}}
+          {{technicalEquipment.used_by_nomenclature.code}}
         </td>
         <td style="width: 23.75%">
-          <b *ngIf="technicalEquipment.technical_equipment.bulk_or_serial === '1'">(S)</b>
-          {{technicalEquipment.technical_equipment.name}}
+          <b *ngIf="technicalEquipment.used_by_nomenclature.bulk_or_serial === '1'">(S)</b>
+          {{technicalEquipment.used_by_nomenclature.name}}
         </td>
         <td style="width: 23.75%" class="text-center">
           {{technicalEquipment.quantity}}

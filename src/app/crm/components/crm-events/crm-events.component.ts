@@ -357,7 +357,10 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onEditEvent() {
-    this.eventsListService.openCreateEventEventModal('edit', 'withEmployee', this.selectedEventItem).subscribe(event => {
+    const isWithEventWithEmployee = this.selectedEventItem.employee && this.selectedEventItem.employee.length > 0;
+    this.eventsListService.openCreateEventEventModal('edit',
+      isWithEventWithEmployee ? 'withEmployee' : 'withoutEmployee',
+      this.selectedEventItem).subscribe(event => {
       if (event) {
         this.search();
       }

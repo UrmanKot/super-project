@@ -67,7 +67,7 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     }
     const send: any = {
       id: null,
-      technical_equipment: technicalEquipment,
+      used_by_nomenclature: technicalEquipment,
       quantity: this.sendForm.get('quantity').value,
     };
     this.dialogRef.close(send);

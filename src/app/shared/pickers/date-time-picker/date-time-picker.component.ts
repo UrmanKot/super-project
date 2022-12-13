@@ -25,16 +25,21 @@ export class DateTimePickerComponent implements OnInit, OnChanges {
   @Output() close: EventEmitter<Date> = new EventEmitter<Date>();
   @ViewChild('dateInput') dateInput: ElementRef;
   inputValue = '';
-  date: Date;
-  currentDate: Date;
+  @Input() date: Date;
+  @Input() currentDate: Date;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    if (this.date) {
+      this.currentDate = this.date;
+      this.addDate(this.currentDate)
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    // this.onChange();
   }
 
   clickOutside() {
@@ -58,12 +63,11 @@ export class DateTimePickerComponent implements OnInit, OnChanges {
   }
 
   onSelect() {
+    console.log('this.date onSelect', this.date);
     this.select.emit(this.date)
   }
 
-  addDate() {
-    const date = new Date();
-
+  addDate(date = new Date()) {
     let hour = date.getHours() + '';
     let minutes = date.getMinutes() + '';
 

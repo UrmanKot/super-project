@@ -195,7 +195,7 @@ export class CreateEditWarehouseProductComponent implements OnInit {
           updated_created_technical_equipment: technicalEquipments.map(equipment => {
             return {
               id: equipment.id,
-              technical_equipment: equipment.technical_equipment.id,
+              used_by_nomenclature: equipment.used_by_nomenclature.id,
               quantity: equipment.quantity
             };
           }),

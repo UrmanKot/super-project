@@ -75,7 +75,7 @@ export class AddEventToCompanyComponent implements OnInit {
   }
 
   onOpenDatesEmployees() {
-    this.eventListService.openEditEmployeeEventDatesModal(this.form.get('employee_ids').value).subscribe(data => {
+    this.eventListService.openEditEmployeeEventDatesModal(this.form.get('employee_ids').value, this.form.value).subscribe(data => {
       if (data) {
         this.form.patchValue(data);
       }
