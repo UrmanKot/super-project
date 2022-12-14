@@ -61,6 +61,7 @@ import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
 import { DateTimePickerComponent } from './pickers/date-time-picker/date-time-picker.component';
 import {NgxMaskModule} from 'ngx-mask';
 import { CategoriesTreePickerComponent } from './components/categories-tree-picker/categories-tree-picker.component';
+import { CompanyCategorizedMultiPickerComponent } from './pickers/company-categorized-multi-picker/company-categorized-multi-picker.component';
 
 
 @NgModule({
@@ -103,7 +104,8 @@ import { CategoriesTreePickerComponent } from './components/categories-tree-pick
     UserProfilePickerComponent,
     SortIconComponent,
     DateTimePickerComponent,
-    CategoriesTreePickerComponent
+    CategoriesTreePickerComponent,
+    CompanyCategorizedMultiPickerComponent
   ],
   exports: [
     ButtonModule,
@@ -156,6 +158,7 @@ import { CategoriesTreePickerComponent } from './components/categories-tree-pick
     NomenclaturePickerModalComponent,
     DateTimePickerComponent,
     CategoriesTreePickerComponent,
+    CompanyCategorizedMultiPickerComponent,
   ],
   imports: [
     CommonModule,

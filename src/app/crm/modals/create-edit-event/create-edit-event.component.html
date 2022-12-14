@@ -35,10 +35,14 @@
       <div class="col-6">
         <div class="form-group">
           <label>Companies</label>
-          <pek-multi-company-picker
+<!--          <pek-multi-company-picker-->
+<!--            [currentCompaniesIds]="form.get('company_ids').value"-->
+<!--            (selectCompanies)="onSelectCompanies($event)">-->
+<!--          </pek-multi-company-picker>-->
+          <pek-company-categorized-multi-picker
             [currentCompaniesIds]="form.get('company_ids').value"
-            (selectCompanies)="onSelectCompanies($event)">
-          </pek-multi-company-picker>
+            (selectCompanies)="onSelectCompanies($event)"
+          ></pek-company-categorized-multi-picker>
         </div>
       </div>
       <div class="col-6">

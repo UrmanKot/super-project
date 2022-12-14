@@ -1,0 +1,29 @@
+<div class="company-categorized-multi-picker">
+  <p-treeSelect
+    *ngIf="!isLoading; else spinner"
+    selectionMode="checkbox"
+    [metaKeySelection]="true"
+    [filter]="true"
+    [(ngModel)]="selectedNode"
+    (ngModelChange)="selectionChanged()" [options]="nodes"
+    placeholder="Select Company">
+    <ng-template pTemplate="value" let-options>
+      <ng-template [ngIf]="selectedNode.length === 0">
+        Select Company
+      </ng-template>
+      <ng-template ngFor [ngForOf]="options" let-option let-last=last>
+        <ng-template [ngIf]="option.data.type === 'company'">
+          {{option.data.company.name}} <span *ngIf="!last">,</span>
+        </ng-template>
+      </ng-template>
+    </ng-template>
+    <ng-template pTemplate="empty">
+      Empty
+    </ng-template>
+  </p-treeSelect>
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>
