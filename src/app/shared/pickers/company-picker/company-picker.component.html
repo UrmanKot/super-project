@@ -1,6 +1,6 @@
 <div class="company-picker">
   <p-dropdown
-    *ngIf="!isLoading; else spinner"
+    *ngIf="!isLoading else spinner"
     [options]="companies"
     placeholder="Select Company"
     [(ngModel)]="selectedCompanyId"

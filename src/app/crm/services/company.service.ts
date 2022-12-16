@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {AddEventModalType, Companies, Company} from '../models/company';
 import {map} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
@@ -24,6 +24,8 @@ export class CompanyService {
 
   API_URL = environment.base_url + environment.business_partners_url;
   readonly url = 'companies/';
+  shortsCompaniesResult: ReplaySubject<Partial<Company>[]> = new ReplaySubject<Partial<Company>[]>();
+  isLoadingShortCompanies = false;
 
   constructor(
     private httpClient: HttpClient,
@@ -74,14 +76,19 @@ export class CompanyService {
   }
 
   getShorts(): Observable<Partial<Company>[]> {
-    if (this.shortCompanies) {
-      return of(this.shortCompanies);
+    if (this.isLoadingShortCompanies) {
+      return this.shortsCompaniesResult
+    } else {
+      this.isLoadingShortCompanies = true;
+      return this.getShortsCompanies();
     }
+  }
 
+  getShortsCompanies(): Observable<Partial<Company>[]> {
     return this.httpClient.get<{ data: Partial<Company>[] }>(this.API_URL + this.url + 'get_short_companies_list/').pipe(
       map(response => {
         const shortCompanies = response.data;
-        this.shortCompanies = shortCompanies;
+        this.shortsCompaniesResult.next(shortCompanies);
         return shortCompanies;
       }));
   }
