@@ -12,8 +12,10 @@ import {ContactPersonService} from '../../../crm/services/contact-person.service
 export class MultiContactsPickerComponent implements OnInit, ControlValueAccessor, OnChanges {
 
   @Output() valueChange = new EventEmitter<number[]>();
+  @Output() valueChangeFull = new EventEmitter<ContactPerson[]>();
   contacts: ContactPerson[];
   @Input() contactsList: number[];
+  @Input() contactsListFull: ContactPerson[];
   @Input() searchByCompany = false;
   @Input() companyId: number;
 
@@ -25,6 +27,9 @@ export class MultiContactsPickerComponent implements OnInit, ControlValueAccesso
   ngOnChanges(changes: SimpleChanges): void {
     if ('companyId' in changes) {
       this.search();
+    }
+    if ('contactsListFull' in changes) {
+      this.contactsList = this.contactsListFull.map(contact => contact.id)
     }
   }
 
@@ -46,7 +51,7 @@ export class MultiContactsPickerComponent implements OnInit, ControlValueAccesso
   }
 
   getContactPersons(query: [{ name: string; value: any }]) {
-    this.contactPersonsService.get(query).subscribe(contacts => {
+    this.contactPersonsService.getForce(query).subscribe(contacts => {
       this.contacts = contacts;
       if (this.contactsList) {
         const selectedContacts = this.contacts
@@ -72,6 +77,8 @@ export class MultiContactsPickerComponent implements OnInit, ControlValueAccesso
   private setValue(contactPerson: number[]) {
     this.contactsList = contactPerson;
     this.valueChange.emit(this.contactsList);
+    const foundContacts = this.contacts.filter(contact => contactPerson.findIndex(el => el === contact.id) > -1);
+    this.valueChangeFull.emit(foundContacts);
   }
 
   writeValue(obj: any): void {

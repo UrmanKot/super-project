@@ -3,6 +3,8 @@ import {Company} from '../../../../crm/models/company';
 import {BusinessTripLocationTypes} from '../../../enums/business-trip-location-status.enum';
 import {ModalService} from '@shared/services/modal.service';
 import {BusinessTripLocationMeeting} from '../../../models/business-trip-location-meeting';
+import {Country} from '@shared/models/country';
+import {BusinessTripCountry} from '../../../models/business-trip-country';
 
 @Component({
   selector: 'pek-location-input',
@@ -11,7 +13,7 @@ import {BusinessTripLocationMeeting} from '../../../models/business-trip-locatio
 })
 export class LocationInputComponent implements OnInit {
 
-  @Input() country: string;
+  @Input() country: BusinessTripCountry;
   @Input() address: string;
   @Input() showDelete: boolean;
   @Input() showAddMeetings: boolean;
@@ -19,7 +21,7 @@ export class LocationInputComponent implements OnInit {
   @Input() locationMeetings: BusinessTripLocationMeeting[] = [];
   @Input() showHr = false;
   @Input() type: BusinessTripLocationTypes;
-  @Output() countryChanged: EventEmitter<string> = new EventEmitter<string>();
+  @Output() countryChanged: EventEmitter<BusinessTripCountry> = new EventEmitter<BusinessTripCountry>();
   @Output() addressChanged: EventEmitter<string> = new EventEmitter<string>();
   @Output() meetingsChanged: EventEmitter<BusinessTripLocationMeeting[]> = new EventEmitter<BusinessTripLocationMeeting[]>();
   @Output() emitDeletePoint: EventEmitter<BusinessTripLocationTypes> = new EventEmitter<BusinessTripLocationTypes>();
@@ -61,5 +63,9 @@ export class LocationInputComponent implements OnInit {
         this.updateMeeting();
       }
     });
+  }
+
+  getContactsIds(meeting: BusinessTripLocationMeeting) {
+    return meeting.contacts.map(contact => contact.id);
   }
 }

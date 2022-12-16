@@ -2,8 +2,8 @@
   <div class="col-5">
     <div class="form-group">
       <label>Country</label>
-      <pek-business-trip-country-picker [country]="country"
-                                        (valueChange)="countryChanged.emit($event)"></pek-business-trip-country-picker>
+      <pek-business-trip-country-picker [country]="country?.code"
+                                        (valueChangeFull)="countryChanged.emit($event)"></pek-business-trip-country-picker>
     </div>
   </div>
   <div class="col-5">
@@ -47,15 +47,15 @@
     <div class="col-5">
       <div class="form-group">
         <pek-company-picker
-          [currentCompanyId]="meeting.company"
-          (selectCompany)="meeting.company = $event; updateMeeting()"></pek-company-picker>
+          [currentCompanyId]="meeting.company?.id"
+          (selectCompanyFull)="meeting.company = $event; updateMeeting()"></pek-company-picker>
       </div>
     </div>
     <div class="col-5">
       <div class="form-group">
-        <pek-multi-contacts-picker [contactsList]="meeting.contacts"
-                                   (valueChange)="meeting.contacts = $event; updateMeeting()" [searchByCompany]="true"
-                                   [companyId]="meeting.company"></pek-multi-contacts-picker>
+        <pek-multi-contacts-picker [contactsListFull]="meeting.contacts"
+                                   (valueChangeFull)="meeting.contacts = $event; updateMeeting()" [searchByCompany]="true"
+                                   [companyId]="meeting.company?.id"></pek-multi-contacts-picker>
       </div>
     </div>
     <div class="col-2">

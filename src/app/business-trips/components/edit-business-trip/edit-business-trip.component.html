@@ -279,8 +279,8 @@
                   <div class="col-4">
                     <div class="form-group">
                       <label>Country</label>
-                      <pek-business-trip-country-picker [country]="_hotel.get('hotel_country').value"
-                                                        (valueChange)="_hotel.get('hotel_country').setValue($event)"></pek-business-trip-country-picker>
+                      <pek-business-trip-country-picker [country]="_hotel.get('hotel_country').value?.code"
+                                                        (valueChangeFull)="_hotel.get('hotel_country').setValue($event)"></pek-business-trip-country-picker>
                     </div>
                   </div>
                   <div class="col-4">

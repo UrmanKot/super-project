@@ -116,6 +116,7 @@ export class BusinessTripService {
   }
 
   async exportToExcel(businessTripData: DataToSend, expensesSum: ExpensesSum[]) {
+    console.log('businessTripData 22', businessTripData);
     // Создаем книгу Excel
     const workbook = new Excel.Workbook();
     let worksheet: any;
@@ -186,7 +187,7 @@ export class BusinessTripService {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Starting point',
-        secondCol: startLocation.country + ', ' + startLocation.address
+        secondCol: startLocation.fullCountry.name + ', ' + startLocation.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
@@ -196,20 +197,42 @@ export class BusinessTripService {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Arrival point',
-        secondCol: lastLocation.country + ', ' + lastLocation.address
+        secondCol: lastLocation.fullCountry.name + ', ' + lastLocation.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
     }
-
+    worksheet = this.makeGap(worksheet, 2);
     intermediateLocations.forEach((location, index) => {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Intermediate point ' + (index + 1),
-        secondCol: location.country + ', ' + location.address
+        secondCol: location.fullCountry.name + ', ' + location.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
+      location.location_meetings.forEach((meeting, meetingIndex) => {
+        if (meetingIndex === 0) {
+          worksheet.addRow({
+            index: this.totalDisplayedRows,
+            firstCol: 'Meeting Company ' + (meetingIndex + 1),
+            secondCol: meeting.fullCompany.name
+          });
+        }
+        meeting.fullContacts.forEach((person, personIndex) => {
+          worksheet.addRow({
+            index: this.totalDisplayedRows,
+            firstCol: 'Company Contact Person ' + (personIndex + 1),
+            secondCol: person.fullName
+          });
+          this.totalIndex++;
+          this.totalDisplayedRows++;
+        });
+
+        this.totalIndex++;
+        this.totalDisplayedRows++;
+      });
+      worksheet = this.makeGap(worksheet, 1);
     });
 
     if (businessTripData.purpose_short) {
@@ -246,13 +269,16 @@ export class BusinessTripService {
         this.totalIndex++;
         this.totalDisplayedRows++;
 
-        worksheet.addRow({
-          index: this.totalDisplayedRows,
-          firstCol: 'Hotel Address',
-          secondCol: businessTripData.hotel.country + ', ' + businessTripData.hotel.address
-        });
-        this.totalIndex++;
-        this.totalDisplayedRows++;
+        if (businessTripData.hotel.fullCountry) {
+          worksheet.addRow({
+            index: this.totalDisplayedRows,
+            firstCol: 'Hotel Address',
+            secondCol: businessTripData.hotel.fullCountry.name + ', ' + businessTripData.hotel.address
+          });
+          this.totalIndex++;
+          this.totalDisplayedRows++;
+        }
+
         const start = businessTripData.hotel.residence_start ?
           formatDate(businessTripData.hotel.residence_start, 'dd-MM-yyyy HH:mm', 'en') : '-';
         const end = businessTripData.hotel.residence_end ?
@@ -270,6 +296,30 @@ export class BusinessTripService {
 
     // Vehicle
     if (businessTripData.fullVehicle) {
+      worksheet.addRow({
+        index: this.totalDisplayedRows,
+        firstCol: 'Vehicle Details',
+        secondCol: ''
+      });
+      this.totalIndex++;
+      this.totalDisplayedRows++;
+      let type = '';
+      if (businessTripData.vehicle_type === '1') {
+        type = 'Private';
+      }
+      if (businessTripData.vehicle_type === '2') {
+        type = 'Rent';
+      }
+      if (businessTripData.vehicle_type === '3') {
+        type = 'Company Car';
+      }
+      worksheet.addRow({
+        index: this.totalDisplayedRows,
+        firstCol: 'Type',
+        secondCol: type
+      });
+      this.totalIndex++;
+      this.totalDisplayedRows++;
       const vehicle = businessTripData.fullVehicle;
       worksheet.addRow({
         index: this.totalDisplayedRows,

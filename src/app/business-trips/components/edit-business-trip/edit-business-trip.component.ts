@@ -29,6 +29,7 @@ import {Currency} from '@shared/models/currency';
 import {of} from 'rxjs';
 import {BusinessTripLocationMeeting} from '../../models/business-trip-location-meeting';
 import {ExpenseService} from '../../services/expense.service';
+import { deepCopy } from "deep-copy-ts";
 
 export class DataToSend {
   readonly id?: number;
@@ -137,8 +138,8 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
 
-  prepareForm(): void {
-    this.form = this.fb.group({
+  prepareForm() {
+    return this.fb.group({
       isOtherEmployee: [false],
       employee: this.fb.group({
         id: [null],
@@ -191,7 +192,7 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
   getBusinessTrip(id: number): void {
-    this.prepareForm();
+    this.form = this.prepareForm();
     this.businessService.getDetailed(id).subscribe(trip => {
       this.businessTrip = trip;
       if (this.businessTrip.custom_employee) {
@@ -487,63 +488,81 @@ export class EditBusinessTripComponent implements OnInit {
 
   prepareDataToSend(status: BusinessTripStatus): DataToSend {
     const preparedLocations = [];
-    if (this.form.value.start_location_country) {
+    let tempFormValue = deepCopy(this.form.value);
+
+    if (tempFormValue.start_location_country) {
       const startLocation: BusinessTripLocation = {
-        id: this.form.value.start_location_id,
+        id: tempFormValue.start_location_id,
         type: BusinessTripLocationTypes.FIRST,
-        address: this.form.value.start_location_address,
-        country: this.form.value.start_location_country
+        address: tempFormValue.start_location_address,
+        fullCountry: tempFormValue.start_location_country,
+        country: tempFormValue.start_location_country?.code,
       };
       preparedLocations.push(startLocation);
     }
-    if (this.form.value.last_location_country) {
+    if (tempFormValue.last_location_country) {
       const lastLocation: BusinessTripLocation = {
-        id: this.form.value.last_location_id,
+        id: tempFormValue.last_location_id,
         type: BusinessTripLocationTypes.LAST,
-        address: this.form.value.last_location_address,
-        country: this.form.value.last_location_country,
-        location_meetings: this.form.value.last_location_meetings
+        address: tempFormValue.last_location_address,
+        fullCountry: tempFormValue.last_location_country,
+        country: tempFormValue.last_location_country?.code,
+        location_meetings: tempFormValue.last_location_meetings
       };
       preparedLocations.push(lastLocation);
     }
 
-    const locations = this.form.value.intermediatePoints;
+    const locations = tempFormValue.intermediatePoints;
     locations.forEach(location => {
       location.type = BusinessTripLocationTypes.INTERMEDIATE;
+      location.fullCountry = location.country;
+      location.country = location.country?.code;
     });
+
     preparedLocations.push(...locations);
 
-    const tripStart = this.form.value.trip_start ?
-      this.adapterService.dateTimeAdapter(new Date(this.form.value.trip_start)) : null;
-    const tripEnd = this.form.value.trip_end ?
-      this.adapterService.dateTimeAdapter(new Date(this.form.value.trip_end)) : null;
+    preparedLocations.forEach(location => {
+      if (location.location_meetings) {
+        location.location_meetings.forEach(meeting => {
+          meeting.fullCompany = meeting.company;
+          meeting.fullContacts = meeting.contacts;
+          meeting.company = meeting.company?.id;
+          meeting.contacts = meeting.contacts.map(contact => contact.id);
+        });
+      }
+    });
+    const tripStart = tempFormValue.trip_start ?
+      this.adapterService.dateTimeAdapter(new Date(tempFormValue.trip_start)) : null;
+    const tripEnd = tempFormValue.trip_end ?
+      this.adapterService.dateTimeAdapter(new Date(tempFormValue.trip_end)) : null;
     const dataToSend: DataToSend = {
-      initiator: this.form.value.initiator,
+      initiator: tempFormValue.initiator,
       locations: preparedLocations,
-      purpose_full: this.form.value.purpose_full ? this.form.value.purpose_full : null,
-      purpose_short: this.form.value.purpose_short ? this.form.value.purpose_short : null,
-      vehicle_type: this.form.value.vehicle_type,
+      purpose_full: tempFormValue.purpose_full ? tempFormValue.purpose_full : null,
+      purpose_short: tempFormValue.purpose_short ? tempFormValue.purpose_short : null,
+      vehicle_type: tempFormValue.vehicle_type,
       trip_end: tripEnd ? tripEnd : null,
       trip_start: tripStart ? tripStart : null,
       expenses: [],
-      start_mileage: this.form.value.start_mileage,
-      end_mileage: this.form.value.end_mileage,
+      start_mileage: tempFormValue.start_mileage,
+      end_mileage: tempFormValue.end_mileage,
       status,
     };
 
-    if (this.form.value.hotel.hotel_name && this.form.value.showHotel) {
-      const hotelStartDate = this.form.value.hotel.residence_start ?
-        this.adapterService.dateAdapter(new Date(this.form.value.hotel.residence_start)) : null;
-      const hotelEndDate = this.form.value.hotel.residence_end ?
-        this.adapterService.dateAdapter(new Date(this.form.value.hotel.residence_end)) : null;
+    if (tempFormValue.hotel.hotel_name && tempFormValue.showHotel) {
+      const hotelStartDate = tempFormValue.hotel.residence_start ?
+        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_start)) : null;
+      const hotelEndDate = tempFormValue.hotel.residence_end ?
+        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_end)) : null;
       dataToSend.hotel = {
         residence_start: hotelStartDate ? hotelStartDate : null,
         residence_end: hotelEndDate ? hotelEndDate : null,
-        address: this.form.value.hotel.hotel_address,
-        country: this.form.value.hotel.hotel_country,
-        name: this.form.value.hotel.hotel_name,
-        id: this.form.value.hotel.id,
-        files: this.form.value.hotel.files,
+        address: tempFormValue.hotel.hotel_address,
+        country: tempFormValue.hotel.hotel_country.code,
+        fullCountry: tempFormValue.hotel.hotel_country,
+        name: tempFormValue.hotel.hotel_name,
+        id: tempFormValue.hotel.id,
+        files: tempFormValue.hotel.files,
       };
 
       if (!dataToSend.hotel.residence_start ||
@@ -555,27 +574,27 @@ export class EditBusinessTripComponent implements OnInit {
       }
     }
 
-    if (this.form.value.employee.id) {
-      dataToSend.employee = this.form.value.employee.id;
-      dataToSend.full_employee = this.form.value.employee;
+    if (tempFormValue.employee.id) {
+      dataToSend.employee = tempFormValue.employee.id;
+      dataToSend.full_employee = tempFormValue.employee;
     } else {
       dataToSend.custom_employee = {
-        id: this.form.value.employee_id,
-        first_name: this.form.value.employee_first_name,
-        last_name: this.form.value.employee_last_name,
-        position: this.form.value.employee_position,
+        id: tempFormValue.employee_id,
+        first_name: tempFormValue.employee_first_name,
+        last_name: tempFormValue.employee_last_name,
+        position: tempFormValue.employee_position,
       };
       dataToSend.full_employee = dataToSend.custom_employee;
     }
 
-    if (this.form.value.vehicle_type !== '0') {
-      if (this.form.value.vehicle.id && this.form.value.vehicle_type === '3') {
-        dataToSend.vehicle = this.form.value.vehicle.id;
-      } else if ((this.form.value.vehicle_type === '1' || this.form.value.vehicle_type === '2') && this.form.value.vehicle_model) {
+    if (tempFormValue.vehicle_type !== '0') {
+      if (tempFormValue.vehicle.id && tempFormValue.vehicle_type === '3') {
+        dataToSend.vehicle = tempFormValue.vehicle.id;
+      } else if ((tempFormValue.vehicle_type === '1' || tempFormValue.vehicle_type === '2') && tempFormValue.vehicle_model) {
         dataToSend.custom_vehicle = {
-          id: this.form.value.vehicle_id,
-          model: this.form.value.vehicle_model,
-          number: this.form.value.vehicle_number,
+          id: tempFormValue.vehicle_id,
+          model: tempFormValue.vehicle_model,
+          number: tempFormValue.vehicle_number,
         };
       } else {
         dataToSend.vehicle = null;
@@ -587,8 +606,8 @@ export class EditBusinessTripComponent implements OnInit {
     }
 
 
-    if (this.form.value.expenses) {
-      this.form.value.expenses.forEach((tripExpense) => {
+    if (tempFormValue.expenses) {
+      tempFormValue.expenses.forEach((tripExpense) => {
         const businessExpense: BusinessTripExpense = {
           currency: tripExpense.currency,
           id: tripExpense.id,
@@ -616,7 +635,7 @@ export class EditBusinessTripComponent implements OnInit {
     dataToSend.delete_hotel_files_ids = this.hotelFilesToDeleteIds;
     dataToSend.delete_location_ids = this.pointsToDeleteIds;
     dataToSend.delete_expenses_ids = this.expensesToDeleteIds;
-    console.log('dataToSend', dataToSend);
+    console.log(this.form.value);
     return dataToSend;
   }
 

@@ -27,6 +27,7 @@ export class ContactPersonService {
   readonly url = 'contact_persons/';
 
   contactPersons: ContactPerson[];
+  query;
 
   constructor(
     private httpClient: HttpClient,
@@ -38,7 +39,10 @@ export class ContactPersonService {
     if (this.contactPersons) {
       return of(this.contactPersons);
     }
+    this.getForce(query, true);
+  }
 
+  getForce(query?: QuerySearch[], saveCache = false): Observable<ContactPerson[]> {
     let queryParams = '';
     if (query) {
       query.forEach((element, index) => {
@@ -58,7 +62,9 @@ export class ContactPersonService {
             fullName: `${p.first_name} ${p.last_name}`
           };
         });
-        this.contactPersons = contactPersons;
+        if (saveCache) {
+          this.contactPersons = contactPersons;
+        }
         return contactPersons;
       })
     );

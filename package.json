@@ -27,6 +27,7 @@
     "@fullcalendar/list": "^5.11.3",
     "@fullcalendar/timegrid": "^5.11.3",
     "bootstrap": "^5.2.0",
+    "deep-copy-ts": "^0.5.4",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
     "lodash-es": "^4.17.21",

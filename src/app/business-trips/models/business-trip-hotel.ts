@@ -1,3 +1,5 @@
+import {BusinessTripCountry} from './business-trip-country';
+
 export class BusinessTripHotel {
   readonly id?: number;
   residence_start?: string;
@@ -5,6 +7,7 @@ export class BusinessTripHotel {
   file?: string;
   address?: string;
   country?: string;
+  fullCountry?: BusinessTripCountry;
   name?: string;
   files?: any;
 }

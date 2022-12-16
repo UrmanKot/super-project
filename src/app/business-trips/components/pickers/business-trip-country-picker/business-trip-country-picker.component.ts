@@ -16,8 +16,10 @@ import {BusinessTripCountryService} from '../../../services/business-trip-countr
 export class BusinessTripCountryPickerComponent implements OnInit, ControlValueAccessor {
   @Input() countries: BusinessTripCountry[];
   @Input() country: string;
+  @Input() countrySelected: BusinessTripCountry;
   @Input() preloadedCountries: boolean;
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() valueChangeFull: EventEmitter<BusinessTripCountry> = new EventEmitter<BusinessTripCountry>();
 
   constructor(
     private businessCountryService: BusinessTripCountryService,
@@ -51,6 +53,8 @@ export class BusinessTripCountryPickerComponent implements OnInit, ControlValueA
   private setValue(country: string) {
     this.country = country;
     this.valueChange.emit(this.country);
+    this.countrySelected = this.countries.find(country => country.code === this.country);
+    this.valueChangeFull.emit(this.countrySelected);
   }
 
   writeValue(obj: any): void {
