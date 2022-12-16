@@ -1,0 +1,175 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="data.type === 'add'">Add Expense</span>
+    <span *ngIf="data.type === 'edit'">Edit Expense</span>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label style="display: block" for="other">Not Listed Expenses</label>
+          <p-checkbox
+            id="other"
+            [disabled]="isEditDisabled"
+            formControlName="isOther"
+            (onChange)="changed()"
+            [binary]="true"
+          ></p-checkbox>
+        </div>
+      </div>
+    </div>
+    <ng-template [ngIf]="form.get('isOther').value">
+      <div class="row" formGroupName="custom_expense">
+        <div class="col-6">
+          <div class="form-group">
+            <label for="name"> Expanse Title </label>
+            <input
+              pInputText
+              formControlName="name"
+              [attr.disabled]="isEditDisabled ? '' : null"
+              (ngModelChange)="changedField()"
+              class="form-control"
+              type="text"
+              id="name"
+            />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="custom_description"> Expanse Description </label>
+            <input
+              pInputText
+              formControlName="description"
+              [attr.disabled]="isEditDisabled ? '' : null"
+              (ngModelChange)="changedField()"
+              class="form-control"
+              type="text"
+              id="custom_description"
+            />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template [ngIf]="!form.get('isOther').value">
+      <div class="row" formGroupName="expense">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Expense Title</label>
+            <pek-expense-picker
+              [isDisabled]="isEditDisabled"
+              [expense]="_expense.get('id').value"
+              (valueChange)="expenseChanged($event); changedField()"
+            ></pek-expense-picker>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="description"> Expanse Description </label>
+            <input
+              [disabled]="true"
+              pInputText
+              formControlName="description"
+              class="form-control"
+              type="text"
+              id="description"
+            />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group" formGroupName="expense">
+          <label>Currency</label>
+          <pek-currency-picker
+            [isDisabled]="isEditDisabled"
+            [currency]="_currency.get('code').value"
+            (valueChange)="currencyChanged($event); changedField()"
+          >
+          </pek-currency-picker>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="price"> Sum </label>
+          <input
+            pInputText
+            id="price"
+            formControlName="sum"
+            [attr.disabled]="isEditDisabled ? '' : null"
+            (ngModelChange)="changedField()"
+            type="number"
+            step="0.01"
+            min="0"
+            class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="auth.user.can_verify_expenses && canVerify" class="row">
+      <div class="form-group col-2">
+        <label for="is_verified">Is Verified</label><br>
+        <p-checkbox
+          id="is_verified"
+          formControlName="is_verified"
+          [binary]="true"
+        ></p-checkbox>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-6">
+        <label for="file" class="input-file d-flex align-items-center">
+          <input [disabled]="isEditDisabled" type="file" id="file" #inputFile
+                 (input)="imageManipulation($event, $event.target)">
+          <span><i class="fa fa-download"></i>Choose File</span>
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-camera"
+            class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small ml-3 mt-1"
+            (click)="takePhoto()"
+          ></button>
+        </label>
+      </div>
+      <div class="form-group col-6 pt-2 d-flex justify-content-end justify-content-center">
+        <span>
+          <a *ngIf="form.get('file').value && !form.get('uploaded_file').value"
+             href="javascript:void(0)" (click)="viewFile()">
+                {{ getName(form.get('file').value) }}
+          </a>
+          <a *ngIf="form.get('uploaded_file').value" href="javascript:void(0)" (click)="viewFile()">
+            {{ form.get('uploaded_file').value.name }}
+          </a>
+              <button *ngIf="file || this.form.get('file').value || this.form.get('uploaded_file').value || this.form.get('base64File').value" class="remove" (click)="clearFile()">
+      <i class="pi pi-times"></i>
+      Remove File
+    </button>
+        </span>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="justify-content-between">
+  <button pButton label="Cancel" type="button" class="p-button-danger" [mat-dialog-close]="false"></button>
+  <button
+    pButton
+    [label]="'Add'"
+    *ngIf="data.type === 'add'"
+    type="button"
+    class="p-button-success"
+    (click)="addExpanse()"
+  ></button>
+  <button
+    pButton
+    [label]="'Edit'"
+    *ngIf="data.type === 'edit'"
+    type="button"
+    class="p-button-success"
+    (click)="editExpanse()"
+  ></button>
+</mat-dialog-actions>

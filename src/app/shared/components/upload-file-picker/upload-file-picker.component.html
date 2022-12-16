@@ -1,0 +1,15 @@
+<label> Files </label>
+<p-fileUpload (onRemove)="removeFile($event)" (onClear)="clearFiles()" [files]="files" (onSelect)="filesSelected($event)"
+              name="file[]"
+              [customUpload]="true" [multiple]="true"
+              (onUpload)="onBasicUpload($event)" [showUploadButton]="false">
+  <ng-template pTemplate="toolbar">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-camera"
+      class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small ml-1 mb-2"
+      (click)="takePhoto()"
+    ></button>
+  </ng-template>
+</p-fileUpload>

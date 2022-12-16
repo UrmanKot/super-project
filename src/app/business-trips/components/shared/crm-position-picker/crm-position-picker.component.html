@@ -1,0 +1,11 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="true"
+  [(ngModel)]="position"
+  [options]="positions"
+  [disabled]="isLoading || isDisabled"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="title"
+  placeholder="Choose Position">
+</p-dropdown>

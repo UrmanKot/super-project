@@ -1,0 +1,7 @@
+<p-multiSelect
+  optionValue="value"
+  optionLabel="title"
+  [options]="statuses"
+  [(ngModel)]="selectedStatuses"
+  (ngModelChange)="onChange($event)"
+></p-multiSelect>

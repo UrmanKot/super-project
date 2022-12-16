@@ -1,0 +1,22 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="vehicle"
+  [options]="vehicles"
+  [disabled]="isLoading"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="model"
+  placeholder="Choose Vehicle">
+  <ng-template pTemplate="selectedItem">
+    <div class="country-item country-item-value" *ngIf="vehicle">
+      <div>{{selectedVehicle.model}}</div>
+    </div>
+  </ng-template>
+
+  <ng-template let-vehicle pTemplate="item">
+    <div class="country-item">
+      <div>{{vehicle.model}} ({{vehicle.number}})</div>
+    </div>
+  </ng-template>
+</p-dropdown>

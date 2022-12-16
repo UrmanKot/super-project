@@ -1,0 +1,524 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'business-trip'" [isActive]="true"></pek-module-icon>
+      <h1>Edit Business Trip</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-file-excel"
+        label="Export to xls"
+        class="p-button-secondary mr-2"
+        (click)="export()">
+      </button>
+      <button
+        pButton
+        *ngIf="isVerify"
+        type="button"
+        icon="pi pi-check"
+        label="Verify BT"
+        (click)="editBusinessTrip(tripStatuses.VERIFIED)">
+      </button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="Save"
+        (click)="editBusinessTrip(tripStatuses.NEED_VERIFICATION)">
+      </button>
+    </div>
+  </div>
+</div>
+
+<form  [formGroup]="form">
+  <div class="page__content">
+    <h2 class="mb-4">Employee</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label for="other">Not Listed Employee</label>
+              <p-checkbox
+                id="other"
+                formControlName="isOtherEmployee"
+                [binary]="true"
+                (onChange)="employeeChanged()"
+              ></p-checkbox>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="form.get('isOtherEmployee').value else predefinedEmployee">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>First Name</label>
+                <input pInputText
+                       formControlName="employee_first_name"
+                       class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Last Name</label>
+                <input pInputText
+                       formControlName="employee_last_name"
+                       class="form-control">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Position</label>
+                <app-crm-position-picker
+                  [position]="this.form.get('employee_position').value"
+                  (valueChange)="form.get('employee_position').setValue($event)"
+                ></app-crm-position-picker>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #predefinedEmployee>
+          <div formGroupName="employee">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <pek-crm-single-employee-picker
+                    [filters]="employeeFilter"
+                    [showProfession]="true"
+                    [employee]="_employee.get('id').value"
+                    (valueChange)="_employee.setValue($event)"
+                  ></pek-crm-single-employee-picker>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input pInputText
+                         [disabled]="true"
+                         formControlName="last_name"
+                         class="form-control">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Position</label>
+                  <input
+                    pInputText
+                    disabled
+                    [ngModel]="_employee.get('position').value ? _employee.get('position').value.title : null"
+                    [ngModelOptions]="{standalone: true}"
+                    class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Date Trip Start/End</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Start Date an time</label>
+            <pek-date-time-picker
+              [maxDate]="form.get('trip_end')?.value"
+              [date]="form.get('trip_start')?.value"
+              (setDate)="setStartValue($event)"
+              placeholder="Choice Start Date and Time"
+            ></pek-date-time-picker>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>End Date</label>
+            <pek-date-time-picker
+              [minDate]="form.get('trip_start')?.value"
+              [date]="form.get('trip_end')?.value"
+              (setDate)="setEndValue($event)"
+              placeholder="Choice End Date and Time"
+            ></pek-date-time-picker>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Points Start/Arrival</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <h2><b>Starting Point</b></h2>
+          </div>
+        </div>
+      </div>
+      <pek-location-input
+        [country]="this.form.get('start_location_country').value"
+        [address]="this.form.get('start_location_address').value"
+        [type]="locationStatus.FIRST"
+        [showHr]="false"
+        (countryChanged)="form.get('start_location_country').setValue($event)"
+        (addressChanged)="form.get('start_location_address').setValue($event)"
+      ></pek-location-input>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <h2><b>Arrival Point</b></h2>
+          </div>
+        </div>
+      </div>
+      <pek-location-input
+        [country]="this.form.get('last_location_country').value"
+        [address]="this.form.get('last_location_address').value"
+        [type]="locationStatus.LAST"
+        [showHr]="false"
+        [companiesFilters]="companiesFilters"
+        [locationMeetings]="this.form.get('last_location_meetings').value"
+        (meetingsChanged)="lastPointMeetingChanged($event)"
+        (countryChanged)="form.get('last_location_country').setValue($event)"
+        (addressChanged)="form.get('last_location_address').setValue($event)"
+        [showAddMeetings]="true"
+      ></pek-location-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4 d-flex justify-content-between">Intermediate Points
+      <button pButton type="button" icon="pi pi-plus" label="Add Intermediate Point" (click)="addIntermediatePoint()"></button>
+    </h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <pek-location-input
+              *ngFor="let point of _intermediatePoints; let index=index; let last=last"
+              [country]="point.get('country').value"
+              [address]="point.get('address').value"
+              [locationMeetings]="point.get('location_meetings').value"
+              [showHr]="!last"
+              class="location"
+              [class.last]="last"
+              [showDelete]="true"
+              [companiesFilters]="companiesFilters"
+              (emitDeletePoint)="removePoint(point, index)"
+              (meetingsChanged)="meetingChanged(point, $event)"
+              [type]="locationStatus.INTERMEDIATE"
+              (countryChanged)="point.get('country').setValue($event)"
+              (addressChanged)="point.get('address').setValue($event)"
+              [showAddMeetings]="true"
+            ></pek-location-input>
+        <div class="d-flex justify-content-center" *ngIf="_intermediatePoints.length === 0">
+          <h2>
+            No Intermediate Points
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Purpose</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Purpose short</label>
+                  <input pInputText formControlName="purpose_short" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Purpose Description</label>
+                  <textarea pInputTextarea formControlName="purpose_full" class="form-control" id="comment"></textarea>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Hotel</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <div class="row">
+              <div class="col-1">
+                <div class="form-group">
+                  <label>Include Hotel</label>
+                  <p-checkbox
+                    formControlName="showHotel"
+                    (ngModelChange)="changedValue($event)"
+                    [binary]="true"
+                  ></p-checkbox>
+                </div>
+              </div>
+            </div>
+            <ng-template [ngIf]="this.form.get('showHotel').value">
+              <div formGroupName="hotel">
+                <div class="row">
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input pInputText formControlName="hotel_name" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Country</label>
+                      <pek-business-trip-country-picker [country]="_hotel.get('hotel_country').value"
+                                                        (valueChange)="_hotel.get('hotel_country').setValue($event)"></pek-business-trip-country-picker>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Address</label>
+                      <input pInputText formControlName="hotel_address" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Residence Start Date</label>
+                      <p-calendar
+                        [firstDayOfWeek]="1"
+                        (onClickOutside)="clickHotelOutside('start')"
+                        #startHotel
+                        [hideOnDateTimeSelect]="false"
+                        hourFormat="24"
+                        [showButtonBar]="true"
+                        formControlName="residence_start"
+                        dataType="date"
+                        dateFormat="dd/mm/yy"
+                        [readonlyInput]="true"
+                      >
+                        <p-footer
+                          class="d-flex justify-content-center align-items-center"
+                          *ngIf="startHotel.value"
+                        >
+                          <button
+                            class="btn btn-primary position-absolute mb-5"
+                            (click)="setHotelStartValue(startHotel.value); startHotel.toggle()"
+                          >
+                            Set Date
+                          </button>
+                        </p-footer>
+                      </p-calendar>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Residence End Date</label>
+                      <p-calendar
+                        [firstDayOfWeek]="1"
+                        (onClickOutside)="clickHotelOutside('end')"
+                        #endHotel
+                        [minDate]="_hotel.controls['residence_start']?.value"
+                        [disabled]="!_hotel.get('residence_start').value"
+                        [hideOnDateTimeSelect]="false"
+                        [showButtonBar]="true"
+                        hourFormat="24"
+                        formControlName="residence_end"
+                        dataType="date"
+                        dateFormat="dd/mm/yy"
+                        [readonlyInput]="true"
+                      >
+                        <p-footer
+                          class="d-flex justify-content-center align-items-center"
+                          *ngIf="endHotel.value"
+                        >
+                          <button
+                            class="btn btn-primary position-absolute mb-5"
+                            (click)="setHotelEndValue(endHotel.value); endHotel.toggle()"
+                          >
+                            Set Date
+                          </button>
+                        </p-footer>
+                      </p-calendar>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <pek-upload-file-picker (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-11">
+                    <div class="form-group">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <div class="form-group">
+                      <button pButton type="button" icon="fa fa-eye" label="View files" (click)="viewHotelFiles()"></button>
+                    </div>
+                  </div>
+                </div>
+                <p-table
+                  [paginator]="true"
+                  [rows]="10"
+                  [value]="preparedFiles"
+                  selectionMode="single"
+                  [scrollable]="true"
+                  [(selection)]="selectedHotelFile"
+                >
+                  <ng-template pTemplate="caption">
+                    <div class="d-flex align-items-center">
+                      <p class="subtitle ml-1 mr-2" *ngIf="!selectedHotelFile">Choose the Hotel Files to edit</p>
+                      <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedHotelFile"></p-menubar>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="index-header">#</th>
+                      <th>File</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-file let-i="rowIndex">
+                    <tr [pSelectableRow]="file">
+                      <td>{{ i + 1 }}</td>
+                      <td>
+                        <a href="javascript:void(0)" (click)="downloadHotelFile(file)">
+                          {{ getName(file.file) }}
+                        </a>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Vehicle</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Vehicle Type</label>
+                  <pek-vehicle-type-picker [type]="form.get('vehicle_type').value"
+                                           (valueChange)="changedVechicleType($event)"></pek-vehicle-type-picker>
+                </div>
+              </div>
+              <ng-template [ngIf]="form.get('vehicle_type').value === '1' ||  form.get('vehicle_type').value === '2'">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Vehicle Model</label>
+                    <input pInputText formControlName="vehicle_model" class="form-control">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Vehicle Registration Plate</label>
+                    <input pInputText formControlName="vehicle_number" class="form-control">
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template [ngIf]="form.get('vehicle_type').value === '3'">
+                <div formGroupName="vehicle"  class="col-4">
+                  <div class="form-group">
+                    <label>Vehicle</label>
+                    <pek-vehicle-picker
+                      [placeholder]="'Vehicle Model'"
+                      [vehicle]="_vehicle.get('id').value"
+                      (valueChange)="_vehicle.setValue($event)"
+                    ></pek-vehicle-picker>
+                  </div>
+                </div>
+                <div formGroupName="vehicle"  class="col-4">
+                  <div class="form-group">
+                    <label>Vehicle Registration Plate</label>
+                    <input pInputText [disabled]="true" formControlName="number" class="form-control">
+                  </div>
+                </div>
+              </ng-template>
+
+              <div *ngIf="form.get('vehicle_type').value !== '0'" class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Start Mileage</label>
+                    <input pInputText formControlName="start_mileage" class="form-control">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>End Mileage</label>
+                    <input pInputText formControlName="end_mileage" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Initiator</h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Initiator</label>
+                  <pek-crm-single-employee-picker
+                    [employee]="this.form.get('initiator').value"
+                    (valueChange)="form.get('initiator').setValue($event.id)"
+                  ></pek-crm-single-employee-picker>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4 d-flex justify-content-between">
+      Expenses
+      <button pButton type="button" icon="pi pi-plus" label="Add Expense" (click)="addTripExpanses()"></button>
+    </h2>
+    <div class="page__card">
+      <div *ngIf="isDataPrepared else infoLoading">
+            <pek-trip-expenses-table
+              *ngIf="tripExpenses.length > 0 && !isExpensesRefreshing"
+              [tripExpenses]="tripExpenses"
+              (deleteExpense)="deleteExpense($event)"
+              (editExpense)="editTripExpense($event)"
+              (expenseSumEmit)="expensesSum = $event"
+            ></pek-trip-expenses-table>
+      <div class="d-flex justify-content-center" *ngIf="tripExpenses.length === 0">
+        <h2>
+          No Expenses
+        </h2>
+      </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>

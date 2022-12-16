@@ -1,0 +1,25 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="employee"
+  [options]="employees"
+  [disabled]="isLoading"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="first_name"
+  [placeholder]="placeholder">
+
+  <ng-template pTemplate="selectedItem">
+    <div class="country-item country-item-value" *ngIf="selectedEmployee">
+      <div *ngIf="showProfession" >{{selectedEmployee.first_name}}</div>
+      <div *ngIf="!showProfession">{{selectedEmployee.first_name}} {{selectedEmployee.last_name}}</div>
+    </div>
+  </ng-template>
+
+  <ng-template let-employee pTemplate="item">
+    <div class="country-item">
+      <div *ngIf="showProfession" >{{employee.first_name}} {{employee.last_name}} ({{employee.position ? employee.position.title : 'No position'}})</div>
+      <div *ngIf="!showProfession">{{employee.first_name}} {{employee.last_name}}</div>
+    </div>
+  </ng-template>
+</p-dropdown>

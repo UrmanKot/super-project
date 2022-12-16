@@ -1,0 +1,11 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="expense"
+  [options]="expenses"
+  [disabled]="isLoading || isDisabled"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="name"
+  placeholder="Choose Expanse">
+</p-dropdown>

@@ -44,6 +44,10 @@ const routes: Routes = [
         title: 'CRM',
         loadChildren: () => import('./crm/crm.module').then(m => m.CrmModule)
       },
+      {
+        path: 'business-trips',
+        title: 'Business Trips',
+        loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule) },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },

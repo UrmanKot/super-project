@@ -57,6 +57,16 @@ export class CrmEmployeeService {
       }));
   }
 
+  getById(id): Observable<CRMEmployee> {
+    return this.httpClient
+      .get<{ data: CRMEmployee }>(this.API_URL + this.url + id + '/')
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
   create(employee: Partial<CRMEmployee>): Observable<CRMEmployee> {
     return this.httpClient.post<{ data: CRMEmployee }>(this.API_URL + this.url, employee).pipe(
       map(response => response.data)

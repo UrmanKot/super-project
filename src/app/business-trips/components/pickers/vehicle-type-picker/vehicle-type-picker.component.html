@@ -1,0 +1,9 @@
+<p-dropdown
+  [filter]="true"
+  [(ngModel)]="type"
+  [options]="types"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="value"
+  placeholder="Choose Vehicle Type">
+</p-dropdown>

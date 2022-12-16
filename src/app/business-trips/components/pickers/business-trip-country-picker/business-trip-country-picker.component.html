@@ -1,0 +1,9 @@
+<p-dropdown
+  [filter]="true"
+  [options]="countries"
+  [(ngModel)]="country"
+  optionValue="code"
+  optionLabel="name"
+  placeholder="No Country Selected"
+  (ngModelChange)="onChange($event)"
+></p-dropdown>
