@@ -1,0 +1,32 @@
+<div class="gallery-slider" *ngIf="dataToDisplay.length > 0">
+  <div class="gallery-slider__wrapper">
+    <div
+      class="gallery-slider__inner"
+      [style.width]="galleryWidth * dataToDisplay.length + 'px'"
+      [style.transform]="'translateX(-' + offsetSlider + 'px)'"
+    >
+      <div class="gallery-slider__slide" *ngFor="let file of dataToDisplay; let idx = index">
+        <img [alt]="'Слайда ' + idx + 1"
+             *ngIf="file.extension === 'image'"
+             alt="file"
+             [src]="file.type === 'uploaded' ? url + file.file.file : file.file.file">
+        <pdf-viewer *ngIf="file.extension === 'pdf'"
+                    [src]="file.type === 'uploaded' ? url + file.file.file : file.file.file"
+                    [render-text]="true"
+                    [original-size]="false"
+                    style="width: 1300px; height: 830px"
+        ></pdf-viewer>
+        <div class="no-supported-file" *ngIf="file.extension === 'noSupported'">File Not Supported For Preview</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-primary" placement="bottom"
+          ngbTooltip="Download" (click)="downloadMyFile()">
+    <i class="pi pi-arrow-circle-down"></i>
+  </button>
+  <i class="arrows pi pi-chevron-left btn btn-prev" (click)="onSlidePrev()" *ngIf="dataToDisplay.length > 1"></i>
+  <i class="arrows pi pi-chevron-right btn btn-next" (click)="onSlideNext()" *ngIf="dataToDisplay.length > 1"></i>
+</div>
+<div class="slider-none" *ngIf="dataToDisplay.length === 0">
+  No Files
+</div>

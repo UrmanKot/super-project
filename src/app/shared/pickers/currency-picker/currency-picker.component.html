@@ -1,0 +1,11 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="currency"
+  [options]="currencies"
+  [disabled]="isLoading || isDisabled"
+  (ngModelChange)="onChange($event)"
+  optionValue="code"
+  optionLabel="name"
+  placeholder="Choose Currency">
+</p-dropdown>

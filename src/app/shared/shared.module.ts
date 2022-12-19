@@ -62,6 +62,11 @@ import { DateTimePickerComponent } from './pickers/date-time-picker/date-time-pi
 import {NgxMaskModule} from 'ngx-mask';
 import { CategoriesTreePickerComponent } from './components/categories-tree-picker/categories-tree-picker.component';
 import { CompanyCategorizedMultiPickerComponent } from './pickers/company-categorized-multi-picker/company-categorized-multi-picker.component';
+import {CrmSingleEmployeePickerComponent} from '@shared/pickers/crm-employee-picker/crm-single-employee-picker.component';
+import { MultiContactsPickerComponent } from './pickers/multi-contacts-picker/multi-contacts-picker.component';
+import { UploadFilePickerComponent } from './components/upload-file-picker/upload-file-picker.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import {CurrencyPickerComponent} from '@shared/pickers/currency-picker/currency-picker.component';
 
 
 @NgModule({
@@ -105,7 +110,11 @@ import { CompanyCategorizedMultiPickerComponent } from './pickers/company-catego
     SortIconComponent,
     DateTimePickerComponent,
     CategoriesTreePickerComponent,
-    CompanyCategorizedMultiPickerComponent
+    CompanyCategorizedMultiPickerComponent,
+    CrmSingleEmployeePickerComponent,
+    MultiContactsPickerComponent,
+    UploadFilePickerComponent,
+    CurrencyPickerComponent,
   ],
   exports: [
     ButtonModule,
@@ -159,6 +168,10 @@ import { CompanyCategorizedMultiPickerComponent } from './pickers/company-catego
     DateTimePickerComponent,
     CategoriesTreePickerComponent,
     CompanyCategorizedMultiPickerComponent,
+    CrmSingleEmployeePickerComponent,
+    MultiContactsPickerComponent,
+    UploadFilePickerComponent,
+    CurrencyPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -181,6 +194,7 @@ import { CompanyCategorizedMultiPickerComponent } from './pickers/company-catego
     MultiSelectModule,
     CalendarModule,
     NgxMaskModule.forRoot(),
+    FileUploadModule,
   ]
 })
 export class SharedModule { }

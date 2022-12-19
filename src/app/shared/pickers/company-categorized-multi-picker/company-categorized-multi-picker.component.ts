@@ -36,7 +36,6 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
       this.getCategories(),
       this.getCompanies()
     ).subscribe(() => {
-      console.log('currentCompaniesIds', this.currentCompaniesIds);
       this.companyCategories.forEach(category => {
         const companiesOfCategory = this.companies.filter(company => company.categories.findIndex(id => id === category.id) > -1);
         const preparedCategory: TreeNode = {
@@ -94,7 +93,6 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
       }
     });
     this.selectedNode = [...this.selectedNode.filter(this.onlyUniqueByKey)];
-    console.log('this.selectedNode', this.selectedNode);
   }
 
   getCategories() {

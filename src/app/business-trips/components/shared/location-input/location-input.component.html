@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="col-5">
+    <div class="form-group">
+      <label>Country</label>
+      <pek-business-trip-country-picker [country]="country?.code"
+                                        (valueChangeFull)="countryChanged.emit($event)"></pek-business-trip-country-picker>
+    </div>
+  </div>
+  <div class="col-5">
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input pInputText
+             [(ngModel)]="address"
+             (ngModelChange)="addressChanged.emit($event)"
+             class="form-control" type="text"
+             id="address">
+    </div>
+  </div>
+  <div class="col-2">
+    <div class="form-group">
+      <label>&nbsp; </label>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-trash"
+        *ngIf="showDelete"
+        class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small mr-2 mt-1"
+        (click)="delete()"
+      ></button>
+    </div>
+  </div>
+
+  <ng-template [ngIf]="locationMeetings.length > 0">
+    <div class="col-5">
+      <div class="form-group">
+        <label>Company</label>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="form-group">
+        <label>Contacts</label>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template ngFor [ngForOf]="locationMeetings" let-meeting let-index=index>
+    <div class="col-5">
+      <div class="form-group">
+        <pek-company-picker
+          [currentCompanyId]="meeting.company?.id"
+          (selectCompanyFull)="meeting.company = $event; updateMeeting()"></pek-company-picker>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="form-group">
+        <pek-multi-contacts-picker [contactsListFull]="meeting.contacts"
+                                   (valueChangeFull)="meeting.contacts = $event; updateMeeting()" [searchByCompany]="true"
+                                   [companyId]="meeting.company?.id"></pek-multi-contacts-picker>
+      </div>
+    </div>
+    <div class="col-2">
+      <div class="form-group">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-trash"
+          class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small mr-2 mt-1"
+          (click)="deleteMeeting(meeting, index)"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</div>
+<button pButton *ngIf="showAddMeetings"
+        icon="pi pi-plus"
+        label="Add Meeting"
+        (click)="addMeeting()"></button>

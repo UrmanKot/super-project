@@ -17,6 +17,7 @@ import { MessageService } from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {ProductStructureModule} from './product-structure/product-structure.module';
 import {NgxMaskModule} from 'ngx-mask';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {QrCodeModule} from './qr-code/qr-code.module';
 
 const INTERCEPTOR_PROVIDER: Provider = {
@@ -48,6 +49,7 @@ const INTERCEPTORS_ERROR: Provider = {
     QrCodeModule,
     GuideModule,
     ToastModule,
+    PdfViewerModule,
   ],
   providers: [
     MessageService,

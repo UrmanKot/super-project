@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="data.type === 'add'">Add Vehicle</span>
+    <span *ngIf="data.type === 'edit'">Edit Vehicle</span>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="model"> Model </label>
+      <input
+        pInputText
+        formControlName="model"
+        class="form-control"
+        type="text"
+        id="model"
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">Vehicle Registration Plate </label>
+      <input
+        pInputText
+        formControlName="number"
+        class="form-control"
+        type="text"
+        id="number"
+      />
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton label="Cancel" type="button" class="p-button-danger" [mat-dialog-close]="false"></button>
+  <button
+    pButton
+    [label]="'Add'"
+    *ngIf="data.type === 'add'"
+    type="button"
+    class="p-button-success"
+    (click)="addVehicle()"
+  ></button>
+  <button
+    pButton
+    [label]="'Edit'"
+    *ngIf="data.type === 'edit'"
+    type="button"
+    class="p-button-success"
+    (click)="editVehicle()"
+  ></button>
+</mat-dialog-actions>

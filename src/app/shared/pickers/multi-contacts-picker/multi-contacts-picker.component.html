@@ -1,0 +1,13 @@
+<p-multiSelect
+  optionValue="id"
+  optionLabel="first_name"
+  [options]="contacts"
+  [(ngModel)]="contactsList"
+  (ngModelChange)="onChange($event)"
+>
+  <ng-template let-contact pTemplate="item">
+    <div class="contact-item">
+      <div>{{contact.first_name}} {{contact.last_name}}</div>
+    </div>
+  </ng-template>
+</p-multiSelect>

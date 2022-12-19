@@ -1,0 +1,80 @@
+<div class="content">
+  <div class="card">
+    <div class="card-body">
+      <p-table
+        [paginator]="true"
+        [rows]="10"
+        [value]="tripExpenses"
+        [scrollable]="true"
+        selectionMode="single"
+        [(selection)]="selectedTripExpense"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center">
+            <p class="subtitle ml-1 mr-2" *ngIf="!selectedTripExpense">Choose the Expenses to edit</p>
+            <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedTripExpense || selectedTripExpense && selectedTripExpense.is_verified"></p-menubar>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="index-header">#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Sum</th>
+            <th>Currency</th>
+            <th>File</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-tripExpense let-i="rowIndex">
+          <tr [pSelectableRow]="tripExpense">
+            <td>{{ i + 1 }}</td>
+            <td>{{ tripExpense.expense && tripExpense.expense.name ? tripExpense.expense.name : tripExpense.custom_expense.name }}</td>
+            <td>{{ tripExpense.expense && tripExpense.expense.name ? tripExpense.expense.description : tripExpense.custom_expense.description }}</td>
+            <td>{{ tripExpense.sum | moneyFormat }}</td>
+            <td>{{ tripExpense.currency.name }}</td>
+            <td>
+              <a *ngIf="tripExpense.id && tripExpense.file && !tripExpense.uploaded_file" href="javascript:void(0)" (click)="viewFile(tripExpense, tripExpense.file)">
+                {{ getName(tripExpense.file) }}
+              </a>
+              <a  *ngIf="tripExpense.uploaded_file" href="javascript:void(0)" (click)="viewFile(tripExpense, tripExpense.uploaded_file)">
+                {{ tripExpense.uploaded_file.name }}
+              </a>
+            </td>
+            <td>
+              <span *ngIf="!tripExpense.is_verified">
+                Need To Be Verified
+              </span>
+              <span *ngIf="tripExpense.is_verified">
+                Verified
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<h3>Sum</h3>
+<div class="content">
+  <div class="card">
+    <div class="card-body">
+      <div class="pt-2 pl-2 card-body">
+        <div *ngIf="sumOfVerifiedExpenses.length > 0">
+          <div *ngFor="let expense of sumOfVerifiedExpenses">
+            <p>
+              <span class="currency-name">{{expense.currency.name}}:</span> <span
+              class="currency-value">{{expense.sum}}{{expense.currency.symbol}}</span>
+            </p>
+          </div>
+        </div>
+
+        <div *ngIf="sumOfVerifiedExpenses.length === 0">
+          <h3>
+            No Verified Expenses
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,5 +11,7 @@ export const environment = {
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
+  business_trips_url: 'business-trips/',
+  image_path: 'http://localhost:8000',
   link_url: 'https://pekauto.unitcode.ru/'
 };

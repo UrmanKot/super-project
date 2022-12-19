@@ -10,7 +10,9 @@ import {CompanyService} from '../../../crm/services/company.service';
 })
 export class CompanyPickerComponent implements OnInit, OnDestroy {
   @Output() selectCompany: EventEmitter<number> = new EventEmitter<number>();
+  @Output() selectCompanyFull: EventEmitter<Partial<Company>> = new EventEmitter<Partial<Company>>();
   @Input() currentCompanyId: any;
+  @Input() currentCompany: Partial<Company>;
   isLoading = true;
   companies: Partial<Company>[] = [];
   selectedCompanyId: number;
@@ -36,7 +38,9 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
   }
 
   onSelectCompany() {
-    this.selectCompany.emit(this.selectedCompanyId);
+    this.currentCompany = this.companies.find(currency => currency.id === this.selectedCompanyId);
+    this.selectCompany.emit(this.currentCompanyId);
+    this.selectCompanyFull.emit(this.currentCompany);
   }
 
   ngOnDestroy() {

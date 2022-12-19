@@ -14,6 +14,13 @@
       <label for="last-name">Last Name*</label>
       <input type="text" id="last-name" pInputText formControlName="last_name">
     </div>
+    <div class="form-group">
+      <label>Position</label>
+      <app-crm-position-picker
+        [position]="this.form.get('position').value"
+        (valueChange)="form.get('position').setValue($event)"
+      ></app-crm-position-picker>
+    </div>
   </form>
 </mat-dialog-content>
 

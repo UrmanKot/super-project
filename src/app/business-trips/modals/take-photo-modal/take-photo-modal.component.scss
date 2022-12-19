@@ -1,0 +1,36 @@
+::ng-deep {
+  video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    filter: brightness(1.0);
+  }
+
+  webcam {
+    &.taken {
+      video {
+        animation: blink .2s ease-in;
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  0% {
+    filter: brightness(1.0);
+  }
+  50%,
+  60% {
+    filter: brightness(3.5);
+  }
+  100% {
+    filter: brightness(1.0);
+  }
+}

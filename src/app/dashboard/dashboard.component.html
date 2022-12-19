@@ -2,20 +2,24 @@
   <div class="page__content">
     <h1 class="dashboard__title">Welcome To R-WAVE ERP</h1>
     <ul class="dashboard__list">
-      <li
-        *ngFor="let route of routes"
-        class="dashboard__item"
-      >
-        <a
-          class="dashboard__button"
-          pButton
-          type="button"
-          [routerLink]="route.routerLink"
-          [label]="route.label"
-          [icon]="route.icon"
-        ></a>
-      </li>
+      <ng-template ngFor [ngForOf]="routes" let-route>
+        <li
+          *ngIf="auth.user[route.requiredModulePermission] === true"
+          class="dashboard__item"
+        >
+          <a
+            class="dashboard__button"
+            pButton
+            type="button"
+            [routerLink]="route.routerLink"
+            [label]="route.label"
+            [icon]="route.icon"
+          ></a>
+        </li>
+      </ng-template>
 
+    </ul>
+    <ul class="dashboard__list">
       <li class="dashboard__item">
         <a
           class="dashboard__button dashboard__button_guide"
@@ -27,6 +31,8 @@
         ></a>
       </li>
 
+      <li class="dashboard__item_log-out">
+      </li>
       <li class="dashboard__item_log-out">
         <a
           class="dashboard__button dashboard__button_log-out p-button-secondary"
