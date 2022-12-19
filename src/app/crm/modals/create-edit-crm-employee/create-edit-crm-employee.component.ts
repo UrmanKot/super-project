@@ -16,6 +16,7 @@ export class CreateEditCrmEmployeeComponent implements OnInit {
   form = this.fb.group({
     first_name: ['', Validators.required],
     last_name: ['', Validators.required],
+    position: [null],
   });
 
   constructor(
@@ -30,6 +31,9 @@ export class CreateEditCrmEmployeeComponent implements OnInit {
     if (this.data.type === 'edit') {
       this.form.addControl('id' as any, new FormControl(this.data.employee.id));
       this.form.patchValue(<any>this.data.employee);
+      if (this.data.employee.position) {
+        this.form.controls.position.patchValue(this.data.employee.position.id);
+      }
     }
   }
 

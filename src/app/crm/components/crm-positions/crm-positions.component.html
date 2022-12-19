@@ -1,11 +1,11 @@
 <div class="page">
   <div class="page__header">
     <div class="page__title">
-      <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
-      <h1>Employees</h1>
+      <pek-module-icon [module]="'business-trip'" [isActive]="true"></pek-module-icon>
+      <h1>Positions</h1>
     </div>
     <div class="page__tools">
-      <button pButton type="button" icon="pi pi-plus" label="New Event Type" (click)="onAddEmployee()"></button>
+      <button pButton type="button" icon="pi pi-plus" label="New Event Type" (click)="addPosition()"></button>
     </div>
   </div>
 </div>
@@ -18,31 +18,27 @@
         selectionMode="single"
         scrollHeight="calc(100vh - 18.8rem)"
         [scrollable]="true"
-        [paginator]="employees.length > 0"
+        [paginator]="positions.length > 0"
         [rows]="10"
-        [(selection)]="selectedEmployee"
-        [value]="employees"
+        [(selection)]="selectedPosition"
+        [value]="positions"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedEmployee">Choose the Employee to edit</p>
-            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedEmployee"></p-menubar>
+            <p class="subtitle" *ngIf="!selectedPosition">Choose the Position to edit</p>
+            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedPosition"></p-menubar>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 5%" class="text-center">#</th>
-            <th style="width: 35%">First Name</th>
-            <th style="width: 30%">Last Name</th>
-            <th style="width: 30%">Position</th>
+            <th style="width: 45%">Title</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-employee let-i="rowIndex">
-          <tr [pSelectableRow]="employee">
+        <ng-template pTemplate="body" let-position let-i="rowIndex">
+          <tr [pSelectableRow]="position">
             <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
-            <td style="width: 35%">{{ employee.first_name }}</td>
-            <td style="width: 30%">{{ employee.last_name }}</td>
-            <td style="width: 30%">{{ employee.position?.title }}</td>
+            <td style="width: 45%">{{ position.title }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -63,7 +59,7 @@
         </ng-template>
       </p-table>
     </div>
-    <div *ngIf="!dt.paginator && !isLoading && employees.length > 0" class="paginator-return-pagination">
+    <div *ngIf="!dt.paginator && !isLoading && positions.length > 0" class="paginator-return-pagination">
       <p-button
         type="button"
         (click)="dt.paginator=true"

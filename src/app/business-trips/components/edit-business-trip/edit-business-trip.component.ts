@@ -19,7 +19,7 @@ import {ModalService} from '@shared/services/modal.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {ActivatedRoute} from '@angular/router';
 import {MenuItem, MessageService} from 'primeng/api';
-import {CrmPositionsService} from '../../services/crm-positions.service';
+import {CrmPositionsService} from '../../../crm/services/crm-positions.service';
 import {VehicleService} from '../../services/vehicle.service';
 import {CompanyService} from '../../../crm/services/company.service';
 import {debounceTime, map, switchMap, take} from 'rxjs/operators';
@@ -635,7 +635,6 @@ export class EditBusinessTripComponent implements OnInit {
     dataToSend.delete_hotel_files_ids = this.hotelFilesToDeleteIds;
     dataToSend.delete_location_ids = this.pointsToDeleteIds;
     dataToSend.delete_expenses_ids = this.expensesToDeleteIds;
-    console.log(this.form.value);
     return dataToSend;
   }
 

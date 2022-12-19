@@ -1,8 +1,8 @@
 import {Component, EventEmitter, forwardRef, Input, OnInit, Output} from '@angular/core';
 import {take} from 'rxjs/operators';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {CrmPositionsService} from '../../../services/crm-positions.service';
-import {CrmPosition} from '../../../models/crm-position';
+import {CrmPositionsService} from '../../../crm/services/crm-positions.service';
+import {CrmPosition} from '../../../business-trips/models/crm-position';
 
 @Component({
   selector: 'app-crm-position-picker',

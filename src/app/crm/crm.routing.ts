@@ -13,6 +13,7 @@ import {CrmEventCardComponent} from './components/crm-event-card/crm-event-card.
 import {CompanyPageComponent} from './components/company-page/company-page.component';
 import {ContactPersonPageComponent} from './components/contact-person-page/contact-person-page.component';
 import {CrmEventsComponent} from './components/crm-events/crm-events.component';
+import {CrmPositionsComponent} from './components/crm-positions/crm-positions.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
       {path: 'event-types', title: 'Event Types', component: EventTypesComponent},
       {path: 'employees', title: 'Employees', component: CrmEmployeesComponent},
       {path: 'external-events', title: 'External Event Types', component: CrmExternalEventsComponent},
+      {path: 'positions', title: 'Positions', component: CrmPositionsComponent},
       {path: 'users-profiles', title: 'Users Profiles', component: CrmUsersProfilesComponent},
       {
         path: 'events',

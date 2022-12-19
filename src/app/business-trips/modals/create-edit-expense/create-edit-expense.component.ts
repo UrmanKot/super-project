@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {AdapterService} from '@shared/services/adapter.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CrmPositionsService} from '../../services/crm-positions.service';
+import {CrmPositionsService} from '../../../crm/services/crm-positions.service';
 import {BusinessTripService} from '../../services/business-trip.service';
 import {MessageService} from 'primeng/api';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -178,7 +178,6 @@ export class CreateEditExpenseComponent implements OnInit {
   }
 
   getName(name) {
-    console.log('name', name);
     const nameArr = name.split('/');
     return nameArr[nameArr.length - 1];
   }

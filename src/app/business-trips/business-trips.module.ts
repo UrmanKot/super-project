@@ -7,7 +7,7 @@ import {LayoutModule} from '../layout/layout.module';
 import {SharedModule} from '@shared/shared.module';
 import {BusinessTripsComponent} from './components/business-trips/business-trips.component';
 import { EditBusinessTripComponent } from './components/edit-business-trip/edit-business-trip.component';
-import {CrmPositionPickerComponent} from './components/shared/crm-position-picker/crm-position-picker.component';
+import {CrmPositionPickerComponent} from '../shared/pickers/crm-position-picker/crm-position-picker.component';
 import { LocationInputComponent } from './components/shared/location-input/location-input.component';
 import { BusinessTripCountryPickerComponent } from './components/pickers/business-trip-country-picker/business-trip-country-picker.component';
 import {TripExpensesTableComponent} from './components/trip-expenses-table/trip-expenses-table.component';
@@ -30,38 +30,41 @@ import {WebcamModule} from 'ngx-webcam';
 
 
 @NgModule({
-  declarations: [
-    BusinessTripsLayoutComponent,
-    BusinessTripsComponent,
-    EditBusinessTripComponent,
-    CrmPositionPickerComponent,
-    LocationInputComponent,
-    BusinessTripCountryPickerComponent,
-    TripExpensesTableComponent,
-    VehicleTypePickerComponent,
-    VehiclePickerComponent,
-    CreateEditExpenseComponent,
-    UploadedDataViewerComponent,
-    ExpensePickerComponent,
-    VehiclesComponent,
-    CreateUpdateVehicleComponent,
-    ExpansesComponent,
-    CreateUpdateExpenseComponent,
-    CreateBusinessTripComponent,
-    BusinessTripsMultiStatusPickerComponent,
-    BusinessTripsMultiEmployeeWithCustomComponent,
-    TakePhotoModalComponent,
-  ],
-  imports: [
-    CommonModule,
-    BusinessTripsRoutingModule,
-    SharedModule,
-    LayoutModule,
-    PdfViewerModule,
-    MultiSelectModule,
-    WebcamModule,
-  ],
-  providers: [DatePipe]
+    declarations: [
+        BusinessTripsLayoutComponent,
+        BusinessTripsComponent,
+        EditBusinessTripComponent,
+        CrmPositionPickerComponent,
+        LocationInputComponent,
+        BusinessTripCountryPickerComponent,
+        TripExpensesTableComponent,
+        VehicleTypePickerComponent,
+        VehiclePickerComponent,
+        CreateEditExpenseComponent,
+        UploadedDataViewerComponent,
+        ExpensePickerComponent,
+        VehiclesComponent,
+        CreateUpdateVehicleComponent,
+        ExpansesComponent,
+        CreateUpdateExpenseComponent,
+        CreateBusinessTripComponent,
+        BusinessTripsMultiStatusPickerComponent,
+        BusinessTripsMultiEmployeeWithCustomComponent,
+        TakePhotoModalComponent,
+    ],
+    imports: [
+        CommonModule,
+        BusinessTripsRoutingModule,
+        SharedModule,
+        LayoutModule,
+        PdfViewerModule,
+        MultiSelectModule,
+        WebcamModule,
+    ],
+    exports: [
+        CrmPositionPickerComponent
+    ],
+    providers: [DatePipe]
 })
 export class BusinessTripsModule {
 }

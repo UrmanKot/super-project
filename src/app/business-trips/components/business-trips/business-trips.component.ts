@@ -10,6 +10,7 @@ import {BusinessTrip} from '../../models/business-trip';
 import {BusinessTripService} from '../../services/business-trip.service';
 import {MenuItem} from 'primeng/api';
 import {Paginator} from 'primeng/paginator';
+import {AuthService} from '../../../auth/auth.service';
 
 @Component({
   selector: 'pek-business-trips',
@@ -64,11 +65,6 @@ export class BusinessTripsComponent implements OnInit {
         command: () => this.editExpenseBusinessTrip()
       },
       {
-        label: 'Verify BT',
-        icon: 'pi pi-check',
-        command: () => this.verifyBt()
-      },
-      {
         label: 'Remove',
         icon: 'pi pi-trash',
         command: () => this.deleteBusinessTrip()
@@ -82,7 +78,16 @@ export class BusinessTripsComponent implements OnInit {
     private businessTripService: BusinessTripService,
     private modalService: ModalService,
     private adapterService: AdapterService,
-  ) { }
+    public auth: AuthService
+  ) {
+    if (auth.user.can_verify_expenses) {
+    this.menuItems[0].items.splice(1, 0, {
+      label: 'Verify BT',
+      icon: 'pi pi-check',
+      command: () => this.verifyBt()
+    })
+    }
+  }
 
   ngOnInit(): void {
     this.searchForm.valueChanges.pipe(debounceTime(1000)).subscribe(res => {

@@ -116,7 +116,6 @@ export class BusinessTripService {
   }
 
   async exportToExcel(businessTripData: DataToSend, expensesSum: ExpensesSum[]) {
-    console.log('businessTripData 22', businessTripData);
     // Создаем книгу Excel
     const workbook = new Excel.Workbook();
     let worksheet: any;
@@ -162,12 +161,12 @@ export class BusinessTripService {
 
     if (businessTripData.trip_start || businessTripData.trip_end) {
       // Trip Dates
-      const test = formatDate(businessTripData.trip_start, 'dd-mm-yyyy', 'en');
+      const test = formatDate(businessTripData.trip_start, 'dd/mm/yyyy', 'en');
       const start = businessTripData.trip_start ?
-        formatDate(businessTripData.trip_start, 'dd-MM-yyyy HH:mm', 'en')
+        formatDate(businessTripData.trip_start, 'dd/MM/yyyy HH:mm', 'en')
         : '-';
       const end = businessTripData.trip_end ?
-        formatDate(businessTripData.trip_end, 'dd-MM-yyyy HH:mm', 'en')
+        formatDate(businessTripData.trip_end, 'dd/MM/yyyy HH:mm', 'en')
          : '-';
       worksheet.addRow({
         index: this.totalDisplayedRows,
@@ -280,9 +279,9 @@ export class BusinessTripService {
         }
 
         const start = businessTripData.hotel.residence_start ?
-          formatDate(businessTripData.hotel.residence_start, 'dd-MM-yyyy HH:mm', 'en') : '-';
+          formatDate(businessTripData.hotel.residence_start, 'dd/MM/yyyy', 'en') : '-';
         const end = businessTripData.hotel.residence_end ?
-          formatDate(businessTripData.hotel.residence_end, 'dd-MM-yyyy HH:mm', 'en') : '-';
+          formatDate(businessTripData.hotel.residence_end, 'dd/MM/yyyy', 'en') : '-';
         worksheet.addRow({
           index: this.totalDisplayedRows,
           firstCol: 'Hotel Residence start/end',

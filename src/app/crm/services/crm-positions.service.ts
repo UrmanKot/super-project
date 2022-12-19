@@ -5,7 +5,15 @@ import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
-import {CrmPosition} from '../models/crm-position';
+import {CrmPosition} from '../../business-trips/models/crm-position';
+import {ModalActionType} from '@shared/models/modal-action';
+import {CRMEmployee} from '../models/crm-employee';
+import {
+  CreateEditCrmEmployeeComponent
+} from '../modals/create-edit-crm-employee/create-edit-crm-employee.component';
+import {
+  CreateUpdateCrmPositionsComponent
+} from '../modals/create-update-crm-positions/create-update-crm-positions.component';
 
 @Injectable({
   providedIn: 'root'
@@ -57,5 +65,18 @@ export class CrmPositionsService {
 
   delete(entity: CrmPosition) {
     return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+  }
+
+  createEditCrmPositionModal(type: ModalActionType, position?: CrmPosition) {
+    return this.dialog
+      .open<CreateUpdateCrmPositionsComponent>(CreateUpdateCrmPositionsComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {type, position},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

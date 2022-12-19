@@ -21,6 +21,7 @@ export class CrmLayoutComponent implements OnInit {
     {label: 'Employees', commands: ['employees']},
     {label: 'External Event Types', commands: ['external-events']},
     {label: 'Users Profiles', commands: ['users-profiles']},
+    {label: 'Positions', commands: ['positions']},
   ]
 
   constructor() {

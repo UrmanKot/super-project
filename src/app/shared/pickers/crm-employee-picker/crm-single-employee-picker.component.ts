@@ -29,7 +29,6 @@ export class CrmSingleEmployeePickerComponent implements OnInit, ControlValueAcc
   ) { }
 
   ngOnInit(): void {
-    console.log('employee', this.employee);
     this.getAll();
   }
 

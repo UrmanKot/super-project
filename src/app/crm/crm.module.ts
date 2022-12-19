@@ -55,6 +55,9 @@ import {InputSwitchModule} from 'primeng/inputswitch';
 import { CreateEditLinkedContactComponent } from './modals/create-edit-linked-contact/create-edit-linked-contact.component';
 import { AddEventToContactPersonComponent } from './modals/add-event-to-contact-person/add-event-to-contact-person.component';
 import {NgxMaskModule} from 'ngx-mask';
+import { CrmPositionsComponent } from './components/crm-positions/crm-positions.component';
+import { CreateUpdateCrmPositionsComponent } from './modals/create-update-crm-positions/create-update-crm-positions.component';
+import {BusinessTripsModule} from '../business-trips/business-trips.module';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -104,6 +107,8 @@ FullCalendarModule.registerPlugins([
     CreateEditEventComponent,
     CreateEditLinkedContactComponent,
     AddEventToContactPersonComponent,
+    CrmPositionsComponent,
+    CreateUpdateCrmPositionsComponent,
   ],
   imports: [
     CommonModule,
@@ -115,6 +120,7 @@ FullCalendarModule.registerPlugins([
     SliderModule,
     FullCalendarModule,
     InputSwitchModule,
+    BusinessTripsModule,
   ]
 })
 export class CrmModule { }
