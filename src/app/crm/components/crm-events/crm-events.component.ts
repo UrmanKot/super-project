@@ -51,7 +51,7 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
   isHideFilters = false;
 
   searchForm = this.fb.group({
-    employee: [[]],
+    employee: [<number[]>[]],
     description: [null],
     start: [null],
     end: [null],

@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">Generated QR-codes</h2>
+  <button
+    pButton
+    type="button"
+    icon="pi pi-print"
+    label="Print QR Codes"
+    (click)="onPrint()"
+  ></button>
+</div>
+
+<mat-dialog-content>
+  <div class="qr-code-modal mt-3">
+    <div class="qr-code-modal__box">
+      <h2>Generated QR-codes With Out Serial Numbers</h2>
+    </div>
+
+    <ul class="qr-code-modal__list" *ngIf="qrCodes.without_serial.length > 0; else empty">
+      <li
+        *ngFor="let qrCode of qrCodes.without_serial"
+        class="qr-code-modal__item"
+      >
+        <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+      </li>
+    </ul>
+
+    <div class="qr-code-modal__box mt-5">
+      <h2>Generated QR-codes With Serial Numbers</h2>
+    </div>
+
+    <ul class="qr-code-modal__list" *ngIf="qrCodes.with_serial.length > 0; else empty">
+      <li
+        *ngFor="let qrCode of qrCodes.with_serial"
+        class="qr-code-modal__item"
+      >
+        <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+      </li>
+    </ul>
+  </div>
+
+  <div class="qr-code-modal__print">
+    <pek-print-qr-codes [qrCodes]="qrCodes"></pek-print-qr-codes>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+</mat-dialog-actions>
+
+<ng-template #empty>
+  <p class="empty">No QR Codes</p>
+</ng-template>

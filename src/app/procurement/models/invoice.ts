@@ -57,3 +57,11 @@ export class Invoice {
   general_invoices?: any[];
 
 }
+
+export class SerialNumber {
+  id: number;
+  type_with_number: string;
+  is_passed: boolean;
+  traversed?: boolean;
+  warehouseproductqcprotocol_set?: any;
+}

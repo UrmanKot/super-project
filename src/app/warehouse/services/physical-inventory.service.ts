@@ -9,7 +9,7 @@ import {
 } from '../models/physical-inventory';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpContext, HttpHeaders} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {MatDialog} from '@angular/material/dialog';
 import {
@@ -22,6 +22,7 @@ import {Product} from '../../product-structure/models/product';
 import {
   AddProductToPhysicalInventoryComponent
 } from '../modals/add-product-to-physical-inventory/add-product-to-physical-inventory.component';
+import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -119,14 +120,14 @@ export class PhysicalInventoryService {
     );
   }
 
-  movePhysicalInventoryProduct(id: number, send: {new_locator_id: number}): Observable<InventoryProduct> {
-    return this.httpClient.post<{data: InventoryProduct}>(this.API_URL + 'physical_inventory_products/' + id + '/move_to_locator/', send).pipe(
+  movePhysicalInventoryProduct(id: number, send: { new_locator_id: number }): Observable<InventoryProduct> {
+    return this.httpClient.post<{ data: InventoryProduct }>(this.API_URL + 'physical_inventory_products/' + id + '/move_to_locator/', send).pipe(
       map(response => response.data)
     );
   }
 
   addProductToInventory(inventoryId: number, send: any): Observable<InventoryProduct> {
-    return this.httpClient.post<{data: InventoryProduct}>(this.API_URL + this.url + inventoryId + '/add_to_inventory/', send).pipe(
+    return this.httpClient.post<{ data: InventoryProduct }>(this.API_URL + this.url + inventoryId + '/add_to_inventory/', send).pipe(
       map(response => response.data)
     );
   }
@@ -155,6 +156,15 @@ export class PhysicalInventoryService {
       })
       .afterClosed();
   }
+
+  scanPhysicalInventoryQrCode(id: number, data: any) {
+    return this.httpClient.post<{ data: any }>(this.API_URL + this.url + `${id}/scan_inventory_item/`, data, {
+      context: new HttpContext().set(IS_SCANNING_ENABLED, true)
+    }).pipe(
+      map(response => response.data)
+    );
+  }
+
 
   openAddProductToPhysicalInventory(inventoryId: number): Observable<any> {
     return this.dialog

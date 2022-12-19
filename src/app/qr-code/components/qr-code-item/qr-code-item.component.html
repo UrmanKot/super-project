@@ -1,0 +1,8 @@
+<div class="qr-code-item">
+  <img [src]="qrCode.qr_src" [alt]="qrCode.name">
+  <div class="qr-code-item__content">
+    <p *ngIf="qrCode?.serial_number">{{qrCode.serial_number}}</p>
+    <p>{{qrCode.code}}</p>
+    <p>{{qrCode.name}}</p>
+  </div>
+</div>

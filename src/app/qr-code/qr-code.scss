@@ -1,0 +1,27 @@
+.scan-region-highlight {
+  svg {
+    &:first-child {
+      width: 50% !important;
+      height: 50% !important;
+      left: 25% !important;
+      top: 25% !important;
+      display: none !important;
+    }
+
+    &:last-child {
+      stroke-width: 3 !important;
+    }
+  }
+}
+
+.qr-code-item-scanned {
+  background: #c9ddc0 !important;
+}
+
+.qr-code-item-found {
+  background: #e9b213 !important;
+
+  td {
+    font-weight: 500;
+  }
+}

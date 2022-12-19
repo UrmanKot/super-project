@@ -52,6 +52,7 @@ import {
   QcAcceptTechnicalEquipmentComponent
 } from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
+import {QrCodeModule} from '../qr-code/qr-code.module';
 
 
 
@@ -103,6 +104,7 @@ import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-in
     SharedModule,
     TreeModule,
     ProductStructureModule,
+    QrCodeModule,
   ]
 })
 export class WarehouseModule {

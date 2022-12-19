@@ -1,0 +1,16 @@
+<div class="print-qr-codes">
+  <ul class="print-qr-codes__list">
+    <li
+      *ngFor="let qrCode of qrCodes.without_serial"
+      class="print-qr-codes__item"
+    >
+      <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+    </li>
+    <li
+      *ngFor="let qrCode of qrCodes.with_serial"
+      class="print-qr-codes__item"
+    >
+      <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+    </li>
+  </ul>
+</div>

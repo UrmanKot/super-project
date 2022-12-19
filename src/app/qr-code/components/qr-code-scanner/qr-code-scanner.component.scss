@@ -1,0 +1,106 @@
+$border-width: 30px;
+$border-height: 3px;
+
+.qr-code-scanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  z-index: 10000;
+
+  &__video {
+    height: 100%;
+    width: 100%;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__cancel-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: inherit;
+    height: 50px;
+    font-weight: 500;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--theme-color-danger);
+    color: #fff;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  &__border {
+    position: absolute;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: #e9b213;
+      display: block;
+    }
+
+    &::before {
+      width: $border-width;
+      height: $border-height;
+    }
+
+    &::after {
+      width: $border-height;
+      height: $border-width;
+    }
+
+    &_top-left {
+      left: 0;
+      top: 0;
+
+      &::before,
+      &::after {
+        left: 0;
+        top: 0;
+      }
+    }
+
+    &_top-right {
+      right: 0;
+      top: 0;
+
+      &::before,
+      &::after {
+        right: 0;
+        top: 0;
+      }
+    }
+
+    &_bottom-left {
+      left: 0;
+      bottom: 50px;
+
+      &::before,
+      &::after {
+        left: 0;
+        bottom: 0;
+      }
+    }
+
+    &_bottom-right {
+      right: 0;
+      bottom: 50px;
+
+      &::before,
+      &::after {
+        right: 0;
+        bottom: 0;
+      }
+    }
+  }
+}

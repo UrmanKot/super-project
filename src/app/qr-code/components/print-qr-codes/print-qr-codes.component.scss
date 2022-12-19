@@ -1,0 +1,39 @@
+.print-qr-codes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: #fff;
+  z-index: 2000;
+  display: none;
+
+  &__item {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+@media print {
+  .print-qr-codes {
+    display: block;
+  }
+
+  ::ng-deep {
+    .cdk-overlay-container {
+      position: static;
+    }
+
+    .mat-dialog-container {
+      box-shadow: none !important;
+    }
+
+    .layout {
+      display: none;
+    }
+
+    .p-toast {
+      display: none;
+    }
+  }
+}
