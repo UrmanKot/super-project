@@ -48,6 +48,10 @@ const routes: Routes = [
         path: 'business-trips',
         title: 'Business Trips',
         loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule) },
+      {
+        path: 'correspondents',
+        title: 'Correspondents',
+        loadChildren: () => import('./correspondent/correspondent.module').then(m => m.CorrespondentModule) },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },

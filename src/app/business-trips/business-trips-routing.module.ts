@@ -10,24 +10,28 @@ const routes: Routes = [{
   path: '', component: BusinessTripsLayoutComponent, children: [
     {
       path: 'trips',
+      title: 'Business Trips',
       component: BusinessTripsComponent
     },
     {
       path: 'trip/edit/:tripId',
       data: {isVerify: false},
+      title: 'Edit Business Trip',
       component: EditBusinessTripComponent
     },
     {
       path: 'trip/verify/:tripId',
       data: {isVerify: true},
+      title: 'Verify Business Trip',
       component: EditBusinessTripComponent
     },
     {
       path: 'vehicles',
+      title: 'Business Trip Vehicles',
       component: VehiclesComponent
     },
     {
-      path: 'expenses',
+      path: 'Business Trip Expenses',
       component: ExpansesComponent
     },
     {

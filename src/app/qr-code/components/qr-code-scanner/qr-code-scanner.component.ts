@@ -24,8 +24,7 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit(): void {
     this.stream$.pipe(
       auditTime(1000),
-    ).subscribe(() => {
-      const data = {file: this.getFrame()};
+    ).subscribe(data => {
       this.scanned.next(data);
     });
   }
@@ -38,7 +37,7 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   initScanner() {
-    this.scanner = new QrScanner(this.video.nativeElement, () => this.setResult(), {
+    this.scanner = new QrScanner(this.video.nativeElement, result => this.setResult(result), {
       highlightScanRegion: true,
       highlightCodeOutline: true,
     });
@@ -46,8 +45,12 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
     this.scanner.start().then();
   }
 
-  setResult() {
-    this.stream$.next(true);
+  setResult(result) {
+    try {
+      this.stream$.next(JSON.parse(result.data));
+    } catch (e) {
+      console.log('Not valid data found');
+    }
   }
 
   getFrame = () => {

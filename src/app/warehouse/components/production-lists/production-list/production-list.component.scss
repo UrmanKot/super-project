@@ -1,3 +1,16 @@
+::ng-deep {
+  tr.is-found-row {
+    td {
+      background: var(--theme-color-secondary);
+      color: #495057;
+    }
+
+    &.selected-for-change {
+      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.27));
+    }
+  }
+}
+
 .colors {
   position: relative;
   display: flex;

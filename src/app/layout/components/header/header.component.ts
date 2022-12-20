@@ -47,6 +47,8 @@ export class HeaderComponent implements OnInit {
     '/sales/regions',
     '/business-trips/vehicles',
     '/business-trips/expenses',
+    '/correspondents/outgoing-categories',
+    '/correspondents/incoming-categories',
   ];
 
   settingModules = [
@@ -61,6 +63,7 @@ export class HeaderComponent implements OnInit {
     '/sales/',
     '/outsource/',
     '/business-trips/',
+    '/correspondents/',
   ];
 
   constructor(

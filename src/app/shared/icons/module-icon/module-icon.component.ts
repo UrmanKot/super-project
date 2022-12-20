@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 
 export type Module = 'dashboard' | 'product-structure' | 'confirmation' | 'warehouse' | 'manufacturing-procurement'
   | 'quality-control' | 'manufacturing' | 'contacts-events' | 'outsourcing' | 'purchasing' | 'sales'
-  | 'reports' | 'administration' | 'business-trip'
+  | 'reports' | 'administration' | 'business-trip' | 'correspondents';
 
 @Component({
   selector: 'pek-module-icon',
