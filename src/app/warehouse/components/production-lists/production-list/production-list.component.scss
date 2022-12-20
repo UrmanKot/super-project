@@ -2,6 +2,7 @@
   tr.is-found-row {
     td {
       background: var(--theme-color-secondary);
+      color: #495057;
     }
 
     &.selected-for-change {
