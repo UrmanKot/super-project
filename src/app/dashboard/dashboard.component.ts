@@ -9,7 +9,7 @@ export class DashboardMenuItem implements MenuItem {
   label?: string;
   routerLink?: any;
   icon?: string;
-  requiredModulePermission?: string
+  requiredModulePermission?: string;
 }
 
 @Component({
@@ -103,6 +103,11 @@ export class DashboardComponent implements OnInit {
     icon: 'pi pi-car',
     routerLink: [`/business-trips/trips`],
     requiredModulePermission: 'can_edit_business_trips'
+  }, {
+    label: 'Instruments/Tools/Equipment',
+    icon: 'pi pi-database',
+    routerLink: ['/external', `${environment.link_url}dash/instruments/instruments-and-tools`],
+    requiredModulePermission: 'can_edit_administration'
   }];
 
   constructor(
