@@ -209,7 +209,17 @@
               [model]="selectedNodeTreeMenuItems"
             ></p-menubar>
             <button
-              class=" mr-2"
+              [disabled]="isLoadingTree"
+              class="mr-2 p-button-icon"
+              pButton
+              type="button"
+              icon="pi pi-camera"
+              label="Scan QR Codes"
+              (click)="onStartScanning()"
+            >
+            </button>
+            <button
+              class="mr-2"
               pButton
               type="button"
               label="Expand All"
@@ -219,9 +229,39 @@
             <button
               pButton
               type="button"
+              class="mr-3"
               label="Collapse All"
               icon="pi pi-angle-up"
               (click)="collapseAll()"
+            ></button>
+            <p *ngIf="this.foundRowsIds.length > 0" class="d-flex align-items-center mr-2">
+              Found {{foundRowsIds.length}} products
+            </p>
+            <button
+              pButton
+              *ngIf="this.foundRowsIds.length > 1"
+              type="button"
+              label="Go to previous"
+              icon="pi pi-backward"
+              class="p-button-secondary mr-2"
+              (click)="goToPrev()"
+            ></button>
+            <button
+              *ngIf="this.foundRowsIds.length > 1"
+              pButton
+              type="button"
+              label="Go to next"
+              icon="pi pi-forward"
+              class="p-button-secondary mr-2"
+              (click)="goToNext()"
+            ></button>
+            <button
+              *ngIf="this.foundRowsIds.length > 0"
+              pButton
+              type="button"
+              icon="pi pi-times-circle"
+              class="p-button-danger"
+              (click)="clearQrResults()"
             ></button>
           </div>
         </ng-template>
@@ -247,6 +287,9 @@
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
           <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
               [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
+              [class.is-found-row]="isFoundRow(rowData.id)"
+              [class.selected-for-change]="rowData.id === currentDisplayRowId"
+              [id]="'row-' + rowData.id"
               [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
           >
             <td style="width: 19%">
@@ -308,3 +351,9 @@
     </div>
   </div>
 </div>
+
+<pek-qr-code-scanner
+  *ngIf="isScanned"
+  (scanned)="onScanned($event)"
+  (cancel)="onCancelScanned()"
+></pek-qr-code-scanner>
