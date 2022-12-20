@@ -409,3 +409,14 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
     window.open(link, '_blank');
   }
 }
+
+// , OnDestroy
+
+// destroy$ = new Subject();
+
+// takeUntil(this.destroy$)
+
+// ngOnDestroy() {
+//   this.destroy$.next(true);
+//   this.destroy$.complete();
+// }

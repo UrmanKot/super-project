@@ -29,7 +29,7 @@ export class CorrespondentCategoryListComponent implements OnInit, OnDestroy {
 
   menuItems: MenuItem[] = [
     {
-      label: 'Selected Product',
+      label: 'Selected Category',
       items: [
         {
           label: 'Edit',

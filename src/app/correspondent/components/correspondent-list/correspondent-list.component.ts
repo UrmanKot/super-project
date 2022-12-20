@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Correspondent} from '../../models/correspondent';
 import {CorrespondentTypes} from '../../enum/correspondent-types.enum';
@@ -9,13 +9,15 @@ import {CorrespondentService} from '../../services/correspondent.service';
 import {ModalService} from '@shared/services/modal.service';
 import {QuerySearch} from '@shared/models/other';
 import {take} from 'rxjs/operators';
+import {MenuItem} from 'primeng/api';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-correspondent-list',
   templateUrl: './correspondent-list.component.html',
   styleUrls: ['./correspondent-list.component.scss']
 })
-export class CorrespondentListComponent implements OnInit {
+export class CorrespondentListComponent implements OnInit, OnDestroy {
   @ViewChild('paginator') paginator: Paginator;
 
   type: CorrespondentTypes;
@@ -37,6 +39,26 @@ export class CorrespondentListComponent implements OnInit {
   minDate = null;
   maxDate = null;
   rangeCalendar: any = [new Date(), new Date()];
+  isHideFilters = false;
+  tableScrollHeight = '29.625rem';
+
+  private destroy$ = new Subject();
+
+  menuItems: MenuItem[] = [{
+    label: 'Selected Correspondent',
+    items: [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.edit()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.delete()
+      }
+    ]
+  }];
   constructor(
     private activatedRouter: ActivatedRoute,
     private modalService: ModalService,
@@ -46,7 +68,7 @@ export class CorrespondentListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.activatedRouter.data.subscribe(res => {
+    this.activatedRouter.data.pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.type = res['type'];
       this.search();
     });
@@ -96,7 +118,7 @@ export class CorrespondentListComponent implements OnInit {
   }
 
   searchCorrespondents(query: QuerySearch[]): void {
-    this.correspondentService.get(this.type, query).subscribe(res => {
+    this.correspondentService.get(this.type, query).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.correspondents = res.results;
       this.countCorrespondents = res.count;
 
@@ -123,7 +145,7 @@ export class CorrespondentListComponent implements OnInit {
   }
 
   add() {
-    this.correspondentService.createEditCorrespondent('create', this.type).pipe(take(1)).subscribe(
+    this.correspondentService.createEditCorrespondent('create', this.type).pipe(take(1), takeUntil(this.destroy$)).subscribe(
       (response) => {
         if (response) {
           this.correspondents = [];
@@ -134,7 +156,7 @@ export class CorrespondentListComponent implements OnInit {
   }
 
   edit(): void {
-    this.correspondentService.createEditCorrespondent('edit', this.type, this.selectedNode).pipe(take(1)).subscribe(
+    this.correspondentService.createEditCorrespondent('edit', this.type, this.selectedNode).pipe(take(1), takeUntil(this.destroy$)).subscribe(
       (response) => {
         if (response) {
           this.correspondents = [];
@@ -144,8 +166,9 @@ export class CorrespondentListComponent implements OnInit {
     );
   }
 
-  delete(correspondent: Correspondent) {
-    this.modalService.confirm().pipe(take(1)).subscribe(confirm => {
+  delete() {
+    const correspondent = this.selectedNode
+    this.modalService.confirm().pipe(take(1), takeUntil(this.destroy$)).subscribe(confirm => {
       if (confirm) {
         this.correspondentService.delete(this.type, correspondent).pipe(take(1)).subscribe(del => {
           this.selectedNode = null;
@@ -162,7 +185,7 @@ export class CorrespondentListComponent implements OnInit {
   }
 
   downloadFile(file: any) {
-    this.correspondentService.download_file(this.type, file.id).subscribe(response => {
+    this.correspondentService.download_file(this.type, file.id).pipe(takeUntil(this.destroy$)).subscribe(response => {
       const filename = this.getName(file.file);
       this.adapterService.downloadFile(filename, response);
     });
@@ -192,12 +215,45 @@ export class CorrespondentListComponent implements OnInit {
     }
   }
 
-  searchByCategories(ids: any) {
+
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+    this.setTableScrollHeight();
+  }
+
+  setTableScrollHeight() {
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.9125rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.75rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.625rem';
+      return;
+    }
+  }
+
+  searchByCategories(ids: number[]) {
     if (ids.length > 0) {
       this.searchForm.get('categories').patchValue(ids);
     } else {
       this.searchForm.get('categories').patchValue(null);
     }
     this.search();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

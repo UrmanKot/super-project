@@ -1,5 +1,6 @@
 <div class="company-picker">
   <p-dropdown
+    [filter]="true"
     *ngIf="!isLoading else spinner"
     [options]="companies"
     placeholder="Select Company"

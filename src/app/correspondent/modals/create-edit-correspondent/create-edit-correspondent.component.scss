@@ -1,0 +1,9 @@
+::ng-deep {
+  pek-upload-file-picker {
+    div.p-fileupload-content {
+      max-height: 15.875rem;
+      overflow: auto;
+      padding: 0.5rem 1rem !important;
+    }
+  }
+}

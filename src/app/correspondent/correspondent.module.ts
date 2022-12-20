@@ -12,6 +12,7 @@ import { CreateEditCorrespondnetCategoryComponent } from './modals/create-edit-c
 import { CorrespondnetCategoriesPickerComponent } from './components/correspondnet-categories-picker/correspondnet-categories-picker.component';
 import {TreeSelectModule} from 'primeng/treeselect';
 import { CreateEditCorrespondentComponent } from './modals/create-edit-correspondent/create-edit-correspondent.component';
+import { CorrespondetnMultiCategoryPickerComponent } from './components/correspondetn-multi-category-picker/correspondetn-multi-category-picker.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { CreateEditCorrespondentComponent } from './modals/create-edit-correspon
     CorrespondentCategoryListComponent,
     CreateEditCorrespondnetCategoryComponent,
     CorrespondnetCategoriesPickerComponent,
-    CreateEditCorrespondentComponent
+    CreateEditCorrespondentComponent,
+    CorrespondetnMultiCategoryPickerComponent
   ],
   imports: [
     CommonModule,

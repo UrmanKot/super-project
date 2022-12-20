@@ -25,7 +25,7 @@ export class TripExpensesTableComponent implements OnInit, OnChanges {
   sumOfVerifiedExpenses: ExpensesSum[] = [];
 
   menuItems: MenuItem[] = [{
-    label: 'Selected Business Trip',
+    label: 'Selected Expense',
     items: [
       {
         label: 'Edit',
