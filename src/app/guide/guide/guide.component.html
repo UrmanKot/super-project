@@ -919,6 +919,7 @@
         <span></span>
         <span></span>
         <span></span>
+        <span></span>
       </div>
     </div>
 
@@ -1032,6 +1033,45 @@
         <span></span>
         <span></span>
       </div>
+    </div>
+
+    <div class="guide__button guide__button_arrow-bottom">
+      <pek-guide-button
+        [btnStyle]="'secondary'"
+        title="Write off request"
+        buttonsPosition="right"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/dash/confirmation"
+      ></pek-guide-button>
+
+    </div>
+
+    <div class="guide__button guide__button_arrow-bottom">
+      <pek-guide-button
+        [btnStyle]="'secondary'"
+        title="Write off"
+        buttonsPosition="right"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        [btnStyle]="'outline'"
+        title="Write off"
+        buttonsPosition="right"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
     </div>
 
 

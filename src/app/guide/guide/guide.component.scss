@@ -1147,9 +1147,15 @@
             }
 
             &:nth-child(3) {
-              width: 54px;
+              width: 102px;
               height: 2px;
-              right: -54px;
+              right: -102px;
+            }
+
+            &:nth-child(5) {
+              width: 2px;
+              height: 187px;
+              right: -102px;
             }
 
             //&:nth-child(4) {
@@ -1220,6 +1226,15 @@
 
     &_12 {
       .guide__button {
+        &:nth-child(5),
+        &:nth-child(6),
+        &:nth-child(7),
+        &:nth-child(8),
+        {
+          position: relative;
+          left: 46px;
+        }
+
         &:nth-child(2) {
           margin-top: 330px;
 
