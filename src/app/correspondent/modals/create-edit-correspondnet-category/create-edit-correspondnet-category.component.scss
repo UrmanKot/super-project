@@ -1,0 +1,7 @@
+.create-edit-product-structure-category {
+  &::ng-deep {
+    .mat-dialog-content {
+      overflow: initial !important;
+    }
+  }
+}

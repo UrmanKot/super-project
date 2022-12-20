@@ -86,7 +86,7 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Corespondents',
     icon: 'pi pi-users',
-    routerLink: ['/external', `${environment.link_url}dash/correspondents`],
+    routerLink: [`/correspondents`],
     requiredModulePermission: 'can_edit_correspondents'
   }, {
     label: 'Reports',
@@ -107,7 +107,7 @@ export class DashboardComponent implements OnInit {
     label: 'Instruments/Tools/Equipment',
     icon: 'pi pi-database',
     routerLink: ['/external', `${environment.link_url}dash/instruments/instruments-and-tools`],
-    requiredModulePermission: 'can_edit_administration'
+    requiredModulePermission: 'can_edit_instruments_and_tools'
   }];
 
   constructor(
