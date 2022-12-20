@@ -214,6 +214,12 @@ body {
   flex: 0 0 2rem !important;
 }
 
+@media print {
+  p-toast {
+    display: none;
+  }
+}
+
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/form';
 @import 'app/shared/styles/table';
