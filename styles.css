@@ -12559,6 +12559,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   line-height: 1.4;
   background-color: #f7f8fa;
+  height: 100%;
 }
 body::-webkit-scrollbar-thumb {
   border-radius: 0.625rem;
@@ -13379,6 +13380,25 @@ textarea::-webkit-scrollbar {
 }
 .modal-overflow-visible .mat-dialog-container {
   overflow: initial !important;
+}
+.scan-region-highlight svg:first-child {
+  width: 50% !important;
+  height: 50% !important;
+  left: 25% !important;
+  top: 25% !important;
+  display: none !important;
+}
+.scan-region-highlight svg:last-child {
+  stroke-width: 3 !important;
+}
+.qr-code-item-scanned {
+  background: #c9ddc0 !important;
+}
+.qr-code-item-found {
+  background: #e9b213 !important;
+}
+.qr-code-item-found td {
+  font-weight: 500;
 }
 .ml-auto {
   margin-left: auto !important;
