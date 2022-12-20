@@ -7,6 +7,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CorrespondentService} from '../../services/correspondent.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {CorrespondentsCategory} from '../../models/correspondents-category';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-create-edit-correspondent',
@@ -28,12 +29,13 @@ export class CreateEditCorrespondentComponent implements OnInit {
     private correspondentService: CorrespondentService,
     private dialogRef: MatDialogRef<CreateEditCorrespondentComponent>,
     private adapterService: AdapterService,
+    private modalService: ModalService,
     @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, correspondentType: CorrespondentTypes, correspondent: Partial<Correspondent> }
   ) {
     this.type = this.data.correspondentType;
     this.form = fb.group({
       date_received: [null, [Validators.required]],
-      description: [null],
+      description: [''],
       category: [null],
     });
 
@@ -46,6 +48,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.form.addControl('id', new FormControl(null));
       this.form.get('date_received').patchValue(new Date(this.data.correspondent.date_received));
       this.form.get('id').patchValue(this.data.correspondent.id);
+      this.form.get('description').patchValue(this.data.correspondent.description);
       if (this.data.correspondent.category) {
         this.form.get('category').patchValue(this.data.correspondent.category.id);
       }
@@ -84,8 +87,8 @@ export class CreateEditCorrespondentComponent implements OnInit {
     });
   }
 
-  filesSelected(files: any) {
-    this.files = files.currentFiles;
+  filesSelected(files: File[]) {
+    this.files = files;
   }
 
   getName(name) {
@@ -105,9 +108,13 @@ export class CreateEditCorrespondentComponent implements OnInit {
   }
 
   deleteCorrespondentFile(id: any) {
-    const index = this.correspondentFiles.findIndex(el => el.id === id);
-    this.correspondentFiles.splice(index, 1);
-    this.filesIdsToDelete.push(id);
+    this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+      if (confirm) {
+        const index = this.correspondentFiles.findIndex(el => el.id === id);
+        this.correspondentFiles.splice(index, 1);
+        this.filesIdsToDelete.push(id);
+      }
+    });
   }
 
   trim(field: string) {
@@ -147,12 +154,16 @@ export class CreateEditCorrespondentComponent implements OnInit {
   }
 
   onSave() {
-    console.log('result = ', this.form.value);
-    return
     if (this.data.type === 'edit') {
-      this.add();
+      this.change();
     } else {
-     this.change();
+      this.add();
     }
+  }
+
+  viewFiles() {
+    // const files = this.form.get('hotel').value;
+    const data: {links: any, files: any} = {links: this.correspondentFiles, files: []};
+    this.correspondentService.viewFiles(data);
   }
 }

@@ -8,6 +8,7 @@ import {BusinessTripService} from '../../../business-trips/services/business-tri
 })
 export class UploadFilePickerComponent implements OnInit {
   @Input() files: File[] = [];
+  @Input() showLabel = true;
   uploadedFiles: any[] = [];
   @Output() fileChanged: EventEmitter<File[]> = new EventEmitter<File[]>();
   constructor(

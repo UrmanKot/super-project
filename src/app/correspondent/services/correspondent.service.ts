@@ -14,6 +14,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   CreateEditCorrespondentComponent
 } from '../modals/create-edit-correspondent/create-edit-correspondent.component';
+import {
+  UploadedDataViewerComponent
+} from '../../business-trips/modals/uploaded-data-viewer/uploaded-data-viewer.component';
 
 @Injectable({
   providedIn: 'root'
@@ -122,5 +125,18 @@ export class CorrespondentService {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  viewFiles(files) {
+    return this.dialog
+      .open<UploadedDataViewerComponent>(UploadedDataViewerComponent, {
+        width: 'auto',
+        height: 'auto',
+        data: files,
+        panelClass: 'gallery-modal',
+        autoFocus: false,
+      })
+      .afterClosed()
+      .pipe();
   }
 }

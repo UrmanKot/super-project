@@ -10,6 +10,7 @@ export class Correspondent {
   readonly id:number;
   date_received: Date;
   external_id: string;
+  description: string;
   category?: CorrespondentsCategory;
   files: CorrespondentFiles[];
 }

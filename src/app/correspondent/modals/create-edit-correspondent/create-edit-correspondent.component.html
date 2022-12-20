@@ -6,7 +6,7 @@
   </div>
 
   <mat-dialog-content>
-    <form [formGroup]="form" class="d-flex justify-content-around">
+    <form [formGroup]="form" class="d-flex justify-content-around pb-4">
       <div style="width: 48%">
         <div class="form-group">
           <label>Date Received*</label>
@@ -36,13 +36,74 @@
             (choiceCategory)="onSelectCategory($event)"
           ></pek-correspondnet-categories-picker>
         </div>
+
+        <div class="col-3">
+          <div class="form-group">
+            <button pButton type="button" icon="pi pi-eye" label="View files" (click)="viewFiles()"></button>
+          </div>
+        </div>
+
       </div>
-      <div style="width: 48%">
+      <div  style="width: 48%">
         <div class="form-group">
-          <pek-upload-file-picker (fileChanged)="filesSelected($event)"></pek-upload-file-picker>
+          <label>Files</label>
+          <pek-upload-file-picker
+            [showLabel]="false"
+            class="files" (fileChanged)="filesSelected($event)"></pek-upload-file-picker>
         </div>
       </div>
     </form>
+    <div class="row">
+      <p-table
+        class="table-full-loading adaptive-table adaptive-table_filters"
+        [rows]="5"
+        [paginator]="true"
+        [value]="correspondentFiles"
+        selectionMode="single"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 80%">Name</th>
+            <th style="width: 20%">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-file let-i="rowIndex">
+          <tr [pSelectableRow]="file" *ngIf="isFileToBeDisplayed(file.id)">
+            <td style="width: 20%">
+              {{ getName(file.file) }}
+            </td>
+            <td style="width: 30%">
+              <div class="d-flex justify-content-center">
+                <button
+                  pButton
+                  (click)="downloadFile(file)"
+                  type="button"
+                  class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                  icon="pi pi-download"
+                ></button>
+                <button
+                  pButton
+                  (click)="deleteCorrespondentFile(file.id)"
+                  type="button"
+                  class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                  icon="pi pi-trash"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr class="no-content">
+            <td style="width: 100%;" class="text-center p-4" [attr.colspan]="3">
+              <span>
+              No Files Found
+            </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
   </mat-dialog-content>
 
   <mat-dialog-actions class="justify-content-between">
