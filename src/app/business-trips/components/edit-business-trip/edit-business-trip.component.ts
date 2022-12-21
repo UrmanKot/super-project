@@ -486,9 +486,14 @@ export class EditBusinessTripComponent implements OnInit {
     }
   }
 
-  prepareDataToSend(status: BusinessTripStatus): DataToSend {
+  prepareDataToSend(status: BusinessTripStatus, prepareToExport = false): DataToSend {
     const preparedLocations = [];
-    let tempFormValue = deepCopy(this.form.value);
+    let tempFormValue;
+    if (prepareToExport) {
+      tempFormValue = deepCopy(this.form.value);
+    } else {
+      tempFormValue = this.form.value;
+    }
 
     if (tempFormValue.start_location_country) {
       const startLocation: BusinessTripLocation = {
@@ -773,7 +778,7 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
   export() {
-    const preparedData = this.prepareDataToSend(this.businessTrip.status);
+    const preparedData = this.prepareDataToSend(this.businessTrip.status, true);
     this.loadEmployeePositionData(preparedData).pipe(switchMap(res => {
         return this.loadInitiatorData(res);
       }),
