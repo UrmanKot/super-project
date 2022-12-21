@@ -30,24 +30,28 @@ const routes = [{
         path: '', component: _components_layouts_business_trips_layout_business_trips_layout_component__WEBPACK_IMPORTED_MODULE_0__.BusinessTripsLayoutComponent, children: [
             {
                 path: 'trips',
+                title: 'Business Trips',
                 component: _components_business_trips_business_trips_component__WEBPACK_IMPORTED_MODULE_1__.BusinessTripsComponent
             },
             {
                 path: 'trip/edit/:tripId',
                 data: { isVerify: false },
+                title: 'Edit Business Trip',
                 component: _components_edit_business_trip_edit_business_trip_component__WEBPACK_IMPORTED_MODULE_2__.EditBusinessTripComponent
             },
             {
                 path: 'trip/verify/:tripId',
                 data: { isVerify: true },
+                title: 'Verify Business Trip',
                 component: _components_edit_business_trip_edit_business_trip_component__WEBPACK_IMPORTED_MODULE_2__.EditBusinessTripComponent
             },
             {
                 path: 'vehicles',
+                title: 'Business Trip Vehicles',
                 component: _components_layouts_vehicles_vehicles_component__WEBPACK_IMPORTED_MODULE_3__.VehiclesComponent
             },
             {
-                path: 'expenses',
+                path: 'Business Trip Expenses',
                 component: _components_layouts_expanses_expanses_component__WEBPACK_IMPORTED_MODULE_4__.ExpansesComponent
             },
             {
@@ -221,26 +225,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BusinessTripsComponent": () => (/* binding */ BusinessTripsComponent)
 /* harmony export */ });
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ 71989);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 59295);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 71989);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ 59295);
 /* harmony import */ var _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/business-trip-status.enum */ 37071);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs */ 68951);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/core */ 22560);
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/router */ 60124);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/router */ 60124);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/forms */ 2508);
 /* harmony import */ var _services_business_trip_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/business-trip.service */ 96288);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
 /* harmony import */ var _shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @shared/services/adapter.service */ 46767);
 /* harmony import */ var _auth_auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../auth/auth.service */ 50384);
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/common */ 94666);
-/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! primeng/button */ 73867);
-/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! primeng/api */ 14356);
-/* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! primeng/menubar */ 80552);
-/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! primeng/table */ 17485);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! primeng/api */ 14356);
+/* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! primeng/menubar */ 80552);
+/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! primeng/table */ 17485);
 /* harmony import */ var _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../shared/icons/module-icon/module-icon.component */ 73237);
-/* harmony import */ var primeng_paginator__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! primeng/paginator */ 42722);
-/* harmony import */ var primeng_calendar__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! primeng/calendar */ 32547);
+/* harmony import */ var primeng_paginator__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! primeng/paginator */ 42722);
+/* harmony import */ var primeng_calendar__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! primeng/calendar */ 32547);
 /* harmony import */ var _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../pickers/business-trips-multi-status-picker/business-trips-multi-status-picker.component */ 61370);
 /* harmony import */ var _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../pickers/business-trips-multi-employee-with-custom/business-trips-multi-employee-with-custom.component */ 60495);
+
 
 
 
@@ -405,6 +412,7 @@ class BusinessTripsComponent {
         this.count = 0;
         this.isShowAll = false;
         this.isStartOnePage = false;
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_9__.Subject();
         this.searchForm = this.fb.group({
             employees: [],
             trip_started: [],
@@ -456,8 +464,12 @@ class BusinessTripsComponent {
             });
         }
     }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
     ngOnInit() {
-        this.searchForm.valueChanges.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.debounceTime)(1000)).subscribe(res => {
+        this.searchForm.valueChanges.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.debounceTime)(1000), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$)).subscribe(res => {
             this.searchBusinessTrips();
         });
         this.searchBusinessTrips();
@@ -531,7 +543,7 @@ class BusinessTripsComponent {
     getPaginated() {
         this.businessTripService
             .get(this.query)
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.take)(1))
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$))
             .subscribe((res) => {
             this.count = res.count;
             this.businessTrips = res.results;
@@ -541,7 +553,7 @@ class BusinessTripsComponent {
     getAll() {
         this.businessTripService
             .getAll(this.query)
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.take)(1))
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$))
             .subscribe((res) => {
             this.businessTrips = res;
             this.selectedBusinessTrip = null;
@@ -554,7 +566,7 @@ class BusinessTripsComponent {
     createBusinessTrip() {
         this.businessTripService
             .createChangeBusinessTrip()
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.take)(1))
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$))
             .subscribe((res) => {
             if (res) {
                 this.searchBusinessTrips();
@@ -565,17 +577,17 @@ class BusinessTripsComponent {
         this.router.navigate(['/business-trips/trip/edit/', this.selectedBusinessTrip.id]);
     }
     verifyBt() {
-        this.router.navigate(['/dash/business-trips/trip/verify/', this.selectedBusinessTrip.id]);
+        this.router.navigate(['/business-trips/trip/verify/', this.selectedBusinessTrip.id]);
     }
     deleteBusinessTrip() {
         this.modalService
             .confirm('danger', 'Confirm')
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.take)(1))
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$))
             .subscribe((confirm) => {
             if (confirm) {
                 this.businessTripService
                     .delete(this.selectedBusinessTrip)
-                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.take)(1))
+                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.takeUntil)(this.destroy$))
                     .subscribe((del) => {
                     this.searchBusinessTrips();
                 });
@@ -621,7 +633,7 @@ class BusinessTripsComponent {
         }
     }
 }
-BusinessTripsComponent.ɵfac = function BusinessTripsComponent_Factory(t) { return new (t || BusinessTripsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_11__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_12__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_1__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_3__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_auth_auth_service__WEBPACK_IMPORTED_MODULE_4__.AuthService)); };
+BusinessTripsComponent.ɵfac = function BusinessTripsComponent_Factory(t) { return new (t || BusinessTripsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_13__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_1__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_3__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdirectiveInject"](_auth_auth_service__WEBPACK_IMPORTED_MODULE_4__.AuthService)); };
 BusinessTripsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdefineComponent"]({ type: BusinessTripsComponent, selectors: [["pek-business-trips"]], viewQuery: function BusinessTripsComponent_Query(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵviewQuery"](_c0, 5);
     } if (rf & 2) {
@@ -710,7 +722,7 @@ BusinessTripsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MOD
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx.isShowAll);
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", ctx.isShowAll);
-    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_13__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_13__.NgTemplateOutlet, primeng_button__WEBPACK_IMPORTED_MODULE_14__.ButtonDirective, primeng_button__WEBPACK_IMPORTED_MODULE_14__.Button, primeng_api__WEBPACK_IMPORTED_MODULE_15__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_12__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_12__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.FormControlName, primeng_menubar__WEBPACK_IMPORTED_MODULE_16__.Menubar, primeng_table__WEBPACK_IMPORTED_MODULE_17__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_17__.SelectableRow, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__.ModuleIconComponent, primeng_paginator__WEBPACK_IMPORTED_MODULE_18__.Paginator, primeng_calendar__WEBPACK_IMPORTED_MODULE_19__.Calendar, _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_6__.BusinessTripsMultiStatusPickerComponent, _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_7__.BusinessTripsMultiEmployeeWithCustomComponent, _angular_common__WEBPACK_IMPORTED_MODULE_13__.DatePipe], styles: [".form[_ngcontent-%COMP%] {\n  margin-top: -0.25rem;\n}\n\n.input-wrapper[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  width: 100%;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  position: absolute;\n  bottom: 0;\n  background: transparent;\n  cursor: pointer;\n  color: #6c757d;\n  right: 0.6rem;\n  top: 0.275rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJ1c2luZXNzLXRyaXBzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usb0JBQUE7QUFDRjs7QUFFQTtFQUNFLGtCQUFBO0VBQ0EsYUFBQTtFQUNBLG1CQUFBO0FBQ0Y7O0FBQ0U7RUFDRSxXQUFBO0FBQ0o7O0FBRUU7RUFDRSxrQkFBQTtFQUNBLFNBQUE7RUFDQSx1QkFBQTtFQUNBLGVBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGFBQUE7QUFBSiIsImZpbGUiOiJidXNpbmVzcy10cmlwcy5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5mb3JtIHtcclxuICBtYXJnaW4tdG9wOiAtMC4yNXJlbTtcclxufVxyXG5cclxuLmlucHV0LXdyYXBwZXIge1xyXG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICBkaXNwbGF5OiBmbGV4O1xyXG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XHJcblxyXG4gIGlucHV0IHtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG4gIH1cclxuXHJcbiAgYnV0dG9uIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIGJvdHRvbTogMDtcclxuICAgIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50O1xyXG4gICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgY29sb3I6ICM2Yzc1N2Q7XHJcbiAgICByaWdodDogMC42cmVtO1xyXG4gICAgdG9wOiAwLjI3NXJlbTtcclxuICB9XHJcbn1cclxuIl19 */"] });
+    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_15__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_15__.NgTemplateOutlet, primeng_button__WEBPACK_IMPORTED_MODULE_16__.ButtonDirective, primeng_button__WEBPACK_IMPORTED_MODULE_16__.Button, primeng_api__WEBPACK_IMPORTED_MODULE_17__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_14__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_14__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormControlName, primeng_menubar__WEBPACK_IMPORTED_MODULE_18__.Menubar, primeng_table__WEBPACK_IMPORTED_MODULE_19__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_19__.SelectableRow, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__.ModuleIconComponent, primeng_paginator__WEBPACK_IMPORTED_MODULE_20__.Paginator, primeng_calendar__WEBPACK_IMPORTED_MODULE_21__.Calendar, _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_6__.BusinessTripsMultiStatusPickerComponent, _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_7__.BusinessTripsMultiEmployeeWithCustomComponent, _angular_common__WEBPACK_IMPORTED_MODULE_15__.DatePipe], styles: [".form[_ngcontent-%COMP%] {\n  margin-top: -0.25rem;\n}\n\n.input-wrapper[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  width: 100%;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  position: absolute;\n  bottom: 0;\n  background: transparent;\n  cursor: pointer;\n  color: #6c757d;\n  right: 0.6rem;\n  top: 0.275rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJ1c2luZXNzLXRyaXBzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usb0JBQUE7QUFDRjs7QUFFQTtFQUNFLGtCQUFBO0VBQ0EsYUFBQTtFQUNBLG1CQUFBO0FBQ0Y7O0FBQ0U7RUFDRSxXQUFBO0FBQ0o7O0FBRUU7RUFDRSxrQkFBQTtFQUNBLFNBQUE7RUFDQSx1QkFBQTtFQUNBLGVBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGFBQUE7QUFBSiIsImZpbGUiOiJidXNpbmVzcy10cmlwcy5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5mb3JtIHtcclxuICBtYXJnaW4tdG9wOiAtMC4yNXJlbTtcclxufVxyXG5cclxuLmlucHV0LXdyYXBwZXIge1xyXG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICBkaXNwbGF5OiBmbGV4O1xyXG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XHJcblxyXG4gIGlucHV0IHtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG4gIH1cclxuXHJcbiAgYnV0dG9uIHtcclxuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgIGJvdHRvbTogMDtcclxuICAgIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50O1xyXG4gICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgY29sb3I6ICM2Yzc1N2Q7XHJcbiAgICByaWdodDogMC42cmVtO1xyXG4gICAgdG9wOiAwLjI3NXJlbTtcclxuICB9XHJcbn1cclxuIl19 */"] });
 
 
 /***/ }),
@@ -1550,9 +1562,15 @@ class EditBusinessTripComponent {
             });
         }
     }
-    prepareDataToSend(status) {
+    prepareDataToSend(status, prepareToExport = false) {
         const preparedLocations = [];
-        let tempFormValue = (0,deep_copy_ts__WEBPACK_IMPORTED_MODULE_2__.deepCopy)(this.form.value);
+        let tempFormValue;
+        if (prepareToExport) {
+            tempFormValue = (0,deep_copy_ts__WEBPACK_IMPORTED_MODULE_2__.deepCopy)(this.form.value);
+        }
+        else {
+            tempFormValue = this.form.value;
+        }
         if (tempFormValue.start_location_country) {
             const startLocation = {
                 id: tempFormValue.start_location_id,
@@ -1817,7 +1835,7 @@ class EditBusinessTripComponent {
         return (0,rxjs__WEBPACK_IMPORTED_MODULE_14__.of)(preparedData);
     }
     export() {
-        const preparedData = this.prepareDataToSend(this.businessTrip.status);
+        const preparedData = this.prepareDataToSend(this.businessTrip.status, true);
         this.loadEmployeePositionData(preparedData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.switchMap)(res => {
             return this.loadInitiatorData(res);
         }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.switchMap)(res => {
@@ -3397,7 +3415,7 @@ class TripExpensesTableComponent {
         this.statuses = _enums_business_trip_expense_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripExpenseStatus;
         this.sumOfVerifiedExpenses = [];
         this.menuItems = [{
-                label: 'Selected Business Trip',
+                label: 'Selected Expense',
                 items: [
                     {
                         label: 'Edit',

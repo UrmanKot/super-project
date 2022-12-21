@@ -12718,6 +12718,11 @@ body::-webkit-scrollbar {
 .p-toast-icon-close {
   flex: 0 0 2rem !important;
 }
+@media print {
+  p-toast {
+    display: none;
+  }
+}
 .page__header {
   display: flex;
   align-items: center;

@@ -117,7 +117,7 @@ class DashboardComponent {
             }, {
                 label: 'Corespondents',
                 icon: 'pi pi-users',
-                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/correspondents`],
+                routerLink: [`/correspondents`],
                 requiredModulePermission: 'can_edit_correspondents'
             }, {
                 label: 'Reports',
@@ -138,7 +138,7 @@ class DashboardComponent {
                 label: 'Instruments/Tools/Equipment',
                 icon: 'pi pi-database',
                 routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/instruments/instruments-and-tools`],
-                requiredModulePermission: 'can_edit_administration'
+                requiredModulePermission: 'can_edit_instruments_and_tools'
             }];
         this.router.events.subscribe(evt => {
             if (evt instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__.NavigationEnd)
