@@ -127,7 +127,7 @@ class DashboardComponent {
             }, {
                 label: 'Delivery',
                 icon: 'icon-delivery-chains',
-                routerLink: '/delivery-chains',
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/delivery-chains`],
                 requiredModulePermission: 'can_edit_delivery_chain'
             }, {
                 label: 'Business Trips',
@@ -138,6 +138,11 @@ class DashboardComponent {
                 label: 'Instruments/Tools/Equipment',
                 icon: 'pi pi-database',
                 routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/instruments/instruments-and-tools`],
+                requiredModulePermission: 'can_edit_instruments_and_tools'
+            }, {
+                label: 'ERP Statistics',
+                icon: 'pi pi-chart-bar',
+                routerLink: ['/statistics'],
                 requiredModulePermission: 'can_edit_instruments_and_tools'
             }];
         this.router.events.subscribe(evt => {
