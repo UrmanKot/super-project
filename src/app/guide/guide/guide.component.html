@@ -546,6 +546,44 @@
       <pek-guide-button
         btnStyle="secondary"
         routeUrl="/dash/confirmation"
+        title="Tender"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="top"
+        btnStyle="primary"
+        routeUrl="/dash/confirmation"
+        title="Confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <div>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
+        title="Tender"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
         title="Payment confirmation"
       ></pek-guide-button>
       <div>
@@ -1084,6 +1122,30 @@
     <!--    </div>-->
   </div>
   <div class="guide__col guide__col_12">
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="top"
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="secondary"
+        title="Tender"
+        routeUrl="/confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
     <div class="guide__button guide__button_arrow-right-left">
       <pek-guide-button
         [btnStyle]="'secondary'"

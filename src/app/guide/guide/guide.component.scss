@@ -548,13 +548,13 @@
         }
 
         &:nth-child(1) {
-          height: 13px;
-          top: -10px;
+          height: 27px;
+          top: -30px;
         }
 
         &:nth-child(2) {
-          height: 199px;
-          top: 43px;
+          height: 192px;
+          top: 50px;
         }
 
         &:nth-child(3) {
@@ -750,7 +750,7 @@
           width: 108px;
           height: 2px;
           left: 42px;
-          top: 152px;
+          top: 146px;
 
           &::before {
             content: '';
@@ -769,7 +769,7 @@
 
         &:nth-child(4) {
           width: 2px;
-          height: 112px;
+          height: 106px;
           left: 40px;
           top: 42px;
         }
@@ -1016,28 +1016,152 @@
         }
 
         &:nth-child(2) {
-          margin-top: 75px;
+          margin-top: 68px;
         }
 
+
         &:nth-child(3) {
-          margin-top: 224px;
+          margin-top: 8px;
+
+          span {
+            &:nth-child(1) {
+              height: 36px;
+              width: 2px;
+              left: 43px;
+              top: -42px;
+            }
+
+            &:nth-child(2) {
+              height: 2px;
+              width: 77px;
+              top: -43px;
+              left: 43px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(45deg);
+                right: -9px;
+                bottom: -3px;
+              }
+            }
+
+            &:nth-child(3) {
+              height: 29px;
+              width: 2px;
+              left: 43px;
+              top: 46px;
+
+              &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-225deg);
+                right: -13px;
+                bottom: 1px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(5) {
+          span {
+            &:nth-child(1) {
+              height: 27px;
+              width: 2px;
+              left: 43px;
+              top: -30px;
+
+              &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-45deg);
+                top: 0;
+                left: -3px;
+              }
+            }
+
+            &:nth-child(2) {
+              height: 40px;
+              width: 2px;
+              left: 43px;
+              top: 46px;
+            }
+
+            &:nth-child(3) {
+              height: 2px;
+              width: 77px;
+              left: 43px;
+              top: 85px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-315deg);
+                right: -9px;
+                top: -3px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(6) {
+          top: 8px;
 
           span {
             &:nth-child(1) {
               width: 27px;
               height: 2px;
               right: -30px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-315deg);
+                right: -9px;
+                top: -3px;
+              }
             }
 
             &:nth-child(2) {
               width: 10px;
               height: 2px;
               left: -13px;
+
             }
 
             &:nth-child(3) {
               width: 2px;
-              height: 282px;
+              height: 300px;
               left: -13px;
               bottom: 20px;
             }
@@ -1046,7 +1170,7 @@
               width: 19px;
               height: 2px;
               left: -30px;
-              bottom: 302px;
+              bottom: 319px;
 
               &::before {
                 content: "";
@@ -1075,10 +1199,21 @@
     }
 
     &_2 {
+      width: 120px;
       .guide__button {
+        &::ng-deep {
+          .guide-button__inner {
+            width: 120px;
+          }
+        }
+
         span {
           background: #495057;
           position: absolute;
+        }
+
+        &:nth-child(1) {
+          top: -7px;
         }
 
         &:nth-child(2) {
@@ -1087,35 +1222,35 @@
               width: 2px;
               height: 27px;
               bottom: -30px;
-              left: 44px;
+              left: 59px;
             }
 
             &:nth-child(2) {
               width: 2px;
-              height: 17px;
-              top: -20px;
-              left: 44px;
+              height: 38px;
+              top: -43px;
+              left: 59px;
             }
 
-            &:nth-child(3) {
-              width: 50px;
-              height: 2px;
-              top: -20px;
-              left: 44px;
-            }
-
-            &:nth-child(4) {
-              width: 2px;
-              height: 17px;
-              top: -35px;
-              left: 92px;
-            }
+            //&:nth-child(3) {
+            //  width: 50px;
+            //  height: 2px;
+            //  top: -20px;
+            //  left: 44px;
+            //}
+            //
+            //&:nth-child(4) {
+            //  width: 2px;
+            //  height: 17px;
+            //  top: -35px;
+            //  left: 92px;
+            //}
 
             &:nth-child(5) {
-              width: 27px;
+              width: 90px;
               height: 2px;
-              top: -35px;
-              left: 93px;
+              top: -43px;
+              left: 61px;
 
               &::before {
                 content: '';
@@ -1175,24 +1310,23 @@
               left: -30px;
             }
 
-            &:nth-child(2) {
-              width: 2px;
-              height: 86px;
-              left: 45px;
-              top: -80px;
-            }
-
+            //&:nth-child(2) {
+            //  width: 2px;
+            //  height: 86px;
+            //  left: 45px;
+            //  top: -80px;
+            //}
+            //
             &:nth-child(3) {
-              width: 86px;
+              width: 53px;
+              left: 96px;
               height: 2px;
-              top: -80px;
-              left: 45px;
             }
 
             &:nth-child(4) {
               width: 2px;
-              height: 27px;
-              left: 129px;
+              height: 130px;
+              left: 148px;
               top: -105px;
 
               &::before {
@@ -1213,7 +1347,8 @@
         }
 
         &:nth-child(5) {
-          left: 86px;
+          left: 101px;
+          top: 40px;
 
           span {
             &:nth-child(1) {
@@ -1239,16 +1374,16 @@
 
             &:nth-child(2) {
               width: 2px;
-              height: 52px;
+              height: 21px;
               left: 45px;
-              top: 46px;
+              top: 38px;
             }
 
             &:nth-child(3) {
-              width: 41px;
+              width: 55px;
               height: 2px;
-              left: 4px;
-              top: 96px;
+              left: -10px;
+              top: 57px;
 
               &::before {
                 content: '';
@@ -1270,6 +1405,18 @@
 
     &_9 {
       padding-top: 69px;
+
+      .guide__button {
+        &:nth-child(8) {
+          left: 19px;
+          margin-bottom: 70px;
+
+          span {
+            bottom: -69px;
+            height: 67px;
+          }
+        }
+      }
     }
 
     &_10 {
@@ -1278,7 +1425,7 @@
       .guide__button {
         &:nth-child(2) {
           margin-top: 74px;
-          margin-bottom: 120px;
+          margin-bottom: 113px;
 
           span {
             display: block;
@@ -1370,16 +1517,16 @@
 
             &:nth-child(2) {
               right: 90px;
-              width: 44px;
+              width: 55px;
               height: 2px;
               top: 20px;
             }
 
             &:nth-child(3) {
               width: 2px;
-              height: 128px;
-              top: -106px;
-              left: -45px;
+              height: 79px;
+              top: -57px;
+              left: -57px;
 
               &::before {
                 content: "";
@@ -1535,6 +1682,52 @@
         //}
 
         &:nth-child(2) {
+          span {
+            position: absolute;
+            background: #495057;
+
+            &:nth-child(1) {
+              left: 44px;
+              top: -30px;
+              height: 27px;
+              width: 2px;
+            }
+
+            &:nth-child(2) {
+              left: 44px;
+              top: 45px;
+              height: 44px;
+              width: 2px;
+            }
+
+            &:nth-child(3) {
+              left: -30px;
+              top: 89px;
+              width: 76px;
+              height: 2px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-135deg);
+                bottom: 0;
+                top: -3px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(3) {
+          top: 8px;
+        }
+
+        &:nth-child(4) {
           margin-top: 73px;
 
           span {
@@ -1639,6 +1832,10 @@
       padding-top: 220px;
     }
 
+    &_12 {
+      padding-top: 69px;
+    }
+
     &:last-child {
       margin-right: 0;
     }
@@ -1659,14 +1856,14 @@
               width: 76px;
               height: 2px;
               left: -30px;
-              top: -38px;
+              top: -47px;
             }
 
             &:nth-child(2) {
-              height: 34px;
+              height: 41px;
               width: 2px;
               left: 44px;
-              top: -38px;
+              top: -46px;
             }
 
             &:nth-child(3) {
