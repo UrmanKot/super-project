@@ -8,9 +8,15 @@ import {QuerySearch} from '@shared/models/other';
 import {Product} from '../../../../product-structure/models/product';
 import {Paginator} from 'primeng/paginator';
 import {InventoryProduct, PhysicalInventory} from '../../../models/physical-inventory';
-import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {ModalService} from '@shared/services/modal.service';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
+
+export class PreparedPhysicalInventory {
+  nomenclature: Nomenclature;
+  isSerializerProduct: boolean;
+  product: InventoryProduct[];
+}
 
 @Component({
   selector: 'pek-physical-inventory-products',
@@ -73,6 +79,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject();
   isScanned: boolean = false;
+  preparedProducts: Product[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -217,6 +224,12 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.physicalInventoryService.getInventoryProductsListsForPagination(this.inventoryId, this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(inventoryLists => {
+
+      const preparedProducts = [];
+      inventoryLists.results.forEach(product => {
+        preparedProducts.push(...product.products)
+      });
+      this.preparedProducts = [...preparedProducts];
       inventoryLists.results.forEach(list => {
         list.products[0].countProducts = list.products.length;
         list.products[0].products = [...list.products];
@@ -251,7 +264,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       }
 
       this.findItemId = null;
-
+      // preparedProducts
       this.inventoryProducts = [...newInventoryProducts];
       this.countProducts = inventoryLists.count;
 
@@ -327,13 +340,27 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   onComplete() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        this.isCompleting = true;
-        this.physicalInventoryService.completePhysicalInventory(+this.inventoryId).pipe(
-          finalize(() => this.isCompleting = false)
-        ).subscribe(() => {
-          this.router.navigateByUrl('/warehouse/physical-inventory').then();
+        this.physicalInventoryService.getChangedPhysicalInventoryProductsHaveBeenChanged(+this.inventoryId).subscribe((res: { data: InventoryProduct[] }) => {
+          if (res.data.length > 0) {
+            this.physicalInventoryService.changesInInventory(res.data).subscribe(res => {
+              if (res) {
+                this.completePhysicalInventory();
+              }
+            });
+          } else {
+            this.completePhysicalInventory();
+          }
         });
       }
+    });
+  }
+
+  completePhysicalInventory() {
+    this.isCompleting = true;
+    this.physicalInventoryService.completePhysicalInventory(+this.inventoryId).pipe(
+      finalize(() => this.isCompleting = false)
+    ).subscribe(() => {
+      this.router.navigateByUrl('/warehouse/physical-inventory').then();
     });
   }
 
@@ -459,6 +486,11 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   onCancelScanned() {
     this.scanningEnd = true;
     this.isScanned = false;
+  }
+
+  getWarehouseLocators(warehouseId: number) {
+    // @ts-ignore
+    return this.currentInventory.locators.filter(loc => loc.warehouse === warehouseId).map(loc => loc.name);
   }
 
   ngOnDestroy() {

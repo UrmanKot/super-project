@@ -7,9 +7,16 @@
         <ng-container *ngIf="isLoadingCurrentInventory">...</ng-container>
         <ng-container *ngIf="!isLoadingCurrentInventory">
           <ng-container *ngFor="let warehouse of currentInventory.warehouses; let idx = index">
-            {{warehouse.name}} <span *ngIf="idx !== currentInventory.warehouses.length - 1">,</span>
+            {{warehouse.name}}
+            locators(
+            <ng-container *ngFor="let locator of getWarehouseLocators(warehouse.id); let locatorIdx = index">
+              {{locator}}<span *ngIf="locatorIdx !== getWarehouseLocators(warehouse.id).length - 1">,</span>
+            </ng-container>
+            )
+            <span *ngIf="idx !== currentInventory.warehouses.length - 1">,</span>
           </ng-container>
         </ng-container>
+        <div>Date Created {{ currentInventory?.system_creation_date | date:'dd/MM/yyyy'}}</div>
       </h1>
     </div>
     <div class="page__tools">
@@ -159,9 +166,11 @@
         scrollHeight="calc(100vh - 30.25rem)"
         [scrollable]="true"
         dataKey="id"
-        [rows]="10"
+        groupRowsBy="physical_inventory_nomenclature.id"
+        rowGroupMode="rowspan"
+        [rows]="preparedProducts.length"
         [(selection)]="selectedInventoryProducts"
-        [value]="inventoryProducts"
+        [value]="preparedProducts"
       >
         <ng-template pTemplate="header">
           <tr>
@@ -180,12 +189,12 @@
             <th style="width: 14%">Locator</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-inventoryProduct let-i="rowIndex">
+
+        <ng-template pTemplate="body" let-inventoryProduct let-i="rowIndex" let-rowgroup="rowgroup"
+                     let-rowspan="rowspan">
           <tr
-            [pSelectableRow]="inventoryProduct"
-            [pRowToggler]="inventoryProduct"
-            [class.qr-code-item-scanned]="inventoryProduct.is_scanned_root"
-            [class.qr-code-item-found]="inventoryProduct.root_id === findItemId"
+            [class.qr-code-item-scanned]="inventoryProduct.is_scanned"
+            [class.qr-code-item-found]="inventoryProduct.id === findItemId"
           >
             <td style="width: 3%">
               <p-tableCheckbox [value]="inventoryProduct"></p-tableCheckbox>
@@ -193,7 +202,7 @@
             <td style="width: 5%" class="text-center">
               {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
             </td>
-            <td style="width: 14%">
+            <td style="width: 14%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
               <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
                 {{inventoryProduct.product.nomenclature.code}}
               </ng-container>
@@ -205,24 +214,9 @@
                 <span>(found)</span>
               </ng-container>
             </td>
-            <td style="width: 10%">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
-                <b *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">(S)</b>
-                {{inventoryProduct.product.nomenclature.name}}
-                <b
-                  *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">
-                  ({{inventoryProduct.countProducts}})
-                </b>
-              </ng-container>
-
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
-                {{inventoryProduct.physical_inventory_nomenclature.name}}
-                <b
-                  *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">
-                  ({{inventoryProduct.countProducts}})
-                </b>
-              </ng-container>
+            <td style="width: 10%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{inventoryProduct.physical_inventory_nomenclature.name}}
             </td>
             <td style="width: 10%" class="text-center">
               <ng-container *ngIf="inventoryProduct.product">
@@ -234,11 +228,21 @@
               </ng-container>
             </td>
             <td style="width: 9%" class="text-center">
-              {{inventoryProduct.initial_quantity}}
+                <span>
+                  <span *ngIf="inventoryProduct.initial_quantity === inventoryProduct.current_available_quantity">
+                  {{inventoryProduct.initial_quantity}}
+                </span>
+                <span *ngIf="inventoryProduct.initial_quantity !== inventoryProduct.current_available_quantity">
+                  {{inventoryProduct.initial_quantity}} <span
+                  class="warning-quantity-less">({{inventoryProduct.current_available_quantity}})</span>
+                </span>
+                </span>
+              id: {{inventoryProduct.id}}
             </td>
             <td pEditableColumn class="text-center" style="width: 11%">
 
-              <p-cellEditor *ngIf="currentInventory && currentInventory.status === '0'">
+              <p-cellEditor
+                *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
                 <ng-template pTemplate="input">
                   <input
                     pInputText
@@ -284,11 +288,11 @@
                 {{inventoryProduct.locator.name}}
 
                 <span class="d-block">
-                  R: {{inventoryProduct.locator.row}}
+                    R: {{inventoryProduct.locator.row}}
                   Col: {{inventoryProduct.locator.column}}
                   Sh: {{inventoryProduct.locator.shelf}}
                   Pl: {{inventoryProduct.locator.place}}
-                </span>
+                  </span>
               </div>
             </td>
 
@@ -296,11 +300,11 @@
               <div *ngIf="inventoryProduct.product.locator">
                 {{inventoryProduct.product.locator.name}}
                 <span class="d-block">
-                  R: {{inventoryProduct.product.locator.row}}
+                    R: {{inventoryProduct.product.locator.row}}
                   Col: {{inventoryProduct.product.locator.column}}
                   Sh: {{inventoryProduct.product.locator.shelf}}
                   Pl: {{inventoryProduct.product.locator.place}}
-                </span>
+                  </span>
               </div>
             </ng-template>
 
@@ -325,7 +329,7 @@
     <div
       class="paginator-wrapper"
       *ngIf="!isShowAll"
-      [class.paginator-wrapper_hide]="inventoryProducts.length === 0"
+      [class.paginator-wrapper_hide]="preparedProducts.length === 0"
     >
       <p-paginator
         #paginator

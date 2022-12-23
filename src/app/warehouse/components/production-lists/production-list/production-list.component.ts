@@ -552,6 +552,7 @@ export class ProductionListComponent implements OnInit {
   onScanned(data: any) {
     this.scanningEnd = true;
     this.isScanned = false;
+    console.log('data found on qr code', data);
     this.scanForListProduct(data)
   }
 
