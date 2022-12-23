@@ -19,7 +19,7 @@ export class CreateEditLinkedCompanyComponent implements OnInit {
 
   form = this.fb.group({
     to_company_id: [null, [Validators.required]],
-    contact_person_id: [{ value: 0, disabled: true }, Validators.required],
+    contact_person_id: [{ value: null, disabled: true }, Validators.required],
     link_weight: [0, [Validators.required]],
   });
 
@@ -96,6 +96,7 @@ export class CreateEditLinkedCompanyComponent implements OnInit {
       this.form.get('to_company_id').patchValue(<any>id);
       this.form.get('contact_person_id').enable();
       this.searchContactPersons();
+      console.log(this.form.value);
     } else {
       this.form.get('to_company_id').patchValue(null);
       this.form.get('contact_person_id').disable();
