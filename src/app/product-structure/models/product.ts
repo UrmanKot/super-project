@@ -23,7 +23,6 @@ export class Product {
   rght?: number;
   locator?: Locator;
   level?: number;
-  physical_inventory_nomenclature?: any;
 }
 
 export class ProductFile {
