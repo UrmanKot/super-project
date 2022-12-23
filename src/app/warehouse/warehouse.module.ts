@@ -53,6 +53,8 @@ import {
 } from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
 import {QrCodeModule} from '../qr-code/qr-code.module';
+import { PhysicalInventoryProductsChangesComponent } from './modals/physical-inventory-products-changes/physical-inventory-products-changes.component';
+import {RippleModule} from 'primeng/ripple';
 
 
 
@@ -95,17 +97,19 @@ import {QrCodeModule} from '../qr-code/qr-code.module';
     QcAcceptTechnicalEquipmentComponent,
     WarehouseQcOrderComponent,
     WarehouseProductionRequestPrintPageComponent,
-    NomenclatureSerialInfoComponent
+    NomenclatureSerialInfoComponent,
+    PhysicalInventoryProductsChangesComponent
   ],
-  imports: [
-    CommonModule,
-    WarehouseRouting,
-    LayoutModule,
-    SharedModule,
-    TreeModule,
-    ProductStructureModule,
-    QrCodeModule,
-  ]
+    imports: [
+        CommonModule,
+        WarehouseRouting,
+        LayoutModule,
+        SharedModule,
+        TreeModule,
+        ProductStructureModule,
+        QrCodeModule,
+        RippleModule,
+    ]
 })
 export class WarehouseModule {
 }

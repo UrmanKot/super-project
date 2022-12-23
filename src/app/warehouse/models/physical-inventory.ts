@@ -1,6 +1,7 @@
 import {Warehouse} from './warehouse';
 import {Locator} from './locator';
 import {Product} from '../../product-structure/models/product';
+import {SerialNumber} from '../../procurement/models/invoice';
 
 export class PhysicalInventory {
   readonly id: number;
@@ -36,8 +37,11 @@ export class InventoryProduct {
   product: Product;
   new_quantity: number;
   initial_quantity: number;
+  initial_locator: number;
+  current_available_quantity?: number;
   total_cost: string;
   total_price: string;
+  serial_number: SerialNumber;
   unit_cost: string;
   unit_price: string;
   checkedForGeneration?: boolean;
