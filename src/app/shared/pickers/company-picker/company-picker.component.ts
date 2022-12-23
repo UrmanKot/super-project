@@ -39,7 +39,7 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
 
   onSelectCompany() {
     this.currentCompany = this.companies.find(currency => currency.id === this.selectedCompanyId);
-    this.selectCompany.emit(this.currentCompanyId);
+    this.selectCompany.emit(this.selectedCompanyId);
     this.selectCompanyFull.emit(this.currentCompany);
   }
 
