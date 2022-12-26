@@ -243,10 +243,6 @@ export class BusinessTripsComponent implements OnInit, OnDestroy {
       });
   }
 
-  statusFilterChanged(status: any) {
-
-  }
-
   paginate(evt: any) {
     if (!this.isStartOnePage) {
       this.searchForm.get('page').patchValue(evt.page + 1);

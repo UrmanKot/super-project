@@ -19,7 +19,7 @@
         type="button"
         icon="pi pi-check"
         label="Verify BT"
-        (click)="editBusinessTrip(tripStatuses.VERIFIED)">
+        (click)="infoChangedEmit.next(true)">
       </button>
       <button
         pButton
@@ -57,6 +57,7 @@
                 <label>First Name</label>
                 <input pInputText
                        formControlName="employee_first_name"
+                       (ngModelChange)="employeeChangedEmit.next()"
                        class="form-control">
               </div>
             </div>
@@ -64,6 +65,7 @@
               <div class="form-group">
                 <label>Last Name</label>
                 <input pInputText
+                       (ngModelChange)="employeeChangedEmit.next()"
                        formControlName="employee_last_name"
                        class="form-control">
               </div>
@@ -73,7 +75,7 @@
                 <label>Position</label>
                 <app-crm-position-picker
                   [position]="this.form.get('employee_position').value"
-                  (valueChange)="form.get('employee_position').setValue($event)"
+                  (valueChange)="form.get('employee_position').setValue($event); employeeChangedEmit.next()"
                 ></app-crm-position-picker>
               </div>
             </div>
@@ -89,7 +91,7 @@
                     [filters]="employeeFilter"
                     [showProfession]="true"
                     [employee]="_employee.get('id').value"
-                    (valueChange)="_employee.setValue($event)"
+                    (valueChange)="_employee.setValue($event);  employeeChangedEmit.next()"
                   ></pek-crm-single-employee-picker>
                 </div>
               </div>
@@ -131,7 +133,7 @@
             <pek-date-time-picker
               [maxDate]="form.get('trip_end')?.value"
               [date]="form.get('trip_start')?.value"
-              (setDate)="setStartValue($event)"
+              (setDate)="setStartValue($event); infoChangedEmit.next(false)"
               placeholder="Choice Start Date and Time"
             ></pek-date-time-picker>
           </div>
@@ -142,7 +144,7 @@
             <pek-date-time-picker
               [minDate]="form.get('trip_start')?.value"
               [date]="form.get('trip_end')?.value"
-              (setDate)="setEndValue($event)"
+              (setDate)="setEndValue($event); infoChangedEmit.next(false)"
               placeholder="Choice End Date and Time"
             ></pek-date-time-picker>
           </div>
@@ -166,10 +168,13 @@
       <pek-location-input
         [country]="this.form.get('start_location_country').value"
         [address]="this.form.get('start_location_address').value"
+        [locationId]="this.form.get('start_location_id').value"
         [type]="locationStatus.FIRST"
         [showHr]="false"
-        (countryChanged)="form.get('start_location_country').setValue($event)"
-        (addressChanged)="form.get('start_location_address').setValue($event)"
+        (countryChanged)="form.get('start_location_country').setValue($event);
+         locationChanged.next({type: locationStatus.FIRST, locationIndex: null});"
+        (addressChanged)="form.get('start_location_address').setValue($event);
+         locationChanged.next({type: locationStatus.FIRST, locationIndex: null});"
       ></pek-location-input>
       <div class="row">
         <div class="col-12">
@@ -178,16 +183,18 @@
           </div>
         </div>
       </div>
+
+<!--    [locationMeetings]="this.form.get('last_location_meetings').value"    -->
       <pek-location-input
         [country]="this.form.get('last_location_country').value"
         [address]="this.form.get('last_location_address').value"
+        [locationId]="this.form.get('last_location_id').value"
         [type]="locationStatus.LAST"
         [showHr]="false"
         [companiesFilters]="companiesFilters"
-        [locationMeetings]="this.form.get('last_location_meetings').value"
-        (meetingsChanged)="lastPointMeetingChanged($event)"
-        (countryChanged)="form.get('last_location_country').setValue($event)"
-        (addressChanged)="form.get('last_location_address').setValue($event)"
+        (meetingsChanged)="lastPointMeetingChanged($event);"
+        (countryChanged)="form.get('last_location_country').setValue($event); locationChanged.next({type: locationStatus.LAST, locationIndex: null});"
+        (addressChanged)="form.get('last_location_address').setValue($event); locationChanged.next({type: locationStatus.LAST, locationIndex: null});"
         [showAddMeetings]="true"
       ></pek-location-input>
       </div>
@@ -200,21 +207,22 @@
     </h2>
     <div class="page__card">
       <div *ngIf="isDataPrepared else infoLoading">
+<!--        [locationMeetings]="point.get('location_meetings').value"  -->
             <pek-location-input
               *ngFor="let point of _intermediatePoints; let index=index; let last=last"
               [country]="point.get('country').value"
               [address]="point.get('address').value"
-              [locationMeetings]="point.get('location_meetings').value"
+              [locationId]="point.get('id').value"
               [showHr]="!last"
               class="location"
               [class.last]="last"
               [showDelete]="true"
               [companiesFilters]="companiesFilters"
               (emitDeletePoint)="removePoint(point, index)"
-              (meetingsChanged)="meetingChanged(point, $event)"
+              (meetingsChanged)="meetingChanged(point, $event);"
               [type]="locationStatus.INTERMEDIATE"
-              (countryChanged)="point.get('country').setValue($event)"
-              (addressChanged)="point.get('address').setValue($event)"
+              (countryChanged)="point.get('country').setValue($event);  locationChanged.next({type: locationStatus.INTERMEDIATE, locationIndex: index});"
+              (addressChanged)="point.get('address').setValue($event);  locationChanged.next({type: locationStatus.INTERMEDIATE, locationIndex: index});"
               [showAddMeetings]="true"
             ></pek-location-input>
         <div class="d-flex justify-content-center" *ngIf="_intermediatePoints.length === 0">
@@ -234,7 +242,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <label>Purpose short</label>
-                  <input pInputText formControlName="purpose_short" class="form-control">
+                  <input pInputText (ngModelChange)="infoChangedEmit.next(false)" formControlName="purpose_short" class="form-control">
                 </div>
               </div>
             </div>
@@ -243,7 +251,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <label>Purpose Description</label>
-                  <textarea pInputTextarea formControlName="purpose_full" class="form-control" id="comment"></textarea>
+                  <textarea pInputTextarea (ngModelChange)="infoChangedEmit.next(false)" formControlName="purpose_full" class="form-control" id="comment"></textarea>
                 </div>
               </div>
             </div>
@@ -273,20 +281,20 @@
                   <div class="col-4">
                     <div class="form-group">
                       <label>Name</label>
-                      <input pInputText formControlName="hotel_name" class="form-control">
+                      <input pInputText (ngModelChange)="hotelChanged.next()" formControlName="hotel_name" class="form-control">
                     </div>
                   </div>
                   <div class="col-4">
                     <div class="form-group">
                       <label>Country</label>
                       <pek-business-trip-country-picker [country]="_hotel.get('hotel_country').value?.code"
-                                                        (valueChangeFull)="_hotel.get('hotel_country').setValue($event)"></pek-business-trip-country-picker>
+                                                        (valueChangeFull)="_hotel.get('hotel_country').setValue($event); hotelChanged.next()"></pek-business-trip-country-picker>
                     </div>
                   </div>
                   <div class="col-4">
                     <div class="form-group">
                       <label>Address</label>
-                      <input pInputText formControlName="hotel_address" class="form-control">
+                      <input pInputText (ngModelChange)="hotelChanged.next()" formControlName="hotel_address" class="form-control">
                     </div>
                   </div>
                 </div>
@@ -313,7 +321,7 @@
                         >
                           <button
                             class="btn btn-primary position-absolute mb-5"
-                            (click)="setHotelStartValue(startHotel.value); startHotel.toggle()"
+                            (click)="setHotelStartValue(startHotel.value); hotelChanged.next(); startHotel.toggle()"
                           >
                             Set Date
                           </button>
@@ -344,7 +352,7 @@
                         >
                           <button
                             class="btn btn-primary position-absolute mb-5"
-                            (click)="setHotelEndValue(endHotel.value); endHotel.toggle()"
+                            (click)="setHotelEndValue(endHotel.value); hotelChanged.next(); endHotel.toggle()"
                           >
                             Set Date
                           </button>
@@ -357,7 +365,7 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group">
-                      <pek-upload-file-picker (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
+                      <pek-upload-file-picker #filePicker  (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
                     </div>
                   </div>
                 </div>
@@ -418,20 +426,20 @@
                 <div class="form-group">
                   <label>Vehicle Type</label>
                   <pek-vehicle-type-picker [type]="form.get('vehicle_type').value"
-                                           (valueChange)="changedVechicleType($event)"></pek-vehicle-type-picker>
+                                           (valueChange)="changedVechicleType($event); vehicleChangedEmit.next()"></pek-vehicle-type-picker>
                 </div>
               </div>
               <ng-template [ngIf]="form.get('vehicle_type').value === '1' ||  form.get('vehicle_type').value === '2'">
                 <div class="col-4">
                   <div class="form-group">
                     <label>Vehicle Model</label>
-                    <input pInputText formControlName="vehicle_model" class="form-control">
+                    <input pInputText (ngModelChange)="vehicleChangedEmit.next()" formControlName="vehicle_model" class="form-control">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label>Vehicle Registration Plate</label>
-                    <input pInputText formControlName="vehicle_number" class="form-control">
+                    <input pInputText (ngModelChange)="vehicleChangedEmit.next()" formControlName="vehicle_number" class="form-control">
                   </div>
                 </div>
               </ng-template>
@@ -442,7 +450,7 @@
                     <pek-vehicle-picker
                       [placeholder]="'Vehicle Model'"
                       [vehicle]="_vehicle.get('id').value"
-                      (valueChange)="_vehicle.setValue($event)"
+                      (valueChange)="_vehicle.setValue($event); vehicleChangedEmit.next()"
                     ></pek-vehicle-picker>
                   </div>
                 </div>
@@ -458,13 +466,13 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label>Start Mileage</label>
-                    <input pInputText formControlName="start_mileage" class="form-control">
+                    <input pInputText (ngModelChange)="infoChangedEmit.next(false)" formControlName="start_mileage" class="form-control">
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-group">
                     <label>End Mileage</label>
-                    <input pInputText formControlName="end_mileage" class="form-control">
+                    <input pInputText (ngModelChange)="infoChangedEmit.next(false)" formControlName="end_mileage" class="form-control">
                   </div>
                 </div>
               </div>
@@ -483,7 +491,7 @@
                   <label>Initiator</label>
                   <pek-crm-single-employee-picker
                     [employee]="this.form.get('initiator').value"
-                    (valueChange)="form.get('initiator').setValue($event.id)"
+                    (valueChange)="form.get('initiator').setValue($event.id); infoChangedEmit.next(false)"
                   ></pek-crm-single-employee-picker>
                 </div>
               </div>
@@ -493,17 +501,13 @@
   </div>
 
   <div class="page__content">
-    <h2 class="mb-4 d-flex justify-content-between">
-      Expenses
-      <button pButton type="button" icon="pi pi-plus" label="Add Expense" (click)="addTripExpanses()"></button>
-    </h2>
-    <div class="page__card">
-      <div *ngIf="isDataPrepared else infoLoading">
             <pek-trip-expenses-table
-              *ngIf="tripExpenses.length > 0 && !isExpensesRefreshing"
-              [tripExpenses]="tripExpenses"
+              [businessTripId]="tripId"
+              [isVerify]="isVerify"
+              (currentBusinessTripExpenses)="updateExpenses($event);"
               (deleteExpense)="deleteExpense($event)"
               (editExpense)="editTripExpense($event)"
+              (unverifyTrip)="infoChangedEmit.next(false)"
               (expenseSumEmit)="expensesSum = $event"
             ></pek-trip-expenses-table>
       <div class="d-flex justify-content-center" *ngIf="tripExpenses.length === 0">
@@ -511,9 +515,7 @@
           No Expenses
         </h2>
       </div>
-      </div>
     </div>
-  </div>
 </form>
 
 

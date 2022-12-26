@@ -94,4 +94,8 @@ export class UploadedDataViewerComponent implements OnInit {
     const link = url + currentFile.file.file;
     saveAs(link);
   }
+
+  getUrl(filePath: string): string {
+    return filePath.startsWith('http') ? filePath : this.url + filePath;
+  }
 }

@@ -56,8 +56,6 @@ export class CrmMultiContactPersonsPickerComponent implements OnInit {
         if (findContactPerson) {
           this.selectedContactPersons.push(findContactPerson);
         }
-
-        console.log(this.selectedContactPersons);
       });
     }
   }

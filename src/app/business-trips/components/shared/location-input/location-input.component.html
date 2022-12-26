@@ -48,13 +48,13 @@
       <div class="form-group">
         <pek-company-picker
           [currentCompanyId]="meeting.company?.id"
-          (selectCompanyFull)="meeting.company = $event; updateMeeting()"></pek-company-picker>
+          (selectCompanyFull)="updateMeeting(meeting, $event)"></pek-company-picker>
       </div>
     </div>
     <div class="col-5">
       <div class="form-group">
         <pek-multi-contacts-picker [contactsListFull]="meeting.contacts"
-                                   (valueChangeFull)="meeting.contacts = $event; updateMeeting()" [searchByCompany]="true"
+                                   (valueChangeFull)="employeeChanged.next({meeting: meeting, contacts: $event})" [searchByCompany]="true"
                                    [companyId]="meeting.company?.id"></pek-multi-contacts-picker>
       </div>
     </div>
