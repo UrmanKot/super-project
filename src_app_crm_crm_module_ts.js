@@ -8397,7 +8397,6 @@ class CrmMultiContactPersonsPickerComponent {
                 if (findContactPerson) {
                     this.selectedContactPersons.push(findContactPerson);
                 }
-                console.log(this.selectedContactPersons);
             });
         }
     }

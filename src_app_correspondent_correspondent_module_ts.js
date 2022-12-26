@@ -1097,8 +1097,6 @@ class CorrespondetnMultiCategoryPickerComponent {
     }
     selectionChanged() {
         this.emitSelectedCategories.emit(this.selectedCategories.map(node => node.data.id));
-        console.log('this.selected categories', this.selectedCategories);
-        console.log('this.selected categories ids', this.selectedCategories.map(node => node.data.id));
     }
 }
 CorrespondetnMultiCategoryPickerComponent.ɵfac = function CorrespondetnMultiCategoryPickerComponent_Factory(t) { return new (t || CorrespondetnMultiCategoryPickerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_correspondents_category_service__WEBPACK_IMPORTED_MODULE_0__.CorrespondentsCategoriesService)); };

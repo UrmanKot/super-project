@@ -594,8 +594,6 @@ class BusinessTripsComponent {
             }
         });
     }
-    statusFilterChanged(status) {
-    }
     paginate(evt) {
         if (!this.isStartOnePage) {
             this.searchForm.get('page').patchValue(evt.page + 1);
@@ -740,23 +738,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/business-trip-status.enum */ 37071);
 /* harmony import */ var _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../enums/business-trip-location-status.enum */ 39856);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ 50635);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! rxjs/operators */ 59295);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! rxjs/operators */ 32673);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! rxjs */ 10745);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! rxjs/operators */ 50635);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! rxjs/operators */ 71989);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! rxjs/operators */ 59295);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! rxjs/operators */ 32673);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! rxjs */ 68951);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! rxjs */ 10745);
 /* harmony import */ var deep_copy_ts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! deep-copy-ts */ 47307);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _crm_services_crm_employee_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../crm/services/crm-employee.service */ 29038);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! @angular/forms */ 2508);
 /* harmony import */ var _services_business_trip_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/business-trip.service */ 96288);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
 /* harmony import */ var _shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @shared/services/adapter.service */ 46767);
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/router */ 60124);
-/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! primeng/api */ 14356);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! @angular/router */ 60124);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! primeng/api */ 14356);
 /* harmony import */ var _crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../crm/services/crm-positions.service */ 3230);
 /* harmony import */ var _services_vehicle_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../services/vehicle.service */ 66029);
 /* harmony import */ var _crm_services_company_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../crm/services/company.service */ 54600);
 /* harmony import */ var _services_expense_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../services/expense.service */ 42503);
+/* harmony import */ var _services_business_location_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../services/business-location.service */ 38069);
+/* harmony import */ var _services_business_trip_hotel_files_service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../services/business-trip-hotel-files.service */ 10139);
 
 
 
@@ -774,424 +777,419 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+const _c0 = ["filePicker"];
 function EditBusinessTripComponent_button_8_Template(rf, ctx) { if (rf & 1) {
-    const _r13 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "button", 17);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_button_8_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r13); const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r12.editBusinessTrip(ctx_r12.tripStatuses.VERIFIED)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+    const _r13 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "button", 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_button_8_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r13); const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r12.infoChangedEmit.next(true)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } }
 function EditBusinessTripComponent_div_15_div_7_Template(rf, ctx) { if (rf & 1) {
-    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 24)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "First Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](6, "input", 25);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "div", 24)(8, "div", 20)(9, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](10, "Last Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](11, "input", 26);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](12, "div", 24)(13, "div", 20)(14, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](15, "Position");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](16, "app-crm-position-picker", 27);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_15_div_7_Template_app_crm_position_picker_valueChange_16_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r18); const ctx_r17 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r17.form.get("employee_position").setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()()();
+    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 25)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "First Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "input", 26);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_15_div_7_Template_input_ngModelChange_6_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r18); const ctx_r17 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r17.employeeChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "div", 25)(8, "div", 21)(9, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](10, "Last Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](11, "input", 27);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_15_div_7_Template_input_ngModelChange_11_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r18); const ctx_r19 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r19.employeeChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](12, "div", 25)(13, "div", 21)(14, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](15, "Position");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](16, "app-crm-position-picker", 28);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_15_div_7_Template_app_crm_position_picker_valueChange_16_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r18); const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r20.form.get("employee_position").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r20.employeeChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
 } if (rf & 2) {
-    const ctx_r14 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](16);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("position", ctx_r14.form.get("employee_position").value);
+    const ctx_r14 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("position", ctx_r14.form.get("employee_position").value);
 } }
-const _c0 = function () { return { standalone: true }; };
+const _c1 = function () { return { standalone: true }; };
 function EditBusinessTripComponent_div_15_ng_template_8_Template(rf, ctx) { if (rf & 1) {
-    const _r20 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 28)(1, "div", 18)(2, "div", 24)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "First Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "pek-crm-single-employee-picker", 29);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_15_ng_template_8_Template_pek_crm_single_employee_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r20); const ctx_r19 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r19._employee.setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "div", 24)(8, "div", 20)(9, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](10, "Last Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](11, "input", 30);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](12, "div", 24)(13, "div", 20)(14, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](15, "Position");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](16, "input", 31);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
+    const _r22 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 29)(1, "div", 19)(2, "div", 25)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "First Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "pek-crm-single-employee-picker", 30);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_15_ng_template_8_Template_pek_crm_single_employee_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r22); const ctx_r21 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r21._employee.setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r21.employeeChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "div", 25)(8, "div", 21)(9, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](10, "Last Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](11, "input", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](12, "div", 25)(13, "div", 21)(14, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](15, "Position");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](16, "input", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
 } if (rf & 2) {
-    const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("filters", ctx_r16.employeeFilter)("showProfession", true)("employee", ctx_r16._employee.get("id").value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("disabled", true);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngModel", ctx_r16._employee.get("position").value ? ctx_r16._employee.get("position").value.title : null)("ngModelOptions", _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵpureFunction0"](6, _c0));
+    const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("filters", ctx_r16.employeeFilter)("showProfession", true)("employee", ctx_r16._employee.get("id").value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("disabled", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngModel", ctx_r16._employee.get("position").value ? ctx_r16._employee.get("position").value.title : null)("ngModelOptions", _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵpureFunction0"](6, _c1));
 } }
 function EditBusinessTripComponent_div_15_Template(rf, ctx) { if (rf & 1) {
-    const _r22 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 19)(3, "div", 20)(4, "label", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Not Listed Employee");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "p-checkbox", 22);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("onChange", function EditBusinessTripComponent_div_15_Template_p_checkbox_onChange_6_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r22); const ctx_r21 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r21.employeeChanged()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](7, EditBusinessTripComponent_div_15_div_7_Template, 17, 1, "div", 12);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](8, EditBusinessTripComponent_div_15_ng_template_8_Template, 17, 7, "ng-template", null, 23, _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplateRefExtractor"]);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+    const _r24 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 20)(3, "div", 21)(4, "label", 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Not Listed Employee");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "p-checkbox", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("onChange", function EditBusinessTripComponent_div_15_Template_p_checkbox_onChange_6_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r24); const ctx_r23 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r23.employeeChanged()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](7, EditBusinessTripComponent_div_15_div_7_Template, 17, 1, "div", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](8, EditBusinessTripComponent_div_15_ng_template_8_Template, 17, 7, "ng-template", null, 24, _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplateRefExtractor"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const _r15 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](9);
-    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("binary", true);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r1.form.get("isOtherEmployee").value)("ngIfElse", _r15);
+    const _r15 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](9);
+    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("binary", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r1.form.get("isOtherEmployee").value)("ngIfElse", _r15);
 } }
 function EditBusinessTripComponent_div_20_Template(rf, ctx) { if (rf & 1) {
-    const _r24 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 32)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Start Date an time");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "pek-date-time-picker", 33);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("setDate", function EditBusinessTripComponent_div_20_Template_pek_date_time_picker_setDate_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r24); const ctx_r23 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r23.setStartValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "div", 32)(8, "div", 20)(9, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](10, "End Date");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](11, "pek-date-time-picker", 34);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("setDate", function EditBusinessTripComponent_div_20_Template_pek_date_time_picker_setDate_11_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r24); const ctx_r25 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r25.setEndValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()()();
+    const _r26 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 33)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Start Date an time");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "pek-date-time-picker", 34);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("setDate", function EditBusinessTripComponent_div_20_Template_pek_date_time_picker_setDate_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r26); const ctx_r25 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r25.setStartValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r25.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "div", 33)(8, "div", 21)(9, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](10, "End Date");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](11, "pek-date-time-picker", 35);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("setDate", function EditBusinessTripComponent_div_20_Template_pek_date_time_picker_setDate_11_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r26); const ctx_r27 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r27.setEndValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r27.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
 } if (rf & 2) {
-    const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
+    const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
     let tmp_0_0;
     let tmp_1_0;
     let tmp_2_0;
     let tmp_3_0;
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("maxDate", (tmp_0_0 = ctx_r2.form.get("trip_end")) == null ? null : tmp_0_0.value)("date", (tmp_1_0 = ctx_r2.form.get("trip_start")) == null ? null : tmp_1_0.value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("minDate", (tmp_2_0 = ctx_r2.form.get("trip_start")) == null ? null : tmp_2_0.value)("date", (tmp_3_0 = ctx_r2.form.get("trip_end")) == null ? null : tmp_3_0.value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("maxDate", (tmp_0_0 = ctx_r2.form.get("trip_end")) == null ? null : tmp_0_0.value)("date", (tmp_1_0 = ctx_r2.form.get("trip_start")) == null ? null : tmp_1_0.value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("minDate", (tmp_2_0 = ctx_r2.form.get("trip_start")) == null ? null : tmp_2_0.value)("date", (tmp_3_0 = ctx_r2.form.get("trip_end")) == null ? null : tmp_3_0.value);
 } }
 function EditBusinessTripComponent_div_25_Template(rf, ctx) { if (rf & 1) {
-    const _r27 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 19)(3, "div", 20)(4, "h2")(5, "b");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](6, "Starting Point");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "pek-location-input", 35);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("countryChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_countryChanged_7_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r27); const ctx_r26 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r26.form.get("start_location_country").setValue($event)); })("addressChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_addressChanged_7_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r27); const ctx_r28 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r28.form.get("start_location_address").setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](8, "div", 18)(9, "div", 19)(10, "div", 20)(11, "h2")(12, "b");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](13, "Arrival Point");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](14, "pek-location-input", 36);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("meetingsChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_meetingsChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r27); const ctx_r29 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r29.lastPointMeetingChanged($event)); })("countryChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_countryChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r27); const ctx_r30 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r30.form.get("last_location_country").setValue($event)); })("addressChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_addressChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r27); const ctx_r31 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r31.form.get("last_location_address").setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r29 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 20)(3, "div", 21)(4, "h2")(5, "b");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](6, "Starting Point");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "pek-location-input", 36);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("countryChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_countryChanged_7_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r29); const ctx_r28 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r28.form.get("start_location_country").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r28.locationChanged.next({ type: ctx_r28.locationStatus.FIRST, locationIndex: null })); })("addressChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_addressChanged_7_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r29); const ctx_r30 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r30.form.get("start_location_address").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r30.locationChanged.next({ type: ctx_r30.locationStatus.FIRST, locationIndex: null })); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](8, "div", 19)(9, "div", 20)(10, "div", 21)(11, "h2")(12, "b");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](13, "Arrival Point");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](14, "pek-location-input", 37);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("meetingsChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_meetingsChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r29); const ctx_r31 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r31.lastPointMeetingChanged($event)); })("countryChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_countryChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r29); const ctx_r32 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r32.form.get("last_location_country").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r32.locationChanged.next({ type: ctx_r32.locationStatus.LAST, locationIndex: null })); })("addressChanged", function EditBusinessTripComponent_div_25_Template_pek_location_input_addressChanged_14_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r29); const ctx_r33 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r33.form.get("last_location_address").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r33.locationChanged.next({ type: ctx_r33.locationStatus.LAST, locationIndex: null })); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } if (rf & 2) {
-    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("country", ctx_r3.form.get("start_location_country").value)("address", ctx_r3.form.get("start_location_address").value)("type", ctx_r3.locationStatus.FIRST)("showHr", false);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("country", ctx_r3.form.get("last_location_country").value)("address", ctx_r3.form.get("last_location_address").value)("type", ctx_r3.locationStatus.LAST)("showHr", false)("companiesFilters", ctx_r3.companiesFilters)("locationMeetings", ctx_r3.form.get("last_location_meetings").value)("showAddMeetings", true);
+    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("country", ctx_r3.form.get("start_location_country").value)("address", ctx_r3.form.get("start_location_address").value)("locationId", ctx_r3.form.get("start_location_id").value)("type", ctx_r3.locationStatus.FIRST)("showHr", false);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("country", ctx_r3.form.get("last_location_country").value)("address", ctx_r3.form.get("last_location_address").value)("locationId", ctx_r3.form.get("last_location_id").value)("type", ctx_r3.locationStatus.LAST)("showHr", false)("companiesFilters", ctx_r3.companiesFilters)("showAddMeetings", true);
 } }
 function EditBusinessTripComponent_div_31_pek_location_input_1_Template(rf, ctx) { if (rf & 1) {
-    const _r38 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "pek-location-input", 39);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("emitDeletePoint", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_emitDeletePoint_0_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r38); const point_r34 = restoredCtx.$implicit; const index_r35 = restoredCtx.index; const ctx_r37 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r37.removePoint(point_r34, index_r35)); })("meetingsChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_meetingsChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r38); const point_r34 = restoredCtx.$implicit; const ctx_r39 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r39.meetingChanged(point_r34, $event)); })("countryChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_countryChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r38); const point_r34 = restoredCtx.$implicit; return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](point_r34.get("country").setValue($event)); })("addressChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_addressChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r38); const point_r34 = restoredCtx.$implicit; return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](point_r34.get("address").setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+    const _r40 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "pek-location-input", 39);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("emitDeletePoint", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_emitDeletePoint_0_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r40); const point_r36 = restoredCtx.$implicit; const index_r37 = restoredCtx.index; const ctx_r39 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r39.removePoint(point_r36, index_r37)); })("meetingsChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_meetingsChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r40); const point_r36 = restoredCtx.$implicit; const ctx_r41 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r41.meetingChanged(point_r36, $event)); })("countryChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_countryChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r40); const point_r36 = restoredCtx.$implicit; const index_r37 = restoredCtx.index; const ctx_r42 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); point_r36.get("country").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r42.locationChanged.next({ type: ctx_r42.locationStatus.INTERMEDIATE, locationIndex: index_r37 })); })("addressChanged", function EditBusinessTripComponent_div_31_pek_location_input_1_Template_pek_location_input_addressChanged_0_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r40); const point_r36 = restoredCtx.$implicit; const index_r37 = restoredCtx.index; const ctx_r43 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); point_r36.get("address").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r43.locationChanged.next({ type: ctx_r43.locationStatus.INTERMEDIATE, locationIndex: index_r37 })); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const point_r34 = ctx.$implicit;
-    const last_r36 = ctx.last;
-    const ctx_r32 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵclassProp"]("last", last_r36);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("country", point_r34.get("country").value)("address", point_r34.get("address").value)("locationMeetings", point_r34.get("location_meetings").value)("showHr", !last_r36)("showDelete", true)("companiesFilters", ctx_r32.companiesFilters)("type", ctx_r32.locationStatus.INTERMEDIATE)("showAddMeetings", true);
+    const point_r36 = ctx.$implicit;
+    const last_r38 = ctx.last;
+    const ctx_r34 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵclassProp"]("last", last_r38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("country", point_r36.get("country").value)("address", point_r36.get("address").value)("locationId", point_r36.get("id").value)("showHr", !last_r38)("showDelete", true)("companiesFilters", ctx_r34.companiesFilters)("type", ctx_r34.locationStatus.INTERMEDIATE)("showAddMeetings", true);
 } }
 function EditBusinessTripComponent_div_31_div_2_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 40)(1, "h2");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2, " No Intermediate Points ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 40)(1, "h2");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2, " No Intermediate Points ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } }
 function EditBusinessTripComponent_div_31_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](1, EditBusinessTripComponent_div_31_pek_location_input_1_Template, 1, 10, "pek-location-input", 37);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](2, EditBusinessTripComponent_div_31_div_2_Template, 3, 0, "div", 38);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](1, EditBusinessTripComponent_div_31_pek_location_input_1_Template, 1, 10, "pek-location-input", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](2, EditBusinessTripComponent_div_31_div_2_Template, 3, 0, "div", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngForOf", ctx_r4._intermediatePoints);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r4._intermediatePoints.length === 0);
+    const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngForOf", ctx_r4._intermediatePoints);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r4._intermediatePoints.length === 0);
 } }
 function EditBusinessTripComponent_div_36_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 19)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Purpose short");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](6, "input", 41);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "div", 18)(8, "div", 19)(9, "div", 20)(10, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](11, "Purpose Description");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](12, "textarea", 42);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
+    const _r45 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 20)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Purpose short");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "input", 41);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_36_Template_input_ngModelChange_6_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r45); const ctx_r44 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r44.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "div", 19)(8, "div", 20)(9, "div", 21)(10, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](11, "Purpose Description");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](12, "textarea", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_36_Template_textarea_ngModelChange_12_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r45); const ctx_r46 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r46.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_p_footer_24_Template(rf, ctx) { if (rf & 1) {
-    const _r51 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "p-footer", 62)(1, "button", 63);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_p_footer_24_Template_button_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r51); _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); const _r43 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](23); const ctx_r50 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); ctx_r50.setHotelStartValue(_r43.value); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](_r43.toggle()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2, " Set Date ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r57 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "p-footer", 63)(1, "button", 64);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_p_footer_24_Template_button_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r57); _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); const _r48 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](23); const ctx_r56 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r56.setHotelStartValue(_r48.value); ctx_r56.hotelChanged.next(); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](_r48.toggle()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2, " Set Date ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_p_footer_31_Template(rf, ctx) { if (rf & 1) {
-    const _r53 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "p-footer", 62)(1, "button", 63);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_p_footer_31_Template_button_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r53); _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); const _r45 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](30); const ctx_r52 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); ctx_r52.setHotelEndValue(_r45.value); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](_r45.toggle()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2, " Set Date ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r59 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "p-footer", 63)(1, "button", 64);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_p_footer_31_Template_button_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r59); _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); const _r50 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](30); const ctx_r58 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r58.setHotelEndValue(_r50.value); ctx_r58.hotelChanged.next(); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](_r50.toggle()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2, " Set Date ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } }
-function EditBusinessTripComponent_div_41_ng_template_7_ng_template_43_p_1_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "p", 67);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](1, "Choose the Hotel Files to edit");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-} }
-function EditBusinessTripComponent_div_41_ng_template_7_ng_template_43_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 64);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](1, EditBusinessTripComponent_div_41_ng_template_7_ng_template_43_p_1_Template, 2, 0, "p", 65);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](2, "p-menubar", 66);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-} if (rf & 2) {
-    const ctx_r47 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", !ctx_r47.selectedHotelFile);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵclassProp"]("disabled", !ctx_r47.selectedHotelFile);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("model", ctx_r47.menuItems);
+function EditBusinessTripComponent_div_41_ng_template_7_ng_template_44_p_1_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "p", 68);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](1, "Choose the Hotel Files to edit");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_ng_template_44_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "tr")(1, "th", 68);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2, "#");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](3, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](4, "File");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 65);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](1, EditBusinessTripComponent_div_41_ng_template_7_ng_template_44_p_1_Template, 2, 0, "p", 66);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](2, "p-menubar", 67);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+} if (rf & 2) {
+    const ctx_r53 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", !ctx_r53.selectedHotelFile);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵclassProp"]("disabled", !ctx_r53.selectedHotelFile);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("model", ctx_r53.menuItems);
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_ng_template_45_Template(rf, ctx) { if (rf & 1) {
-    const _r58 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "tr", 69)(1, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](3, "td")(4, "a", 70);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_ng_template_45_Template_a_click_4_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r58); const file_r55 = restoredCtx.$implicit; const ctx_r57 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](3); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r57.downloadHotelFile(file_r55)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "tr")(1, "th", 69);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2, "#");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](3, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](4, "File");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+} }
+function EditBusinessTripComponent_div_41_ng_template_7_ng_template_46_Template(rf, ctx) { if (rf & 1) {
+    const _r64 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "tr", 70)(1, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](3, "td")(4, "a", 71);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_ng_template_46_Template_a_click_4_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r64); const file_r61 = restoredCtx.$implicit; const ctx_r63 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](3); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r63.downloadHotelFile(file_r61)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
 } if (rf & 2) {
-    const file_r55 = ctx.$implicit;
-    const i_r56 = ctx.rowIndex;
-    const ctx_r49 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("pSelectableRow", file_r55);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtextInterpolate"](i_r56 + 1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtextInterpolate1"](" ", ctx_r49.getName(file_r55.file), " ");
+    const file_r61 = ctx.$implicit;
+    const i_r62 = ctx.rowIndex;
+    const ctx_r55 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("pSelectableRow", file_r61);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtextInterpolate"](i_r62 + 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtextInterpolate1"](" ", ctx_r55.getName(file_r61.file), " ");
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_Template(rf, ctx) { if (rf & 1) {
-    const _r60 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 46)(1, "div", 18)(2, "div", 24)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](6, "input", 47);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](7, "div", 24)(8, "div", 20)(9, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](10, "Country");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](11, "pek-business-trip-country-picker", 48);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChangeFull", function EditBusinessTripComponent_div_41_ng_template_7_Template_pek_business_trip_country_picker_valueChangeFull_11_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r59 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r59._hotel.get("hotel_country").setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](12, "div", 24)(13, "div", 20)(14, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](15, "Address");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](16, "input", 49);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](17, "div", 18)(18, "div", 32)(19, "div", 20)(20, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](21, "Residence Start Date");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](22, "p-calendar", 50, 51);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("onClickOutside", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_calendar_onClickOutside_22_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r61 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r61.clickHotelOutside("start")); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](24, EditBusinessTripComponent_div_41_ng_template_7_p_footer_24_Template, 3, 0, "p-footer", 52);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](25, "div", 32)(26, "div", 20)(27, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](28, "Residence End Date");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](29, "p-calendar", 53, 54);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("onClickOutside", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_calendar_onClickOutside_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r62 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r62.clickHotelOutside("end")); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](31, EditBusinessTripComponent_div_41_ng_template_7_p_footer_31_Template, 3, 0, "p-footer", 52);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](32, "div", 18)(33, "div", 19)(34, "div", 20)(35, "pek-upload-file-picker", 55);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("fileChanged", function EditBusinessTripComponent_div_41_ng_template_7_Template_pek_upload_file_picker_fileChanged_35_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r63 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r63.filesChanged($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](36, "div", 18)(37, "div", 56);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](38, "div", 20);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](39, "div", 43)(40, "div", 20)(41, "button", 57);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_Template_button_click_41_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r64 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r64.viewHotelFiles()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](42, "p-table", 58);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("selectionChange", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_table_selectionChange_42_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r60); const ctx_r65 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r65.selectedHotelFile = $event); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](43, EditBusinessTripComponent_div_41_ng_template_7_ng_template_43_Template, 3, 4, "ng-template", 59);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](44, EditBusinessTripComponent_div_41_ng_template_7_ng_template_44_Template, 5, 0, "ng-template", 60);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](45, EditBusinessTripComponent_div_41_ng_template_7_ng_template_45_Template, 6, 3, "ng-template", 61);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r66 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 46)(1, "div", 19)(2, "div", 25)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "input", 47);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_41_ng_template_7_Template_input_ngModelChange_6_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r65 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r65.hotelChanged.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](7, "div", 25)(8, "div", 21)(9, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](10, "Country");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](11, "pek-business-trip-country-picker", 48);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChangeFull", function EditBusinessTripComponent_div_41_ng_template_7_Template_pek_business_trip_country_picker_valueChangeFull_11_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r67 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r67._hotel.get("hotel_country").setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r67.hotelChanged.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](12, "div", 25)(13, "div", 21)(14, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](15, "Address");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](16, "input", 49);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_41_ng_template_7_Template_input_ngModelChange_16_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r68 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r68.hotelChanged.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](17, "div", 19)(18, "div", 33)(19, "div", 21)(20, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](21, "Residence Start Date");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](22, "p-calendar", 50, 51);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("onClickOutside", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_calendar_onClickOutside_22_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r69 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r69.clickHotelOutside("start")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](24, EditBusinessTripComponent_div_41_ng_template_7_p_footer_24_Template, 3, 0, "p-footer", 52);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](25, "div", 33)(26, "div", 21)(27, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](28, "Residence End Date");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](29, "p-calendar", 53, 54);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("onClickOutside", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_calendar_onClickOutside_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r70 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r70.clickHotelOutside("end")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](31, EditBusinessTripComponent_div_41_ng_template_7_p_footer_31_Template, 3, 0, "p-footer", 52);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](32, "div", 19)(33, "div", 20)(34, "div", 21)(35, "pek-upload-file-picker", 55, 56);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("fileChanged", function EditBusinessTripComponent_div_41_ng_template_7_Template_pek_upload_file_picker_fileChanged_35_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r71 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r71.filesChanged($event)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](37, "div", 19)(38, "div", 57);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](39, "div", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](40, "div", 43)(41, "div", 21)(42, "button", 58);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_div_41_ng_template_7_Template_button_click_42_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r72 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r72.viewHotelFiles()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](43, "p-table", 59);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("selectionChange", function EditBusinessTripComponent_div_41_ng_template_7_Template_p_table_selectionChange_43_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r66); const ctx_r73 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r73.selectedHotelFile = $event); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](44, EditBusinessTripComponent_div_41_ng_template_7_ng_template_44_Template, 3, 4, "ng-template", 60);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](45, EditBusinessTripComponent_div_41_ng_template_7_ng_template_45_Template, 5, 0, "ng-template", 61);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](46, EditBusinessTripComponent_div_41_ng_template_7_ng_template_46_Template, 6, 3, "ng-template", 62);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } if (rf & 2) {
-    const _r43 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](23);
-    const _r45 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](30);
-    const ctx_r42 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("country", ctx_r42._hotel.get("hotel_country").value == null ? null : ctx_r42._hotel.get("hotel_country").value.code);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("firstDayOfWeek", 1)("hideOnDateTimeSelect", false)("showButtonBar", true)("readonlyInput", true);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", _r43.value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("firstDayOfWeek", 1)("minDate", ctx_r42._hotel.controls["residence_start"] == null ? null : ctx_r42._hotel.controls["residence_start"].value)("disabled", !ctx_r42._hotel.get("residence_start").value)("hideOnDateTimeSelect", false)("showButtonBar", true)("readonlyInput", true);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", _r45.value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("paginator", true)("rows", 10)("value", ctx_r42.preparedFiles)("scrollable", true)("selection", ctx_r42.selectedHotelFile);
+    const _r48 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](23);
+    const _r50 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](30);
+    const ctx_r47 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("country", ctx_r47._hotel.get("hotel_country").value == null ? null : ctx_r47._hotel.get("hotel_country").value.code);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("firstDayOfWeek", 1)("hideOnDateTimeSelect", false)("showButtonBar", true)("readonlyInput", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", _r48.value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("firstDayOfWeek", 1)("minDate", ctx_r47._hotel.controls["residence_start"] == null ? null : ctx_r47._hotel.controls["residence_start"].value)("disabled", !ctx_r47._hotel.get("residence_start").value)("hideOnDateTimeSelect", false)("showButtonBar", true)("readonlyInput", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", _r50.value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("paginator", true)("rows", 10)("value", ctx_r47.preparedFiles)("scrollable", true)("selection", ctx_r47.selectedHotelFile);
 } }
 function EditBusinessTripComponent_div_41_Template(rf, ctx) { if (rf & 1) {
-    const _r67 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 43)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Include Hotel");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "p-checkbox", 44);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_41_Template_p_checkbox_ngModelChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r67); const ctx_r66 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r66.changedValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](7, EditBusinessTripComponent_div_41_ng_template_7_Template, 46, 18, "ng-template", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+    const _r75 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 43)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Include Hotel");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "p-checkbox", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_41_Template_p_checkbox_ngModelChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r75); const ctx_r74 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r74.changedValue($event)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](7, EditBusinessTripComponent_div_41_ng_template_7_Template, 47, 18, "ng-template", 45);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("binary", true);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r6.form.get("showHotel").value);
+    const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("binary", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r6.form.get("showHotel").value);
 } }
 function EditBusinessTripComponent_div_46_ng_template_7_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 24)(1, "div", 20)(2, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](3, "Vehicle Model");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](4, "input", 73);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](5, "div", 24)(6, "div", 20)(7, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](8, "Vehicle Registration Plate");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](9, "input", 74);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r80 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 25)(1, "div", 21)(2, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](3, "Vehicle Model");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](4, "input", 74);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_46_ng_template_7_Template_input_ngModelChange_4_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r80); const ctx_r79 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r79.vehicleChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](5, "div", 25)(6, "div", 21)(7, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](8, "Vehicle Registration Plate");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](9, "input", 75);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_46_ng_template_7_Template_input_ngModelChange_9_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r80); const ctx_r81 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r81.vehicleChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
 } }
 function EditBusinessTripComponent_div_46_ng_template_8_Template(rf, ctx) { if (rf & 1) {
-    const _r72 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 75)(1, "div", 20)(2, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](3, "Vehicle");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](4, "pek-vehicle-picker", 76);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_46_ng_template_8_Template_pek_vehicle_picker_valueChange_4_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r72); const ctx_r71 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r71._vehicle.setValue($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](5, "div", 75)(6, "div", 20)(7, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](8, "Vehicle Registration Plate");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](9, "input", 77);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r83 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 76)(1, "div", 21)(2, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](3, "Vehicle");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](4, "pek-vehicle-picker", 77);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_46_ng_template_8_Template_pek_vehicle_picker_valueChange_4_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r83); const ctx_r82 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); ctx_r82._vehicle.setValue($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r82.vehicleChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](5, "div", 76)(6, "div", 21)(7, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](8, "Vehicle Registration Plate");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](9, "input", 78);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } if (rf & 2) {
-    const ctx_r69 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("placeholder", "Vehicle Model")("vehicle", ctx_r69._vehicle.get("id").value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("disabled", true);
+    const ctx_r77 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("placeholder", "Vehicle Model")("vehicle", ctx_r77._vehicle.get("id").value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("disabled", true);
 } }
 function EditBusinessTripComponent_div_46_div_9_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 18)(1, "div", 32)(2, "div", 20)(3, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](4, "Start Mileage");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](5, "input", 78);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "div", 32)(7, "div", 20)(8, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](9, "End Mileage");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](10, "input", 79);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
+    const _r85 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 19)(1, "div", 33)(2, "div", 21)(3, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](4, "Start Mileage");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](5, "input", 79);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_46_div_9_Template_input_ngModelChange_5_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r85); const ctx_r84 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r84.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "div", 33)(7, "div", 21)(8, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](9, "End Mileage");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](10, "input", 80);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("ngModelChange", function EditBusinessTripComponent_div_46_div_9_Template_input_ngModelChange_10_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r85); const ctx_r86 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r86.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
 } }
 function EditBusinessTripComponent_div_46_Template(rf, ctx) { if (rf & 1) {
-    const _r74 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 24)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Vehicle Type");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "pek-vehicle-type-picker", 71);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_46_Template_pek_vehicle_type_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r74); const ctx_r73 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r73.changedVechicleType($event)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](7, EditBusinessTripComponent_div_46_ng_template_7_Template, 10, 0, "ng-template", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](8, EditBusinessTripComponent_div_46_ng_template_8_Template, 10, 3, "ng-template", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](9, EditBusinessTripComponent_div_46_div_9_Template, 11, 0, "div", 72);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
+    const _r88 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 25)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Vehicle Type");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "pek-vehicle-type-picker", 72);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_46_Template_pek_vehicle_type_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r88); const ctx_r87 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r87.changedVechicleType($event); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r87.vehicleChangedEmit.next()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](7, EditBusinessTripComponent_div_46_ng_template_7_Template, 10, 0, "ng-template", 45);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](8, EditBusinessTripComponent_div_46_ng_template_8_Template, 10, 3, "ng-template", 45);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](9, EditBusinessTripComponent_div_46_div_9_Template, 11, 0, "div", 73);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } if (rf & 2) {
-    const ctx_r7 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("type", ctx_r7.form.get("vehicle_type").value);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value === "1" || ctx_r7.form.get("vehicle_type").value === "2");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value === "3");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value !== "0");
+    const ctx_r7 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("type", ctx_r7.form.get("vehicle_type").value);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value === "1" || ctx_r7.form.get("vehicle_type").value === "2");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value === "3");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx_r7.form.get("vehicle_type").value !== "0");
 } }
 function EditBusinessTripComponent_div_51_Template(rf, ctx) { if (rf & 1) {
-    const _r76 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div")(1, "div", 18)(2, "div", 19)(3, "div", 20)(4, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Initiator");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "pek-crm-single-employee-picker", 80);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_51_Template_pek_crm_single_employee_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r76); const ctx_r75 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r75.form.get("initiator").setValue($event.id)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()()();
+    const _r90 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div")(1, "div", 19)(2, "div", 20)(3, "div", 21)(4, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Initiator");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "pek-crm-single-employee-picker", 81);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("valueChange", function EditBusinessTripComponent_div_51_Template_pek_crm_single_employee_picker_valueChange_6_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵrestoreView"](_r90); const ctx_r89 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"](); ctx_r89.form.get("initiator").setValue($event.id); return _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵresetView"](ctx_r89.infoChangedEmit.next(false)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()()();
 } if (rf & 2) {
-    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("employee", ctx_r8.form.get("initiator").value);
+    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("employee", ctx_r8.form.get("initiator").value);
 } }
-function EditBusinessTripComponent_div_57_pek_trip_expenses_table_1_Template(rf, ctx) { if (rf & 1) {
-    const _r80 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "pek-trip-expenses-table", 82);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("deleteExpense", function EditBusinessTripComponent_div_57_pek_trip_expenses_table_1_Template_pek_trip_expenses_table_deleteExpense_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r80); const ctx_r79 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r79.deleteExpense($event)); })("editExpense", function EditBusinessTripComponent_div_57_pek_trip_expenses_table_1_Template_pek_trip_expenses_table_editExpense_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r80); const ctx_r81 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r81.editTripExpense($event)); })("expenseSumEmit", function EditBusinessTripComponent_div_57_pek_trip_expenses_table_1_Template_pek_trip_expenses_table_expenseSumEmit_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵrestoreView"](_r80); const ctx_r82 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵresetView"](ctx_r82.expensesSum = $event); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-} if (rf & 2) {
-    const ctx_r77 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("tripExpenses", ctx_r77.tripExpenses);
+function EditBusinessTripComponent_div_54_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 40)(1, "h2");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](2, " No Expenses ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
 } }
-function EditBusinessTripComponent_div_57_div_2_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 40)(1, "h2");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2, " No Expenses ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-} }
-function EditBusinessTripComponent_div_57_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](1, EditBusinessTripComponent_div_57_pek_trip_expenses_table_1_Template, 1, 1, "pek-trip-expenses-table", 81);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](2, EditBusinessTripComponent_div_57_div_2_Template, 3, 0, "div", 38);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-} if (rf & 2) {
-    const ctx_r9 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r9.tripExpenses.length > 0 && !ctx_r9.isExpensesRefreshing);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx_r9.tripExpenses.length === 0);
-} }
-function EditBusinessTripComponent_ng_template_58_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 83);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](1, "i", 84);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
+function EditBusinessTripComponent_ng_template_55_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 82);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](1, "i", 83);
+    _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
 } }
 class DataToSend {
 }
 class EditBusinessTripComponent {
-    constructor(crmEmployeeService, fb, businessService, modalService, adapterService, route, messageService, employeePositionService, vehicleService, companiesService, expenseService) {
+    constructor(crmEmployeeService, fb, businessService, modalService, adapterService, route, messageService, employeePositionService, vehicleService, companiesService, expenseService, businessLocationService, businessTripHotelFilesService) {
         this.crmEmployeeService = crmEmployeeService;
         this.fb = fb;
         this.businessService = businessService;
@@ -1203,6 +1201,8 @@ class EditBusinessTripComponent {
         this.vehicleService = vehicleService;
         this.companiesService = companiesService;
         this.expenseService = expenseService;
+        this.businessLocationService = businessLocationService;
+        this.businessTripHotelFilesService = businessTripHotelFilesService;
         this.tripExpenses = [];
         this.tripStatuses = _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripStatus;
         this.endDate = null;
@@ -1229,19 +1229,48 @@ class EditBusinessTripComponent {
                     }
                 ]
             }];
+        this.locationChanged = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
+        this.employeeChangedEmit = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
+        this.infoChangedEmit = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
+        this.hotelChanged = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
+        this.vehicleChangedEmit = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
+        this.showFilePicker = true;
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_14__.Subject();
         this.route.data.subscribe(res => {
             this.isVerify = res['isVerify'];
         });
-        this.route.paramMap.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.map)(params => Number(params.get('tripId')))).subscribe(tripId => {
+        this.route.paramMap.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.map)(params => Number(params.get('tripId')))).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(tripId => {
             this.tripId = tripId;
             this.getBusinessTrip(this.tripId);
+        });
+        this.employeeChangedEmit.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_17__.debounceTime)(400), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(() => {
+            this.employeeUpdate();
+            this.infoChangedEmit.next(false);
+        });
+        this.infoChangedEmit.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_17__.debounceTime)(400), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(res => {
+            if (this.isDataPrepared) {
+                this.infoChanged(res);
+            }
+        });
+        this.hotelChanged.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_17__.debounceTime)(1000), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(() => {
+            this.updateHotelInfo();
+            this.infoChangedEmit.next(false);
+        });
+        this.vehicleChangedEmit.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_17__.debounceTime)(1000), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(() => {
+            this.vehicleUpdate();
+            this.infoChangedEmit.next(false);
         });
     }
     ngOnInit() {
         this.loadCompanies();
+        this.locationChanged.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_17__.debounceTime)(1000), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(type => {
+            if (this.isDataPrepared) {
+                this.updateLocationDefault(type.type, type.locationIndex);
+            }
+        });
     }
     loadCompanies() {
-        this.companiesService.get([{ name: 'by_user', value: true }]).subscribe(companies => {
+        this.companiesService.get([{ name: 'by_user', value: true }]).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(companies => {
             this.companiesFilters = companies;
         });
     }
@@ -1299,7 +1328,7 @@ class EditBusinessTripComponent {
     }
     getBusinessTrip(id) {
         this.form = this.prepareForm();
-        this.businessService.getDetailed(id).subscribe(trip => {
+        this.businessService.getDetailed(id).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(trip => {
             this.businessTrip = trip;
             if (this.businessTrip.custom_employee) {
                 const employee = this.businessTrip.custom_employee;
@@ -1350,9 +1379,7 @@ class EditBusinessTripComponent {
                     files: [],
                     base64Files: [],
                 });
-                if (hotel.files) {
-                    this.preparedFiles = hotel.files;
-                }
+                this.loadHotelFiles(hotel.id);
             }
             // Locations
             this.businessTrip.locations.forEach(location => {
@@ -1368,10 +1395,11 @@ class EditBusinessTripComponent {
                     location.location_meetings.forEach(meeting => {
                         this.form.get('last_location_meetings').push(this.fb.group({
                             id: meeting.id,
+                            location_id: meeting.location_id,
                             company: meeting.company,
                             contacts: this.fb.array(meeting.contacts)
                         }));
-                    });
+                    }, { emitEvent: false });
                 }
                 if (location.type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.INTERMEDIATE) {
                     this.form.get('intermediatePoints').push(this.fb.group({
@@ -1384,53 +1412,48 @@ class EditBusinessTripComponent {
             });
             // Expenses
             const expenses = this.businessTrip.expenses;
-            if (expenses.length > 0) {
-                expenses.forEach(expense => {
-                    let expensePrepared = {
-                        id: null,
-                        name: null,
-                        description: null,
-                    };
-                    let customExpensePrepared = {
-                        id: null,
-                        name: null,
-                        description: null,
-                    };
-                    if (expense.expense) {
-                        expensePrepared = expense.expense;
-                    }
-                    if (expense.custom_expense) {
-                        customExpensePrepared = expense.custom_expense;
-                    }
-                    this.form.get('expenses').push(this.fb.group({
-                        base64File: null,
-                        currency: expense.currency,
-                        custom_expense: customExpensePrepared,
-                        expense: expensePrepared,
-                        id: expense.id,
-                        sum: expense.sum,
-                        isOther: !!customExpensePrepared.id,
-                        is_verified: expense.is_verified,
-                        file: expense.file,
-                        uploaded_file: null,
-                        clear_file: false,
-                    }));
-                });
-                this.tripExpenses = [];
-                this.form.get('expenses').controls.forEach(group => {
-                    this.tripExpenses.push(group.value);
-                });
-            }
+            this.updateExpenses(expenses);
             this.form.get('initiator').setValue(this.businessTrip.initiator);
             this.isDataPrepared = true;
         });
     }
-    clickOutside(type) {
-        if (this.form.value.trip_end?.getTime() !== this.startDate?.getTime()) {
-            this.form.get('trip_end').patchValue(this.startDate);
-        }
-        if (this.form.value.trip_end?.getTime() !== this.endDate?.getTime()) {
-            this.form.get('trip_end').patchValue(this.endDate);
+    updateExpenses(expenses) {
+        if (expenses.length > 0) {
+            expenses.forEach(expense => {
+                let expensePrepared = {
+                    id: null,
+                    name: null,
+                    description: null,
+                };
+                let customExpensePrepared = {
+                    id: null,
+                    name: null,
+                    description: null,
+                };
+                if (expense.expense) {
+                    expensePrepared = expense.expense;
+                }
+                if (expense.custom_expense) {
+                    customExpensePrepared = expense.custom_expense;
+                }
+                this.form.get('expenses').push(this.fb.group({
+                    base64File: null,
+                    currency: expense.currency,
+                    custom_expense: customExpensePrepared,
+                    expense: expensePrepared,
+                    id: expense.id,
+                    sum: expense.sum,
+                    isOther: !!customExpensePrepared.id,
+                    is_verified: expense.is_verified,
+                    file: expense.file,
+                    uploaded_file: null,
+                    clear_file: false,
+                }));
+            });
+            this.tripExpenses = [];
+            this.form.get('expenses').controls.forEach(group => {
+                this.tripExpenses.push(group.value);
+            });
         }
     }
     setStartValue(start) {
@@ -1461,36 +1484,22 @@ class EditBusinessTripComponent {
     }
     removePoint(point, index) {
         if (point.value.id) {
-            this.pointsToDeleteIds.push(point.value.id);
+            this.businessLocationService.delete(point.value).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(() => {
+                this.form.get('intermediatePoints').removeAt(index);
+            });
         }
-        this.form.get('intermediatePoints').removeAt(index);
+        else {
+            this.form.get('intermediatePoints').removeAt(index);
+        }
     }
     get _hotel() {
         return this.form.get('hotel');
-    }
-    addTripExpanses() {
-        this.expenseService
-            .createChangeExpanseItem(null, this.isVerify)
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_13__.take)(1))
-            .subscribe((res) => {
-            if (res) {
-                this.isExpensesRefreshing = true;
-                this.form.get('expenses').push(this.fb.group({
-                    ...res
-                }));
-                this.tripExpenses = [];
-                this.form.get('expenses').controls.forEach(group => {
-                    this.tripExpenses.push(group.value);
-                });
-                this.isExpensesRefreshing = false;
-            }
-        });
     }
     editTripExpense(index) {
         const element = this.form.get('expenses').controls[index].value;
         this.expenseService
             .createChangeExpanseItem(element, this.isVerify)
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_13__.take)(1))
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$))
             .subscribe((res) => {
             if (res) {
                 this.form.get('expenses').controls[index].setValue(res.value);
@@ -1500,12 +1509,6 @@ class EditBusinessTripComponent {
                 });
             }
         });
-    }
-    get _tripExpanses() {
-        return this.form.get('expenses').controls;
-    }
-    test() {
-        const files = this.form.value.hotel.base64Files.map(base64 => base64.file);
     }
     changedValue($event) {
     }
@@ -1519,7 +1522,6 @@ class EditBusinessTripComponent {
     }
     setHotelStartValue(start) {
         if (start) {
-            this._hotel.get('residence_end').patchValue(start);
             this.hotelStartDate = start;
             if (this._hotel.get('residence_end').value &&
                 this._hotel.get('residence_end').value < this._hotel.get('residence_start').value) {
@@ -1549,7 +1551,7 @@ class EditBusinessTripComponent {
             const result = this.obj2FormData(dataToSend);
             this.businessService
                 .update(this.tripId, result)
-                .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_13__.take)(1))
+                .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$))
                 .subscribe((res) => {
                 this.isDataPrepared = false;
                 this.form.reset();
@@ -1712,6 +1714,85 @@ class EditBusinessTripComponent {
         dataToSend.delete_expenses_ids = this.expensesToDeleteIds;
         return dataToSend;
     }
+    employeeUpdate() {
+        const employeeUpdate = {};
+        if (this.form.value.employee.id) {
+            employeeUpdate.employee = this.form.value.employee.id;
+            employeeUpdate.custom_employee = null;
+        }
+        else {
+            const position = this.form.value.employee_position;
+            const firstName = this.form.value.employee_first_name;
+            const lastNameName = this.form.value.employee_last_name;
+            if (!firstName || !lastNameName) {
+                return;
+            }
+            employeeUpdate.custom_employee = {
+                id: this.form.value.employee_id,
+                first_name: this.form.value.employee_first_name,
+                last_name: this.form.value.employee_last_name,
+                position: position ? position : null,
+            };
+            employeeUpdate.employee = null;
+        }
+        this.businessService
+            .updateBusinessTripEmployee(this.tripId, employeeUpdate)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$))
+            .subscribe((trip) => {
+            if (trip.custom_employee) {
+                const employee = trip.custom_employee;
+                if (employee.position) {
+                    this.form.get('employee_position').setValue(employee.position.id);
+                }
+                this.form.get('employee_id').setValue(employee.id);
+            }
+            if (trip.employee) {
+                const employee = trip.employee;
+                this.form.get('employee').setValue(employee);
+            }
+        });
+    }
+    vehicleUpdate() {
+        const vehicleData = {};
+        const formData = this.form.value;
+        vehicleData.vehicle_type = formData.vehicle_type;
+        if (formData.vehicle_type !== '0') {
+            if (formData.vehicle.id && formData.vehicle_type === '3') {
+                vehicleData.vehicle = formData.vehicle.id;
+                vehicleData.custom_vehicle = null;
+            }
+            else if ((formData.vehicle_type === '1' || formData.vehicle_type === '2') && formData.vehicle_model) {
+                const model = formData.vehicle_model;
+                const number = formData.vehicle_number;
+                if (!model || !number) {
+                    return;
+                }
+                vehicleData.custom_vehicle = {
+                    id: formData.vehicle_id,
+                    model: model,
+                    number: number,
+                };
+                vehicleData.vehicle = null;
+            }
+            else {
+                vehicleData.vehicle = null;
+                vehicleData.custom_vehicle = null;
+            }
+        }
+        else {
+            vehicleData.vehicle = null;
+            vehicleData.custom_vehicle = null;
+        }
+        this.businessService
+            .updateBusinessTripVehicle(this.tripId, vehicleData)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$))
+            .subscribe((trip) => {
+            if (trip.custom_vehicle) {
+                const vehicle = trip.custom_vehicle;
+                this.form.get('vehicle_id').setValue(vehicle.id);
+            }
+        });
+    }
     obj2FormData(obj, formData = new FormData()) {
         this.formData = formData;
         this.createFormData(obj);
@@ -1747,10 +1828,12 @@ class EditBusinessTripComponent {
         this.form.get('vehicle_number').reset();
     }
     filesChanged(files) {
-        this._hotel.get('files').setValue(files);
-        files.forEach(file => {
-            this.fileToBase64(file);
-        });
+        if (files.length > 0) {
+            this._hotel.get('files').setValue(files);
+            setTimeout(() => {
+                this.updateFiles();
+            }, 1000);
+        }
     }
     fileToBase64(file) {
         const fileReader = new FileReader();
@@ -1763,17 +1846,17 @@ class EditBusinessTripComponent {
         fileReader.readAsDataURL(file);
     }
     deleteFile() {
-        this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+        this.modalService.confirm('danger', 'Confirm').pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(confirm => {
             if (confirm) {
-                const index = this.preparedFiles.findIndex(file => file === this.selectedHotelFile);
-                this.hotelFilesToDeleteIds.push(this.selectedHotelFile.id);
-                this.selectedHotelFile = null;
-                this.preparedFiles.splice(index, 1);
+                this.businessTripHotelFilesService.delete(this.selectedHotelFile).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(() => {
+                    this.selectedHotelFile = null;
+                    this.loadHotelFiles(this._hotel.get('id').value);
+                });
             }
         });
     }
     downloadHotelFile(file) {
-        this.businessService.download_hotel_file(file.id).subscribe(response => {
+        this.businessService.download_hotel_file(file.id).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(response => {
             const filename = this.getName(file.file);
             this.adapterService.downloadFile(filename, response);
         });
@@ -1797,34 +1880,34 @@ class EditBusinessTripComponent {
             let positionId;
             positionId = preparedData.custom_employee.position;
             if (positionId) {
-                return this.employeePositionService.getById(positionId).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.map)(res => {
+                return this.employeePositionService.getById(positionId).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.map)(res => {
                     preparedData.fullPosition = res;
                     return preparedData;
                 }));
             }
             else {
-                return (0,rxjs__WEBPACK_IMPORTED_MODULE_14__.of)(preparedData);
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.of)(preparedData);
             }
         }
         else if (preparedData.full_employee.position) {
             preparedData.fullPosition = preparedData.full_employee.position;
         }
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_14__.of)(preparedData);
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.of)(preparedData);
     }
     loadInitiatorData(preparedData) {
         const position = preparedData.initiator;
         if (position) {
-            return this.crmEmployeeService.getById(position).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.map)(res => {
+            return this.crmEmployeeService.getById(position).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.map)(res => {
                 preparedData.fullInitiator = res;
                 return preparedData;
             }));
         }
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_14__.of)(preparedData);
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.of)(preparedData);
     }
     loadVehicleData(preparedData) {
         if (preparedData.vehicle) {
             const vehicleId = preparedData.vehicle;
-            return this.vehicleService.getById(vehicleId).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.map)(res => {
+            return this.vehicleService.getById(vehicleId).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.map)(res => {
                 preparedData.fullVehicle = res;
                 return preparedData;
             }));
@@ -1832,15 +1915,15 @@ class EditBusinessTripComponent {
         else if (preparedData.custom_vehicle) {
             preparedData.fullVehicle = preparedData.custom_vehicle;
         }
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_14__.of)(preparedData);
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.of)(preparedData);
     }
     export() {
         const preparedData = this.prepareDataToSend(this.businessTrip.status, true);
-        this.loadEmployeePositionData(preparedData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.switchMap)(res => {
+        this.loadEmployeePositionData(preparedData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_20__.switchMap)(res => {
             return this.loadInitiatorData(res);
-        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.switchMap)(res => {
+        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_20__.switchMap)(res => {
             return this.loadVehicleData(res);
-        })).subscribe(res => {
+        })).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(res => {
             this.businessService.exportToExcel(res, this.expensesSum).then();
         });
     }
@@ -1856,106 +1939,271 @@ class EditBusinessTripComponent {
         const data = { links: this.preparedFiles, files: files.base64Files };
         this.businessService.viewBusinessTripFiles(data);
     }
+    updateLocationDefault(type, locationIndex) {
+        let country;
+        let address;
+        let id;
+        let data;
+        if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.FIRST) {
+            country = this.form.get('start_location_country').value?.code;
+            address = this.form.get('start_location_address').value;
+            if (!country || !address) {
+                return;
+            }
+            id = this.form.get('start_location_id').value;
+            data = {
+                id,
+                country,
+                address,
+                type: type,
+                business_trip_id: this.businessTrip.id
+            };
+        }
+        else if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.LAST) {
+            country = this.form.get('last_location_country').value.code;
+            address = this.form.get('last_location_address').value;
+            id = this.form.get('last_location_id').value;
+            if (!country || !address) {
+                return;
+            }
+            data = {
+                id,
+                country,
+                address,
+                business_trip_id: this.businessTrip.id,
+                type: type,
+            };
+        }
+        else {
+            const point = this.form.get('intermediatePoints').value.at(locationIndex);
+            country = point.country?.code;
+            address = point.address;
+            id = point.id;
+            if (!country || !address) {
+                return;
+            }
+            data = {
+                id,
+                country,
+                address,
+                business_trip_id: this.businessTrip.id,
+                type: type,
+            };
+        }
+        if (data.id) {
+            this.businessLocationService.update(data.id, data).subscribe((res) => {
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.FIRST) {
+                    this.form.get('start_location_country').setValue(res.data.country);
+                    this.form.get('start_location_address').setValue(res.data.address);
+                    this.form.get('start_location_id').setValue(res.data.id);
+                }
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.LAST) {
+                    this.form.get('last_location_country').setValue(res.data.country);
+                    this.form.get('last_location_address').setValue(res.data.address);
+                    this.form.get('last_location_id').setValue(res.data.id);
+                }
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.INTERMEDIATE) {
+                    this.form.get('intermediatePoints').value.at(locationIndex).patchValue(res.data);
+                }
+            });
+        }
+        else {
+            this.businessLocationService.create(data).subscribe(res => {
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.FIRST) {
+                    this.form.get('start_location_country').setValue(res.country);
+                    this.form.get('start_location_address').setValue(res.address);
+                    this.form.get('start_location_id').setValue(res.id);
+                }
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.LAST) {
+                    this.form.get('last_location_country').setValue(res.country);
+                    this.form.get('last_location_address').setValue(res.address);
+                    this.form.get('last_location_id').setValue(res.id);
+                }
+                if (type === _enums_business_trip_location_status_enum__WEBPACK_IMPORTED_MODULE_1__.BusinessTripLocationTypes.INTERMEDIATE) {
+                    this.form.get('intermediatePoints').at(locationIndex).patchValue(res);
+                }
+            });
+        }
+    }
+    infoChanged(validateTrip = false) {
+        const tripStart = this.form.get('trip_start').value ?
+            this.adapterService.dateTimeAdapter(new Date(this.form.get('trip_start').value)) : null;
+        const tripEnd = this.form.get('trip_end').value ?
+            this.adapterService.dateTimeAdapter(new Date(this.form.get('trip_end').value)) : null;
+        const employeeUpdate = {
+            trip_end: tripEnd ? tripEnd : null,
+            trip_start: tripStart ? tripStart : null,
+            initiator: this.form.get('initiator').value,
+            purpose_full: this.form.get('purpose_full').value ? this.form.get('purpose_full').value : '',
+            purpose_short: this.form.get('purpose_short').value ? this.form.get('purpose_short').value : '',
+            start_mileage: this.form.get('start_mileage').value,
+            end_mileage: this.form.get('end_mileage').value,
+            status: validateTrip ? _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripStatus.VERIFIED : _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripStatus.NEED_VERIFICATION,
+        };
+        this.businessService
+            .update(this.tripId, employeeUpdate)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$))
+            .subscribe();
+    }
+    updateHotelInfo() {
+        const tempFormValue = (0,deep_copy_ts__WEBPACK_IMPORTED_MODULE_2__.deepCopy)(this.form.value);
+        if (tempFormValue.hotel.hotel_name && tempFormValue.showHotel) {
+            const hotelStartDate = tempFormValue.hotel.residence_start ?
+                this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_start)) : null;
+            const hotelEndDate = tempFormValue.hotel.residence_end ?
+                this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_end)) : null;
+            const hotelData = {
+                residence_start: hotelStartDate ? hotelStartDate : null,
+                residence_end: hotelEndDate ? hotelEndDate : null,
+                address: tempFormValue.hotel.hotel_address,
+                country: tempFormValue.hotel.hotel_country?.code,
+                name: tempFormValue.hotel.hotel_name,
+                id: tempFormValue.hotel.id,
+            };
+            if (!hotelData.residence_start ||
+                !hotelData.residence_end ||
+                !hotelData.address ||
+                !hotelData.country ||
+                !hotelData.name) {
+                return;
+            }
+            this.businessService.updateHotelInfo(this.tripId, hotelData).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(res => {
+                this._hotel.get('id').setValue(res.hotel.id);
+            });
+        }
+    }
+    loadHotelFiles(hotelId) {
+        this.businessTripHotelFilesService.get([{ name: 'business_trip_hotel_id', value: hotelId }]).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(response => {
+            this.preparedFiles = response;
+        });
+    }
+    updateFiles() {
+        this.showFilePicker = false;
+        const data = [];
+        this._hotel.get('files').value.forEach(file => {
+            data.push({
+                file: file,
+                business_trip_id: this._hotel.get('id').value
+            });
+        });
+        const send = {
+            files: this._hotel.get('files').value,
+            id: this._hotel.get('id').value
+        };
+        const result = this.obj2FormData(send);
+        this.businessService.add_hotel_files(result).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_16__.takeUntil)(this.destroy$)).subscribe(res => {
+            this.loadHotelFiles(this._hotel.get('id').value);
+            this.filePicker.clearFiles();
+        });
+    }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
 }
-EditBusinessTripComponent.ɵfac = function EditBusinessTripComponent_Factory(t) { return new (t || EditBusinessTripComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_crm_services_crm_employee_service__WEBPACK_IMPORTED_MODULE_3__.CrmEmployeeService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_16__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_4__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_6__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_17__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_18__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_7__.CrmPositionsService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_services_vehicle_service__WEBPACK_IMPORTED_MODULE_8__.VehicleService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_crm_services_company_service__WEBPACK_IMPORTED_MODULE_9__.CompanyService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_10__.ExpenseService)); };
-EditBusinessTripComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineComponent"]({ type: EditBusinessTripComponent, selectors: [["pek-edit-business-trip"]], decls: 60, vars: 22, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-file-excel", "label", "Export to xls", 1, "p-button-secondary", "mr-2", 3, "click"], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Save", 3, "click"], [3, "formGroup"], [1, "page__content"], [1, "mb-4"], [1, "page__card"], [4, "ngIf", "ngIfElse"], [1, "mb-4", "d-flex", "justify-content-between"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Intermediate Point", 3, "click"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Expense", 3, "click"], ["infoLoading", ""], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click"], [1, "row"], [1, "col-12"], [1, "form-group"], ["for", "other"], ["id", "other", "formControlName", "isOtherEmployee", 3, "binary", "onChange"], ["predefinedEmployee", ""], [1, "col-4"], ["pInputText", "", "formControlName", "employee_first_name", 1, "form-control"], ["pInputText", "", "formControlName", "employee_last_name", 1, "form-control"], [3, "position", "valueChange"], ["formGroupName", "employee"], [3, "filters", "showProfession", "employee", "valueChange"], ["pInputText", "", "formControlName", "last_name", 1, "form-control", 3, "disabled"], ["pInputText", "", "disabled", "", 1, "form-control", 3, "ngModel", "ngModelOptions"], [1, "col-6"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "date", "setDate"], ["placeholder", "Choice End Date and Time", 3, "minDate", "date", "setDate"], [3, "country", "address", "type", "showHr", "countryChanged", "addressChanged"], [3, "country", "address", "type", "showHr", "companiesFilters", "locationMeetings", "showAddMeetings", "meetingsChanged", "countryChanged", "addressChanged"], ["class", "location", 3, "country", "address", "locationMeetings", "showHr", "last", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged", 4, "ngFor", "ngForOf"], ["class", "d-flex justify-content-center", 4, "ngIf"], [1, "location", 3, "country", "address", "locationMeetings", "showHr", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged"], [1, "d-flex", "justify-content-center"], ["pInputText", "", "formControlName", "purpose_short", 1, "form-control"], ["pInputTextarea", "", "formControlName", "purpose_full", "id", "comment", 1, "form-control"], [1, "col-1"], ["formControlName", "showHotel", 3, "binary", "ngModelChange"], [3, "ngIf"], ["formGroupName", "hotel"], ["pInputText", "", "formControlName", "hotel_name", 1, "form-control"], [3, "country", "valueChangeFull"], ["pInputText", "", "formControlName", "hotel_address", 1, "form-control"], ["hourFormat", "24", "formControlName", "residence_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["startHotel", ""], ["class", "d-flex justify-content-center align-items-center", 4, "ngIf"], ["hourFormat", "24", "formControlName", "residence_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "minDate", "disabled", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["endHotel", ""], [3, "fileChanged"], [1, "col-11"], ["pButton", "", "type", "button", "icon", "fa fa-eye", "label", "View files", 3, "click"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "d-flex", "justify-content-center", "align-items-center"], [1, "btn", "btn-primary", "position-absolute", "mb-5", 3, "click"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], ["href", "javascript:void(0)", 3, "click"], [3, "type", "valueChange"], ["class", "row", 4, "ngIf"], ["pInputText", "", "formControlName", "vehicle_model", 1, "form-control"], ["pInputText", "", "formControlName", "vehicle_number", 1, "form-control"], ["formGroupName", "vehicle", 1, "col-4"], [3, "placeholder", "vehicle", "valueChange"], ["pInputText", "", "formControlName", "number", 1, "form-control", 3, "disabled"], ["pInputText", "", "formControlName", "start_mileage", 1, "form-control"], ["pInputText", "", "formControlName", "end_mileage", 1, "form-control"], [3, "employee", "valueChange"], [3, "tripExpenses", "deleteExpense", "editExpense", "expenseSumEmit", 4, "ngIf"], [3, "tripExpenses", "deleteExpense", "editExpense", "expenseSumEmit"], [1, "info-loading"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditBusinessTripComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelement"](3, "pek-module-icon", 3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](4, "h1");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](5, "Edit Business Trip");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "div", 4)(7, "button", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_7_listener() { return ctx.export(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](8, EditBusinessTripComponent_button_8_Template, 1, 0, "button", 6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](9, "button", 7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_9_listener() { return ctx.editBusinessTrip(ctx.tripStatuses.NEED_VERIFICATION); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](10, "form", 8)(11, "div", 9)(12, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](13, "Employee");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](14, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](15, EditBusinessTripComponent_div_15_Template, 10, 3, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](16, "div", 9)(17, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](18, "Date Trip Start/End");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](19, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](20, EditBusinessTripComponent_div_20_Template, 12, 4, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](21, "div", 9)(22, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](23, "Points Start/Arrival");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](24, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](25, EditBusinessTripComponent_div_25_Template, 15, 11, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](26, "div", 9)(27, "h2", 13);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](28, "Intermediate Points ");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](29, "button", 14);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_29_listener() { return ctx.addIntermediatePoint(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](30, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](31, EditBusinessTripComponent_div_31_Template, 3, 2, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](32, "div", 9)(33, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](34, "Purpose");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](35, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](36, EditBusinessTripComponent_div_36_Template, 13, 0, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](37, "div", 9)(38, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](39, "Hotel");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](40, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](41, EditBusinessTripComponent_div_41_Template, 8, 2, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](42, "div", 9)(43, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](44, "Vehicle");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](45, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](46, EditBusinessTripComponent_div_46_Template, 10, 4, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](47, "div", 9)(48, "h2", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](49, "Initiator");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](50, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](51, EditBusinessTripComponent_div_51_Template, 7, 1, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](52, "div", 9)(53, "h2", 13);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](54, " Expenses ");
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](55, "button", 15);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_55_listener() { return ctx.addTripExpanses(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](56, "div", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](57, EditBusinessTripComponent_div_57_Template, 3, 2, "div", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](58, EditBusinessTripComponent_ng_template_58_Template, 2, 0, "ng-template", null, 16, _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplateRefExtractor"]);
+EditBusinessTripComponent.ɵfac = function EditBusinessTripComponent_Factory(t) { return new (t || EditBusinessTripComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_crm_services_crm_employee_service__WEBPACK_IMPORTED_MODULE_3__.CrmEmployeeService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_21__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_4__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_6__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_22__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_23__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_7__.CrmPositionsService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_services_vehicle_service__WEBPACK_IMPORTED_MODULE_8__.VehicleService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_crm_services_company_service__WEBPACK_IMPORTED_MODULE_9__.CompanyService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_10__.ExpenseService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_services_business_location_service__WEBPACK_IMPORTED_MODULE_11__.BusinessLocationService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdirectiveInject"](_services_business_trip_hotel_files_service__WEBPACK_IMPORTED_MODULE_12__.BusinessTripHotelFilesService)); };
+EditBusinessTripComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdefineComponent"]({ type: EditBusinessTripComponent, selectors: [["pek-edit-business-trip"]], viewQuery: function EditBusinessTripComponent_Query(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵviewQuery"](_c0, 5);
     } if (rf & 2) {
-        const _r10 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵreference"](59);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("module", "business-trip")("isActive", true);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isVerify);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("formGroup", ctx.form);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵadvance"](6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵloadQuery"]()) && (ctx.filePicker = _t.first);
+    } }, decls: 57, vars: 23, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-file-excel", "label", "Export to xls", 1, "p-button-secondary", "mr-2", 3, "click"], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Save", 3, "click"], [3, "formGroup"], [1, "page__content"], [1, "mb-4"], [1, "page__card"], [4, "ngIf", "ngIfElse"], [1, "mb-4", "d-flex", "justify-content-between"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Intermediate Point", 3, "click"], [3, "businessTripId", "isVerify", "currentBusinessTripExpenses", "deleteExpense", "editExpense", "unverifyTrip", "expenseSumEmit"], ["class", "d-flex justify-content-center", 4, "ngIf"], ["infoLoading", ""], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click"], [1, "row"], [1, "col-12"], [1, "form-group"], ["for", "other"], ["id", "other", "formControlName", "isOtherEmployee", 3, "binary", "onChange"], ["predefinedEmployee", ""], [1, "col-4"], ["pInputText", "", "formControlName", "employee_first_name", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "employee_last_name", 1, "form-control", 3, "ngModelChange"], [3, "position", "valueChange"], ["formGroupName", "employee"], [3, "filters", "showProfession", "employee", "valueChange"], ["pInputText", "", "formControlName", "last_name", 1, "form-control", 3, "disabled"], ["pInputText", "", "disabled", "", 1, "form-control", 3, "ngModel", "ngModelOptions"], [1, "col-6"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "date", "setDate"], ["placeholder", "Choice End Date and Time", 3, "minDate", "date", "setDate"], [3, "country", "address", "locationId", "type", "showHr", "countryChanged", "addressChanged"], [3, "country", "address", "locationId", "type", "showHr", "companiesFilters", "showAddMeetings", "meetingsChanged", "countryChanged", "addressChanged"], ["class", "location", 3, "country", "address", "locationId", "showHr", "last", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged", 4, "ngFor", "ngForOf"], [1, "location", 3, "country", "address", "locationId", "showHr", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged"], [1, "d-flex", "justify-content-center"], ["pInputText", "", "formControlName", "purpose_short", 1, "form-control", 3, "ngModelChange"], ["pInputTextarea", "", "formControlName", "purpose_full", "id", "comment", 1, "form-control", 3, "ngModelChange"], [1, "col-1"], ["formControlName", "showHotel", 3, "binary", "ngModelChange"], [3, "ngIf"], ["formGroupName", "hotel"], ["pInputText", "", "formControlName", "hotel_name", 1, "form-control", 3, "ngModelChange"], [3, "country", "valueChangeFull"], ["pInputText", "", "formControlName", "hotel_address", 1, "form-control", 3, "ngModelChange"], ["hourFormat", "24", "formControlName", "residence_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["startHotel", ""], ["class", "d-flex justify-content-center align-items-center", 4, "ngIf"], ["hourFormat", "24", "formControlName", "residence_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "minDate", "disabled", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["endHotel", ""], [3, "fileChanged"], ["filePicker", ""], [1, "col-11"], ["pButton", "", "type", "button", "icon", "fa fa-eye", "label", "View files", 3, "click"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "d-flex", "justify-content-center", "align-items-center"], [1, "btn", "btn-primary", "position-absolute", "mb-5", 3, "click"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], ["href", "javascript:void(0)", 3, "click"], [3, "type", "valueChange"], ["class", "row", 4, "ngIf"], ["pInputText", "", "formControlName", "vehicle_model", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "vehicle_number", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "vehicle", 1, "col-4"], [3, "placeholder", "vehicle", "valueChange"], ["pInputText", "", "formControlName", "number", 1, "form-control", 3, "disabled"], ["pInputText", "", "formControlName", "start_mileage", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "end_mileage", 1, "form-control", 3, "ngModelChange"], [3, "employee", "valueChange"], [1, "info-loading"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditBusinessTripComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelement"](3, "pek-module-icon", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](4, "h1");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](5, "Edit Business Trip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](6, "div", 4)(7, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_7_listener() { return ctx.export(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](8, EditBusinessTripComponent_button_8_Template, 1, 0, "button", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](9, "button", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_9_listener() { return ctx.editBusinessTrip(ctx.tripStatuses.NEED_VERIFICATION); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](10, "form", 8)(11, "div", 9)(12, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](13, "Employee");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](14, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](15, EditBusinessTripComponent_div_15_Template, 10, 3, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](16, "div", 9)(17, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](18, "Date Trip Start/End");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](19, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](20, EditBusinessTripComponent_div_20_Template, 12, 4, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](21, "div", 9)(22, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](23, "Points Start/Arrival");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](24, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](25, EditBusinessTripComponent_div_25_Template, 15, 12, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](26, "div", 9)(27, "h2", 13);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](28, "Intermediate Points ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](29, "button", 14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("click", function EditBusinessTripComponent_Template_button_click_29_listener() { return ctx.addIntermediatePoint(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](30, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](31, EditBusinessTripComponent_div_31_Template, 3, 2, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](32, "div", 9)(33, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](34, "Purpose");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](35, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](36, EditBusinessTripComponent_div_36_Template, 13, 0, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](37, "div", 9)(38, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](39, "Hotel");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](40, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](41, EditBusinessTripComponent_div_41_Template, 8, 2, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](42, "div", 9)(43, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](44, "Vehicle");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](45, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](46, EditBusinessTripComponent_div_46_Template, 10, 4, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](47, "div", 9)(48, "h2", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtext"](49, "Initiator");
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](50, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](51, EditBusinessTripComponent_div_51_Template, 7, 1, "div", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementStart"](52, "div", 9)(53, "pek-trip-expenses-table", 15);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵlistener"]("currentBusinessTripExpenses", function EditBusinessTripComponent_Template_pek_trip_expenses_table_currentBusinessTripExpenses_53_listener($event) { return ctx.updateExpenses($event); })("deleteExpense", function EditBusinessTripComponent_Template_pek_trip_expenses_table_deleteExpense_53_listener($event) { return ctx.deleteExpense($event); })("editExpense", function EditBusinessTripComponent_Template_pek_trip_expenses_table_editExpense_53_listener($event) { return ctx.editTripExpense($event); })("unverifyTrip", function EditBusinessTripComponent_Template_pek_trip_expenses_table_unverifyTrip_53_listener() { return ctx.infoChangedEmit.next(false); })("expenseSumEmit", function EditBusinessTripComponent_Template_pek_trip_expenses_table_expenseSumEmit_53_listener($event) { return ctx.expensesSum = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](54, EditBusinessTripComponent_div_54_Template, 3, 0, "div", 16);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplate"](55, EditBusinessTripComponent_ng_template_55_Template, 2, 0, "ng-template", null, 17, _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵtemplateRefExtractor"]);
+    } if (rf & 2) {
+        const _r10 = _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵreference"](56);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("module", "business-trip")("isActive", true);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isVerify);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("formGroup", ctx.form);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.isDataPrepared)("ngIfElse", _r10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("businessTripId", ctx.tripId)("isVerify", ctx.isVerify);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵproperty"]("ngIf", ctx.tripExpenses.length === 0);
     } }, styles: ["h2[_ngcontent-%COMP%] {\n  font-size: 1.1875rem;\n  font-weight: 600;\n}\n\n.info-loading[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 16.267rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.icons[_ngcontent-%COMP%] {\n  position: relative;\n  top: 1px;\n}\n\n.location[_ngcontent-%COMP%] {\n  display: block;\n  margin-bottom: 1rem;\n}\n\n.location.last[_ngcontent-%COMP%] {\n  margin-bottom: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVkaXQtYnVzaW5lc3MtdHJpcC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLG9CQUFBO0VBQ0EsZ0JBQUE7QUFDRjs7QUFFQTtFQUNFLFdBQUE7RUFDQSxpQkFBQTtFQUNBLGFBQUE7RUFDQSxtQkFBQTtFQUNBLHVCQUFBO0FBQ0Y7O0FBRUE7RUFDRSxrQkFBQTtFQUNBLFFBQUE7QUFDRjs7QUFFQTtFQUNFLGNBQUE7RUFDQSxtQkFBQTtBQUNGOztBQUNFO0VBQ0UsZ0JBQUE7QUFDSiIsImZpbGUiOiJlZGl0LWJ1c2luZXNzLXRyaXAuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJoMiB7XHJcbiAgZm9udC1zaXplOiAxLjE4NzVyZW07XHJcbiAgZm9udC13ZWlnaHQ6IDYwMDtcclxufVxyXG5cclxuLmluZm8tbG9hZGluZyB7XHJcbiAgd2lkdGg6IDEwMCU7XHJcbiAgaGVpZ2h0OiAxNi4yNjdyZW07XHJcbiAgZGlzcGxheTogZmxleDtcclxuICBhbGlnbi1pdGVtczogY2VudGVyO1xyXG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xyXG59XHJcblxyXG4uaWNvbnMge1xyXG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICB0b3A6IDFweDtcclxufVxyXG5cclxuLmxvY2F0aW9uIHtcclxuICBkaXNwbGF5OiBibG9jaztcclxuICBtYXJnaW4tYm90dG9tOiAxcmVtO1xyXG5cclxuICAmLmxhc3Qge1xyXG4gICAgbWFyZ2luLWJvdHRvbTogMDtcclxuICB9XHJcbn1cclxuIl19 */"] });
 
 
@@ -3084,15 +3332,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LocationInputComponent": () => (/* binding */ LocationInputComponent)
 /* harmony export */ });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 68951);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 71989);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common */ 94666);
-/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primeng/button */ 73867);
-/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primeng/inputtext */ 69906);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/forms */ 2508);
-/* harmony import */ var _shared_pickers_company_picker_company_picker_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../shared/pickers/company-picker/company-picker.component */ 66242);
-/* harmony import */ var _shared_pickers_multi_contacts_picker_multi_contacts_picker_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../shared/pickers/multi-contacts-picker/multi-contacts-picker.component */ 93565);
-/* harmony import */ var _pickers_business_trip_country_picker_business_trip_country_picker_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../pickers/business-trip-country-picker/business-trip-country-picker.component */ 80897);
+/* harmony import */ var _services_location_meeting_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/location-meeting.service */ 36274);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primeng/inputtext */ 69906);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _shared_pickers_company_picker_company_picker_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../shared/pickers/company-picker/company-picker.component */ 66242);
+/* harmony import */ var _shared_pickers_multi_contacts_picker_multi_contacts_picker_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../shared/pickers/multi-contacts-picker/multi-contacts-picker.component */ 93565);
+/* harmony import */ var _pickers_business_trip_country_picker_business_trip_country_picker_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../pickers/business-trip-country-picker/business-trip-country-picker.component */ 80897);
+
+
+
 
 
 
@@ -3104,120 +3359,187 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function LocationInputComponent_button_15_Template(rf, ctx) { if (rf & 1) {
-    const _r5 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "button", 11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function LocationInputComponent_button_15_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r5); const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r4.delete()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+    const _r5 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](0, "button", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("click", function LocationInputComponent_button_15_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵrestoreView"](_r5); const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵresetView"](ctx_r4.delete()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
 } }
 function LocationInputComponent_ng_template_16_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 1)(1, "div", 2)(2, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](3, "Company");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](4, "div", 1)(5, "div", 2)(6, "label");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](7, "Contacts");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](0, "div", 1)(1, "div", 2)(2, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtext"](3, "Company");
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](4, "div", 1)(5, "div", 2)(6, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtext"](7, "Contacts");
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
 } }
 function LocationInputComponent_ng_template_17_Template(rf, ctx) { if (rf & 1) {
-    const _r9 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 1)(1, "div", 2)(2, "pek-company-picker", 12);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("selectCompanyFull", function LocationInputComponent_ng_template_17_Template_pek_company_picker_selectCompanyFull_2_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); meeting_r6.company = $event; return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r8.updateMeeting()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](3, "div", 1)(4, "div", 2)(5, "pek-multi-contacts-picker", 13);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("valueChangeFull", function LocationInputComponent_ng_template_17_Template_pek_multi_contacts_picker_valueChangeFull_5_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const ctx_r10 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); meeting_r6.contacts = $event; return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r10.updateMeeting()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](6, "div", 6)(7, "div", 2)(8, "button", 11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function LocationInputComponent_ng_template_17_Template_button_click_8_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const index_r7 = restoredCtx.index; const ctx_r11 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r11.deleteMeeting(meeting_r6, index_r7)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
+    const _r9 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](0, "div", 1)(1, "div", 2)(2, "pek-company-picker", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("selectCompanyFull", function LocationInputComponent_ng_template_17_Template_pek_company_picker_selectCompanyFull_2_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵresetView"](ctx_r8.updateMeeting(meeting_r6, $event)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](3, "div", 1)(4, "div", 2)(5, "pek-multi-contacts-picker", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("valueChangeFull", function LocationInputComponent_ng_template_17_Template_pek_multi_contacts_picker_valueChangeFull_5_listener($event) { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const ctx_r10 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵresetView"](ctx_r10.employeeChanged.next({ meeting: meeting_r6, contacts: $event })); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](6, "div", 6)(7, "div", 2)(8, "button", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("click", function LocationInputComponent_ng_template_17_Template_button_click_8_listener() { const restoredCtx = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵrestoreView"](_r9); const meeting_r6 = restoredCtx.$implicit; const index_r7 = restoredCtx.index; const ctx_r11 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵresetView"](ctx_r11.deleteMeeting(meeting_r6, index_r7)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
 } if (rf & 2) {
     const meeting_r6 = ctx.$implicit;
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("currentCompanyId", meeting_r6.company == null ? null : meeting_r6.company.id);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("contactsListFull", meeting_r6.contacts)("searchByCompany", true)("companyId", meeting_r6.company == null ? null : meeting_r6.company.id);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("currentCompanyId", meeting_r6.company == null ? null : meeting_r6.company.id);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("contactsListFull", meeting_r6.contacts)("searchByCompany", true)("companyId", meeting_r6.company == null ? null : meeting_r6.company.id);
 } }
 function LocationInputComponent_button_18_Template(rf, ctx) { if (rf & 1) {
-    const _r13 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "button", 14);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function LocationInputComponent_button_18_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r13); const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r12.addMeeting()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+    const _r13 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](0, "button", 14);
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("click", function LocationInputComponent_button_18_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵrestoreView"](_r13); const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵresetView"](ctx_r12.addMeeting()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
 } }
 class LocationInputComponent {
-    constructor(modalService) {
+    constructor(modalService, locationMeetingService) {
         this.modalService = modalService;
+        this.locationMeetingService = locationMeetingService;
         this.locationMeetings = [];
         this.showHr = false;
-        this.countryChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
-        this.addressChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
-        this.meetingsChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
-        this.emitDeletePoint = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
+        this.countryChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_5__.EventEmitter();
+        this.addressChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_5__.EventEmitter();
+        this.meetingsChanged = new _angular_core__WEBPACK_IMPORTED_MODULE_5__.EventEmitter();
+        this.emitDeletePoint = new _angular_core__WEBPACK_IMPORTED_MODULE_5__.EventEmitter();
+        this.employeeChanged = new rxjs__WEBPACK_IMPORTED_MODULE_6__.Subject();
+        this.locationLoaded = false;
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_6__.Subject();
+    }
+    ngOnChanges(changes) {
+        if ('locationId' in changes) {
+            if (this.locationId) {
+                this.getMeetings();
+            }
+        }
+    }
+    getMeetings() {
+        this.locationLoaded = false;
+        this.locationMeetingService.get([{ name: 'location_id', value: this.locationId }]).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(res => {
+            this.locationMeetings = res;
+            this.meetingsChanged.emit(this.locationMeetings);
+        });
     }
     ngOnInit() {
+        this.employeeChanged.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.debounceTime)(500)).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe((res) => {
+            this.updateMeetingPerson(res.meeting, res.contacts);
+        });
     }
     delete() {
-        this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+        this.modalService.confirm('danger', 'Confirm').pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(confirm => {
             if (confirm) {
                 this.emitDeletePoint.emit(this.type);
             }
         });
     }
     addMeeting() {
-        this.locationMeetings.push({
-            company: null,
-            contacts: []
-        });
+        if (this.locationId) {
+            this.locationMeetings.push({
+                company: null,
+                id: null,
+                location_id: this.locationId,
+                contacts: []
+            });
+        }
     }
-    updateMeeting() {
-        this.meetingsChanged.emit(this.locationMeetings);
+    updateMeeting(locationMeeting, $event) {
+        if (!locationMeeting.company || locationMeeting.company.id !== $event) {
+            locationMeeting.company = $event;
+            this.createUpdateMeeting(locationMeeting);
+        }
     }
     deleteMeeting(meetingToDelete, index) {
-        this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+        this.modalService.confirm('danger', 'Confirm').pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(confirm => {
             if (confirm) {
-                this.locationMeetings.splice(index, 1);
-                this.updateMeeting();
+                if (meetingToDelete.id) {
+                    this.locationMeetingService.delete(meetingToDelete).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(res => {
+                        this.getMeetings();
+                    });
+                }
             }
         });
+    }
+    createUpdateMeeting(locationMeeting) {
+        if (this.locationId) {
+            if (locationMeeting.id) {
+                const locationData = {
+                    company: locationMeeting.company.id,
+                    location_id: this.locationId,
+                    contacts: locationMeeting.contacts.map(contact => contact.id)
+                };
+                this.locationMeetingService.update(locationMeeting.id, locationData).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(res => {
+                    this.getMeetings();
+                });
+            }
+            else {
+                const locationData = {
+                    company: locationMeeting.company.id,
+                    location_id: this.locationId,
+                    contacts: locationMeeting.contacts.map(contact => contact.id)
+                };
+                this.locationMeetingService.create(locationData).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(res => {
+                    this.getMeetings();
+                });
+            }
+        }
     }
     getContactsIds(meeting) {
         return meeting.contacts.map(contact => contact.id);
     }
+    updateMeetingPerson(meeting, $event) {
+        const inter = meeting.contacts.map(contact => contact.id).filter(contact => !$event.map(contact => contact.id).includes(contact));
+        const inter2 = $event.map(contact => contact.id).filter(contact => !meeting.contacts.map(contact => contact.id).includes(contact));
+        if (inter.length > 0 || inter2.length > 0) {
+            meeting.contacts = $event;
+            this.createUpdateMeeting(meeting);
+        }
+    }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
 }
-LocationInputComponent.ɵfac = function LocationInputComponent_Factory(t) { return new (t || LocationInputComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_0__.ModalService)); };
-LocationInputComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineComponent"]({ type: LocationInputComponent, selectors: [["pek-location-input"]], inputs: { country: "country", address: "address", showDelete: "showDelete", showAddMeetings: "showAddMeetings", companiesFilters: "companiesFilters", locationMeetings: "locationMeetings", showHr: "showHr", type: "type" }, outputs: { countryChanged: "countryChanged", addressChanged: "addressChanged", meetingsChanged: "meetingsChanged", emitDeletePoint: "emitDeletePoint" }, decls: 19, vars: 6, consts: [[1, "row"], [1, "col-5"], [1, "form-group"], [3, "country", "valueChangeFull"], ["for", "address"], ["pInputText", "", "type", "text", "id", "address", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "col-2"], ["pButton", "", "type", "button", "icon", "pi pi-trash", "class", "p-button-danger p-button-rounded p-button-outlined p-button-rounded_small mr-2 mt-1", 3, "click", 4, "ngIf"], [3, "ngIf"], ["ngFor", "", 3, "ngForOf"], ["pButton", "", "icon", "pi pi-plus", "label", "Add Meeting", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-trash", 1, "p-button-danger", "p-button-rounded", "p-button-outlined", "p-button-rounded_small", "mr-2", "mt-1", 3, "click"], [3, "currentCompanyId", "selectCompanyFull"], [3, "contactsListFull", "searchByCompany", "companyId", "valueChangeFull"], ["pButton", "", "icon", "pi pi-plus", "label", "Add Meeting", 3, "click"]], template: function LocationInputComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "label");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](4, "Country");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](5, "pek-business-trip-country-picker", 3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("valueChangeFull", function LocationInputComponent_Template_pek_business_trip_country_picker_valueChangeFull_5_listener($event) { return ctx.countryChanged.emit($event); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](6, "div", 1)(7, "div", 2)(8, "label", 4);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](9, "Address");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](10, "input", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("ngModelChange", function LocationInputComponent_Template_input_ngModelChange_10_listener($event) { return ctx.address = $event; })("ngModelChange", function LocationInputComponent_Template_input_ngModelChange_10_listener($event) { return ctx.addressChanged.emit($event); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](11, "div", 6)(12, "div", 2)(13, "label");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](14, "\u00A0 ");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](15, LocationInputComponent_button_15_Template, 1, 0, "button", 7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](16, LocationInputComponent_ng_template_16_Template, 8, 0, "ng-template", 8);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](17, LocationInputComponent_ng_template_17_Template, 9, 4, "ng-template", 9);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](18, LocationInputComponent_button_18_Template, 1, 0, "button", 10);
+LocationInputComponent.ɵfac = function LocationInputComponent_Factory(t) { return new (t || LocationInputComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_0__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_location_meeting_service__WEBPACK_IMPORTED_MODULE_1__.LocationMeetingService)); };
+LocationInputComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineComponent"]({ type: LocationInputComponent, selectors: [["pek-location-input"]], inputs: { country: "country", locationId: "locationId", address: "address", showDelete: "showDelete", showAddMeetings: "showAddMeetings", companiesFilters: "companiesFilters", showHr: "showHr", type: "type" }, outputs: { countryChanged: "countryChanged", addressChanged: "addressChanged", meetingsChanged: "meetingsChanged", emitDeletePoint: "emitDeletePoint" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵNgOnChangesFeature"]], decls: 19, vars: 6, consts: [[1, "row"], [1, "col-5"], [1, "form-group"], [3, "country", "valueChangeFull"], ["for", "address"], ["pInputText", "", "type", "text", "id", "address", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "col-2"], ["pButton", "", "type", "button", "icon", "pi pi-trash", "class", "p-button-danger p-button-rounded p-button-outlined p-button-rounded_small mr-2 mt-1", 3, "click", 4, "ngIf"], [3, "ngIf"], ["ngFor", "", 3, "ngForOf"], ["pButton", "", "icon", "pi pi-plus", "label", "Add Meeting", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-trash", 1, "p-button-danger", "p-button-rounded", "p-button-outlined", "p-button-rounded_small", "mr-2", "mt-1", 3, "click"], [3, "currentCompanyId", "selectCompanyFull"], [3, "contactsListFull", "searchByCompany", "companyId", "valueChangeFull"], ["pButton", "", "icon", "pi pi-plus", "label", "Add Meeting", 3, "click"]], template: function LocationInputComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtext"](4, "Country");
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](5, "pek-business-trip-country-picker", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("valueChangeFull", function LocationInputComponent_Template_pek_business_trip_country_picker_valueChangeFull_5_listener($event) { return ctx.countryChanged.emit($event); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](6, "div", 1)(7, "div", 2)(8, "label", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtext"](9, "Address");
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](10, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵlistener"]("ngModelChange", function LocationInputComponent_Template_input_ngModelChange_10_listener($event) { return ctx.address = $event; })("ngModelChange", function LocationInputComponent_Template_input_ngModelChange_10_listener($event) { return ctx.addressChanged.emit($event); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementStart"](11, "div", 6)(12, "div", 2)(13, "label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtext"](14, "\u00A0 ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](15, LocationInputComponent_button_15_Template, 1, 0, "button", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](16, LocationInputComponent_ng_template_16_Template, 8, 0, "ng-template", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](17, LocationInputComponent_ng_template_17_Template, 9, 4, "ng-template", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](18, LocationInputComponent_button_18_Template, 1, 0, "button", 10);
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("country", ctx.country == null ? null : ctx.country.code);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngModel", ctx.address);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", ctx.showDelete);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", ctx.locationMeetings.length > 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngForOf", ctx.locationMeetings);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", ctx.showAddMeetings);
-    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_5__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_5__.NgIf, primeng_button__WEBPACK_IMPORTED_MODULE_6__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_7__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_8__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_8__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_8__.NgModel, _shared_pickers_company_picker_company_picker_component__WEBPACK_IMPORTED_MODULE_1__.CompanyPickerComponent, _shared_pickers_multi_contacts_picker_multi_contacts_picker_component__WEBPACK_IMPORTED_MODULE_2__.MultiContactsPickerComponent, _pickers_business_trip_country_picker_business_trip_country_picker_component__WEBPACK_IMPORTED_MODULE_3__.BusinessTripCountryPickerComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJsb2NhdGlvbi1pbnB1dC5jb21wb25lbnQuc2NzcyJ9 */"] });
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("country", ctx.country == null ? null : ctx.country.code);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngModel", ctx.address);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.showDelete);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.locationMeetings.length > 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngForOf", ctx.locationMeetings);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.showAddMeetings);
+    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_9__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_9__.NgIf, primeng_button__WEBPACK_IMPORTED_MODULE_10__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_11__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_12__.NgModel, _shared_pickers_company_picker_company_picker_component__WEBPACK_IMPORTED_MODULE_2__.CompanyPickerComponent, _shared_pickers_multi_contacts_picker_multi_contacts_picker_component__WEBPACK_IMPORTED_MODULE_3__.MultiContactsPickerComponent, _pickers_business_trip_country_picker_business_trip_country_picker_component__WEBPACK_IMPORTED_MODULE_4__.BusinessTripCountryPickerComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJsb2NhdGlvbi1pbnB1dC5jb21wb25lbnQuc2NzcyJ9 */"] });
 
 
 /***/ }),
@@ -3232,16 +3554,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "TripExpensesTableComponent": () => (/* binding */ TripExpensesTableComponent)
 /* harmony export */ });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _enums_business_trip_expense_status_enum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../enums/business-trip-expense-status.enum */ 43024);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ 59295);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 68951);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/forms */ 2508);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
 /* harmony import */ var _services_business_trip_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/business-trip.service */ 96288);
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common */ 94666);
-/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primeng/api */ 14356);
-/* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primeng/menubar */ 80552);
-/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/table */ 17485);
-/* harmony import */ var _shared_pipes_money_format_pipe__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @shared/pipes/money-format.pipe */ 15079);
+/* harmony import */ var _services_business_trips_expenses_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/business-trips-expenses.service */ 75570);
+/* harmony import */ var _services_expense_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/expense.service */ 42503);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! primeng/api */ 14356);
+/* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! primeng/menubar */ 80552);
+/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! primeng/table */ 17485);
+/* harmony import */ var _shared_pipes_money_format_pipe__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @shared/pipes/money-format.pipe */ 15079);
 
 
 
@@ -3253,165 +3581,174 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function TripExpensesTableComponent_ng_template_4_p_1_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "p", 12);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](1, "Choose the Expenses to edit");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+
+
+
+
+
+function TripExpensesTableComponent_ng_template_8_p_1_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "p", 15);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1, "Choose the Expenses to edit");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } }
-function TripExpensesTableComponent_ng_template_4_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 9);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](1, TripExpensesTableComponent_ng_template_4_p_1_Template, 2, 0, "p", 10);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelement"](2, "p-menubar", 11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_ng_template_8_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "div", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](1, TripExpensesTableComponent_ng_template_8_p_1_Template, 2, 0, "p", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelement"](2, "p-menubar", 14);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", !ctx_r0.selectedTripExpense);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵclassProp"]("disabled", !ctx_r0.selectedTripExpense || ctx_r0.selectedTripExpense && ctx_r0.selectedTripExpense.is_verified);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("model", ctx_r0.menuItems);
+    const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", !ctx_r0.selectedTripExpense);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵclassProp"]("disabled", !ctx_r0.selectedTripExpense || ctx_r0.selectedTripExpense && ctx_r0.selectedTripExpense.is_verified);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("model", ctx_r0.menuItems);
 } }
-function TripExpensesTableComponent_ng_template_5_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "tr")(1, "th", 13);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](2, "#");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](3, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](4, "Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](5, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](6, "Description");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](7, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](8, "Sum");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](9, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](10, "Currency");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](11, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](12, "File");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](13, "th");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](14, "Status");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
+function TripExpensesTableComponent_ng_template_9_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "tr")(1, "th", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](2, "#");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](3, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](4, "Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](5, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](6, "Description");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](7, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](8, "Sum");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](9, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](10, "Currency");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](11, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](12, "File");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](13, "th");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](14, "Status");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()();
 } }
-function TripExpensesTableComponent_ng_template_6_a_13_Template(rf, ctx) { if (rf & 1) {
-    const _r14 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "a", 16);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function TripExpensesTableComponent_ng_template_6_a_13_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r14); const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]().$implicit; const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r12.viewFile(tripExpense_r6, tripExpense_r6.file)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_ng_template_10_a_13_Template(rf, ctx) { if (rf & 1) {
+    const _r14 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "a", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵlistener"]("click", function TripExpensesTableComponent_ng_template_10_a_13_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵrestoreView"](_r14); const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]().$implicit; const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵresetView"](ctx_r12.viewFile(tripExpense_r6, tripExpense_r6.file)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]().$implicit;
-    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate1"](" ", ctx_r8.getName(tripExpense_r6.file), " ");
+    const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]().$implicit;
+    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate1"](" ", ctx_r8.getName(tripExpense_r6.file), " ");
 } }
-function TripExpensesTableComponent_ng_template_6_a_14_Template(rf, ctx) { if (rf & 1) {
-    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "a", 16);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function TripExpensesTableComponent_ng_template_6_a_14_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r18); const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]().$implicit; const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r16.viewFile(tripExpense_r6, tripExpense_r6.uploaded_file)); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_ng_template_10_a_14_Template(rf, ctx) { if (rf & 1) {
+    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "a", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵlistener"]("click", function TripExpensesTableComponent_ng_template_10_a_14_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵrestoreView"](_r18); const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]().$implicit; const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵresetView"](ctx_r16.viewFile(tripExpense_r6, tripExpense_r6.uploaded_file)); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]().$implicit;
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate1"](" ", tripExpense_r6.uploaded_file.name, " ");
+    const tripExpense_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate1"](" ", tripExpense_r6.uploaded_file.name, " ");
 } }
-function TripExpensesTableComponent_ng_template_6_span_16_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "span");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](1, " Need To Be Verified ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_ng_template_10_span_16_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "span");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1, " Need To Be Verified ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } }
-function TripExpensesTableComponent_ng_template_6_span_17_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "span");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](1, " Verified ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_ng_template_10_span_17_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "span");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1, " Verified ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } }
-function TripExpensesTableComponent_ng_template_6_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "tr", 14)(1, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](3, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](5, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](7, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](8);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵpipe"](9, "moneyFormat");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](10, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](11);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](12, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](13, TripExpensesTableComponent_ng_template_6_a_13_Template, 2, 1, "a", 15);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](14, TripExpensesTableComponent_ng_template_6_a_14_Template, 2, 1, "a", 15);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](15, "td");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](16, TripExpensesTableComponent_ng_template_6_span_16_Template, 2, 0, "span", 8);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](17, TripExpensesTableComponent_ng_template_6_span_17_Template, 2, 0, "span", 8);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
+function TripExpensesTableComponent_ng_template_10_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "tr", 17)(1, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](3, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](5, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](7, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](8);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵpipe"](9, "moneyFormat");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](10, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](12, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](13, TripExpensesTableComponent_ng_template_10_a_13_Template, 2, 1, "a", 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](14, TripExpensesTableComponent_ng_template_10_a_14_Template, 2, 1, "a", 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](15, "td");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](16, TripExpensesTableComponent_ng_template_10_span_16_Template, 2, 0, "span", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](17, TripExpensesTableComponent_ng_template_10_span_17_Template, 2, 0, "span", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()();
 } if (rf & 2) {
     const tripExpense_r6 = ctx.$implicit;
     const i_r7 = ctx.rowIndex;
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("pSelectableRow", tripExpense_r6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate"](i_r7 + 1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate"](tripExpense_r6.expense && tripExpense_r6.expense.name ? tripExpense_r6.expense.name : tripExpense_r6.custom_expense.name);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate"](tripExpense_r6.expense && tripExpense_r6.expense.name ? tripExpense_r6.expense.description : tripExpense_r6.custom_expense.description);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate"](_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵpipeBind1"](9, 10, tripExpense_r6.sum));
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate"](tripExpense_r6.currency.name);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", tripExpense_r6.id && tripExpense_r6.file && !tripExpense_r6.uploaded_file);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", tripExpense_r6.uploaded_file);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", !tripExpense_r6.is_verified);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", tripExpense_r6.is_verified);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("pSelectableRow", tripExpense_r6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate"](i_r7 + 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate"](tripExpense_r6.expense && tripExpense_r6.expense.name ? tripExpense_r6.expense.name : tripExpense_r6.custom_expense.name);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate"](tripExpense_r6.expense && tripExpense_r6.expense.name ? tripExpense_r6.expense.description : tripExpense_r6.custom_expense.description);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate"](_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵpipeBind1"](9, 10, tripExpense_r6.sum));
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate"](tripExpense_r6.currency.name);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", tripExpense_r6.id && tripExpense_r6.file && !tripExpense_r6.uploaded_file);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", tripExpense_r6.uploaded_file);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", !tripExpense_r6.is_verified);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", tripExpense_r6.is_verified);
 } }
-function TripExpensesTableComponent_div_13_div_1_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div")(1, "p")(2, "span", 18);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](4, "span", 19);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](5);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()();
+function TripExpensesTableComponent_div_17_div_1_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "div")(1, "p")(2, "span", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](4, "span", 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()()();
 } if (rf & 2) {
     const expense_r21 = ctx.$implicit;
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate1"]("", expense_r21.currency.name, ":");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate2"]("", expense_r21.sum, "", expense_r21.currency.symbol, "");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate1"]("", expense_r21.currency.name, ":");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate2"]("", expense_r21.sum, "", expense_r21.currency.symbol, "");
 } }
-function TripExpensesTableComponent_div_13_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](1, TripExpensesTableComponent_div_13_div_1_Template, 6, 3, "div", 17);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+function TripExpensesTableComponent_div_17_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "div");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](1, TripExpensesTableComponent_div_17_div_1_Template, 6, 3, "div", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngForOf", ctx_r3.sumOfVerifiedExpenses);
+    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngForOf", ctx_r3.sumOfVerifiedExpenses);
 } }
-function TripExpensesTableComponent_div_14_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div")(1, "h3");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](2, " No Verified Expenses ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
+function TripExpensesTableComponent_div_18_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "div")(1, "h3");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](2, " No Verified Expenses ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()();
 } }
 class TripExpensesTableComponent {
-    constructor(fb, modalService, businessService) {
+    constructor(fb, modalService, businessService, businessTripsExpensesService, expenseService) {
         this.fb = fb;
         this.modalService = modalService;
         this.businessService = businessService;
+        this.businessTripsExpensesService = businessTripsExpensesService;
+        this.expenseService = expenseService;
         this.tripExpenses = [];
-        this.editExpense = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
-        this.deleteExpense = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
-        this.expenseSumEmit = new _angular_core__WEBPACK_IMPORTED_MODULE_4__.EventEmitter();
+        this.editExpense = new _angular_core__WEBPACK_IMPORTED_MODULE_6__.EventEmitter();
+        this.currentBusinessTripExpenses = new _angular_core__WEBPACK_IMPORTED_MODULE_6__.EventEmitter();
+        this.deleteExpense = new _angular_core__WEBPACK_IMPORTED_MODULE_6__.EventEmitter();
+        this.expenseSumEmit = new _angular_core__WEBPACK_IMPORTED_MODULE_6__.EventEmitter();
+        this.unverifyTrip = new rxjs__WEBPACK_IMPORTED_MODULE_7__.Subject();
         this.statuses = _enums_business_trip_expense_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripExpenseStatus;
         this.sumOfVerifiedExpenses = [];
         this.menuItems = [{
@@ -3429,8 +3766,18 @@ class TripExpensesTableComponent {
                     }
                 ]
             }];
+        this.formData = new FormData();
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_7__.Subject();
     }
     ngOnInit() {
+        this.getBusinessTrips();
+    }
+    getBusinessTrips() {
+        this.businessTripsExpensesService.get([{ name: 'business_trip_id', value: this.businessTripId }]).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(res => {
+            this.tripExpenses = res;
+            this.currentBusinessTripExpenses.emit(this.tripExpenses);
+            this.recalculateExpenses();
+        });
     }
     ngOnChanges(changes) {
         this.recalculateExpenses();
@@ -3454,20 +3801,70 @@ class TripExpensesTableComponent {
         });
         this.expenseSumEmit.emit(this.sumOfVerifiedExpenses);
     }
-    editTripExpense() {
-        const index = this.tripExpenses.findIndex(expense => expense === this.selectedTripExpense);
-        this.editExpense.emit(index);
-    }
+    // editTripExpense() {
+    //   const index = this.tripExpenses.findIndex(expense => expense === this.selectedTripExpense);
+    //   this.editExpense.emit(index);
+    // }
     getName(name) {
         const nameArr = name.split('/');
         return nameArr[nameArr.length - 1];
     }
     deleteTripExpense() {
-        this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+        this.modalService.confirm('danger', 'Confirm').pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(confirm => {
             if (confirm) {
-                this.deleteExpense.emit(this.selectedTripExpense);
+                this.businessTripsExpensesService.delete(this.selectedTripExpense).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(res => {
+                    this.getBusinessTrips();
+                    this.selectedTripExpense = null;
+                });
             }
         });
+    }
+    addTripExpanses() {
+        const isVerify = false;
+        this.expenseService
+            .createChangeExpanseItem(null, isVerify)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$))
+            .subscribe((tripExpense) => {
+            const preparedData = this.prepareExpense(tripExpense);
+            this.businessTripsExpensesService.create(preparedData).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(response => {
+                if (tripExpense.base64File) {
+                    const data = {
+                        id: response.id,
+                        file: tripExpense.uploaded_file
+                    };
+                    this.businessTripsExpensesService.uploadImage(data, response.id).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(res => {
+                        this.getBusinessTrips();
+                        this.unverifyTrip.next();
+                    });
+                }
+                else {
+                    this.getBusinessTrips();
+                    this.unverifyTrip.next();
+                }
+            });
+        });
+    }
+    prepareExpense(tripExpense) {
+        tripExpense.business_trip = this.businessTripId;
+        const businessExpense = {
+            currency: tripExpense.currency,
+            id: tripExpense.id,
+            sum: tripExpense.sum,
+            business_trip: this.businessTripId,
+            is_verified: tripExpense.is_verified,
+            clear_file: tripExpense.clear_file,
+        };
+        if (tripExpense.expense.name) {
+            businessExpense.expense = tripExpense.expense.id;
+            businessExpense.currency = tripExpense.currency.code;
+            businessExpense.fullExpense = tripExpense.expense;
+        }
+        if (tripExpense.custom_expense.name) {
+            businessExpense.custom_expense = tripExpense.custom_expense;
+            businessExpense.currency = tripExpense.currency.code;
+            businessExpense.fullExpense = tripExpense.custom_expense;
+        }
+        return businessExpense;
     }
     viewFile(selectedExpense, file) {
         const preparedFiles = [];
@@ -3481,30 +3878,63 @@ class TripExpensesTableComponent {
         const data = { links: preparedFiles, files };
         this.businessService.viewBusinessTripFiles(data);
     }
+    editTripExpense() {
+        this.expenseService
+            .createChangeExpanseItem(this.selectedTripExpense, this.isVerify)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$))
+            .subscribe((tripExpense) => {
+            const preparedData = this.prepareExpense(tripExpense.value);
+            this.businessTripsExpensesService.update(tripExpense.value.id, preparedData).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(response => {
+                if (tripExpense.value.base64File) {
+                    const data = {
+                        id: response.data.id,
+                        file: tripExpense.value.uploaded_file
+                    };
+                    this.businessTripsExpensesService.uploadImage(data, response.data.id).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_8__.takeUntil)(this.destroy$)).subscribe(res => {
+                        this.getBusinessTrips();
+                        this.unverifyTrip.next();
+                    });
+                }
+                else {
+                    this.getBusinessTrips();
+                    this.unverifyTrip.next();
+                }
+            });
+        });
+    }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
 }
-TripExpensesTableComponent.ɵfac = function TripExpensesTableComponent_Factory(t) { return new (t || TripExpensesTableComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_2__.BusinessTripService)); };
-TripExpensesTableComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineComponent"]({ type: TripExpensesTableComponent, selectors: [["pek-trip-expenses-table"]], inputs: { tripExpenses: "tripExpenses" }, outputs: { editExpense: "editExpense", deleteExpense: "deleteExpense", expenseSumEmit: "expenseSumEmit" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵNgOnChangesFeature"]], decls: 15, vars: 7, consts: [[1, "content"], [1, "card"], [1, "card-body"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "pt-2", "pl-2", "card-body"], [4, "ngIf"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], ["href", "javascript:void(0)", 3, "click", 4, "ngIf"], ["href", "javascript:void(0)", 3, "click"], [4, "ngFor", "ngForOf"], [1, "currency-name"], [1, "currency-value"]], template: function TripExpensesTableComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "p-table", 3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("selectionChange", function TripExpensesTableComponent_Template_p_table_selectionChange_3_listener($event) { return ctx.selectedTripExpense = $event; });
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](4, TripExpensesTableComponent_ng_template_4_Template, 3, 4, "ng-template", 4);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](5, TripExpensesTableComponent_ng_template_5_Template, 15, 0, "ng-template", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](6, TripExpensesTableComponent_ng_template_6_Template, 18, 12, "ng-template", 6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](7, "h3");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](8, "Sum");
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](9, "div", 0)(10, "div", 1)(11, "div", 2)(12, "div", 7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](13, TripExpensesTableComponent_div_13_Template, 2, 1, "div", 8);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](14, TripExpensesTableComponent_div_14_Template, 3, 0, "div", 8);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()()();
+TripExpensesTableComponent.ɵfac = function TripExpensesTableComponent_Factory(t) { return new (t || TripExpensesTableComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_10__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_1__.ModalService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_2__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trips_expenses_service__WEBPACK_IMPORTED_MODULE_3__.BusinessTripsExpensesService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_4__.ExpenseService)); };
+TripExpensesTableComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineComponent"]({ type: TripExpensesTableComponent, selectors: [["pek-trip-expenses-table"]], inputs: { businessTripId: "businessTripId", isVerify: "isVerify" }, outputs: { editExpense: "editExpense", currentBusinessTripExpenses: "currentBusinessTripExpenses", deleteExpense: "deleteExpense", expenseSumEmit: "expenseSumEmit", unverifyTrip: "unverifyTrip" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵNgOnChangesFeature"]], decls: 19, vars: 7, consts: [[1, "mb-4", "d-flex", "justify-content-between"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Expense", 3, "click"], [1, "page__card"], [1, "content"], [1, "card"], [1, "card-body"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "pt-2", "pl-2", "card-body"], [4, "ngIf"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], ["href", "javascript:void(0)", 3, "click", 4, "ngIf"], ["href", "javascript:void(0)", 3, "click"], [4, "ngFor", "ngForOf"], [1, "currency-name"], [1, "currency-value"]], template: function TripExpensesTableComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "h2", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](1, " Expenses ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](2, "button", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵlistener"]("click", function TripExpensesTableComponent_Template_button_click_2_listener() { return ctx.addTripExpanses(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](3, "div", 2)(4, "div", 3)(5, "div", 4)(6, "div", 5)(7, "p-table", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵlistener"]("selectionChange", function TripExpensesTableComponent_Template_p_table_selectionChange_7_listener($event) { return ctx.selectedTripExpense = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](8, TripExpensesTableComponent_ng_template_8_Template, 3, 4, "ng-template", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](9, TripExpensesTableComponent_ng_template_9_Template, 15, 0, "ng-template", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](10, TripExpensesTableComponent_ng_template_10_Template, 18, 12, "ng-template", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](11, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](12, "Sum");
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](13, "div", 3)(14, "div", 4)(15, "div", 5)(16, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](17, TripExpensesTableComponent_div_17_Template, 2, 1, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](18, TripExpensesTableComponent_div_18_Template, 3, 0, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]()()()()();
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("paginator", true)("rows", 10)("value", ctx.tripExpenses)("scrollable", true)("selection", ctx.selectedTripExpense);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", ctx.sumOfVerifiedExpenses.length > 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ngIf", ctx.sumOfVerifiedExpenses.length === 0);
-    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_6__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_6__.NgIf, primeng_api__WEBPACK_IMPORTED_MODULE_7__.PrimeTemplate, primeng_menubar__WEBPACK_IMPORTED_MODULE_8__.Menubar, primeng_table__WEBPACK_IMPORTED_MODULE_9__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_9__.SelectableRow, _shared_pipes_money_format_pipe__WEBPACK_IMPORTED_MODULE_3__.MoneyFormatPipe], styles: ["h3[_ngcontent-%COMP%] {\n  margin-top: 1rem;\n}\n\n.currency-name[_ngcontent-%COMP%] {\n  display: inline-block;\n  width: 8rem;\n}\n\n.currency-value[_ngcontent-%COMP%] {\n  display: inline-block;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRyaXAtZXhwZW5zZXMtdGFibGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxnQkFBQTtBQUNGOztBQUVBO0VBQ0UscUJBQUE7RUFDQSxXQUFBO0FBQ0Y7O0FBRUE7RUFDRSxxQkFBQTtBQUNGIiwiZmlsZSI6InRyaXAtZXhwZW5zZXMtdGFibGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJoMyB7XHJcbiAgbWFyZ2luLXRvcDogMXJlbTtcclxufVxyXG5cclxuLmN1cnJlbmN5LW5hbWUge1xyXG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcclxuICB3aWR0aDogOHJlbTtcclxufVxyXG5cclxuLmN1cnJlbmN5LXZhbHVlIHtcclxuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XHJcbn1cclxuIl19 */"] });
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("paginator", true)("rows", 10)("value", ctx.tripExpenses)("scrollable", true)("selection", ctx.selectedTripExpense);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", ctx.sumOfVerifiedExpenses.length > 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵproperty"]("ngIf", ctx.sumOfVerifiedExpenses.length === 0);
+    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_11__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_11__.NgIf, primeng_button__WEBPACK_IMPORTED_MODULE_12__.ButtonDirective, primeng_api__WEBPACK_IMPORTED_MODULE_13__.PrimeTemplate, primeng_menubar__WEBPACK_IMPORTED_MODULE_14__.Menubar, primeng_table__WEBPACK_IMPORTED_MODULE_15__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_15__.SelectableRow, _shared_pipes_money_format_pipe__WEBPACK_IMPORTED_MODULE_5__.MoneyFormatPipe], styles: ["h3[_ngcontent-%COMP%] {\n  margin-top: 1rem;\n}\n\n.currency-name[_ngcontent-%COMP%] {\n  display: inline-block;\n  width: 8rem;\n}\n\n.currency-value[_ngcontent-%COMP%] {\n  display: inline-block;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRyaXAtZXhwZW5zZXMtdGFibGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxnQkFBQTtBQUNGOztBQUVBO0VBQ0UscUJBQUE7RUFDQSxXQUFBO0FBQ0Y7O0FBRUE7RUFDRSxxQkFBQTtBQUNGIiwiZmlsZSI6InRyaXAtZXhwZW5zZXMtdGFibGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJoMyB7XHJcbiAgbWFyZ2luLXRvcDogMXJlbTtcclxufVxyXG5cclxuLmN1cnJlbmN5LW5hbWUge1xyXG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcclxuICB3aWR0aDogOHJlbTtcclxufVxyXG5cclxuLmN1cnJlbmN5LXZhbHVlIHtcclxuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XHJcbn1cclxuIl19 */"] });
 
 
 /***/ }),
@@ -3539,15 +3969,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CreateEditExpenseComponent": () => (/* binding */ CreateEditExpenseComponent)
 /* harmony export */ });
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/forms */ 2508);
-/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 68951);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../crm/services/crm-positions.service */ 3230);
 /* harmony import */ var _services_expense_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/expense.service */ 42503);
 /* harmony import */ var _shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @shared/services/adapter.service */ 46767);
 /* harmony import */ var _services_business_trip_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/business-trip.service */ 96288);
 /* harmony import */ var _auth_auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../auth/auth.service */ 50384);
-/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/api */ 14356);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primeng/api */ 14356);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
+
 
 
 
@@ -3708,10 +4141,17 @@ class CreateEditExpenseComponent {
         });
         this.isEditDisabled = false;
         this.canVerify = false;
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_8__.Subject();
     }
     ngOnInit() {
         if (this.data.type === 'edit') {
             this.form.patchValue(this.data.entity);
+            if (this.data.entity.expense?.id) {
+                this.form.get('isOther').setValue(false);
+            }
+            else {
+                this.form.get('isOther').setValue(true);
+            }
         }
         // @ts-ignore
         this.canVerify = this.data.canVerify;
@@ -3742,6 +4182,7 @@ class CreateEditExpenseComponent {
     }
     editExpanse() {
         if (this.form.get('isOther').value) {
+            this.form.get('expense').reset();
             const isCustomNameFilled = this.form.get('custom_expense').value.name;
             const isCustomDescriptionFilled = this.form.get('custom_expense').value.description;
             if (!isCustomNameFilled || !isCustomDescriptionFilled) {
@@ -3750,6 +4191,7 @@ class CreateEditExpenseComponent {
             }
         }
         else {
+            this.form.get('custom_expense').reset();
             const isEmployeeFilled = this.form.get('expense').value.id;
             if (!isEmployeeFilled) {
                 this.messageService.add({ severity: 'error', summary: 'Validation Error', detail: `Select Expense` });
@@ -3776,7 +4218,7 @@ class CreateEditExpenseComponent {
         this.form.get('expense').setValue($event);
     }
     getById(id) {
-        this.expensesService.getById(id).subscribe(expense => {
+        this.expensesService.getById(id).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe(expense => {
             this.selectedExpense = expense;
         });
     }
@@ -3820,7 +4262,7 @@ class CreateEditExpenseComponent {
         }
     }
     clearFile() {
-        this.modalService.confirm('danger', 'Confirm').subscribe((res) => {
+        this.modalService.confirm('danger', 'Confirm').pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.file = null;
                 if (this.form.get('file').value) {
@@ -3845,7 +4287,7 @@ class CreateEditExpenseComponent {
         this.businessTripService.viewBusinessTripFiles(data);
     }
     takePhoto() {
-        this.businessService.takePhotoModal().subscribe(file => {
+        this.businessService.takePhotoModal().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe(file => {
             if (file) {
                 this.form.get('uploaded_file').reset();
                 this.form.get('base64File').reset();
@@ -3856,8 +4298,12 @@ class CreateEditExpenseComponent {
             }
         });
     }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
 }
-CreateEditExpenseComponent.ɵfac = function CreateEditExpenseComponent_Factory(t) { return new (t || CreateEditExpenseComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_0__.CrmPositionsService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MAT_DIALOG_DATA), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_1__.ExpenseService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_2__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_3__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_auth_auth_service__WEBPACK_IMPORTED_MODULE_4__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_9__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_3__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__.ModalService)); };
+CreateEditExpenseComponent.ɵfac = function CreateEditExpenseComponent_Factory(t) { return new (t || CreateEditExpenseComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_10__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_0__.CrmPositionsService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_10__.MAT_DIALOG_DATA), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_1__.ExpenseService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_2__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_3__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_auth_auth_service__WEBPACK_IMPORTED_MODULE_4__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_11__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_3__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_5__.ModalService)); };
 CreateEditExpenseComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineComponent"]({ type: CreateEditExpenseComponent, selectors: [["pek-create-edit-expense"]], decls: 44, vars: 18, consts: [[1, "modal-header"], [1, "modal-header__title"], [4, "ngIf"], [3, "formGroup"], [1, "row"], [1, "col-3"], [1, "form-group"], ["for", "other", 2, "display", "block"], ["id", "other", "formControlName", "isOther", 3, "disabled", "binary", "onChange"], [3, "ngIf"], [1, "col-6"], ["formGroupName", "expense", 1, "form-group"], [3, "isDisabled", "currency", "valueChange"], ["for", "price"], ["pInputText", "", "id", "price", "formControlName", "sum", "type", "number", "step", "0.01", "min", "0", 1, "form-control", 3, "ngModelChange"], ["class", "row", 4, "ngIf"], [1, "form-group", "col-6"], ["for", "file", 1, "input-file", "d-flex", "align-items-center"], ["type", "file", "id", "file", 3, "disabled", "input"], ["inputFile", ""], [1, "fa", "fa-download"], ["pButton", "", "type", "button", "icon", "pi pi-camera", 1, "p-button-primary", "p-button-rounded", "p-button-outlined", "p-button-rounded_small", "ml-3", "mt-1", 3, "click"], [1, "form-group", "col-6", "pt-2", "d-flex", "justify-content-end", "justify-content-center"], ["href", "javascript:void(0)", 3, "click", 4, "ngIf"], ["class", "remove", 3, "click", 4, "ngIf"], [1, "justify-content-between"], ["pButton", "", "label", "Cancel", "type", "button", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", "class", "p-button-success", 3, "label", "click", 4, "ngIf"], ["formGroupName", "custom_expense", 1, "row"], ["for", "name"], ["pInputText", "", "formControlName", "name", "type", "text", "id", "name", 1, "form-control", 3, "ngModelChange"], ["for", "custom_description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "custom_description", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "expense", 1, "row"], [3, "isDisabled", "expense", "valueChange"], ["for", "description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "description", 1, "form-control", 3, "disabled"], [1, "form-group", "col-2"], ["for", "is_verified"], ["id", "is_verified", "formControlName", "is_verified", 3, "binary"], ["href", "javascript:void(0)", 3, "click"], [1, "remove", 3, "click"], [1, "pi", "pi-times"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "click"]], template: function CreateEditExpenseComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](2, CreateEditExpenseComponent_span_2_Template, 2, 0, "span", 2);
@@ -4342,6 +4788,53 @@ CustomEmployeesService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
 
 /***/ }),
 
+/***/ 38069:
+/*!**********************************************************************!*\
+  !*** ./src/app/business-trips/services/business-location.service.ts ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BusinessLocationService": () => (/* binding */ BusinessLocationService)
+/* harmony export */ });
+/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 50635);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ 58987);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+
+
+
+
+
+class BusinessLocationService {
+    constructor(httpClient, dialog) {
+        this.httpClient = httpClient;
+        this.dialog = dialog;
+        this.API_URL = _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.base_url + _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.business_trips_url;
+        this.url = 'business-trips-locations/';
+    }
+    create(entity) {
+        return this.httpClient
+            .post(this.API_URL + this.url, entity)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    update(id, entity) {
+        return this.httpClient.patch(this.API_URL + this.url + id + '/', entity);
+    }
+    delete(entity) {
+        return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+    }
+}
+BusinessLocationService.ɵfac = function BusinessLocationService_Factory(t) { return new (t || BusinessLocationService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_3__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialog)); };
+BusinessLocationService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: BusinessLocationService, factory: BusinessLocationService.ɵfac, providedIn: 'root' });
+
+
+/***/ }),
+
 /***/ 14765:
 /*!**************************************************************************!*\
   !*** ./src/app/business-trips/services/business-trip-country.service.ts ***!
@@ -4401,6 +4894,132 @@ class BusinessTripCountryService {
 }
 BusinessTripCountryService.ɵfac = function BusinessTripCountryService_Factory(t) { return new (t || BusinessTripCountryService)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__.HttpClient)); };
 BusinessTripCountryService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"]({ token: BusinessTripCountryService, factory: BusinessTripCountryService.ɵfac, providedIn: 'root' });
+
+
+/***/ }),
+
+/***/ 10139:
+/*!******************************************************************************!*\
+  !*** ./src/app/business-trips/services/business-trip-hotel-files.service.ts ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BusinessTripHotelFilesService": () => (/* binding */ BusinessTripHotelFilesService)
+/* harmony export */ });
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 50635);
+/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ 58987);
+
+
+
+
+class BusinessTripHotelFilesService {
+    constructor(httpClient) {
+        this.httpClient = httpClient;
+        this.API_URL = _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.base_url + _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.business_trips_url;
+        this.url = 'business-trips-hotel-files/';
+    }
+    get(query) {
+        let qString = '';
+        if (query) {
+            query.forEach((element, index) => {
+                if (index > 0) {
+                    qString += '&' + element.name + '=' + element.value;
+                }
+                else {
+                    qString += '?' + element.name + '=' + element.value;
+                }
+            });
+        }
+        return this.httpClient
+            .get(this.API_URL + this.url + qString)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    delete(entity) {
+        return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+    }
+}
+BusinessTripHotelFilesService.ɵfac = function BusinessTripHotelFilesService_Factory(t) { return new (t || BusinessTripHotelFilesService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_3__.HttpClient)); };
+BusinessTripHotelFilesService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: BusinessTripHotelFilesService, factory: BusinessTripHotelFilesService.ɵfac, providedIn: 'root' });
+
+
+/***/ }),
+
+/***/ 75570:
+/*!****************************************************************************!*\
+  !*** ./src/app/business-trips/services/business-trips-expenses.service.ts ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BusinessTripsExpensesService": () => (/* binding */ BusinessTripsExpensesService)
+/* harmony export */ });
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 50635);
+/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ 58987);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+
+
+
+
+
+class BusinessTripsExpensesService {
+    constructor(httpClient, dialog) {
+        this.httpClient = httpClient;
+        this.dialog = dialog;
+        this.API_URL = _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.base_url + _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.business_trips_url;
+        this.url = 'business-trips-expenses/';
+    }
+    get(query) {
+        let qString = '';
+        if (query) {
+            query.forEach((element, index) => {
+                if (index > 0) {
+                    qString += '&' + element.name + '=' + element.value;
+                }
+                else {
+                    qString += '?' + element.name + '=' + element.value;
+                }
+            });
+        }
+        return this.httpClient
+            .get(this.API_URL + this.url + qString)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    create(entity) {
+        return this.httpClient
+            .post(this.API_URL + this.url, entity)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    update(id, entity) {
+        return this.httpClient.patch(this.API_URL + this.url + id + '/', entity);
+    }
+    delete(entity) {
+        return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+    }
+    uploadImage(send, expenseId) {
+        const formData = new FormData();
+        for (const key in send) {
+            if (send[key] !== null) {
+                formData.append(key, send[key]);
+            }
+        }
+        return this.httpClient.post(this.API_URL + this.url + expenseId + '/add_file_to_expense/', formData).pipe();
+    }
+}
+BusinessTripsExpensesService.ɵfac = function BusinessTripsExpensesService_Factory(t) { return new (t || BusinessTripsExpensesService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_3__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialog)); };
+BusinessTripsExpensesService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: BusinessTripsExpensesService, factory: BusinessTripsExpensesService.ɵfac, providedIn: 'root' });
 
 
 /***/ }),
@@ -4516,6 +5135,71 @@ class ExpenseService {
 }
 ExpenseService.ɵfac = function ExpenseService_Factory(t) { return new (t || ExpenseService)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialog)); };
 ExpenseService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineInjectable"]({ token: ExpenseService, factory: ExpenseService.ɵfac, providedIn: 'root' });
+
+
+/***/ }),
+
+/***/ 36274:
+/*!*********************************************************************!*\
+  !*** ./src/app/business-trips/services/location-meeting.service.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "LocationMeetingService": () => (/* binding */ LocationMeetingService)
+/* harmony export */ });
+/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 50635);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ 58987);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+
+
+
+
+
+class LocationMeetingService {
+    constructor(httpClient, dialog) {
+        this.httpClient = httpClient;
+        this.dialog = dialog;
+        this.API_URL = _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.base_url + _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.business_trips_url;
+        this.url = 'business-trips-locations-meetings/';
+    }
+    get(query) {
+        let qString = '';
+        if (query) {
+            query.forEach((element, index) => {
+                if (index > 0) {
+                    qString += '&' + element.name + '=' + element.value;
+                }
+                else {
+                    qString += '?' + element.name + '=' + element.value;
+                }
+            });
+        }
+        return this.httpClient
+            .get(this.API_URL + this.url + qString)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    create(entity) {
+        return this.httpClient
+            .post(this.API_URL + this.url, entity)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)((response) => {
+            return response.data;
+        }));
+    }
+    update(id, entity) {
+        return this.httpClient.patch(this.API_URL + this.url + id + '/', entity);
+    }
+    delete(entity) {
+        return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');
+    }
+}
+LocationMeetingService.ɵfac = function LocationMeetingService_Factory(t) { return new (t || LocationMeetingService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_3__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialog)); };
+LocationMeetingService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: LocationMeetingService, factory: LocationMeetingService.ɵfac, providedIn: 'root' });
 
 
 /***/ }),

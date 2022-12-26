@@ -645,18 +645,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CreateBusinessTripComponent": () => (/* binding */ CreateBusinessTripComponent)
 /* harmony export */ });
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 59295);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 59295);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 68951);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 22560);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/forms */ 2508);
 /* harmony import */ var _services_business_trip_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/business-trip.service */ 96288);
-/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/router */ 60124);
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ 94666);
-/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/button */ 73867);
-/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! primeng/inputtext */ 69906);
-/* harmony import */ var primeng_checkbox__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primeng/checkbox */ 40749);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/router */ 60124);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! primeng/inputtext */ 69906);
+/* harmony import */ var primeng_checkbox__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! primeng/checkbox */ 40749);
 /* harmony import */ var _shared_pickers_crm_employee_picker_crm_single_employee_picker_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shared/pickers/crm-employee-picker/crm-single-employee-picker.component */ 26297);
 /* harmony import */ var _shared_pickers_crm_position_picker_crm_position_picker_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../shared/pickers/crm-position-picker/crm-position-picker.component */ 42062);
+
 
 
 
@@ -721,12 +724,13 @@ function CreateBusinessTripComponent_ng_template_13_Template(rf, ctx) { if (rf &
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("ngModel", ctx_r2._employee.get("position").value ? ctx_r2._employee.get("position").value.title : null)("ngModelOptions", _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpureFunction0"](6, _c0));
 } }
 class CreateBusinessTripComponent {
-    constructor(fb, expensesService, dialogRef, router) {
+    constructor(fb, businessService, dialogRef, router) {
         this.fb = fb;
-        this.expensesService = expensesService;
+        this.businessService = businessService;
         this.dialogRef = dialogRef;
         this.router = router;
         this.employeeFilter = [{ name: 'by_user_trip_permissions', value: true }];
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_4__.Subject();
         this.form = this.fb.group({
             isOtherEmployee: [false],
             employee: this.fb.group({
@@ -753,58 +757,49 @@ class CreateBusinessTripComponent {
         return this.form.get('employee');
     }
     addBusinessTrip() {
-        const dataToSend = this.prepareDataToSend();
-        const result = this.obj2FormData(dataToSend);
-        this.expensesService
-            .create(result)
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.take)(1))
+        this.businessService
+            .create({ id: null })
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.takeUntil)(this.destroy$))
             .subscribe((res) => {
-            this.router.navigate(['/business-trips/trip/edit/', res.id]);
-            this.dialogRef.close(true);
+            this.tripId = res.id;
+            this.employeeUpdate();
         });
     }
-    prepareDataToSend() {
-        const dataToSend = {};
+    employeeUpdate() {
+        const employeeUpdate = {};
         if (this.form.value.employee.id) {
-            dataToSend.employee = this.form.value.employee.id;
-            dataToSend.full_employee = this.form.value.employee;
+            employeeUpdate.employee = this.form.value.employee.id;
+            employeeUpdate.custom_employee = null;
         }
         else {
-            dataToSend.custom_employee = {
+            const position = this.form.value.employee_position;
+            const firstName = this.form.value.employee_first_name;
+            const lastNameName = this.form.value.employee_last_name;
+            if (!firstName || !lastNameName) {
+                return;
+            }
+            employeeUpdate.custom_employee = {
                 id: this.form.value.employee_id,
                 first_name: this.form.value.employee_first_name,
                 last_name: this.form.value.employee_last_name,
-                position: this.form.value.employee_position,
+                position: position ? position : null,
             };
-            dataToSend.full_employee = dataToSend.custom_employee;
+            employeeUpdate.employee = null;
         }
-        return dataToSend;
+        this.businessService
+            .updateBusinessTripEmployee(this.tripId, employeeUpdate)
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.take)(1), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.takeUntil)(this.destroy$))
+            .subscribe(() => {
+            this.router.navigate(['/business-trips/trip/edit/', this.tripId]);
+            this.dialogRef.close(true);
+        });
     }
-    obj2FormData(obj, formData = new FormData()) {
-        this.formData = formData;
-        this.createFormData(obj);
-        return this.formData;
-    }
-    createFormData(obj, subKeyStr = '') {
-        for (const i in obj) {
-            const value = obj[i];
-            const subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
-            if (typeof (value) === 'string' || typeof (value) === 'number' || typeof (value) === 'boolean') {
-                // @ts-ignore
-                this.formData.append(subKeyStrTrans, value);
-            }
-            else if (typeof (value) === 'object') {
-                if (value instanceof File) {
-                    this.formData.append(subKeyStrTrans, value);
-                }
-                else {
-                    this.createFormData(value, subKeyStrTrans);
-                }
-            }
-        }
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
     }
 }
-CreateBusinessTripComponent.ɵfac = function CreateBusinessTripComponent_Factory(t) { return new (t || CreateBusinessTripComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_0__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_7__.Router)); };
+CreateBusinessTripComponent.ɵfac = function CreateBusinessTripComponent_Factory(t) { return new (t || CreateBusinessTripComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_0__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__.Router)); };
 CreateBusinessTripComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: CreateBusinessTripComponent, selectors: [["pek-create-business-trip"]], decls: 18, vars: 6, consts: [[1, "modal-header"], [1, "modal-header__title"], [3, "formGroup"], [1, "row"], [1, "col-12"], [1, "form-group"], ["for", "other"], ["id", "other", "formControlName", "isOtherEmployee", 3, "binary", "onChange"], [4, "ngIf", "ngIfElse"], ["predefinedEmployee", ""], [1, "justify-content-between"], ["pButton", "", "label", "Cancel", "type", "button", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "click"], [1, "col-4"], ["pInputText", "", "formControlName", "employee_first_name", 1, "form-control"], ["pInputText", "", "formControlName", "employee_last_name", 1, "form-control"], [3, "position", "valueChange"], ["formGroupName", "employee"], [3, "filters", "showProfession", "employee", "valueChange"], ["pInputText", "", "formControlName", "last_name", 1, "form-control", 3, "disabled"], ["pInputText", "", "disabled", "", 1, "form-control", 3, "ngModel", "ngModelOptions"]], template: function CreateBusinessTripComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1)(2, "span");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](3, "Create Business Trip");
@@ -835,7 +830,7 @@ CreateBusinessTripComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTE
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("mat-dialog-close", false);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("label", "Add");
-    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_8__.NgIf, primeng_button__WEBPACK_IMPORTED_MODULE_9__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_10__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_5__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormControlName, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormGroupName, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__.MatDialogActions, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgModel, primeng_checkbox__WEBPACK_IMPORTED_MODULE_11__.Checkbox, _shared_pickers_crm_employee_picker_crm_single_employee_picker_component__WEBPACK_IMPORTED_MODULE_1__.CrmSingleEmployeePickerComponent, _shared_pickers_crm_position_picker_crm_position_picker_component__WEBPACK_IMPORTED_MODULE_2__.CrmPositionPickerComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjcmVhdGUtYnVzaW5lc3MtdHJpcC5jb21wb25lbnQuc2NzcyJ9 */"] });
+    } }, dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_10__.NgIf, primeng_button__WEBPACK_IMPORTED_MODULE_11__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_12__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_7__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_7__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormControlName, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.FormGroupName, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_8__.MatDialogActions, _angular_forms__WEBPACK_IMPORTED_MODULE_7__.NgModel, primeng_checkbox__WEBPACK_IMPORTED_MODULE_13__.Checkbox, _shared_pickers_crm_employee_picker_crm_single_employee_picker_component__WEBPACK_IMPORTED_MODULE_1__.CrmSingleEmployeePickerComponent, _shared_pickers_crm_position_picker_crm_position_picker_component__WEBPACK_IMPORTED_MODULE_2__.CrmPositionPickerComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjcmVhdGUtYnVzaW5lc3MtdHJpcC5jb21wb25lbnQuc2NzcyJ9 */"] });
 
 
 /***/ }),
@@ -947,14 +942,14 @@ function UploadedDataViewerComponent_div_0_div_3_img_1_Template(rf, ctx) { if (r
     const idx_r6 = ctx_r10.index;
     const file_r5 = ctx_r10.$implicit;
     const ctx_r7 = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("alt", "\u0421\u043B\u0430\u0439\u0434\u0430 " + idx_r6 + 1)("src", file_r5.type === "uploaded" ? ctx_r7.url + file_r5.file.file : file_r5.file.file, _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsanitizeUrl"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("alt", "\u0421\u043B\u0430\u0439\u0434\u0430 " + idx_r6 + 1)("src", file_r5.type === "uploaded" ? ctx_r7.getUrl(file_r5.file.file) : file_r5.file.file, _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsanitizeUrl"]);
 } }
 function UploadedDataViewerComponent_div_0_div_3_pdf_viewer_2_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](0, "pdf-viewer", 15);
 } if (rf & 2) {
     const file_r5 = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnextContext"]().$implicit;
     const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("src", file_r5.type === "uploaded" ? ctx_r8.url + file_r5.file.file : file_r5.file.file)("render-text", true)("original-size", false);
+    _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("src", file_r5.type === "uploaded" ? ctx_r8.getUrl(file_r5.file.file) : file_r5.file.file)("render-text", true)("original-size", false);
 } }
 function UploadedDataViewerComponent_div_0_div_3_div_3_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "div", 16);
@@ -1089,6 +1084,9 @@ class UploadedDataViewerComponent {
         const link = url + currentFile.file.file;
         (0,file_saver__WEBPACK_IMPORTED_MODULE_1__.saveAs)(link);
     }
+    getUrl(filePath) {
+        return filePath.startsWith('http') ? filePath : this.url + filePath;
+    }
 }
 UploadedDataViewerComponent.ɵfac = function UploadedDataViewerComponent_Factory(t) { return new (t || UploadedDataViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MAT_DIALOG_DATA)); };
 UploadedDataViewerComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: UploadedDataViewerComponent, selectors: [["pek-uploaded-data-viewer"]], decls: 2, vars: 2, consts: [["class", "gallery-slider", 4, "ngIf"], ["class", "slider-none", 4, "ngIf"], [1, "gallery-slider"], [1, "gallery-slider__wrapper"], [1, "gallery-slider__inner"], ["class", "gallery-slider__slide", 4, "ngFor", "ngForOf"], ["placement", "bottom", "ngbTooltip", "Download", 1, "btn", "btn-primary", 3, "click"], [1, "pi", "pi-arrow-circle-down"], ["class", "arrows pi pi-chevron-left btn btn-prev", 3, "click", 4, "ngIf"], ["class", "arrows pi pi-chevron-right btn btn-next", 3, "click", 4, "ngIf"], [1, "gallery-slider__slide"], ["alt", "file", 3, "alt", "src", 4, "ngIf"], ["style", "width: 1300px; height: 830px", 3, "src", "render-text", "original-size", 4, "ngIf"], ["class", "no-supported-file", 4, "ngIf"], ["alt", "file", 3, "alt", "src"], [2, "width", "1300px", "height", "830px", 3, "src", "render-text", "original-size"], [1, "no-supported-file"], [1, "arrows", "pi", "pi-chevron-left", "btn", "btn-prev", 3, "click"], [1, "arrows", "pi", "pi-chevron-right", "btn", "btn-next", 3, "click"], [1, "slider-none"]], template: function UploadedDataViewerComponent_Template(rf, ctx) { if (rf & 1) {
@@ -1191,6 +1189,30 @@ class BusinessTripService {
 
   getDetailed(id) {
     return this.httpClient.get(this.API_URL + this.url + id + '/detailed_business_trip/').pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(response => {
+      return response.data;
+    }));
+  }
+
+  updateHotelInfo(id, hotelData) {
+    return this.httpClient.post(this.API_URL + this.url + id + '/edit_business_trip_hotel/', hotelData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(response => {
+      return response.data;
+    }));
+  }
+
+  add_hotel_files(send) {
+    return this.httpClient.post(this.API_URL + this.url + 'add_business_trip_hotel_files/', send).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(response => {
+      return response.data;
+    }));
+  }
+
+  updateBusinessTripEmployee(id, hotelData) {
+    return this.httpClient.post(this.API_URL + this.url + id + '/update_business_trip_employee/', hotelData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(response => {
+      return response.data;
+    }));
+  }
+
+  updateBusinessTripVehicle(id, hotelData) {
+    return this.httpClient.post(this.API_URL + this.url + id + '/update_business_trip_vehicle/', hotelData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(response => {
       return response.data;
     }));
   }
@@ -1329,6 +1351,25 @@ class BusinessTripService {
         });
         _this.totalIndex++;
         _this.totalDisplayedRows++;
+        lastLocation.location_meetings.forEach((meeting, meetingIndex) => {
+          worksheet.addRow({
+            index: _this.totalDisplayedRows,
+            firstCol: 'Meeting Company ' + (meetingIndex + 1),
+            secondCol: meeting.fullCompany.name
+          });
+          meeting.fullContacts.forEach((person, personIndex) => {
+            worksheet.addRow({
+              index: _this.totalDisplayedRows,
+              firstCol: 'Company Contact Person ' + (personIndex + 1),
+              secondCol: person.first_name + ' ' + person.last_name
+            });
+            _this.totalIndex++;
+            _this.totalDisplayedRows++;
+          });
+          _this.totalIndex++;
+          _this.totalDisplayedRows++;
+          worksheet = _this.makeGap(worksheet, 1);
+        });
       }
 
       worksheet = _this.makeGap(worksheet, 2);
@@ -1341,27 +1382,25 @@ class BusinessTripService {
         _this.totalIndex++;
         _this.totalDisplayedRows++;
         location.location_meetings.forEach((meeting, meetingIndex) => {
-          if (meetingIndex === 0) {
-            worksheet.addRow({
-              index: _this.totalDisplayedRows,
-              firstCol: 'Meeting Company ' + (meetingIndex + 1),
-              secondCol: meeting.fullCompany.name
-            });
-          }
-
+          worksheet.addRow({
+            index: _this.totalDisplayedRows,
+            firstCol: 'Meeting Company ' + (meetingIndex + 1),
+            secondCol: meeting.fullCompany.name
+          });
           meeting.fullContacts.forEach((person, personIndex) => {
             worksheet.addRow({
               index: _this.totalDisplayedRows,
               firstCol: 'Company Contact Person ' + (personIndex + 1),
-              secondCol: person.fullName
+              secondCol: person.first_name + ' ' + person.last_name
             });
             _this.totalIndex++;
             _this.totalDisplayedRows++;
           });
           _this.totalIndex++;
           _this.totalDisplayedRows++;
+          worksheet = _this.makeGap(worksheet, 1);
         });
-        worksheet = _this.makeGap(worksheet, 1);
+        worksheet = _this.makeGap(worksheet, 2);
       });
 
       if (businessTripData.purpose_short) {
@@ -6336,7 +6375,7 @@ class CreateEditLinkedCompanyComponent {
         this.contactPersons = [];
         this.form = this.fb.group({
             to_company_id: [null, [_angular_forms__WEBPACK_IMPORTED_MODULE_2__.Validators.required]],
-            contact_person_id: [{ value: 0, disabled: true }, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.Validators.required],
+            contact_person_id: [{ value: null, disabled: true }, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.Validators.required],
             link_weight: [0, [_angular_forms__WEBPACK_IMPORTED_MODULE_2__.Validators.required]],
         });
     }
@@ -6396,6 +6435,7 @@ class CreateEditLinkedCompanyComponent {
             this.form.get('to_company_id').patchValue(id);
             this.form.get('contact_person_id').enable();
             this.searchContactPersons();
+            console.log(this.form.value);
         }
         else {
             this.form.get('to_company_id').patchValue(null);
@@ -20276,7 +20316,7 @@ class CompanyPickerComponent {
     }
     onSelectCompany() {
         this.currentCompany = this.companies.find(currency => currency.id === this.selectedCompanyId);
-        this.selectCompany.emit(this.currentCompanyId);
+        this.selectCompany.emit(this.selectedCompanyId);
         this.selectCompanyFull.emit(this.currentCompany);
     }
     ngOnDestroy() {
@@ -21401,7 +21441,9 @@ class MultiContactsPickerComponent {
     }
     ngOnChanges(changes) {
         if ('companyId' in changes) {
-            this.search();
+            if (this.companyId) {
+                this.search();
+            }
         }
         if ('contactsListFull' in changes) {
             this.contactsList = this.contactsListFull.map(contact => contact.id);
@@ -25497,6 +25539,7 @@ const environment = {
     business_partners_url: 'crm/',
     procurement_url: 'procurement/',
     accounting_url: 'accounting/',
+    delivery_url: 'delivery/',
     users_url: 'users/',
     staff_url: 'staff/',
     sales_url: 'sales/',
@@ -25530,6 +25573,7 @@ const environment = {
     business_partners_url: 'crm/',
     procurement_url: 'procurement/',
     accounting_url: 'accounting/',
+    delivery_url: 'delivery/',
     users_url: 'users/',
     staff_url: 'staff/',
     sales_url: 'sales/',
