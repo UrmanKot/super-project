@@ -7,6 +7,7 @@ export const environment = {
   business_partners_url: 'crm/',
   procurement_url: 'procurement/',
   accounting_url: 'accounting/',
+  delivery_url: 'delivery/',
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
