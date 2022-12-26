@@ -166,7 +166,7 @@
         scrollHeight="calc(100vh - 30.25rem)"
         [scrollable]="true"
         dataKey="id"
-        groupRowsBy="physical_inventory_nomenclature.id"
+        groupRowsBy="nomenclature.id"
         rowGroupMode="rowspan"
         [rows]="preparedProducts.length"
         [(selection)]="selectedInventoryProducts"
@@ -203,11 +203,11 @@
               {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
             </td>
             <td style="width: 14%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
+              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.code}}
               </ng-container>
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.code}}
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.code}}
               </ng-container>
 
               <ng-container *ngIf="inventoryProduct.root_id === findItemId">
@@ -215,16 +215,16 @@
               </ng-container>
             </td>
             <td style="width: 10%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
-              <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
-              {{inventoryProduct.physical_inventory_nomenclature.name}}
+              <b *ngIf="inventoryProduct.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{inventoryProduct.nomenclature.name}}
             </td>
             <td style="width: 10%" class="text-center">
               <ng-container *ngIf="inventoryProduct.product">
                 {{inventoryProduct.product.current_technology?.name}}
               </ng-container>
 
-              <ng-container *ngIf="!inventoryProduct.product && inventoryProduct.physical_inventory_technology">
-                {{inventoryProduct.physical_inventory_technology?.name}}
+              <ng-container *ngIf="!inventoryProduct.product && inventoryProduct.technology">
+                {{inventoryProduct.technology?.name}}
               </ng-container>
             </td>
             <td style="width: 9%" class="text-center">
@@ -241,7 +241,7 @@
             <td pEditableColumn class="text-center" style="width: 11%">
 
               <p-cellEditor
-                *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
+                *ngIf="inventoryProduct.nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
                 <ng-template pTemplate="input">
                   <input
                     pInputText
@@ -260,21 +260,21 @@
               <span *ngIf="currentInventory && currentInventory.status === '1'">{{inventoryProduct.new_quantity}}</span>
             </td>
             <td style="width: 11%" class="text-center">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
+              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.name}}
               </ng-container>
 
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.category?.name}}
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.category?.name}}
               </ng-container>
             </td>
             <td style="width: 6%" class="text-center">
-              <ng-container *ngIf="inventoryProduct.product  && !inventoryProduct.physical_inventory_nomenclature">
+              <ng-container *ngIf="inventoryProduct.product  && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
               </ng-container>
 
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.physical_inventory_nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
               </ng-container>
             </td>
             <td style="width: 11%" class="text-center">

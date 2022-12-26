@@ -26,7 +26,9 @@ export class MultiContactsPickerComponent implements OnInit, ControlValueAccesso
 
   ngOnChanges(changes: SimpleChanges): void {
     if ('companyId' in changes) {
-      this.search();
+      if (this.companyId) {
+        this.search();
+      }
     }
     if ('contactsListFull' in changes) {
       this.contactsList = this.contactsListFull.map(contact => contact.id)

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AdapterService} from '@shared/services/adapter.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CrmPositionsService} from '../../../crm/services/crm-positions.service';
@@ -10,13 +10,14 @@ import {AuthService} from '../../../auth/auth.service';
 import {Currency} from '@shared/models/currency';
 import {ExpenseService} from '../../services/expense.service';
 import {ModalService} from '@shared/services/modal.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-create-edit-expense',
   templateUrl: './create-edit-expense.component.html',
   styleUrls: ['./create-edit-expense.component.scss']
 })
-export class CreateEditExpenseComponent implements OnInit {
+export class CreateEditExpenseComponent implements OnInit, OnDestroy {
   selectedExpense: Expense;
   file: File;
   form: FormGroup = this.fb.group({
@@ -48,7 +49,7 @@ export class CreateEditExpenseComponent implements OnInit {
 
   isEditDisabled = false;
   canVerify = false;
-
+  private destroy$ = new Subject();
   constructor(
     private dialogRef: MatDialogRef<CreateEditExpenseComponent>,
     private fb: FormBuilder,
@@ -66,6 +67,11 @@ export class CreateEditExpenseComponent implements OnInit {
   ngOnInit(): void {
     if (this.data.type === 'edit') {
       this.form.patchValue(this.data.entity);
+      if (this.data.entity.expense?.id) {
+        this.form.get('isOther').setValue(false);
+      } else {
+        this.form.get('isOther').setValue(true);
+      }
     }
     // @ts-ignore
     this.canVerify = this.data.canVerify;
@@ -99,6 +105,7 @@ export class CreateEditExpenseComponent implements OnInit {
 
   editExpanse() {
     if (this.form.get('isOther').value) {
+      this.form.get('expense').reset();
       const isCustomNameFilled = this.form.get('custom_expense').value.name;
       const isCustomDescriptionFilled = this.form.get('custom_expense').value.description;
       if (!isCustomNameFilled || !isCustomDescriptionFilled) {
@@ -106,6 +113,7 @@ export class CreateEditExpenseComponent implements OnInit {
         return;
       }
     } else {
+      this.form.get('custom_expense').reset();
       const isEmployeeFilled = this.form.get('expense').value.id;
       if (!isEmployeeFilled) {
         this.messageService.add({severity: 'error', summary: 'Validation Error', detail: `Select Expense`});
@@ -137,7 +145,7 @@ export class CreateEditExpenseComponent implements OnInit {
   }
 
   getById(id: number): void {
-    this.expensesService.getById(id).subscribe(expense => {
+    this.expensesService.getById(id).pipe(takeUntil(this.destroy$)).subscribe(expense => {
       this.selectedExpense = expense;
     });
   }
@@ -189,7 +197,7 @@ export class CreateEditExpenseComponent implements OnInit {
   }
 
   clearFile() {
-    this.modalService.confirm('danger', 'Confirm').subscribe((res) => {
+    this.modalService.confirm('danger', 'Confirm').pipe(takeUntil(this.destroy$)).subscribe((res) => {
       if (res) {
         this.file = null;
         if (this.form.get('file').value) {
@@ -216,7 +224,7 @@ export class CreateEditExpenseComponent implements OnInit {
   }
 
   takePhoto() {
-    this.businessService.takePhotoModal().subscribe(file => {
+    this.businessService.takePhotoModal().pipe(takeUntil(this.destroy$)).subscribe(file => {
       if (file) {
         this.form.get('uploaded_file').reset();
         this.form.get('base64File').reset();
@@ -226,5 +234,9 @@ export class CreateEditExpenseComponent implements OnInit {
         this.changedField();
       }
     });
+  }
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

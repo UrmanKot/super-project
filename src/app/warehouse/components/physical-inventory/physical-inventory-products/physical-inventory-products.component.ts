@@ -422,7 +422,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
         });
       } else {
         send.by_nomenclatures_list.push({
-          nomenclature_id: p.physical_inventory_nomenclature.id,
+          nomenclature_id: p.nomenclature.id,
           serial_number_ids: [],
           order_product_ids: [],
           invoice_product_ids: [],

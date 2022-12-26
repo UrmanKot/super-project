@@ -29,11 +29,11 @@
           <tr>
             <td style="width: 10%" class="text-center">{{i + 1}}</td>
             <td style="width: 25%" class="text-center">
-              {{product.physical_inventory_nomenclature.code}}
+              {{product.nomenclature.code}}
             </td>
             <td style="width: 25%">
-              <b *ngIf="product.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
-              {{product.physical_inventory_nomenclature.name}}
+              <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{product.nomenclature.name}}
             </td>
             <td style="width: 20%" class="text-center">
               {{product.initial_quantity}}
@@ -71,11 +71,11 @@
           <tr>
             <td style="width: 10%" class="text-center">{{i + 1}}</td>
             <td style="width: 25%" class="text-center">
-              {{product.physical_inventory_nomenclature.code}}
+              {{product.nomenclature.code}}
             </td>
             <td style="width: 25%">
-              <b *ngIf="product.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
-              {{product.physical_inventory_nomenclature.name}}
+              <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{product.nomenclature.name}}
             </td>
             <td style="width: 20%" class="text-center">
               {{product.initial_quantity}}

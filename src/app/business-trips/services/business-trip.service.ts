@@ -15,6 +15,8 @@ import {DataToSend} from '../components/edit-business-trip/edit-business-trip.co
 import * as Excel from 'exceljs/dist/exceljs.min.js';
 import {AdapterService} from '@shared/services/adapter.service';
 import {DatePipe, formatDate} from '@angular/common';
+import {BusinessTripLocation} from '../models/business-trip-location';
+import {BusinessTripHotel} from '../models/business-trip-hotel';
 
 const SPACE_BETWEEN = 4;
 
@@ -83,6 +85,46 @@ export class BusinessTripService {
       );
   }
 
+  updateHotelInfo(id: number, hotelData: BusinessTripHotel): Observable<BusinessTrip> {
+    return this.httpClient
+      .post<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/edit_business_trip_hotel/', hotelData)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
+  add_hotel_files(send): Observable<BusinessTrip> {
+    return this.httpClient
+      .post<{ data: BusinessTrip }>(this.API_URL + this.url+ 'add_business_trip_hotel_files/', send)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
+  updateBusinessTripEmployee(id: number, hotelData: DataToSend): Observable<BusinessTrip> {
+    return this.httpClient
+      .post<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/update_business_trip_employee/', hotelData)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
+  updateBusinessTripVehicle(id: number, hotelData: DataToSend): Observable<BusinessTrip> {
+    return this.httpClient
+      .post<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/update_business_trip_vehicle/', hotelData)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
   create(entity) {
     return this.httpClient
       .post<{ data: BusinessTrip }>(this.API_URL + this.url, entity)
@@ -94,7 +136,7 @@ export class BusinessTripService {
   }
 
   update(id, entity) {
-    return this.httpClient.patch(this.API_URL + this.url + id + '/', entity);
+    return this.httpClient.patch<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/', entity);
   }
 
   delete(entity: BusinessTrip) {
@@ -200,6 +242,26 @@ export class BusinessTripService {
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
+      lastLocation.location_meetings.forEach((meeting, meetingIndex) => {
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Meeting Company ' + (meetingIndex + 1),
+          secondCol: meeting.fullCompany.name
+        });
+        meeting.fullContacts.forEach((person, personIndex) => {
+          worksheet.addRow({
+            index: this.totalDisplayedRows,
+            firstCol: 'Company Contact Person ' + (personIndex + 1),
+            secondCol: person.first_name + ' ' + person.last_name
+          });
+          this.totalIndex++;
+          this.totalDisplayedRows++;
+        });
+
+        this.totalIndex++;
+        this.totalDisplayedRows++;
+        worksheet = this.makeGap(worksheet, 1);
+      });
     }
     worksheet = this.makeGap(worksheet, 2);
     intermediateLocations.forEach((location, index) => {
@@ -211,18 +273,16 @@ export class BusinessTripService {
       this.totalIndex++;
       this.totalDisplayedRows++;
       location.location_meetings.forEach((meeting, meetingIndex) => {
-        if (meetingIndex === 0) {
-          worksheet.addRow({
-            index: this.totalDisplayedRows,
-            firstCol: 'Meeting Company ' + (meetingIndex + 1),
-            secondCol: meeting.fullCompany.name
-          });
-        }
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Meeting Company ' + (meetingIndex + 1),
+          secondCol: meeting.fullCompany.name
+        });
         meeting.fullContacts.forEach((person, personIndex) => {
           worksheet.addRow({
             index: this.totalDisplayedRows,
             firstCol: 'Company Contact Person ' + (personIndex + 1),
-            secondCol: person.fullName
+            secondCol: person.first_name + ' ' + person.last_name
           });
           this.totalIndex++;
           this.totalDisplayedRows++;
@@ -230,8 +290,9 @@ export class BusinessTripService {
 
         this.totalIndex++;
         this.totalDisplayedRows++;
+        worksheet = this.makeGap(worksheet, 1);
       });
-      worksheet = this.makeGap(worksheet, 1);
+      worksheet = this.makeGap(worksheet, 2);
     });
 
     if (businessTripData.purpose_short) {

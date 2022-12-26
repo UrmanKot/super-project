@@ -81,7 +81,5 @@ export class CorrespondetnMultiCategoryPickerComponent implements OnInit, OnDest
 
   selectionChanged() {
     this.emitSelectedCategories.emit(this.selectedCategories.map(node => node.data.id))
-    console.log('this.selected categories', this.selectedCategories);
-    console.log('this.selected categories ids', this.selectedCategories.map(node => node.data.id));
   }
 }
