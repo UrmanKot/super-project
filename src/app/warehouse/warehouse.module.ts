@@ -55,9 +55,8 @@ import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-in
 import {QrCodeModule} from '../qr-code/qr-code.module';
 import { PhysicalInventoryProductsChangesComponent } from './modals/physical-inventory-products-changes/physical-inventory-products-changes.component';
 import {RippleModule} from 'primeng/ripple';
-import { WarehouseShipmentsListsComponent } from './components/warehouse-shipments-lists/warehouse-shipments-lists.component';
-import { WarehouseShipmentComponent } from './components/warehouse-shipments-lists/warehouse-shipment/warehouse-shipment.component';
 import { WarehouseShippingRequestsComponent } from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
+import { WarehouseShippingRequestComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
 
 
 
@@ -102,9 +101,8 @@ import { WarehouseShippingRequestsComponent } from './components/warehouse-shipp
     WarehouseProductionRequestPrintPageComponent,
     NomenclatureSerialInfoComponent,
     PhysicalInventoryProductsChangesComponent,
-    WarehouseShipmentsListsComponent,
-    WarehouseShipmentComponent,
     WarehouseShippingRequestsComponent,
+    WarehouseShippingRequestComponent,
   ],
     imports: [
         CommonModule,

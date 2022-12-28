@@ -37,14 +37,11 @@ import {
 } from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
 import {WarehouseIsolatorComponent} from './components/warehouse-isolator/warehouse-isolator.component';
 import {
-  WarehouseShipmentsListsComponent
-} from './components/warehouse-shipments-lists/warehouse-shipments-lists.component';
-import {
-  WarehouseShipmentComponent
-} from './components/warehouse-shipments-lists/warehouse-shipment/warehouse-shipment.component';
-import {
   WarehouseShippingRequestsComponent
 } from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
+import {
+  WarehouseShippingRequestComponent
+} from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
 
 
 const routes: Routes = [
@@ -102,14 +99,9 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'shipments-lists', children: [
-          {path: '', title: 'Shipments Lists', component: WarehouseShipmentsListsComponent},
-          {path: 'shipment/:id', title: 'Shipment', component: WarehouseShipmentComponent}
-        ]
-      },
-      {
-        path: 'shipping-requests', children: [
-          {path: '', title: 'Shipping Requests', component: WarehouseShippingRequestsComponent}
+        path: 'shipments-requests', children: [
+          {path: '', title: 'Shipments Requests', component: WarehouseShippingRequestsComponent},
+          {path: ':id', title: 'Shipment Request', component: WarehouseShippingRequestComponent},
         ]
       }
     ]

@@ -42,4 +42,16 @@ export class DeliveryChainService {
       map(response => response.data)
     );
   }
+
+  getDeliveryItems(id: number): Observable<any[]> {
+    return this.httpClient.get<{ data: any[] }>(this.API_URL + this.url + id + '/items/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  complete(id: number): Observable<any> {
+    return this.httpClient.post<{ data: any }>(this.API_URL + this.url + id + '/complete/', null).pipe(
+      map(response => response.data)
+    );
+  }
 }
