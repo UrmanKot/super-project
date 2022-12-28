@@ -12671,6 +12671,16 @@ body::-webkit-scrollbar {
 .guide-modalbox_hide + .cdk-global-overlay-wrapper {
   opacity: 0.1;
 }
+.warehouse-search {
+  max-width: unset;
+}
+.warehouse-search .mat-dialog-container {
+  border-radius: 0 !important;
+  padding: 0 24px;
+}
+.warehouse-search .mat-dialog-container .mat-dialog-content {
+  max-height: 100vh;
+}
 .btn {
   cursor: pointer;
   display: inline-block;

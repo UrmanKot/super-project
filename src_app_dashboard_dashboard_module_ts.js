@@ -12,8 +12,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DashboardComponent": () => (/* binding */ DashboardComponent),
 /* harmony export */   "DashboardMenuItem": () => (/* binding */ DashboardMenuItem)
 /* harmony export */ });
+/* harmony import */ var _env_environment_prod__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment.prod */ 89019);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ 60124);
-/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _auth_auth_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../auth/auth.service */ 50384);
 /* harmony import */ var _shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @shared/services/modal.service */ 63285);
@@ -69,18 +69,18 @@ class DashboardComponent {
             }, {
                 label: 'Production Lists Procurement',
                 icon: 'icon-manufacturing-procurement',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/procurement/orders`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/procurement/orders`],
                 requiredModulePermission: 'can_edit_manufacturing_procurement'
             }, {
                 label: 'Outsourcing',
                 icon: 'icon-outsourcing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/outsource/outsource-chain`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/outsource/outsource-chain`],
                 requiredModulePermission: 'can_edit_outsourcing'
             }, {
                 label: 'General Procurement',
                 icon: 'icon-manufacturing-procurement',
                 // icon: 'icon-purchasing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/purchasing/orders`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/purchasing/orders`],
                 requiredModulePermission: 'can_edit_purchase'
             }, {
                 label: 'Contacts & Events',
@@ -91,12 +91,12 @@ class DashboardComponent {
             }, {
                 label: 'QC',
                 icon: 'icon-quality-control',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/quality-control/invoices`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/quality-control/invoices`],
                 requiredModulePermission: 'can_edit_quality_control'
             }, {
                 label: 'Manufacturing',
                 icon: 'icon-manufacturing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/production/plan`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/production/plan`],
                 requiredModulePermission: 'can_edit_manufacturing'
             }, {
                 label: 'Sales',
@@ -107,12 +107,13 @@ class DashboardComponent {
             }, {
                 label: 'Payments',
                 icon: 'icon-payments',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/payments`],
+                // routerLink: ['/external', `${environment.link_url}dash/payments`],
+                routerLink: ['/payments'],
                 requiredModulePermission: 'can_edit_payments'
             }, {
                 label: 'Administration',
                 icon: 'icon-administration',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/admin/users-list`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/admin/users-list`],
                 requiredModulePermission: 'can_edit_administration'
             }, {
                 label: 'Corespondents',
@@ -122,12 +123,12 @@ class DashboardComponent {
             }, {
                 label: 'Reports',
                 icon: 'icon-reports',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/accounting/cost-reports`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/accounting/cost-reports`],
                 requiredModulePermission: 'can_edit_reports'
             }, {
                 label: 'Delivery',
                 icon: 'icon-delivery-chains',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/delivery-chains`],
+                routerLink: ['/external', `${_env_environment_prod__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/delivery-chains`],
                 requiredModulePermission: 'can_edit_delivery_chain'
             }, {
                 label: 'Business Trips',
@@ -137,7 +138,7 @@ class DashboardComponent {
             }, {
                 label: 'Instruments/Tools/Equipment',
                 icon: 'pi pi-database',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/instruments/instruments-and-tools`],
+                routerLink: [`/instruments/instruments-and-tools`],
                 requiredModulePermission: 'can_edit_instruments_and_tools'
             }, {
                 label: 'ERP Statistics',
