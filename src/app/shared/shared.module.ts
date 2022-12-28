@@ -67,6 +67,9 @@ import { MultiContactsPickerComponent } from './pickers/multi-contacts-picker/mu
 import { UploadFilePickerComponent } from './components/upload-file-picker/upload-file-picker.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {CurrencyPickerComponent} from '@shared/pickers/currency-picker/currency-picker.component';
+import { AreaPickerComponent } from './pickers/area-picker/area-picker.component';
+import { AreaLocatorPickerComponent } from './pickers/area-locator-picker/area-locator-picker.component';
+import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-search.component';
 
 
 @NgModule({
@@ -115,6 +118,9 @@ import {CurrencyPickerComponent} from '@shared/pickers/currency-picker/currency-
     MultiContactsPickerComponent,
     UploadFilePickerComponent,
     CurrencyPickerComponent,
+    AreaPickerComponent,
+    AreaLocatorPickerComponent,
+    WarehouseSearchComponent,
   ],
   exports: [
     ButtonModule,
@@ -172,6 +178,8 @@ import {CurrencyPickerComponent} from '@shared/pickers/currency-picker/currency-
     MultiContactsPickerComponent,
     UploadFilePickerComponent,
     CurrencyPickerComponent,
+    AreaPickerComponent,
+    AreaLocatorPickerComponent,
   ],
   imports: [
     CommonModule,

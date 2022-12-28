@@ -1,0 +1,218 @@
+<mat-dialog-content>
+  <div class="page__content">
+    <div class="page__card">
+      <div class="warehouse-items">
+        <i class="pi pi-times close-icon" [mat-dialog-close]="false"></i>
+        <div class="warehouse-items__left">
+          <div class="form-group">
+            <pek-categories-tree-picker (categorySelected)="onSelectCategory($event); formChanged.next()"></pek-categories-tree-picker>
+          </div>
+        </div>
+        <div class="warehouse-items__right">
+          <div class="page__table">
+            <div class="filters-visibility">
+              <div class="filters-visibility__header"></div>
+              <form
+                [formGroup]="searchForm"
+                class="warehouse-items__form mb-3"
+              >
+                <div class="row">
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Code</label>
+                      <input class="form-control" (ngModelChange)="formChanged.next()" formControlName="code" pInputText>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input class="form-control" (ngModelChange)="formChanged.next()" formControlName="name" pInputText>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Warehouses</label>
+                          <pek-warehouse-picker (selectWarehouse)="this.searchForm.get('warehouse').setValue($event); formChanged.next()"></pek-warehouse-picker>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Locator</label>
+                          <pek-locator-picker
+                            [warehouseId]="searchForm.get('warehouse').value"
+                            [isAllLocators]="false"
+                            [isDisabled]="true"
+                            (selectLocator)="locatorSelected($event); formChanged.next()"
+                          ></pek-locator-picker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                        <div class="form-group">
+                          <label>Type</label>
+                          <pek-nomenclature-type-picker
+                            [currentNomenclatureType]="this.searchForm.get('type').value"
+                            (choiceNomenclatureType)="this.searchForm.get('type').setValue($event); formChanged.next()"
+                          ></pek-nomenclature-type-picker>
+                        </div>
+                  </div>
+                  <div class="col-6">
+                        <div class="form-group">
+                        </div>
+                  </div>
+                  <div class="col-2">
+                        <div class="form-group">
+                          <label>&nbsp;</label>
+                          <button
+                            pButton
+                            type="button"
+                            class="p-button-success"
+                            [label]="'Select'"
+                            [disabled]="!this.selectedNode"
+                            (click)="select()"
+                          ></button>
+                        </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="table-pagination-preloader">
+              <p-table
+                #dt
+                selectionMode="single"
+                [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
+                dataKey="uid"
+                [scrollable]="true"
+                [rows]="10"
+                [(selection)]="selectedNode"
+                [value]="searchResult"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="index-header text-center" style="width: 5%">#</th>
+                    <th style="width: 15%">Code</th>
+                    <th style="width: 15%">Name</th>
+                    <th class="text-center" style="width: 10%">Quantity</th>
+                    <th class="text-center" style="width: 6%">UOM</th>
+                    <th class="text-center" style="width: 13%">Category</th>
+                    <th class="text-center" style="width: 12%">Warehouse</th>
+                    <th class="text-center" style="width: 14%">Locator</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-i="rowIndex">
+                  <tr [pSelectableRow]="product" [pRowToggler]="product">
+                    <td style="width: 5%" class="text-center">
+                      {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
+                    </td>
+                    <td style="width: 15%">
+                      {{product.nomenclature.code}}
+                    </td>
+                    <td style="width: 15%" class="in-use">
+                      <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+                      <b *ngIf="product.nomenclature.has_technical_equipment">(T)</b>
+                      {{product.nomenclature.name}}
+                      <span class="text-danger" *ngIf="product.used_by_order && product.used_by_order.length > 0">
+                      <b>In Use</b>
+
+                      <div class="in-use-info">
+                        <p>In use by orders:</p>
+                        <div *ngFor="let order of product.used_by_order">
+                          <a *ngIf="order.accounting_type === 3" [href]="link + 'production/orders/order/' + order.order_id"
+                             target="_blank">{{order.order_id}}
+                          </a>
+                          <a *ngIf="order.accounting_type === 2" [href]="link + 'outsource/outsource-chain/products/' + order.order_id"
+                             target="_blank">{{order.order_id}}
+                          </a>
+                        </div>
+                      </div>
+                    </span>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      {{product.total_locator_quantity}}
+                    </td>
+                    <td style="width: 6%" class="text-center">
+                      <ng-container *ngIf="product.nomenclature.category || product.nomenclature.root_category">
+                        <ng-container *ngIf="product.nomenclature.category">
+                          {{product.nomenclature.category?.unit_of_measure?.symbol ? product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs'}}
+                        </ng-container>
+                        <ng-container *ngIf="product.nomenclature.root_category">
+                          {{product.nomenclature.root_category?.unit_of_measure?.symbol ? product.nomenclature.root_category?.unit_of_measure?.symbol : 'Pcs' }}
+                        </ng-container>
+                      </ng-container>
+
+                      <span *ngIf="!product.nomenclature.category && !product.nomenclature.root_category">
+                    Pcs
+                  </span>
+                    </td>
+                    <td style="width: 13%" class="text-center">
+                      {{product.nomenclature.category?.name}}
+                      {{product.nomenclature.root_category?.name}}
+                    </td>
+                    <td style="width: 12%" class="text-center">
+                      <ng-container
+                        *ngIf="product.locator">
+                        {{product.locator.warehouse.name}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 14%" class="text-center">
+                      <ng-container *ngIf="product.locator">
+                        {{product.locator.name}}
+                      </ng-container>
+                      <span class="d-block" *ngIf="product.locator"> R: {{product.locator.row}} Col:
+                        {{product.locator.column}} Sh: {{product.locator.shelf}} Pl:
+                        {{product.locator.place}}
+                  </span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="9">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+                <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              </div>
+            </div>
+            <div
+              class="paginator-wrapper"
+              *ngIf="!isShowAll"
+              [class.paginator-wrapper_hide]="searchResult.length === 0"
+            >
+              <p-paginator
+                #paginator
+                [rows]="10"
+                [totalRecords]="countProducts"
+                (onPageChange)="paginate($event)">
+              </p-paginator>
+              <p-button
+                (click)="onShowAll()"
+                class="paginator-all"
+                type="button"
+                styleClass="p-button-text"
+              >
+                All
+              </p-button>
+            </div>
+            <div *ngIf="isShowAll" class="paginator-return-pagination">
+              <p-button
+                type="button"
+                (click)="onShowPartial()"
+                styleClass="p-button-text"
+              >
+                Return pagination
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

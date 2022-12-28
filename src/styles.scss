@@ -158,6 +158,18 @@ body {
   }
 }
 
+.warehouse-search {
+  max-width: unset;
+  .mat-dialog-container {
+    border-radius: 0 !important;
+    padding: 0 24px;
+
+    .mat-dialog-content {
+      max-height: 100vh;
+    }
+  }
+}
+
 .btn {
   cursor: pointer;
   display: inline-block;

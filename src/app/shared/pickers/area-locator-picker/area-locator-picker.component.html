@@ -1,0 +1,26 @@
+<p-dropdown
+  *ngIf="!this.areaId"
+  [filter]="true"
+  [(ngModel)]="locator"
+  [showClear]="true"
+  [options]="groupLocators"
+  [disabled]="isDisabled"
+  (ngModelChange)="onChange($event)"
+  [group]="true"
+  optionValue="value"
+  optionLabel="label"
+  [placeholder]="'Select Locator'">
+</p-dropdown>
+<p-dropdown
+  *ngIf="this.areaId"
+  [filter]="true"
+  [showClear]="true"
+  [(ngModel)]="locator"
+  [options]="groupLocators"
+  [disabled]="isDisabled"
+  (ngModelChange)="onChange($event)"
+  [group]="false"
+  optionValue="id"
+  optionLabel="name"
+  [placeholder]="'Select Locator'">
+</p-dropdown>

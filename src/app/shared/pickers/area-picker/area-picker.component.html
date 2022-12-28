@@ -1,0 +1,11 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="area"
+  [options]="areas"
+  [disabled]="isDisabled"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="name"
+  [placeholder]="'Select Area'">
+</p-dropdown>

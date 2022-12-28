@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Move Items ({{product.nomenclature.name}})
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <div class="form-group">
+      <label>Locator</label>
+      <pek-area-locator-picker
+        [current_locator_id]="form.get('from_area_locator').value"
+        (valueChange)="form.get('to_area_locator').setValue($event)"
+      ></pek-area-locator-picker>
+    </div>
+    <div class="form-group">
+      <label for="quantity">Quantity (Max: {{product.total_area_locator_quantity}})</label>
+      <input
+        pInputText
+        formControlName="quantity"
+        (ngModelChange)="onChangeQuantity($event)"
+        class="form-control"
+        type="number"
+        id="quantity"
+      />
+    </div>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Move'"
+    [disabled]="form.invalid"
+    (click)="onMove()"
+  ></button>
+</mat-dialog-actions>

@@ -1,0 +1,144 @@
+::ng-deep {
+  .page__card {
+    box-shadow: none;
+  }
+}
+
+.close-icon{
+  position: absolute;
+  right: 0;
+  top: -2.75rem;
+  font-size: 2.1875rem;
+  color: #002e7294;
+  cursor: pointer;
+}
+
+.page__card {
+  padding-top: 1.25rem;
+}
+
+.warehouse-items {
+  position: relative;
+  display: flex;
+
+  &__spinner {
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.625rem;
+    height: calc(100vh - 15.125rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__tree {
+    bottom: 0;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    height: calc(100vh - 15.125rem);
+  }
+
+  &__tree-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__left {
+    width: 24rem;
+    flex: 0 0 24rem;
+
+    .form-group {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+
+      label {
+        position: relative;
+        top: -0.125rem;
+      }
+    }
+
+    &::ng-deep {
+      .p-tree {
+        overflow: auto;
+        height: 100%;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        border-radius: 0.625rem !important;
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 0.625rem;
+          background-color: #d1d2d8;
+        }
+
+        &::-webkit-scrollbar {
+          cursor: auto;
+          width: 0.5rem;
+          background-color: #f8f9fa;
+        }
+      }
+    }
+  }
+
+  &__right {
+    width: 100%;
+    margin-left: 1.75rem;
+
+    &::ng-deep {
+      .p-datatable-header {
+        padding: 0 0 1rem !important;
+      }
+    }
+  }
+
+  &__form {
+    margin-top: -0.625rem;
+  }
+}
+
+.filters-visibility {
+  &_hide {
+    .icon {
+      top: 0.625rem !important;
+    }
+  }
+
+  &__header {
+    min-height: 1.375rem;
+  }
+}
+
+.page__card {
+  position: relative;
+}
+
+.in-use {
+  position: relative;
+
+  &:hover {
+    .in-use-info {
+      opacity: 1;
+      pointer-events: initial;
+    }
+  }
+}
+
+
+
+
+.in-use-info {
+  position: absolute;
+  transition: 0.25s ease;
+  opacity: 0;
+  background: #fff;
+  z-index: 3;
+  width: 9rem;
+  right: -3rem;
+  top: -1.5rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 0 0.4375rem 0.0625rem rgb(0 0 0 / 15%);
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
