@@ -14,8 +14,10 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Production Lists', commands: ['production-lists']},
     {label: 'Production Requests', commands: ['production-requests']},
     {label: 'Tool Requests', commands: ['tool-requests']},
+    {label: 'Shipping Requests', commands: ['shipping-requests']},
     {label: 'Where Used', commands: ['where-used']},
     {label: 'Physical Inventory', commands: ['physical-inventory']},
+    {label: 'Shipments Lists', commands: ['shipments-lists']},
   ]
 
   settingsRoutes: NavigationLink[] = [

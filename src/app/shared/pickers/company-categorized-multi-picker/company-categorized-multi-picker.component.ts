@@ -19,7 +19,7 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
   @Input() currentCompaniesIds: number[] = [];
   @Output() selectCompanies: EventEmitter<string> = new EventEmitter<string>();
 
-  groupedCategories: TreeNode<Company & CompanyCategory>[] = []
+  groupedCategories: TreeNode<Company & CompanyCategory>[] = [];
 
   selectedNode: TreeNode[] = [];
   selectedUniqueNodes: TreeNode[] = [];

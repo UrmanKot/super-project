@@ -6,8 +6,6 @@ import {Observable} from 'rxjs';
 import {SerialType} from '../models/serial-type';
 import {map} from 'rxjs/operators';
 import {ModalActionType} from '@shared/models/modal-action';
-import {Warehouse} from '../models/warehouse';
-import {CreateEditWarehouseComponent} from '../modals/create-edit-warehouse/create-edit-warehouse.component';
 import {MatDialog} from '@angular/material/dialog';
 import {CreateEditSerialTypeComponent} from '../modals/create-edit-serial-type/create-edit-serial-type.component';
 

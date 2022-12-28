@@ -7,11 +7,12 @@ export const environment = {
   business_partners_url: 'crm/',
   procurement_url: 'procurement/',
   accounting_url: 'accounting/',
+  delivery_url: 'delivery/',
   users_url: 'users/',
   staff_url: 'staff/',
   sales_url: 'sales/',
   business_trips_url: 'business-trips/',
-  image_path: 'https://erp.slopehelper.com',
+  image_path: 'https://rwave.pekauto.com',
   // link_url: 'http://localhost:4201/'
   link_url: 'https://rwave.pekauto.com/'
 };

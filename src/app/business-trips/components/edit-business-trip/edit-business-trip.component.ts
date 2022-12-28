@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {CRMEmployee} from '../../../crm/models/crm-employee';
 import {CrmPosition} from '../../models/crm-position';
 import {Vehicle} from '../../models/vehicle';
@@ -26,10 +26,14 @@ import {debounceTime, map, switchMap, take} from 'rxjs/operators';
 import {BusinessTripEmployee} from '../../models/business-trip-employee';
 import {Expense} from '../../models/expense';
 import {Currency} from '@shared/models/currency';
-import {of} from 'rxjs';
+import {of, Subject, takeUntil} from 'rxjs';
 import {BusinessTripLocationMeeting} from '../../models/business-trip-location-meeting';
 import {ExpenseService} from '../../services/expense.service';
-import { deepCopy } from "deep-copy-ts";
+import {deepCopy} from 'deep-copy-ts';
+import {BusinessLocationService} from '../../services/business-location.service';
+import {Hotel} from '../../models/hotel';
+import {BusinessTripHotelFilesService} from '../../services/business-trip-hotel-files.service';
+import {UploadFilePickerComponent} from '@shared/components/upload-file-picker/upload-file-picker.component';
 
 export class DataToSend {
   readonly id?: number;
@@ -64,6 +68,8 @@ export class DataToSend {
   styleUrls: ['./edit-business-trip.component.scss']
 })
 export class EditBusinessTripComponent implements OnInit {
+  @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
+
   tripExpenses: BusinessTripExpense[] = [];
   businessTrip: BusinessTrip;
   tripStatuses = BusinessTripStatus;
@@ -105,6 +111,13 @@ export class EditBusinessTripComponent implements OnInit {
     ]
   }];
 
+  locationChanged: Subject<{ type: BusinessTripLocationTypes, locationIndex?: number }> = new Subject<{ type: BusinessTripLocationTypes, locationIndex?: number }>();
+  employeeChangedEmit: Subject<void> = new Subject<void>();
+  infoChangedEmit: Subject<boolean> = new Subject<boolean>();
+  hotelChanged: Subject<void> = new Subject<void>();
+  vehicleChangedEmit: Subject<void> = new Subject<void>();
+  showFilePicker = true;
+  private destroy$ = new Subject();
   constructor(
     private crmEmployeeService: CrmEmployeeService,
     private fb: FormBuilder,
@@ -117,23 +130,50 @@ export class EditBusinessTripComponent implements OnInit {
     private vehicleService: VehicleService,
     private companiesService: CompanyService,
     private expenseService: ExpenseService,
+    private businessLocationService: BusinessLocationService,
+    private businessTripHotelFilesService: BusinessTripHotelFilesService,
   ) {
     this.route.data.subscribe(res => {
       this.isVerify = res['isVerify'];
     });
-    this.route.paramMap.pipe(map(params => Number(params.get('tripId')))).subscribe(tripId => {
+    this.route.paramMap.pipe(map(params => Number(params.get('tripId')))).pipe(takeUntil(this.destroy$)).subscribe(tripId => {
       this.tripId = tripId;
       this.getBusinessTrip(this.tripId);
+    });
+    this.employeeChangedEmit.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(() => {
+      this.employeeUpdate();
+      this.infoChangedEmit.next(false);
+    });
+    this.infoChangedEmit.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(res => {
+      if (this.isDataPrepared) {
+        this.infoChanged(res);
+      }
+    });
+
+    this.hotelChanged.pipe(debounceTime(1000), takeUntil(this.destroy$)).subscribe(() => {
+      this.updateHotelInfo();
+      this.infoChangedEmit.next(false);
+    });
+
+    this.vehicleChangedEmit.pipe(debounceTime(1000), takeUntil(this.destroy$)).subscribe(() => {
+      this.vehicleUpdate();
+      this.infoChangedEmit.next(false);
     });
   }
 
   ngOnInit(): void {
     this.loadCompanies();
+
+    this.locationChanged.pipe(debounceTime(1000), takeUntil(this.destroy$)).subscribe(type => {
+      if (this.isDataPrepared) {
+        this.updateLocationDefault(type.type, type.locationIndex);
+      }
+    });
   }
 
   loadCompanies() {
-    this.companiesService.get([{name: 'by_user', value: true}]).subscribe(companies => {
-      this.companiesFilters = companies;
+    this.companiesService.get([{name: 'by_user', value: true}]).pipe(takeUntil(this.destroy$)).subscribe(companies => {
+        this.companiesFilters = companies;
     });
   }
 
@@ -193,7 +233,7 @@ export class EditBusinessTripComponent implements OnInit {
 
   getBusinessTrip(id: number): void {
     this.form = this.prepareForm();
-    this.businessService.getDetailed(id).subscribe(trip => {
+    this.businessService.getDetailed(id).pipe(takeUntil(this.destroy$)).subscribe(trip => {
       this.businessTrip = trip;
       if (this.businessTrip.custom_employee) {
         const employee = this.businessTrip.custom_employee as BusinessTripEmployee;
@@ -247,9 +287,7 @@ export class EditBusinessTripComponent implements OnInit {
           files: [],
           base64Files: [],
         });
-        if (hotel.files) {
-          this.preparedFiles = hotel.files;
-        }
+        this.loadHotelFiles(hotel.id);
       }
       // Locations
       this.businessTrip.locations.forEach(location => {
@@ -265,10 +303,11 @@ export class EditBusinessTripComponent implements OnInit {
           location.location_meetings.forEach(meeting => {
             (this.form.get('last_location_meetings') as FormArray).push(this.fb.group({
               id: meeting.id,
+              location_id: meeting.location_id,
               company: meeting.company,
               contacts: this.fb.array(meeting.contacts)
             }));
-          });
+          }, {emitEvent: false});
         }
         if (location.type === BusinessTripLocationTypes.INTERMEDIATE) {
           (this.form.get('intermediatePoints') as FormArray).push(this.fb.group({
@@ -281,45 +320,7 @@ export class EditBusinessTripComponent implements OnInit {
       });
       // Expenses
       const expenses = this.businessTrip.expenses as BusinessTripExpense[];
-      if (expenses.length > 0) {
-        expenses.forEach(expense => {
-          let expensePrepared: Expense = {
-            id: null,
-            name: null,
-            description: null,
-          };
-          let customExpensePrepared: Expense = {
-            id: null,
-            name: null,
-            description: null,
-          };
-
-          if (expense.expense) {
-            expensePrepared = expense.expense as Expense;
-          }
-
-          if (expense.custom_expense) {
-            customExpensePrepared = expense.custom_expense as Expense;
-          }
-          (this.form.get('expenses') as FormArray).push(this.fb.group({
-            base64File: null,
-            currency: expense.currency,
-            custom_expense: customExpensePrepared,
-            expense: expensePrepared,
-            id: expense.id,
-            sum: expense.sum,
-            isOther: !!customExpensePrepared.id,
-            is_verified: expense.is_verified,
-            file: expense.file,
-            uploaded_file: null,
-            clear_file: false,
-          }));
-        });
-        this.tripExpenses = [];
-        (this.form.get('expenses') as FormArray).controls.forEach(group => {
-          this.tripExpenses.push(group.value);
-        });
-      }
+      this.updateExpenses(expenses);
 
       this.form.get('initiator').setValue(this.businessTrip.initiator);
 
@@ -327,13 +328,45 @@ export class EditBusinessTripComponent implements OnInit {
     });
   }
 
+  updateExpenses(expenses: BusinessTripExpense[]) {
+    if (expenses.length > 0) {
+      expenses.forEach(expense => {
+        let expensePrepared: Expense = {
+          id: null,
+          name: null,
+          description: null,
+        };
+        let customExpensePrepared: Expense = {
+          id: null,
+          name: null,
+          description: null,
+        };
 
-  clickOutside(type) {
-    if (this.form.value.trip_end?.getTime() !== this.startDate?.getTime()) {
-      this.form.get('trip_end').patchValue(this.startDate);
-    }
-    if (this.form.value.trip_end?.getTime() !== this.endDate?.getTime()) {
-      this.form.get('trip_end').patchValue(this.endDate);
+        if (expense.expense) {
+          expensePrepared = expense.expense as Expense;
+        }
+
+        if (expense.custom_expense) {
+          customExpensePrepared = expense.custom_expense as Expense;
+        }
+        (this.form.get('expenses') as FormArray).push(this.fb.group({
+          base64File: null,
+          currency: expense.currency,
+          custom_expense: customExpensePrepared,
+          expense: expensePrepared,
+          id: expense.id,
+          sum: expense.sum,
+          isOther: !!customExpensePrepared.id,
+          is_verified: expense.is_verified,
+          file: expense.file,
+          uploaded_file: null,
+          clear_file: false,
+        }));
+      });
+      this.tripExpenses = [];
+      (this.form.get('expenses') as FormArray).controls.forEach(group => {
+        this.tripExpenses.push(group.value);
+      });
     }
   }
 
@@ -369,40 +402,23 @@ export class EditBusinessTripComponent implements OnInit {
 
   removePoint(point: FormGroup, index: number) {
     if (point.value.id) {
-      this.pointsToDeleteIds.push(point.value.id);
+      this.businessLocationService.delete(point.value).pipe(takeUntil(this.destroy$)).subscribe(() => {
+        (this.form.get('intermediatePoints') as FormArray).removeAt(index);
+      });
+    } else {
+      (this.form.get('intermediatePoints') as FormArray).removeAt(index);
     }
-
-    (this.form.get('intermediatePoints') as FormArray).removeAt(index);
   }
 
   get _hotel(): FormGroup {
     return (this.form.get('hotel') as FormGroup) as FormGroup;
   }
 
-  public addTripExpanses(): void {
-    this.expenseService
-      .createChangeExpanseItem(null, this.isVerify)
-      .pipe(take(1))
-      .subscribe((res) => {
-        if (res) {
-          this.isExpensesRefreshing = true;
-          (this.form.get('expenses') as FormArray).push(this.fb.group({
-            ...res
-          }));
-          this.tripExpenses = [];
-          (this.form.get('expenses') as FormArray).controls.forEach(group => {
-            this.tripExpenses.push(group.value);
-          });
-          this.isExpensesRefreshing = false;
-        }
-      });
-  }
-
   editTripExpense(index: number) {
     const element = (this.form.get('expenses') as FormArray).controls[index].value;
     this.expenseService
       .createChangeExpanseItem(element, this.isVerify)
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res) {
           (this.form.get('expenses') as FormArray).controls[index].setValue(res.value);
@@ -412,14 +428,6 @@ export class EditBusinessTripComponent implements OnInit {
           });
         }
       });
-  }
-
-  get _tripExpanses(): FormGroup[] {
-    return (this.form.get('expenses') as FormArray).controls as FormGroup[];
-  }
-
-  test() {
-    const files = this.form.value.hotel.base64Files.map(base64 => base64.file);
   }
 
   changedValue($event: any) {
@@ -436,7 +444,6 @@ export class EditBusinessTripComponent implements OnInit {
 
   setHotelStartValue(start) {
     if (start) {
-      this._hotel.get('residence_end').patchValue(start);
       this.hotelStartDate = start;
       if (this._hotel.get('residence_end').value &&
         this._hotel.get('residence_end').value < this._hotel.get('residence_start').value) {
@@ -471,7 +478,7 @@ export class EditBusinessTripComponent implements OnInit {
       const result = this.obj2FormData(dataToSend);
       this.businessService
         .update(this.tripId, result)
-        .pipe(take(1))
+        .pipe(take(1), takeUntil(this.destroy$))
         .subscribe((res) => {
           this.isDataPrepared = false;
 
@@ -486,9 +493,14 @@ export class EditBusinessTripComponent implements OnInit {
     }
   }
 
-  prepareDataToSend(status: BusinessTripStatus): DataToSend {
+  prepareDataToSend(status: BusinessTripStatus, prepareToExport = false): DataToSend {
     const preparedLocations = [];
-    let tempFormValue = deepCopy(this.form.value);
+    let tempFormValue;
+    if (prepareToExport) {
+      tempFormValue = deepCopy(this.form.value);
+    } else {
+      tempFormValue = this.form.value;
+    }
 
     if (tempFormValue.start_location_country) {
       const startLocation: BusinessTripLocation = {
@@ -638,6 +650,84 @@ export class EditBusinessTripComponent implements OnInit {
     return dataToSend;
   }
 
+  employeeUpdate() {
+    const employeeUpdate: DataToSend = {};
+    if (this.form.value.employee.id) {
+      employeeUpdate.employee = this.form.value.employee.id;
+      employeeUpdate.custom_employee = null;
+    } else {
+      const position = this.form.value.employee_position;
+      const firstName = this.form.value.employee_first_name;
+      const lastNameName = this.form.value.employee_last_name;
+      if (!firstName || !lastNameName) {
+        return;
+      }
+      employeeUpdate.custom_employee = {
+        id: this.form.value.employee_id,
+        first_name: this.form.value.employee_first_name,
+        last_name: this.form.value.employee_last_name,
+        position: position ? position : null,
+      };
+      employeeUpdate.employee = null;
+    }
+
+    this.businessService
+      .updateBusinessTripEmployee(this.tripId, employeeUpdate)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((trip) => {
+        if (trip.custom_employee) {
+          const employee = trip.custom_employee as BusinessTripEmployee;
+          if (employee.position) {
+            this.form.get('employee_position').setValue(employee.position.id);
+          }
+          this.form.get('employee_id').setValue(employee.id);
+        }
+        if (trip.employee) {
+          const employee = trip.employee as BusinessTripEmployee;
+          this.form.get('employee').setValue(employee);
+        }
+      });
+  }
+
+  vehicleUpdate() {
+    const vehicleData: DataToSend = {};
+    const formData = this.form.value;
+    vehicleData.vehicle_type = formData.vehicle_type;
+    if (formData.vehicle_type !== '0') {
+      if (formData.vehicle.id && formData.vehicle_type === '3') {
+        vehicleData.vehicle = formData.vehicle.id;
+        vehicleData.custom_vehicle = null;
+      } else if ((formData.vehicle_type === '1' || formData.vehicle_type === '2') && formData.vehicle_model) {
+        const model = formData.vehicle_model;
+        const number = formData.vehicle_number;
+        if (!model || !number) {
+          return;
+        }
+        vehicleData.custom_vehicle = {
+          id: formData.vehicle_id,
+          model: model,
+          number: number,
+        };
+        vehicleData.vehicle = null;
+      } else {
+        vehicleData.vehicle = null;
+        vehicleData.custom_vehicle = null;
+      }
+    } else {
+      vehicleData.vehicle = null;
+      vehicleData.custom_vehicle = null;
+    }
+    this.businessService
+      .updateBusinessTripVehicle(this.tripId, vehicleData)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((trip) => {
+        if (trip.custom_vehicle) {
+          const vehicle = trip.custom_vehicle as Vehicle;
+          this.form.get('vehicle_id').setValue(vehicle.id);
+        }
+      });
+  }
+
   obj2FormData(obj, formData = new FormData()) {
     this.formData = formData;
     this.createFormData(obj);
@@ -677,11 +767,14 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
   filesChanged(files: File[]) {
-    this._hotel.get('files').setValue(files);
-    files.forEach(file => {
-      this.fileToBase64(file);
-    });
+    if (files.length > 0) {
+      this._hotel.get('files').setValue(files);
+      setTimeout(() => {
+        this.updateFiles();
+      }, 1000);
+    }
   }
+
 
   fileToBase64(file: File): void {
     const fileReader = new FileReader();
@@ -695,18 +788,18 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
   deleteFile() {
-    this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+    this.modalService.confirm('danger', 'Confirm').pipe(takeUntil(this.destroy$)).subscribe(confirm => {
       if (confirm) {
-        const index = this.preparedFiles.findIndex(file => file === this.selectedHotelFile);
-        this.hotelFilesToDeleteIds.push(this.selectedHotelFile.id);
-        this.selectedHotelFile = null;
-        this.preparedFiles.splice(index, 1);
+        this.businessTripHotelFilesService.delete(this.selectedHotelFile).pipe(takeUntil(this.destroy$)).subscribe(() => {
+          this.selectedHotelFile = null;
+          this.loadHotelFiles(this._hotel.get('id').value);
+        });
       }
     });
   }
 
   downloadHotelFile(file: any): void {
-    this.businessService.download_hotel_file(file.id).subscribe(response => {
+    this.businessService.download_hotel_file(file.id).pipe(takeUntil(this.destroy$)).subscribe(response => {
       const filename = this.getName(file.file);
       this.adapterService.downloadFile(filename, response);
     });
@@ -738,7 +831,7 @@ export class EditBusinessTripComponent implements OnInit {
           return preparedData;
         }));
       } else {
-        return of(preparedData)
+        return of(preparedData);
       }
     } else if (preparedData.full_employee.position) {
       preparedData.fullPosition = preparedData.full_employee.position;
@@ -773,13 +866,13 @@ export class EditBusinessTripComponent implements OnInit {
   }
 
   export() {
-    const preparedData = this.prepareDataToSend(this.businessTrip.status);
+    const preparedData = this.prepareDataToSend(this.businessTrip.status, true);
     this.loadEmployeePositionData(preparedData).pipe(switchMap(res => {
         return this.loadInitiatorData(res);
       }),
       switchMap(res => {
         return this.loadVehicleData(res);
-      })).subscribe(res => {
+      })).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.businessService.exportToExcel(res, this.expensesSum).then();
     });
   }
@@ -796,7 +889,179 @@ export class EditBusinessTripComponent implements OnInit {
 
   viewHotelFiles() {
     const files = this.form.get('hotel').value;
-    const data: {links: any, files: any} = {links: this.preparedFiles, files: files.base64Files};
+    const data: { links: any, files: any } = {links: this.preparedFiles, files: files.base64Files};
     this.businessService.viewBusinessTripFiles(data);
+  }
+
+  updateLocationDefault(type: BusinessTripLocationTypes, locationIndex: number) {
+    let country;
+    let address;
+    let id;
+    let data: BusinessTripLocation;
+    if (type === BusinessTripLocationTypes.FIRST) {
+      country = this.form.get('start_location_country').value?.code;
+      address = this.form.get('start_location_address').value;
+      if (!country || !address) {
+        return;
+      }
+      id = this.form.get('start_location_id').value;
+      data = {
+        id,
+        country,
+        address,
+        type: type,
+        business_trip_id: this.businessTrip.id
+      };
+    } else if (type === BusinessTripLocationTypes.LAST) {
+      country = this.form.get('last_location_country').value.code;
+      address = this.form.get('last_location_address').value;
+      id = this.form.get('last_location_id').value;
+      if (!country || !address) {
+        return;
+      }
+      data = {
+        id,
+        country,
+        address,
+        business_trip_id: this.businessTrip.id,
+        type: type,
+      };
+    } else {
+      const point = this.form.get('intermediatePoints').value.at(locationIndex);
+      country = point.country?.code;
+      address = point.address;
+      id = point.id;
+      if (!country || !address) {
+        return;
+      }
+      data = {
+        id,
+        country,
+        address,
+        business_trip_id: this.businessTrip.id,
+        type: type,
+      };
+    }
+
+    if (data.id) {
+      this.businessLocationService.update(data.id, data).subscribe((res: {data: BusinessTripLocation}) => {
+        if (type === BusinessTripLocationTypes.FIRST) {
+          this.form.get('start_location_country').setValue(res.data.country);
+          this.form.get('start_location_address').setValue(res.data.address);
+          this.form.get('start_location_id').setValue(res.data.id);
+        }
+        if (type === BusinessTripLocationTypes.LAST) {
+          this.form.get('last_location_country').setValue(res.data.country);
+          this.form.get('last_location_address').setValue(res.data.address);
+          this.form.get('last_location_id').setValue(res.data.id);
+        }
+        if (type === BusinessTripLocationTypes.INTERMEDIATE) {
+          this.form.get('intermediatePoints').value.at(locationIndex).patchValue(res.data);
+        }
+      });
+    } else {
+      this.businessLocationService.create(data).subscribe(res => {
+        if (type === BusinessTripLocationTypes.FIRST) {
+          this.form.get('start_location_country').setValue(res.country);
+          this.form.get('start_location_address').setValue(res.address);
+          this.form.get('start_location_id').setValue(res.id);
+        }
+        if (type === BusinessTripLocationTypes.LAST) {
+          this.form.get('last_location_country').setValue(res.country);
+          this.form.get('last_location_address').setValue(res.address);
+          this.form.get('last_location_id').setValue(res.id);
+        }
+        if (type === BusinessTripLocationTypes.INTERMEDIATE) {
+          (this.form.get('intermediatePoints') as FormArray).at(locationIndex).patchValue(res);
+        }
+      });
+    }
+  }
+
+  private infoChanged(validateTrip: boolean = false) {
+    const tripStart = this.form.get('trip_start').value ?
+      this.adapterService.dateTimeAdapter(new Date(this.form.get('trip_start').value)) : null;
+    const tripEnd = this.form.get('trip_end').value ?
+      this.adapterService.dateTimeAdapter(new Date(this.form.get('trip_end').value)) : null;
+
+    const employeeUpdate: DataToSend = {
+      trip_end: tripEnd ? tripEnd : null,
+      trip_start: tripStart ? tripStart : null,
+      initiator: this.form.get('initiator').value,
+      purpose_full: this.form.get('purpose_full').value ? this.form.get('purpose_full').value : '',
+      purpose_short: this.form.get('purpose_short').value ? this.form.get('purpose_short').value : '',
+      start_mileage: this.form.get('start_mileage').value,
+      end_mileage: this.form.get('end_mileage').value,
+      status: validateTrip ? BusinessTripStatus.VERIFIED : BusinessTripStatus.NEED_VERIFICATION,
+    };
+
+    this.businessService
+      .update(this.tripId, employeeUpdate)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe();
+  }
+
+  updateHotelInfo() {
+    const tempFormValue = deepCopy(this.form.value);
+    if (tempFormValue.hotel.hotel_name && tempFormValue.showHotel) {
+      const hotelStartDate = tempFormValue.hotel.residence_start ?
+        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_start)) : null;
+      const hotelEndDate = tempFormValue.hotel.residence_end ?
+        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_end)) : null;
+
+      const hotelData = {
+        residence_start: hotelStartDate ? hotelStartDate : null,
+        residence_end: hotelEndDate ? hotelEndDate : null,
+        address: tempFormValue.hotel.hotel_address,
+        country: tempFormValue.hotel.hotel_country?.code,
+        name: tempFormValue.hotel.hotel_name,
+        id: tempFormValue.hotel.id,
+      };
+
+      if (!hotelData.residence_start ||
+        !hotelData.residence_end ||
+        !hotelData.address ||
+        !hotelData.country ||
+        !hotelData.name) {
+        return;
+      }
+
+      this.businessService.updateHotelInfo(this.tripId, hotelData).pipe(takeUntil(this.destroy$)).subscribe(res => {
+        this._hotel.get('id').setValue((res.hotel as Hotel).id);
+      });
+    }
+  }
+
+  loadHotelFiles(hotelId: number) {
+    this.businessTripHotelFilesService.get([{name: 'business_trip_hotel_id', value: hotelId}]).pipe(takeUntil(this.destroy$)).subscribe(response => {
+      this.preparedFiles = response;
+    });
+  }
+
+
+  updateFiles() {
+    this.showFilePicker = false;
+    const data = [];
+    this._hotel.get('files').value.forEach(file => {
+      data.push({
+        file: file,
+        business_trip_id: this._hotel.get('id').value
+      })
+    });
+
+    const send = {
+      files: this._hotel.get('files').value,
+      id: this._hotel.get('id').value
+    }
+    const result = this.obj2FormData(send);
+    this.businessService.add_hotel_files(result).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.loadHotelFiles(this._hotel.get('id').value);
+      this.filePicker.clearFiles();
+    })
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

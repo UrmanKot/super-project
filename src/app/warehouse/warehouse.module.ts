@@ -52,6 +52,12 @@ import {
   QcAcceptTechnicalEquipmentComponent
 } from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
+import {QrCodeModule} from '../qr-code/qr-code.module';
+import { PhysicalInventoryProductsChangesComponent } from './modals/physical-inventory-products-changes/physical-inventory-products-changes.component';
+import {RippleModule} from 'primeng/ripple';
+import { WarehouseShipmentsListsComponent } from './components/warehouse-shipments-lists/warehouse-shipments-lists.component';
+import { WarehouseShipmentComponent } from './components/warehouse-shipments-lists/warehouse-shipment/warehouse-shipment.component';
+import { WarehouseShippingRequestsComponent } from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
 
 
 
@@ -94,16 +100,22 @@ import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-in
     QcAcceptTechnicalEquipmentComponent,
     WarehouseQcOrderComponent,
     WarehouseProductionRequestPrintPageComponent,
-    NomenclatureSerialInfoComponent
+    NomenclatureSerialInfoComponent,
+    PhysicalInventoryProductsChangesComponent,
+    WarehouseShipmentsListsComponent,
+    WarehouseShipmentComponent,
+    WarehouseShippingRequestsComponent,
   ],
-  imports: [
-    CommonModule,
-    WarehouseRouting,
-    LayoutModule,
-    SharedModule,
-    TreeModule,
-    ProductStructureModule,
-  ]
+    imports: [
+        CommonModule,
+        WarehouseRouting,
+        LayoutModule,
+        SharedModule,
+        TreeModule,
+        ProductStructureModule,
+        QrCodeModule,
+        RippleModule,
+    ]
 })
 export class WarehouseModule {
 }

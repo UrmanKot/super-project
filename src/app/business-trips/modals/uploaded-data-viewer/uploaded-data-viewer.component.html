@@ -9,9 +9,9 @@
         <img [alt]="'Слайда ' + idx + 1"
              *ngIf="file.extension === 'image'"
              alt="file"
-             [src]="file.type === 'uploaded' ? url + file.file.file : file.file.file">
+             [src]="file.type === 'uploaded' ? getUrl(file.file.file) : file.file.file">
         <pdf-viewer *ngIf="file.extension === 'pdf'"
-                    [src]="file.type === 'uploaded' ? url + file.file.file : file.file.file"
+                    [src]="file.type === 'uploaded' ? getUrl(file.file.file) : file.file.file"
                     [render-text]="true"
                     [original-size]="false"
                     style="width: 1300px; height: 830px"

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
 import {AdapterService} from '@shared/services/adapter.service';
@@ -11,13 +11,14 @@ import {BusinessTripService} from '../../services/business-trip.service';
 import {MenuItem} from 'primeng/api';
 import {Paginator} from 'primeng/paginator';
 import {AuthService} from '../../../auth/auth.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-business-trips',
   templateUrl: './business-trips.component.html',
   styleUrls: ['./business-trips.component.scss']
 })
-export class BusinessTripsComponent implements OnInit {
+export class BusinessTripsComponent implements OnInit, OnDestroy {
   @ViewChild('paginator') paginator: Paginator;
   isLoading: boolean;
   businessTrips: BusinessTrip[];
@@ -27,7 +28,7 @@ export class BusinessTripsComponent implements OnInit {
   count = 0;
   isShowAll = false;
   isStartOnePage = false;
-
+  destroy$ = new Subject();
   searchForm: FormGroup = this.fb.group({
     employees: [],
     trip_started: [],
@@ -89,8 +90,16 @@ export class BusinessTripsComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
-    this.searchForm.valueChanges.pipe(debounceTime(1000)).subscribe(res => {
+    this.searchForm.valueChanges.pipe(
+      debounceTime(1000),
+      takeUntil(this.destroy$)
+    ).subscribe(res => {
       this.searchBusinessTrips();
     });
 
@@ -176,7 +185,7 @@ export class BusinessTripsComponent implements OnInit {
   getPaginated() {
     this.businessTripService
       .get(this.query)
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
         this.count = res.count;
         this.businessTrips = res.results;
@@ -187,7 +196,7 @@ export class BusinessTripsComponent implements OnInit {
   getAll() {
     this.businessTripService
       .getAll(this.query)
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
         this.businessTrips = res;
         this.selectedBusinessTrip = null;
@@ -202,7 +211,7 @@ export class BusinessTripsComponent implements OnInit {
   createBusinessTrip() {
     this.businessTripService
       .createChangeBusinessTrip()
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res) {
           this.searchBusinessTrips();
@@ -215,27 +224,23 @@ export class BusinessTripsComponent implements OnInit {
   }
 
   verifyBt() {
-    this.router.navigate(['/dash/business-trips/trip/verify/', this.selectedBusinessTrip.id]);
+    this.router.navigate(['/business-trips/trip/verify/', this.selectedBusinessTrip.id]);
   }
 
   deleteBusinessTrip() {
     this.modalService
       .confirm('danger', 'Confirm')
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((confirm) => {
         if (confirm) {
           this.businessTripService
             .delete(this.selectedBusinessTrip)
-            .pipe(take(1))
+            .pipe(take(1), takeUntil(this.destroy$))
             .subscribe((del) => {
               this.searchBusinessTrips();
             });
         }
       });
-  }
-
-  statusFilterChanged(status: any) {
-
   }
 
   paginate(evt: any) {
@@ -282,4 +287,6 @@ export class BusinessTripsComponent implements OnInit {
       return;
     }
   }
+
+
 }

@@ -78,8 +78,8 @@
 
   &__bottom {
     @media print {
-      page-break-after: always;
-      page-break-before: always;
+      page-break-after: auto;
+      page-break-before: auto;
     }
   }
 
@@ -87,7 +87,7 @@
     margin-bottom: 60px;
 
     @media print {
-      page-break-after: always;
+      page-break-after: auto;
       //page-break-before: always;
     }
   }

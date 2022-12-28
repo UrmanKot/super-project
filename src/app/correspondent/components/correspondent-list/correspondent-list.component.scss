@@ -1,0 +1,35 @@
+.files-cont {
+  position: relative;
+
+  .files-list {
+    padding: .5rem 1rem;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26.25rem;
+    background-color: white;
+    border-radius: 0.625rem;
+    box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
+    z-index: 100;
+
+    span {
+      margin-bottom: .5rem;
+    }
+
+    &:hover {
+      opacity: 1;
+      pointer-events: initial;
+    }
+  }
+
+  &:hover {
+    .files-list {
+      opacity: 1;
+      pointer-events: initial;
+    }
+  }
+}
+
+

@@ -1,4 +1,5 @@
 import {
+  HttpContextToken,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
@@ -16,6 +17,8 @@ class Message {
   status: number;
   text: string;
 }
+
+export const IS_SCANNING_ENABLED = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -53,9 +56,12 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     return next.handle(req).pipe(tap(
       (event) => {
+        if (req.context.get(IS_SCANNING_ENABLED) === true) {
+          return;
+        }
+
         if (event instanceof HttpResponse) {
           if (req.method === 'PUT' || req.method === 'PATCH') {
             this.message$.next({severity: 'success', status: event.status, text: 'Successfully Updated'});
@@ -70,11 +76,14 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
       },
       (err) => {
+        if (req.context.get(IS_SCANNING_ENABLED) === true) {
+          return;
+        }
+
         if (err instanceof HttpErrorResponse) {
           if (err.status === 400 || err.status === 404 || err.status === 502 || err.status === 403) {
             this.message$.next({severity: 'error', status: err.status, text: JSON.stringify(err.error.data)});
           } else if (err.status === 500) {
-            console.log(err);
             this.message$.next({
               severity: 'error',
               status: err.status,

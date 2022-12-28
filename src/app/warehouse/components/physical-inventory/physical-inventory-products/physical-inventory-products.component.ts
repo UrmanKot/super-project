@@ -8,8 +8,15 @@ import {QuerySearch} from '@shared/models/other';
 import {Product} from '../../../../product-structure/models/product';
 import {Paginator} from 'primeng/paginator';
 import {InventoryProduct, PhysicalInventory} from '../../../models/physical-inventory';
-import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {ModalService} from '@shared/services/modal.service';
+import {QrCodeService} from '../../../../qr-code/qr-code.service';
+
+export class PreparedPhysicalInventory {
+  nomenclature: Nomenclature;
+  isSerializerProduct: boolean;
+  product: InventoryProduct[];
+}
 
 @Component({
   selector: 'pek-physical-inventory-products',
@@ -24,6 +31,10 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
   isCompleting = false;
   isCancelation = false;
+  isGenerating = false;
+
+  stopScanned$: Subject<any> = new Subject();
+  scanningEnd = false;
 
   searchForm: FormGroup = this.fb.group({
     name: [null],
@@ -33,6 +44,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     category: [null],
     locator: [null],
     type: [null],
+    found_row_id: [null],
     accepted_by_invoices: [null],
     page: [1],
   });
@@ -40,7 +52,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   isShowAll = false;
   warehousesIds: number[] = [];
 
-  selectedInventoryProduct: Product;
+  selectedInventoryProducts: Product[] = [];
   inventoryProducts: Product[] = [];
 
   isLoadingCurrentInventory = true;
@@ -58,15 +70,23 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   inventoryId: number;
   currentInventory: PhysicalInventory = null;
 
+  ignoringPagination = false;
+
+  // foundInventoryProductId
+  findItemId: number;
+
   newQuantity$ = new Subject<InventoryProduct>();
 
   private destroy$ = new Subject();
+  isScanned: boolean = false;
+  preparedProducts: Product[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly fb: FormBuilder,
     private readonly modalService: ModalService,
     private readonly physicalInventoryService: PhysicalInventoryService,
+    private readonly qrCodeService: QrCodeService,
     private readonly router: Router,
   ) {
   }
@@ -74,7 +94,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     fromEvent(this.searchBoxName.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedInventoryProduct = null),
+        tap(() => this.selectedInventoryProducts = []),
         map(() => this.searchBoxName.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -83,7 +103,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
     fromEvent(this.searchBoxCode.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedInventoryProduct = null),
+        tap(() => this.selectedInventoryProducts = []),
         map(() => this.searchBoxCode.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -92,7 +112,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
     fromEvent(this.searchBoxDescription.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedInventoryProduct = null),
+        tap(() => this.selectedInventoryProducts = []),
         map(() => this.searchBoxDescription.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -133,7 +153,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   searchProducts() {
     this.isLoadingInventoryList = true;
     this.destroy$.next(true);
-    this.selectedInventoryProduct = null;
+    this.selectedInventoryProducts = [];
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/accepted_by_invoices:${this.searchForm.get('accepted_by_invoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
@@ -183,6 +203,13 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       value: this.searchForm.get('accepted_by_invoices').value
     });
 
+    if (this.searchForm.get('found_row_id').value) {
+      this.query.push({
+        name: 'found_row_id',
+        value: this.searchForm.get('found_row_id').value
+      });
+    }
+
     if (!this.isShowAll) {
       this.getInventoryProductsForPagination();
     } else {
@@ -197,6 +224,12 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.physicalInventoryService.getInventoryProductsListsForPagination(this.inventoryId, this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(inventoryLists => {
+
+      const preparedProducts = [];
+      inventoryLists.results.forEach(product => {
+        preparedProducts.push(...product.products)
+      });
+      this.preparedProducts = [...preparedProducts];
       inventoryLists.results.forEach(list => {
         list.products[0].countProducts = list.products.length;
         list.products[0].products = [...list.products];
@@ -205,8 +238,36 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
         newInventoryProducts.push(list.products[0]);
       });
 
+      if (this.searchForm.get('found_row_id').value) {
+        this.ignoringPagination = true;
+        this.searchForm.get('found_row_id').patchValue(null);
+        let page: number;
+
+        if (!inventoryLists.previous) {
+          page = 1;
+        } else if (!inventoryLists.next) {
+          page = Math.ceil(inventoryLists.count / 10);
+        } else {
+          page = parseInt(
+            inventoryLists.next
+              .split('?')
+              .find(s => s.includes('page'))
+              .split('&')
+              .find(s => s.includes('page'))
+              .replace(/[^0-9]/g, ''),
+            10) - 1;
+        }
+
+        this.searchForm.get('page').patchValue(page);
+        this.paginator.changePage(page - 1);
+        newInventoryProducts.sort((a, b) => a.root_id === this.findItemId ? -1 : 1);
+      }
+
+      this.findItemId = null;
+      // preparedProducts
       this.inventoryProducts = [...newInventoryProducts];
       this.countProducts = inventoryLists.count;
+
 
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
@@ -265,6 +326,11 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   }
 
   paginate(evt: any) {
+    if (this.ignoringPagination) {
+      this.ignoringPagination = false;
+      return;
+    }
+
     if (!this.isStartOnePage) {
       this.searchForm.get('page').patchValue(evt.page + 1);
       this.searchProducts();
@@ -274,13 +340,27 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   onComplete() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        this.isCompleting = true;
-        this.physicalInventoryService.completePhysicalInventory(+this.inventoryId).pipe(
-          finalize(() => this.isCompleting = false)
-        ).subscribe(() => {
-          this.router.navigateByUrl('/warehouse/physical-inventory').then();
+        this.physicalInventoryService.getChangedPhysicalInventoryProductsHaveBeenChanged(+this.inventoryId).subscribe((res: { data: InventoryProduct[] }) => {
+          if (res.data.length > 0) {
+            this.physicalInventoryService.changesInInventory(res.data).subscribe(res => {
+              if (res) {
+                this.completePhysicalInventory();
+              }
+            });
+          } else {
+            this.completePhysicalInventory();
+          }
         });
       }
+    });
+  }
+
+  completePhysicalInventory() {
+    this.isCompleting = true;
+    this.physicalInventoryService.completePhysicalInventory(+this.inventoryId).pipe(
+      finalize(() => this.isCompleting = false)
+    ).subscribe(() => {
+      this.router.navigateByUrl('/warehouse/physical-inventory').then();
     });
   }
 
@@ -308,7 +388,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   }
 
   onMoveProduct() {
-    this.physicalInventoryService.openPhysicalInventoryProductMoveModal(this.selectedInventoryProduct).subscribe(res => {
+    this.physicalInventoryService.openPhysicalInventoryProductMoveModal(this.selectedInventoryProducts[0]).subscribe(res => {
       if (res) {
         this.searchProducts();
       }
@@ -323,8 +403,101 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onGenerateQrCodes() {
+    this.isGenerating = true;
+
+    const send = {
+      by_nomenclatures_list: [],
+    };
+
+    this.selectedInventoryProducts.forEach(p => {
+      if (p.product) {
+        send.by_nomenclatures_list.push({
+          nomenclature_id: p.product.nomenclature.id,
+          serial_number_ids:
+            p.product.nomenclature.bulk_or_serial === '1' ?
+              p.products.filter(product => product.serial_number).map(product => +product.serial_number.id) : [],
+          order_product_ids: [p.id],
+          invoice_product_ids: [],
+        });
+      } else {
+        send.by_nomenclatures_list.push({
+          nomenclature_id: p.nomenclature.id,
+          serial_number_ids: [],
+          order_product_ids: [],
+          invoice_product_ids: [],
+        });
+      }
+    });
+
+    this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
+  }
+
+  onStartScanning() {
+    this.isScanned = true;
+    this.findItemId = null;
+    this.scanningEnd = false;
+  }
+
+  onScanned(data: any) {
+    this.physicalInventoryService.scanPhysicalInventoryQrCode(this.inventoryId, data).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(response => {
+      if (!this.scanningEnd) {
+        if (response) {
+          this.scanningComplete(response);
+        } else {
+          this.scanningEnd = true;
+          this.isScanned = false;
+
+          setTimeout(() => {
+            alert('Not Found');
+          }, 1000);
+        }
+      }
+    });
+  }
+
+  scanningComplete(data: { item_id_changed: number, list_id_changed: number }) {
+    const listId = data.item_id_changed;
+    const itemId = data.list_id_changed;
+
+    if (listId) {
+      this.findItemId = listId;
+      const findEl = this.inventoryProducts.find(p => p.root_id === this.findItemId);
+
+      if (findEl) {
+        if (findEl.product.nomenclature.bulk_or_serial === '1') {
+        } else {
+          findEl.is_scanned = true;
+          findEl.is_scanned_root = true;
+          this.inventoryProducts.sort((a, b) => a.root_id === this.findItemId ? -1 : 1);
+        }
+      } else {
+        this.searchForm.get('found_row_id').patchValue(listId);
+        this.searchProducts();
+      }
+    }
+
+    this.scanningEnd = true;
+    this.isScanned = false;
+  }
+
+  onCancelScanned() {
+    this.scanningEnd = true;
+    this.isScanned = false;
+  }
+
+  getWarehouseLocators(warehouseId: number) {
+    // @ts-ignore
+    return this.currentInventory.locators.filter(loc => loc.warehouse === warehouseId).map(loc => loc.name);
+  }
+
   ngOnDestroy() {
+    this.stopScanned$.next(true);
+    this.stopScanned$.complete();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
+
 }

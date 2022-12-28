@@ -1,0 +1,207 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'correspondents'" [isActive]="true"></pek-module-icon>
+      <h1>
+        {{type === types.INCOMING ? 'Incoming' : 'Outgoing'}}
+        Correspondent</h1>
+    </div>
+    <div class="page__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Correspondent" (click)="add()"></button>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <div class="page__card">
+      <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
+        <div class="filters-visibility__header">
+          <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+        </div>
+
+        <button
+          class="icon pi"
+          [class.pi-angle-double-up]="!isHideFilters"
+          [class.pi-angle-double-down]="isHideFilters"
+          (click)="toggleFilterVisibility()"
+        ></button>
+
+        <form
+          [formGroup]="searchForm"
+          class="form mb-3"
+        >
+          <div class="row">
+            <div class="col-3">
+              <div class="form-group">
+                <label>Date Received From</label>
+                <p-calendar
+                  inputId="basic"
+                  dateFormat="dd/mm/yy"
+                  formControlName="date_received_after"
+                  (ngModelChange)="changeCorrespondentStart($event)"
+                  [readonlyInput]="true"
+                ></p-calendar>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Date Received To</label>
+                <p-calendar
+                  inputId="basic"
+                  dateFormat="dd/mm/yy"
+                  formControlName="date_received_before"
+                  (ngModelChange)="changeCorrespondentEnd($event)"
+                  [readonlyInput]="true"
+                ></p-calendar>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>ID</label>
+                <input pInputText formControlName="id" type="number" class="form-control" (ngModelChange)="search()">
+              </div>
+            </div>
+            <div class="col-3" *ngIf="type === types.INCOMING" >
+              <div class="form-group">
+                <label>External ID</label>
+                <input
+                  id="person-name"
+                  class="form-control"
+                  type="text"
+                  pInputText
+                  formControlName="externalId"
+                  (ngModelChange)="search()"
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Correspondent Categories</label>
+                <pek-correspondetn-multi-category-picker
+                  (emitSelectedCategories)="searchByCategories($event)"
+                  [correspondentType]="type"></pek-correspondetn-multi-category-picker>
+              </div>
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3" *ngIf="type === types.OUTGOING" >
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+              <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="page__table">
+        <p-table
+          #dt
+          class="table-full-loading adaptive-table adaptive-table_filters"
+          [rows]="10"
+          [value]="correspondents"
+          scrollHeight="calc(100vh - 450px)"
+          [globalFilterFields]="['name']"
+          selectionMode="single"
+          [(selection)]="selectedNode"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="index-header text-center" style="width: 5%">ID</th>
+              <th *ngIf="type === types.INCOMING" style="width: 15%">
+                ExternalID
+              </th>
+              <th style="width: 10%">Date Received</th>
+              <th style="width: 15%">Description</th>
+              <th style="width: 15%">Category</th>
+              <th style="width: 30%">Files</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-correspondent let-i="rowIndex">
+            <tr [pSelectableRow]="correspondent">
+              <td style="width: 5%" class="text-center">
+                {{ correspondent.id}}
+              </td>
+              <td *ngIf="type === types.INCOMING" style="width: 15%">
+                {{ correspondent.external_id}}
+              </td>
+              <td style="width: 10%">
+                {{ correspondent.date_received | date: "dd/MM/yyyy" }}
+              </td>
+              <td style="width: 20%">
+                {{ correspondent.description}}
+              </td>
+              <td style="width: 10%">
+                {{ correspondent.category ? correspondent.category.name : null }}
+              </td>
+              <td class="files-cont" style="width: 30%">
+                <span *ngIf="correspondent.files.length > 1">
+                  <a href="javascript:void(0)" (click)="downloadFile(correspondent.files[0])">
+                     {{ getName(correspondent.files[0].file) }} (F {{correspondent.files.length}})
+                  </a>
+                </span>
+
+                <span *ngIf="correspondent.files.length === 1">
+                  <a href="javascript:void(0)" (click)="downloadFile(correspondent.files[0])">
+                     {{ getName(correspondent.files[0].file) }}
+                  </a>
+                </span>
+
+                <div *ngIf="correspondent.files.length > 1" class="files-list">
+                  <span *ngFor="let file of correspondent.files">
+                     <a href="javascript:void(0)" (click)="downloadFile(file)">
+                       {{ getName(file.file) }}
+                     </a>
+                     <br>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr class="table-pagination-preloader" *ngIf="isLoading">
+              <div>
+                <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+              </div>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr class="no-content">
+              <td style="width: 100%;" class="text-center p-4" [attr.colspan]="type === types.INCOMING ? 6 : 5">
+                <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin fa-3x "></i>
+                <span *ngIf="!isLoading">
+              No Records Found
+            </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator = false; dt.scrollable = true"
+              pTooltip="Remove Pagination"
+              styleClass="p-button-text"
+            >All
+            </p-button
+            >
+          </ng-template>
+          <ng-template pTemplate="paginatorleft"></ng-template>
+        </p-table>
+        <div *ngIf="!isShowAll" [class.paginator-wrap]="isLoading" class="pagination-wrap">
+          <p-paginator
+            #paginator
+            [rows]="10"
+            [totalRecords]="countCorrespondents"
+            (onPageChange)="paginate($event)">
+          </p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #actionButtons>
+  <div class="action-buttons">
+    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>
+  </div>
+</ng-template>

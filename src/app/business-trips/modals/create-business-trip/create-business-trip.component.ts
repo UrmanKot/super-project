@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
 import {DataToSend} from '../../components/edit-business-trip/edit-business-trip.component';
@@ -6,19 +6,22 @@ import {BusinessTripService} from '../../services/business-trip.service';
 import {take} from 'rxjs/operators';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
+import {BusinessTripEmployee} from '../../models/business-trip-employee';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-create-business-trip',
   templateUrl: './create-business-trip.component.html',
   styleUrls: ['./create-business-trip.component.scss']
 })
-export class CreateBusinessTripComponent implements OnInit {
+export class CreateBusinessTripComponent implements OnInit, OnDestroy {
   form: FormGroup;
   employeeFilter: [QuerySearch] = [{name: 'by_user_trip_permissions', value: true}];
   private formData: FormData;
+  private destroy$ = new Subject();
   constructor(
     private fb: FormBuilder,
-    private expensesService: BusinessTripService,
+    private businessService: BusinessTripService,
     private dialogRef: MatDialogRef<CreateBusinessTripComponent>,
     private router: Router
     ) {
@@ -37,6 +40,8 @@ export class CreateBusinessTripComponent implements OnInit {
     });
   }
 
+  tripId: number;
+
   ngOnInit(): void {
   }
 
@@ -51,57 +56,47 @@ export class CreateBusinessTripComponent implements OnInit {
     return (this.form.get('employee') as FormGroup) as FormGroup;
   }
   addBusinessTrip() {
-    const dataToSend = this.prepareDataToSend();
-    const result = this.obj2FormData(dataToSend);
-    this.expensesService
-      .create(result)
-      .pipe(take(1))
+    this.businessService
+      .create({id: null})
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
-        this.router.navigate(['/business-trips/trip/edit/', res.id])
+        this.tripId = res.id;
+        this.employeeUpdate();
+      });
+  }
+
+  employeeUpdate() {
+    const employeeUpdate: DataToSend = {};
+    if (this.form.value.employee.id) {
+      employeeUpdate.employee = this.form.value.employee.id;
+      employeeUpdate.custom_employee = null;
+    } else {
+      const position = this.form.value.employee_position;
+      const firstName = this.form.value.employee_first_name;
+      const lastNameName = this.form.value.employee_last_name;
+      if (!firstName || !lastNameName) {
+        return;
+      }
+      employeeUpdate.custom_employee = {
+        id: this.form.value.employee_id,
+        first_name: this.form.value.employee_first_name,
+        last_name: this.form.value.employee_last_name,
+        position: position ? position : null,
+      };
+      employeeUpdate.employee = null;
+    }
+
+    this.businessService
+      .updateBusinessTripEmployee(this.tripId, employeeUpdate)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.router.navigate(['/business-trips/trip/edit/', this.tripId]);
         this.dialogRef.close(true);
       });
   }
 
-  prepareDataToSend(): DataToSend {
-    const dataToSend: DataToSend = {};
-
-    if (this.form.value.employee.id) {
-      dataToSend.employee = this.form.value.employee.id;
-      dataToSend.full_employee = this.form.value.employee;
-    } else {
-      dataToSend.custom_employee = {
-        id: this.form.value.employee_id,
-        first_name: this.form.value.employee_first_name,
-        last_name: this.form.value.employee_last_name,
-        position: this.form.value.employee_position,
-      };
-      dataToSend.full_employee = dataToSend.custom_employee;
-    }
-    return dataToSend;
-  }
-
-  obj2FormData(obj, formData = new FormData()) {
-    this.formData = formData;
-    this.createFormData(obj);
-    return this.formData;
-  }
-
-  createFormData(obj, subKeyStr = '') {
-    for (const i in obj) {
-      const value = obj[i];
-      const subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
-
-      if (typeof (value) === 'string' || typeof (value) === 'number' || typeof (value) === 'boolean') {
-        // @ts-ignore
-        this.formData.append(subKeyStrTrans, value);
-
-      } else if (typeof (value) === 'object') {
-        if (value instanceof File) {
-          this.formData.append(subKeyStrTrans, value);
-        } else {
-          this.createFormData(value, subKeyStrTrans);
-        }
-      }
-    }
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

@@ -1,5 +1,6 @@
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Locator} from '../../warehouse/models/locator';
+import {SerialNumber} from '../../procurement/models/invoice';
 
 export class Product {
   readonly id: number;
@@ -13,7 +14,7 @@ export class Product {
   countProducts?: number;
   product?: Product;
   products?: Product[];
-  // serial_number?: SerialNumber;
+  serial_number?: SerialNumber;
   is_scanned?: boolean;
   is_scanned_root?: boolean;
   checkedForGeneration?: boolean;
@@ -22,7 +23,6 @@ export class Product {
   rght?: number;
   locator?: Locator;
   level?: number;
-  physical_inventory_nomenclature?: any;
 }
 
 export class ProductFile {

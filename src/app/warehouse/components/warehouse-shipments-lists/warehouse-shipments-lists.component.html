@@ -1,0 +1,85 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>Shipments Lists</h1>
+    </div>
+    <div class="page__tools">
+      <button pButton type="button" icon="pi pi-plus" label="New Serial Type"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="shipments.length > 0"
+        [rows]="10"
+        [(selection)]="selectedShipment"
+        [value]="shipments"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedShipment">Choose the Shipment to view Products</p>
+            <a
+              [routerLink]="['/warehouse/shipments-lists/shipment', selectedShipment?.id]"
+              [class.disabled]="!selectedShipment"
+              class="ml-auto"
+              pButton
+              type="button"
+              icon="pi pi-bars"
+              label="Shipment Products"
+            >
+            </a>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="text-center">#</th>
+            <th style="width: 35%">Creation Date</th>
+            <th style="width: 20%" class="text-center">Sales chain Id</th>
+            <th style="width: 20%" class="text-center">Company name</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-shipment let-i="rowIndex">
+          <tr [pSelectableRow]="shipment">
+            <td style="width: 5%" class="text-center">{{i + 1}}</td>
+            <td style="width: 35%">{{shipment.created_at | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 20%" class="text-center">{{shipment.id}}</td>
+            <td style="width: 20%" class="text-center">{{shipment.customer.name}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="5">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+<!--    <div *ngIf="!dt.paginator && !isLoading && serialTypes.length > 0" class="paginator-return-pagination">-->
+<!--      <p-button-->
+<!--        type="button"-->
+<!--        (click)="dt.paginator=true"-->
+<!--        styleClass="p-button-text"-->
+<!--      >-->
+<!--        Return pagination-->
+<!--      </p-button>-->
+<!--    </div>-->
+  </div>
+</div>

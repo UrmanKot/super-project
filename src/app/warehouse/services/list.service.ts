@@ -3,12 +3,15 @@ import {environment} from '@env/environment';
 import {concat, forkJoin, Observable, toArray} from 'rxjs';
 import {List, Lists} from '../models/list';
 import {map} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpContext} from '@angular/common/http';
 import {QuerySearch} from '@shared/models/other';
 import {MatDialog} from '@angular/material/dialog';
 import {
   SetProductionListLocatorComponent
 } from '../modals/set-production-list-locator/set-production-list-locator.component';
+import {ListProduct} from '../models/list-product';
+import {ScanResult} from '../../qr-code/models/scan-result';
+import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -130,5 +133,13 @@ export class ListService {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  getScanned(listId, scanData: ScanResult): Observable<{ids_found: number[]}> {
+    return this.httpClient.post<{ data: {ids_found: number[]} }>(this.API_URL + this.url + listId + '/scan_list_product/', scanData, {
+      context: new HttpContext().set(IS_SCANNING_ENABLED, true)
+    }).pipe(map(response => {
+      return response.data;
+    }));
   }
 }

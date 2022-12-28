@@ -1,0 +1,115 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Physical Inventory Before Completion Check
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <p-tabView>
+    <p-tabPanel header="Not Matching Quantity">
+      <p-table
+        [rows]="10"
+        [value]="notMatchingQuantity"
+        [paginator]="notMatchingQuantity.length > 10"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 10%" class="index-header text-center">#</th>
+            <th style="width: 25%" class="text-center">Code</th>
+            <th style="width: 25%" class="text-center">Name</th>
+            <th style="width: 20%" class="text-center">Initial Quantity</th>
+            <th style="width: 20%" class="text-center">Current Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td style="width: 10%" class="text-center">{{i + 1}}</td>
+            <td style="width: 25%" class="text-center">
+              {{product.nomenclature.code}}
+            </td>
+            <td style="width: 25%">
+              <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{product.nomenclature.name}}
+            </td>
+            <td style="width: 20%" class="text-center">
+              {{product.initial_quantity}}
+            </td>
+            <td style="width: 20%" class="text-center">
+              {{product.current_available_quantity}}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-3" [attr.colspan]="5">
+              <span>No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="With Serial Number Not Scanned">
+      <p-table
+        [rows]="10"
+        [value]="nonScannedSerialNumbers"
+        [paginator]="nonScannedSerialNumbers.length > 10"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 10%" class="index-header text-center">#</th>
+            <th style="width: 25%" class="text-center">Code</th>
+            <th style="width: 25%" class="text-center">Name</th>
+            <th style="width: 20%" class="text-center">Initial Quantity</th>
+            <th style="width: 20%" class="text-center">Current Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td style="width: 10%" class="text-center">{{i + 1}}</td>
+            <td style="width: 25%" class="text-center">
+              {{product.nomenclature.code}}
+            </td>
+            <td style="width: 25%">
+              <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{product.nomenclature.name}}
+            </td>
+            <td style="width: 20%" class="text-center">
+              {{product.initial_quantity}}
+            </td>
+            <td style="width: 20%" class="text-center">
+              {{product.current_available_quantity}}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-3" [attr.colspan]="5">
+              <span>No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+  </p-tabView>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    pButton
+    type="button"
+    label="Complete"
+    class="p-button-success"
+    (click)="onAcceptChanges()"
+  ></button>
+</mat-dialog-actions>

@@ -275,28 +275,37 @@
   <div class="guide__col guide__col_1">
     <div class="guide__button">
       <pek-guide-button
+        title="Product Structure"
+        routeUrl="product-structure/products"
+        buttonsPosition="top"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+    <div class="guide__button guide__button_arrow-bottom">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Nomenclature Confirmation"
+        routeUrl="/confirmation/nomenclature"
+        (navigate)="goToLinkWindow($event)"
+        buttonsPosition="right"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+    <div class="guide__button">
+      <pek-guide-button
         title="Confirmation"
         routeUrl="/confirmation"
         buttonsPosition="right"
         (navigate)="goToLink($event)"
       ></pek-guide-button>
     </div>
-    <div class="guide__button guide__button_arrow-top">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Nomenclature Confirmation"
-        routeUrl="/confirmation/nomenclature"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+
     <div class="guide__button">
       <pek-guide-button
-        title="Product Structure"
-        routeUrl="product-structure/products"
-        buttonsPosition="bottom"
+        title="Business trips"
+        routeUrl="/business-trips/trips"
         (navigate)="goToLink($event)"
+        buttonsPosition="top"
       ></pek-guide-button>
     </div>
   </div>
@@ -311,25 +320,16 @@
       ></pek-guide-button>
       <span></span>
     </div>
-  </div>
-  <div class="guide__col guide__col_3">
+
     <div class="guide__button">
       <pek-guide-button
-        [hideButtons]="true"
-        btnStyle="outline"
-        title="Customers"
-      ></pek-guide-button>
-    </div>
-
-    <div class="guide__button guide__button_arrow-bottom-top guide__button_arrow-bottom">
-      <pek-guide-button
         btnStyle="secondary"
-        title="Marketing and Sales events"
-        routeUrl="/dash/sales/lists"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
+        title="Sales Chain Creating"
       ></pek-guide-button>
       <div>
+        <span></span>
+        <span></span>
+        <span></span>
         <span></span>
         <span></span>
       </div>
@@ -337,20 +337,53 @@
 
     <div class="guide__button">
       <pek-guide-button
-        title="Contacts and events"
+        btnStyle="primary"
+        title="Contacts and Events"
         routeUrl="/crm/business-partners"
-        (navigate)="goToLink($event)"
         buttonsPosition="right"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button guide__button_arrow-top-bottom">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Marketing and Sales Events"
+      ></pek-guide-button>
+      <span class="top"></span>
+      <span class="bottom"></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="outline"
+        title="Customer"
       ></pek-guide-button>
     </div>
 
-    <div class="guide__button guide__button_arrow-bottom">
+    <div class="guide__button">
       <pek-guide-button
-        btnStyle="secondary"
-        title="Sales chain creating"
-        buttonsPosition="right"
+        title="Correspondents"
+        routeUrl="/correspondents/incoming-correspondent"
+        (navigate)="goToLink($event)"
+        buttonsPosition="top"
       ></pek-guide-button>
-      <span></span>
+    </div>
+  </div>
+  <div class="guide__col guide__col_3">
+    <div class="guide__button">
+      <pek-guide-button
+        [hideButtons]="true"
+        btnStyle="secondary"
+        title="Manufacturing parts in advance"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
 
     <div class="guide__button">
@@ -375,6 +408,8 @@
       <pek-guide-button
         title="Delivery chain"
         buttonsPosition="right"
+        routeUrl="/dash/delivery-chains"
+        (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
     </div>
 
@@ -413,6 +448,15 @@
         [hideButtons]="true"
       ></pek-guide-button>
     </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        title="ERP Statistics"
+        routeUrl="/statistics"
+        buttonsPosition="top"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
   </div>
   <div class="guide__col guide__col_4">
     <div class="guide__button guide__button_arrow-right">
@@ -427,22 +471,22 @@
     </div>
   </div>
   <div class="guide__col guide__col_5">
-    <div class="guide__button">
-      <pek-guide-button
-        routeUrl="/product-structure/products"
-        (navigate)="goToLink($event)"
-        title="Product structure"
-        buttonsPosition="top"
-      ></pek-guide-button>
-    </div>
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Manufacturing parts in advance"
-        buttonsPosition="right"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        routeUrl="/product-structure/products"-->
+    <!--        (navigate)="goToLink($event)"-->
+    <!--        title="Product structure"-->
+    <!--        buttonsPosition="top"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Manufacturing parts in advance"-->
+    <!--        buttonsPosition="right"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
     <div class="guide__button">
       <pek-guide-button
         title="Confirmation"
@@ -497,6 +541,58 @@
       ></pek-guide-button>
       <span></span>
     </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
+        title="Tender"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="top"
+        btnStyle="primary"
+        routeUrl="/dash/confirmation"
+        title="Confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <div>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
+        title="Tender"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
+        title="Payment confirmation"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </div>
   <div class="guide__col guide__col_7">
 
@@ -523,9 +619,9 @@
     <div class="guide__button">
       <pek-guide-button
         title="Manufacturing procurement"
+        (navigate)="goToLinkWindow($event)"
         routeUrl="/dash/procurement/orders"
         buttonsPosition="left"
-        (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <span></span>
     </div>
@@ -549,14 +645,54 @@
       ></pek-guide-button>
     </div>
 
+    <div class="guide__button guide__button_arrow-top-bottom">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Procurement"
+        buttonsPosition="left"
+        [hideButtons]="true"
+      ></pek-guide-button>
+      <span class="top"></span>
+      <span class="bottom"></span>
+    </div>
+
     <div class="guide__button">
       <pek-guide-button
-        title="Production"
-        routeUrl="/dash/production/plan"
-        buttonsPosition="bottom"
+        btnStyle="primary"
+        routeUrl="/dash/purchasing/orders"
+        title="General Procurement"
         (navigate)="goToLinkWindow($event)"
+        buttonsPosition="left"
       ></pek-guide-button>
     </div>
+
+    <div class="guide__button guide__button_arrow-top">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Manual procurement request"
+        buttonsPosition="left"
+        [hideButtons]="true"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="outline"
+        title="Employees"
+        buttonsPosition="left"
+        [hideButtons]="true"
+      ></pek-guide-button>
+    </div>
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="primary"-->
+    <!--        title="Instruments/ tools/ equipment"-->
+    <!--        buttonsPosition="left"-->
+    <!--        [hideButtons]="true"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
   </div>
   <div class="guide__col guide__col_8">
     <div class="guide__button guide__button_arrow-right">
@@ -625,6 +761,45 @@
       </div>
     </div>
 
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Delivered items"
+        buttonsPosition="left"
+        [hideButtons]="true"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Tool request"
+        buttonsPosition="left"
+        [hideButtons]="true"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="primary"
+        title="Instruments/ tools/ equipment"
+        buttonsPosition="top"
+        routeUrl="/dash/instruments/instruments-and-tools"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+    </div>
   </div>
   <div class="guide__col guide__col_9">
     <!--        <button-->
@@ -706,10 +881,10 @@
     <div class="guide__button">
       <pek-guide-button
         title="QC"
-        routeUrl="/dash/quality-control/invoices"
         buttonsPosition="right"
         (getInfo)="showLorem = true"
         [info]="true"
+        routeUrl="/dash/quality-control/invoices"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
     </div>
@@ -748,10 +923,24 @@
       <span></span>
     </div>
 
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Rework order"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
     <div class="guide__button guide__button_arrow-left-bottom-big">
       <pek-guide-button
         btnStyle="secondary"
-        title="Qc not passed"
+        title="QC not passed"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -764,33 +953,16 @@
       </div>
     </div>
 
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Rework"
-        buttonsPosition="left"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span></span>
-    </div>
-
     <div class="guide__button">
       <pek-guide-button
-        title="Production"
-        routeUrl="/dash/production/plan"
-        buttonsPosition="left"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-    </div>
-
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
         btnStyle="secondary"
-        title="Manufactured Order"
-        buttonsPosition="left"
+        title="QC Passed"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <div>
+        <span></span>
         <span></span>
         <span></span>
       </div>
@@ -816,8 +988,8 @@
     <div class="guide__button">
       <pek-guide-button
         title="Confirmation"
-        routeUrl="/confirmation"
         buttonsPosition="right"
+        routeUrl="/confirmation"
         (navigate)="goToLink($event)"
       ></pek-guide-button>
     </div>
@@ -855,95 +1027,125 @@
       </div>
     </div>
 
-    <div class="guide__button guide__button_delivered-items">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Delivered items"
-        buttonsPosition="right"
-      ></pek-guide-button>
+    <!--    <div class="guide__button guide__button_delivered-items">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Delivered items"-->
+    <!--        buttonsPosition="right"-->
+    <!--      ></pek-guide-button>-->
 
-      <div>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="guide__button">
-      <pek-guide-button
-        title="Warehouse isolator"
-        routeUrl="/warehouse/isolator"
-        buttonsPosition="bottom"
-        (navigate)="goToLink($event)"
-      ></pek-guide-button>
-      <div>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Warehouse isolator"-->
+    <!--        routeUrl="/warehouse/isolator"-->
+    <!--        buttonsPosition="bottom"-->
+    <!--        (navigate)="goToLink($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Return to procurement"
-        routeUrl="/dash/warehouse/insulator"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Return to procurement"-->
+    <!--        routeUrl="/dash/warehouse/insulator"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
 
-    <div class="guide__button">
-      <pek-guide-button
-        title="Manufacturing procurement"
-        buttonsPosition="right"
-        routeUrl="/dash/procurement/orders"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-    </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Manufacturing procurement"-->
+    <!--        buttonsPosition="right"-->
+    <!--        routeUrl="/dash/procurement/orders"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
 
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Delivered Items"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Delivered Items"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
 
-    <div class="guide__button">
-      <pek-guide-button
-        title="QC"
-        routeUrl="/dash/quality-control/invoices"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-    </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="QC"-->
+    <!--        routeUrl="/dash/quality-control/invoices"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="QC passed"
-        buttonsPosition="right"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="QC passed"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
 
-    <div class="guide__button">
-      <pek-guide-button
-        title="Warehouse"
-        buttonsPosition="right"
-        routeUrl="/warehouse/items"
-        (navigate)="goToLink($event)"
-      ></pek-guide-button>
-    </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Warehouse"-->
+    <!--        buttonsPosition="right"-->
+    <!--        routeUrl="/warehouse/items"-->
+    <!--        (navigate)="goToLink($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
   </div>
   <div class="guide__col guide__col_12">
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="top"
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="secondary"
+        title="Tender"
+        routeUrl="/confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
     <div class="guide__button guide__button_arrow-right-left">
       <pek-guide-button
         [btnStyle]="'secondary'"
@@ -958,26 +1160,171 @@
 
     <div class="guide__button">
       <pek-guide-button
-        title="Write off"
-        routeUrl="/confirmation/write-off"
         buttonsPosition="right"
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/confirmation"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button guide__button_arrow-top">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="secondary"
+        title="Rework Request"
+        routeUrl="/dash/confirmation"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Warehouse Isolator"
+        routeUrl="/warehouse/isolator"
         (navigate)="goToLink($event)"
       ></pek-guide-button>
     </div>
 
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
-        btnStyle="secondary"
-        title="Disassembling"
         buttonsPosition="right"
+        btnStyle="secondary"
+        title="Return to procurement"
+        routeUrl="/dash/confirmation"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Manufacturing procurement"
+        (navigate)="goToLinkWindow($event)"
+        routeUrl="/dash/procurement/orders"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button guide__button_arrow-bottom">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="secondary"
+        title="Delivered items"
+        routeUrl="/dash/confirmation"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="QC"
+        routeUrl="/dash/quality-control/invoices"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
-
-      <div>
-        <span></span>
-        <span></span>
-      </div>
     </div>
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        [btnStyle]="'secondary'"-->
+    <!--        title="Disasembling request"-->
+    <!--        routeUrl="/dash/outsource/outsource-chain"-->
+    <!--        buttonsPosition="top"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        buttonsPosition="top"-->
+    <!--        btnStyle="primary"-->
+    <!--        title="Confirmation"-->
+    <!--        routeUrl="/dash/confirmation"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        [btnStyle]="'secondary'"-->
+    <!--        title="Disasembled items"-->
+    <!--        buttonsPosition="top"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        [btnStyle]="'secondary'"-->
+    <!--        title="Write off request"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        buttonsPosition="right"-->
+    <!--        btnStyle="primary"-->
+    <!--        title="Confirmation"-->
+    <!--        routeUrl="/dash/confirmation"-->
+    <!--      ></pek-guide-button>-->
+
+    <!--    </div>-->
+
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        [btnStyle]="'secondary'"-->
+    <!--        title="Write off"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        [btnStyle]="'outline'"-->
+    <!--        title="Write off"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Write off"-->
+    <!--        routeUrl="/confirmation/write-off"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLink($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Disassembling"-->
+    <!--        buttonsPosition="right"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+
+    <!--      <div>-->
+    <!--        <span></span>-->
+    <!--        <span></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 
   <div class="guide__col guide__col_13">
@@ -993,67 +1340,177 @@
 
     <div class="guide__button">
       <pek-guide-button
-        title="Purchasing"
-        buttonsPosition="left"
-        routeUrl="/dash/purchasing/orders"
+        btnStyle="secondary"
+        title="Disassembling request"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
-    <div class="guide__button guide__button_arrow-bottom">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Payment confirmation"
-        routeUrl="/dash/confirmation"
-      ></pek-guide-button>
-      <span></span>
-    </div>
+
     <div class="guide__button">
       <pek-guide-button
+        btnStyle="primary"
         title="Confirmation"
-        buttonsPosition="left"
-        routeUrl="/confirmation"
+        routeUrl="/confirmation/nomenclature"
         (navigate)="goToLink($event)"
+        buttonsPosition="top"
       ></pek-guide-button>
     </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Disassembled items"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Purchasing"-->
+    <!--        buttonsPosition="left"-->
+    <!--        routeUrl="/dash/purchasing/orders"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Payment confirmation"-->
+    <!--        routeUrl="/dash/confirmation"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Confirmation"-->
+    <!--        buttonsPosition="left"-->
+    <!--        routeUrl="/confirmation"-->
+    <!--        (navigate)="goToLink($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+    <!--    <div class="guide__button guide__button_arrow-bottom">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Confirmed payment"-->
+    <!--        routeUrl="/dash/confirmation"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span></span>-->
+    <!--    </div>-->
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        title="Payments"-->
+    <!--        buttonsPosition="left"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--        routeUrl="/dash/payments"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+    <!--  </div>-->
+
+    <!--  <div class="guide__col guide__col_14">-->
+    <!--    <div class="guide__button guide__button_arrow-right-left">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="secondary"-->
+    <!--        title="Purchasing"-->
+    <!--        routeUrl="/dash/purchasing/orders"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--      <span class="left"></span>-->
+    <!--      <span class="right"></span>-->
+    <!--    </div>-->
+    <!--  </div>-->
+
+    <!--  <div class="guide__col guide__col_15">-->
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="outline"-->
+    <!--        title="Supplier"-->
+    <!--        buttonsPosition="bottom"-->
+    <!--        routeUrl="test"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
+    <!--  </div>-->
+  </div>
+  <div class="guide__col guide__col_14">
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Write off request"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/confirmation/nomenclature"
+        (navigate)="goToLink($event)"
+        buttonsPosition="top"
+      ></pek-guide-button>
+    </div>
+
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
         btnStyle="secondary"
-        title="Confirmed payment"
-        routeUrl="/dash/confirmation"
+        title="Write off"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <span></span>
     </div>
-    <div class="guide__button">
-      <pek-guide-button
-        title="Payments"
-        buttonsPosition="left"
-        (navigate)="goToLinkWindow($event)"
-        routeUrl="/dash/payments"
-      ></pek-guide-button>
-    </div>
-  </div>
 
-  <div class="guide__col guide__col_14">
-    <div class="guide__button guide__button_arrow-right-left">
-      <pek-guide-button
-        btnStyle="secondary"
-        title="Purchasing"
-        routeUrl="/dash/purchasing/orders"
-        (navigate)="goToLinkWindow($event)"
-      ></pek-guide-button>
-      <span class="left"></span>
-      <span class="right"></span>
-    </div>
-  </div>
-
-  <div class="guide__col guide__col_15">
     <div class="guide__button">
       <pek-guide-button
         btnStyle="outline"
-        title="Supplier"
-        buttonsPosition="bottom"
-        routeUrl="test"
+        title="write off"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
+    </div>
+  </div>
+
+  <div class="guide__col guide__col_reports">
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="top"
+        btnStyle="primary"
+        title="Reports"
+        routeUrl="/dash/accounting/cost-reports"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 </ng-template>

@@ -35,14 +35,19 @@ const routes: Routes = [
         loadChildren: () => import('./sales/sales.module').then(m => m.SalesModule)
       },
       {
-        path: 'payments',
-        title: 'Payments',
-        loadChildren: () => import('./payments/payments.module').then(m => m.PaymentsModule)
-      },
-      {
         path: 'delivery-chains',
         title: 'Delivery Chains',
         loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
+      },
+      {
+        path: 'statistics',
+        title: 'ERP Statistics',
+        loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
+      },
+      {
+        path: 'payments',
+        title: 'Payments',
+        loadChildren: () => import('./payments/payments.module').then(m => m.PaymentsModule)
       },
       {
         path: 'crm',
@@ -53,6 +58,10 @@ const routes: Routes = [
         path: 'business-trips',
         title: 'Business Trips',
         loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule) },
+      {
+        path: 'correspondents',
+        title: 'Correspondents',
+        loadChildren: () => import('./correspondent/correspondent.module').then(m => m.CorrespondentModule) },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },

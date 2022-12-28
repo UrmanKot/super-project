@@ -9,7 +9,7 @@ export class DashboardMenuItem implements MenuItem {
   label?: string;
   routerLink?: any;
   icon?: string;
-  requiredModulePermission?: string
+  requiredModulePermission?: string;
 }
 
 @Component({
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Corespondents',
     icon: 'pi pi-users',
-    routerLink: ['/external', `${environment.link_url}dash/correspondents`],
+    routerLink: [`/correspondents`],
     requiredModulePermission: 'can_edit_correspondents'
   }, {
     label: 'Reports',
@@ -97,13 +97,23 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Delivery',
     icon: 'icon-delivery-chains',
-    routerLink: '/delivery-chains',
+    routerLink: ['/external', `${environment.link_url}dash/delivery-chains`],
     requiredModulePermission: 'can_edit_delivery_chain'
   }, {
     label: 'Business Trips',
     icon: 'pi pi-car',
     routerLink: [`/business-trips/trips`],
     requiredModulePermission: 'can_edit_business_trips'
+  }, {
+    label: 'Instruments/Tools/Equipment',
+    icon: 'pi pi-database',
+    routerLink: ['/external', `${environment.link_url}dash/instruments/instruments-and-tools`],
+    requiredModulePermission: 'can_edit_instruments_and_tools'
+  }, {
+    label: 'ERP Statistics',
+    icon: 'pi pi-chart-bar',
+    routerLink: ['/statistics'],
+    requiredModulePermission: 'can_edit_instruments_and_tools'
   }];
 
   constructor(

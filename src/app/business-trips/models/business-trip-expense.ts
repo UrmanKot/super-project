@@ -12,4 +12,6 @@ export class BusinessTripExpense {
   base64File?: string;
   fullExpense?: Expense;
   clear_file?: boolean;
+  business_trip?: number;
+  uploaded_file?: string;
 }

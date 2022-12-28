@@ -7,9 +7,16 @@
         <ng-container *ngIf="isLoadingCurrentInventory">...</ng-container>
         <ng-container *ngIf="!isLoadingCurrentInventory">
           <ng-container *ngFor="let warehouse of currentInventory.warehouses; let idx = index">
-            {{warehouse.name}} <span *ngIf="idx !== currentInventory.warehouses.length - 1">,</span>
+            {{warehouse.name}}
+            locators(
+            <ng-container *ngFor="let locator of getWarehouseLocators(warehouse.id); let locatorIdx = index">
+              {{locator}}<span *ngIf="locatorIdx !== getWarehouseLocators(warehouse.id).length - 1">,</span>
+            </ng-container>
+            )
+            <span *ngIf="idx !== currentInventory.warehouses.length - 1">,</span>
           </ng-container>
         </ng-container>
+        <div>Date Created {{ currentInventory?.system_creation_date | date:'dd/MM/yyyy'}}</div>
       </h1>
     </div>
     <div class="page__tools">
@@ -118,12 +125,32 @@
         <div class="col-4">
           <div class="action-buttons">
             <button
-              class="ml-auto mt-auto"
+              class="ml-auto mr-2 p-button-icon"
               pButton
               type="button"
-              icon="pi pi-angle-double-right"
+              icon="pi pi-camera"
+              label="Scan QR Codes"
+              (click)="onStartScanning()"
+            >
+            </button>
+            <button
+              class="mr-2 p-button-icon"
+              pButton
+              type="button"
+              icon="pi pi-qrcode"
+              label="Generate QR Codes"
+              [loading]="isGenerating"
+              (click)="onGenerateQrCodes()"
+              [disabled]="selectedInventoryProducts.length === 0"
+            >
+            </button>
+            <button
+              class=""
+              pButton
+              type="button"
+              icon="pi pi-angle-double-right p-button-icon"
               label="Move product"
-              [disabled]="!selectedInventoryProduct"
+              [disabled]="selectedInventoryProducts.length === 0 || selectedInventoryProducts.length > 1"
               (click)="onMoveProduct()"
             >
             </button>
@@ -135,78 +162,86 @@
     <div class="table-pagination-preloader">
       <p-table
         #dt
-        selectionMode="single"
+        selectionMode="multiple"
         scrollHeight="calc(100vh - 30.25rem)"
         [scrollable]="true"
         dataKey="id"
-        [rows]="10"
-        [(selection)]="selectedInventoryProduct"
-        [value]="inventoryProducts"
+        groupRowsBy="nomenclature.id"
+        rowGroupMode="rowspan"
+        [rows]="preparedProducts.length"
+        [(selection)]="selectedInventoryProducts"
+        [value]="preparedProducts"
       >
         <ng-template pTemplate="header">
           <tr>
+            <th style="width: 3%">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
             <th class="index-header text-center" style="width: 5%">#</th>
             <th style="width: 14%">Code</th>
             <th style="width: 10%">Name</th>
             <th style="width: 10%" class="text-center">Technology</th>
             <th style="width: 9%" class="text-center">Initial Quantity</th>
             <th style="width: 11%" class="text-center">Entered Quantity</th>
-            <th style="width: 13%" class="text-center">Category</th>
+            <th style="width: 11%" class="text-center">Category</th>
             <th style="width: 6%" class="text-center">UOM</th>
-            <th style="width: 12%" class="text-center">Warehouse</th>
+            <th style="width: 11%" class="text-center">Warehouse</th>
             <th style="width: 14%">Locator</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-inventoryProduct let-i="rowIndex">
+
+        <ng-template pTemplate="body" let-inventoryProduct let-i="rowIndex" let-rowgroup="rowgroup"
+                     let-rowspan="rowspan">
           <tr
-            [pSelectableRow]="inventoryProduct"
-            [pRowToggler]="inventoryProduct"
+            [class.qr-code-item-scanned]="inventoryProduct.is_scanned"
+            [class.qr-code-item-found]="inventoryProduct.id === findItemId"
           >
+            <td style="width: 3%">
+              <p-tableCheckbox [value]="inventoryProduct"></p-tableCheckbox>
+            </td>
             <td style="width: 5%" class="text-center">
               {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
             </td>
-            <td style="width: 14%">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
+            <td style="width: 14%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.code}}
               </ng-container>
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.code}}
-              </ng-container>
-            </td>
-            <td style="width: 10%">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
-                <b *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">(S)</b>
-                {{inventoryProduct.product.nomenclature.name}}
-                <b
-                  *ngIf="inventoryProduct.product.nomenclature.bulk_or_serial === '1'">
-                  ({{inventoryProduct.countProducts}})
-                </b>
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.code}}
               </ng-container>
 
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                <b *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">(S)</b>
-                {{inventoryProduct.physical_inventory_nomenclature.name}}
-                <b
-                  *ngIf="inventoryProduct.physical_inventory_nomenclature.bulk_or_serial === '1'">
-                  ({{inventoryProduct.countProducts}})
-                </b>
+              <ng-container *ngIf="inventoryProduct.root_id === findItemId">
+                <span>(found)</span>
               </ng-container>
+            </td>
+            <td style="width: 10%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <b *ngIf="inventoryProduct.nomenclature.bulk_or_serial === '1'">(S)</b>
+              {{inventoryProduct.nomenclature.name}}
             </td>
             <td style="width: 10%" class="text-center">
               <ng-container *ngIf="inventoryProduct.product">
                 {{inventoryProduct.product.current_technology?.name}}
               </ng-container>
 
-              <ng-container *ngIf="!inventoryProduct.product && inventoryProduct.physical_inventory_technology">
-                {{inventoryProduct.physical_inventory_technology?.name}}
+              <ng-container *ngIf="!inventoryProduct.product && inventoryProduct.technology">
+                {{inventoryProduct.technology?.name}}
               </ng-container>
             </td>
             <td style="width: 9%" class="text-center">
-              {{inventoryProduct.initial_quantity}}
+                <span>
+                  <span *ngIf="inventoryProduct.initial_quantity === inventoryProduct.current_available_quantity">
+                  {{inventoryProduct.initial_quantity}}
+                </span>
+                <span *ngIf="inventoryProduct.initial_quantity !== inventoryProduct.current_available_quantity">
+                  {{inventoryProduct.initial_quantity}} <span
+                  class="warning-quantity-less">({{inventoryProduct.current_available_quantity}})</span>
+                </span>
+                </span>
             </td>
             <td pEditableColumn class="text-center" style="width: 11%">
 
-              <p-cellEditor *ngIf="currentInventory && currentInventory.status === '0'">
+              <p-cellEditor
+                *ngIf="inventoryProduct.nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
                 <ng-template pTemplate="input">
                   <input
                     pInputText
@@ -224,25 +259,25 @@
 
               <span *ngIf="currentInventory && currentInventory.status === '1'">{{inventoryProduct.new_quantity}}</span>
             </td>
-            <td style="width: 13%" class="text-center">
-              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.physical_inventory_nomenclature">
+            <td style="width: 11%" class="text-center">
+              <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.name}}
               </ng-container>
 
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.category?.name}}
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.category?.name}}
               </ng-container>
             </td>
             <td style="width: 6%" class="text-center">
-              <ng-container *ngIf="inventoryProduct.product  && !inventoryProduct.physical_inventory_nomenclature">
+              <ng-container *ngIf="inventoryProduct.product  && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
               </ng-container>
 
-              <ng-container *ngIf="inventoryProduct.physical_inventory_nomenclature">
-                {{inventoryProduct.physical_inventory_nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.physical_inventory_nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
+              <ng-container *ngIf="inventoryProduct.nomenclature">
+                {{inventoryProduct.nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
               </ng-container>
             </td>
-            <td style="width: 12%" class="text-center">
+            <td style="width: 11%" class="text-center">
               <ng-container *ngIf="inventoryProduct.locator; else productWarehouse">
                 {{inventoryProduct.locator.warehouse.name}}
               </ng-container>
@@ -252,11 +287,11 @@
                 {{inventoryProduct.locator.name}}
 
                 <span class="d-block">
-                  R: {{inventoryProduct.locator.row}}
+                    R: {{inventoryProduct.locator.row}}
                   Col: {{inventoryProduct.locator.column}}
                   Sh: {{inventoryProduct.locator.shelf}}
                   Pl: {{inventoryProduct.locator.place}}
-                </span>
+                  </span>
               </div>
             </td>
 
@@ -264,11 +299,11 @@
               <div *ngIf="inventoryProduct.product.locator">
                 {{inventoryProduct.product.locator.name}}
                 <span class="d-block">
-                  R: {{inventoryProduct.product.locator.row}}
+                    R: {{inventoryProduct.product.locator.row}}
                   Col: {{inventoryProduct.product.locator.column}}
                   Sh: {{inventoryProduct.product.locator.shelf}}
                   Pl: {{inventoryProduct.product.locator.place}}
-                </span>
+                  </span>
               </div>
             </ng-template>
 
@@ -293,7 +328,7 @@
     <div
       class="paginator-wrapper"
       *ngIf="!isShowAll"
-      [class.paginator-wrapper_hide]="inventoryProducts.length === 0"
+      [class.paginator-wrapper_hide]="preparedProducts.length === 0"
     >
       <p-paginator
         #paginator
@@ -323,3 +358,9 @@
     </div>
   </div>
 </div>
+
+<pek-qr-code-scanner
+  *ngIf="isScanned"
+  (scanned)="onScanned($event)"
+  (cancel)="onCancelScanned()"
+></pek-qr-code-scanner>

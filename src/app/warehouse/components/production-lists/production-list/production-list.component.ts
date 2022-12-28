@@ -7,10 +7,12 @@ import {ListService} from '../../../services/list.service';
 import {take} from 'rxjs/operators';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Location} from '@angular/common';
-import {MenuItem, TreeNode} from 'primeng/api';
+import {MenuItem, MessageService, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 import {ViewMode} from '../production-lists.component';
+import {ScanResult} from '../../../../qr-code/models/scan-result';
+import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
 
 export class TreePrint {
   data: ListProduct;
@@ -135,13 +137,19 @@ export class ProductionListComponent implements OnInit {
     }
   ];
 
+  foundRowsIds: number[] = [];
+  currentDisplayRowId: number;
+  isScanned = false;
+  scanningEnd = true;
+  elementsRowsIds: string[] = [];
   constructor(
     private route: ActivatedRoute,
     private modalService: ModalService,
     private listService: ListService,
     private listProductService: ListProductService,
     private router: Router,
-    public _location: Location
+    public _location: Location,
+    private messageService: MessageService,
   ) {
     this.routerHandler$ = router.events.subscribe(res => {
       if (res instanceof NavigationEnd) {
@@ -485,5 +493,96 @@ export class ProductionListComponent implements OnInit {
     } else {
       this.menuItems[0].items[1].disabled = false;
     }
+  }
+
+  scanForListProduct(data: ScanResult = null) {
+    this.expandAll();
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+
+    this.listService.getScanned(this.listId, data).subscribe(res => {
+      if (res.ids_found.length > 0) {
+        this.elementsRowsIds.forEach(elementId => {
+          const idArray = elementId.split('-');
+          const foundId = res.ids_found.find(el => el.toString() === idArray[1]);
+          if (foundId) {
+            this.foundRowsIds.push(foundId);
+          }
+        });
+        if (this.foundRowsIds.length > 0) {
+          this.currentDisplayRowId = this.foundRowsIds[0];
+          this.scrollToElement('row-' + this.currentDisplayRowId);
+        }
+      } else {
+        this.messageService.add({severity: 'error', summary: 'No matching found.', detail: `No product lists was found with scanned QR code!`});
+      }
+    });
+  }
+
+  scrollToElement(rowId: string): void {
+    const element = document.getElementById(rowId);
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  isFoundRow(productId: number): boolean {
+    return this.foundRowsIds.length > 0 && this.foundRowsIds.findIndex(id => id === productId) > -1;
+  }
+
+  onStartScanning() {
+    this.clearQrResults();
+    this.expandAll();
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+    this.isScanned = true;
+    this.scanningEnd = false;
+  }
+
+  onScanned(data: any) {
+    this.scanningEnd = true;
+    this.isScanned = false;
+    console.log('data found on qr code', data);
+    this.scanForListProduct(data)
+  }
+
+  onCancelScanned() {
+    this.scanningEnd = true;
+    this.isScanned = false;
+  }
+
+  goToNext() {
+    let currentIndex = this.foundRowsIds.findIndex(id => id === this.currentDisplayRowId);
+    if (currentIndex < this.foundRowsIds.length - 1) {
+      this.currentDisplayRowId = this.foundRowsIds[currentIndex + 1];
+    } else {
+      this.currentDisplayRowId = this.foundRowsIds[0];
+    }
+    this.scrollToElement('row-' + this.currentDisplayRowId);
+  }
+
+  goToPrev() {
+    let currentIndex = this.foundRowsIds.findIndex(id => id === this.currentDisplayRowId);
+    if (currentIndex > 0) {
+      this.currentDisplayRowId = this.foundRowsIds[currentIndex - 1];
+    } else {
+      this.currentDisplayRowId = this.foundRowsIds[this.foundRowsIds.length - 1];
+    }
+    this.scrollToElement('row-' + this.currentDisplayRowId);
+  }
+
+  clearQrResults() {
+    this.currentDisplayRowId = null;
+    this.foundRowsIds = [];
   }
 }

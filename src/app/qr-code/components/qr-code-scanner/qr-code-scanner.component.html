@@ -1,0 +1,14 @@
+<div class="qr-code-scanner">
+  <div class="qr-code-scanner__video" *ngIf="!isScanned">
+    <video id="qr-video" #scanner></video>
+  </div>
+
+  <div class="qr-code-scanner__border qr-code-scanner__border_top-left"></div>
+  <div class="qr-code-scanner__border qr-code-scanner__border_top-right"></div>
+  <div class="qr-code-scanner__border qr-code-scanner__border_bottom-left"></div>
+  <div class="qr-code-scanner__border qr-code-scanner__border_bottom-right"></div>
+
+  <button class="qr-code-scanner__cancel-button" (click)="onCancel()">
+    Cancel
+  </button>
+</div>
