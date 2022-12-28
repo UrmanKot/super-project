@@ -13,6 +13,7 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
   @Output() selectCompanyFull: EventEmitter<Partial<Company>> = new EventEmitter<Partial<Company>>();
   @Input() currentCompanyId: any;
   @Input() currentCompany: Partial<Company>;
+  @Input() isDisabled: boolean = false
   isLoading = true;
   companies: Partial<Company>[] = [];
   selectedCompanyId: number;
@@ -39,7 +40,7 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
 
   onSelectCompany() {
     this.currentCompany = this.companies.find(currency => currency.id === this.selectedCompanyId);
-    this.selectCompany.emit(this.currentCompanyId);
+    this.selectCompany.emit(this.selectedCompanyId);
     this.selectCompanyFull.emit(this.currentCompany);
   }
 

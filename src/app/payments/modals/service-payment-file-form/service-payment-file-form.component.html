@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    Product Files
+    Auxiliary Payment Files
   </h2>
 </div>
 
@@ -19,13 +19,14 @@
       <ng-template pTemplate="header">
         <tr>
           <th class="index-header text-center" style="width: 5%">#</th>
-          <th style="width: 75%">File Name</th>
-          <th style="width: 20%">Actions</th>
+          <th style="width: 75%">Name</th>
+          <th style="width: 20%">Download</th>
         </tr>
       </ng-template>
+
       <ng-template pTemplate="body" let-file let-i="rowIndex">
         <tr>
-          <td class="text-center" style="width: 5%">#</td>
+          <td class="text-center" style="width: 5%">{{i + 1}}</td>
           <td style="width: 75%" class="word-break">
             <a (click)="onDownloadFile(file)">
               {{getFileName(file.file)}}
@@ -64,6 +65,7 @@
     </p-table>
   </div>
 </mat-dialog-content>
+
 
 <mat-dialog-actions class="justify-content-between">
   <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>

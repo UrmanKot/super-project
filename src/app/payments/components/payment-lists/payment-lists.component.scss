@@ -1,0 +1,40 @@
+.page {
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.625rem 1.75rem 0.5rem;
+    box-shadow: 0 0.125rem 1rem #00000010;
+  }
+  &__tools {
+    display: flex;
+    margin-left: 2.5rem;
+  }
+  .guide-button {
+    cursor: pointer;
+    background: #55b157;
+    color: #ffffff;
+    font: inherit;
+    font-size: var(--theme-font-size-s);
+    font-weight: 500;
+    padding: 0.5rem 1.125rem 0.625rem;
+    border-radius: 0.625rem;
+    line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  }
+  .text-center {
+    text-align: center;
+  }
+  .page__card {
+    background: none;
+    box-shadow: none;
+  }
+  .buttons {
+    margin-top: -0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  form {margin-top: -0.25rem;}
+}

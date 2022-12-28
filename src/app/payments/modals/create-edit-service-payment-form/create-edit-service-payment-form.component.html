@@ -1,0 +1,95 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Payment
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Supplier</label>
+      <pek-company-picker
+        [currentCompanyId]="form.get('supplier').value"
+        (selectCompanyFull)="onSelectCompany($event)"
+      >
+
+      </pek-company-picker>
+    </div>
+    <div class="form-group">
+      <label>Invoice</label>
+      <ng-container *ngIf="data.type === 'create'">
+        <p-multiSelect
+          formControlName="service_invoices"
+          class="disabled"
+          placeholder="Choose Invoice"
+          [options]="serviceInvoices"
+          optionValue="id"
+          optionLabel="label"
+          (onChange)="countSum()"
+        >
+        </p-multiSelect>
+      </ng-container>
+      <ng-container *ngIf="data.type === 'edit'">
+        <p-multiSelect
+          formControlName="service_invoices"
+          class="disabled"
+          placeholder="Choose Invoice"
+          [options]="serviceInvoices"
+          optionValue="id"
+          optionLabel="self_serial_number"
+          (onChange)="countSum()"
+        >
+        </p-multiSelect>
+      </ng-container>
+    </div>
+    <div class="form-group">
+      <label>Payment Amount</label>
+      <input
+        class="p-inputtext"
+        formControlName="amount"
+      >
+    </div>
+    <div class="form-group">
+      <label>Exchange Rate</label>
+      <input
+        class="p-inputtext"
+        formControlName="exchange_rate"
+        (ngModelChange)="countSum()"
+        type="number"
+      >
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Date</label>
+          <p-calendar
+            formControlName="payment_date"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+          >
+          </p-calendar>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Accountant Number</label>
+          <input class="p-inputtext" formControlName="accountant_number">
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>
+
+

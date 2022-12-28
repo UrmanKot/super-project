@@ -1,0 +1,353 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'sales'" [isActive]="true"></pek-module-icon>
+      <h1>Payments</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        [label]="tabIndex === 0 ? 'New Payment' : 'New Auxiliary Payment'"
+        (click)="onCreate()"
+      >
+      </button>
+    </div>
+  </div>
+  <div class="page__content">
+
+    <p-tabView class="custom-tabs" [(activeIndex)]="tabIndex">
+      <p-tabPanel header="Payments" [selected]="true">
+        <div class="page__table">
+          <form
+            [formGroup]="searchPaymentsForm"
+            class="form mb-3"
+          >
+            <div class="row">
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Supplier</label>
+                  <pek-company-picker
+                    [currentCompanyId]="searchPaymentsForm.get('supplier').value"
+                    (selectCompany)="selectedCompany($event)"
+                  >
+                  </pek-company-picker>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>From</label>
+                  <p-calendar
+                    formControlName="payment_date_after"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="searchPayments()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>To</label>
+                  <p-calendar
+                    formControlName="payment_date_before"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="searchPayments()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Status</label>
+                  <p-dropdown
+                    formControlName="status"
+                    (ngModelChange)="searchPayments()"
+                    [options]="statusPayment"
+                    [showClear]="true"
+                    placeholder="Choose Status"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+
+            </div>
+          </form>
+          <p-table
+            #dt
+            selectionMode="single"
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="payments.length > 0"
+            [rows]="10"
+            [(selection)]="selectedPayment"
+            [value]="payments"
+            (selectionChange)="onSelectPayment()"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex buttons">
+                <p-menubar
+                  class="ml-auto"
+                  [model]="menuItems"
+                  [class.disabled]="!selectedPayment"
+                ></p-menubar>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center" style="width: 4%">#</th>
+                <th style="width: 10%">Payment ID</th>
+                <th style="width: 10%">Date</th>
+                <th style="width: 14%">Supplier</th>
+                <th style="width: 10%" class="text-center">Invoice</th>
+                <th style="width: 10%" class="text-center">Amount</th>
+                <th style="width: 10%" class="text-center">Order ID</th>
+                <th style="width: 15%" class="text-center">Status</th>
+                <th style="width: 15%" class="text-center">Root list</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-payment let-i="rowIndex">
+              <tr [pSelectableRow]="payment">
+                <td class="text-center" style="width: 4%">{{i + 1}}</td>
+                <td style="width: 10%">{{payment.id}}</td>
+                <td style="width: 10%">{{payment.payment_date | date:'dd/MM/yyyy'}}</td>
+                <td style="width: 14%">
+                  <div *ngFor="let invoice of payment.invoices">
+                    {{invoice.supplier.name}}
+                  </div>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <div *ngFor="let invoice of payment.invoices">
+                    {{invoice.self_serial_number}}
+                  </div>
+                </td>
+                <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">
+                  <div *ngFor="let invoice of payment.invoices">
+                    {{invoice.order.id}}
+                  </div>
+                </td>
+                <td style="width: 15%" class="text-center">
+                  <div
+                    [ngClass]="{
+                    'text-primary': payment.status==='PAID',
+                    'text-success': payment.status==='CONFIRMED',
+                    'text-danger': payment.status==='DECLINED',
+                    'text-warning': payment.status==='WAITING'
+                }"
+                  >
+                    {{payment.status}}
+                  </div>
+                </td>
+                <td style="width: 15%" class="text-center">
+                  <div *ngFor="let invoice of payment.invoices">
+                <span *ngFor="let root of invoice.order.root_production_list_products">
+                  {{root.nomenclature.name}}
+                </span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="9">
+                  <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoadingPayments">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="dt.paginator=false"
+                styleClass="p-button-text"
+              >All
+              </p-button>
+            </ng-template>
+          </p-table>
+        </div>
+        <div *ngIf="!dt.paginator && !isLoadingPayments && payments.length > 0" class="paginator-return-pagination">
+          <p-button
+            type="button"
+            (click)="dt.paginator=true"
+            styleClass="p-button-text"
+          >
+            Return pagination
+          </p-button>
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel header="Auxiliary Invoice Payments">
+        <div class="page__table">
+          <form
+            [formGroup]="searchPaymentsAuxiliaryForm"
+            class="form mb-3"
+          >
+            <div class="row">
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Supplier</label>
+                  <pek-company-picker
+                    [currentCompanyId]="searchPaymentsAuxiliaryForm.get('supplier').value"
+                    (selectCompany)="selectedAuxPaymentCompany($event)"
+                  >
+                  </pek-company-picker>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>From</label>
+                  <p-calendar
+                    formControlName="payment_date_after"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="searchAuxiliaryPayments()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>To</label>
+                  <p-calendar
+                    formControlName="payment_date_before"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="searchAuxiliaryPayments()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Status</label>
+                  <p-dropdown
+                    formControlName="status"
+                    (ngModelChange)="searchAuxiliaryPayments()"
+                    [options]="statusPayment"
+                    [showClear]="true"
+                    placeholder="Choose Status"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+
+            </div>
+          </form>
+
+          <p-table
+            #st
+            selectionMode="single"
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="servicePayments.length > 0"
+            [rows]="10"
+            [(selection)]="selectedServicePayment"
+            [value]="servicePayments"
+            (selectionChange)="onSelectAuxiliaryPayment()"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex buttons">
+                <p-menubar
+                  class="ml-auto"
+                  [model]="menuItemsAux"
+                  [class.disabled]="!selectedServicePayment"
+                ></p-menubar>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center" style="width: 4%">#</th>
+                <th style="width: 10%">Payment ID</th>
+                <th style="width: 10%">Date</th>
+                <th style="width: 14%">Supplier</th>
+                <th style="width: 10%" class="text-center">Invoice</th>
+                <th style="width: 10%" class="text-center">Amount</th>
+                <th style="width: 10%" class="text-center">Order ID</th>
+                <th style="width: 15%" class="text-center">Status</th>
+                <th style="width: 15%" class="text-center">Root list</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-payment let-i="rowIndex">
+              <tr [pSelectableRow]="payment">
+                <td class="text-center" style="width: 4%">{{i + 1}}</td>
+                <td style="width: 10%">{{payment.id}}</td>
+                <td style="width: 10%">{{payment.payment_date | date:'dd/MM/yyyy'}}</td>
+                <td style="width: 14%">
+                  <div *ngFor="let invoice of payment.service_invoices">
+                    {{invoice.supplier.name}}
+                  </div>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <div *ngFor="let invoice of payment.service_invoices">
+                    {{invoice.self_serial_number}}
+                  </div>
+                </td>
+                <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">
+                  <div *ngFor="let invoice of payment.service_invoices">
+                    {{invoice.order.id}}
+                  </div>
+                </td>
+                <td style="width: 15%" class="text-center">
+                  <div
+                    [ngClass]="{
+                    'text-primary': payment.status==='PAID',
+                    'text-success': payment.status==='CONFIRMED',
+                    'text-danger': payment.status==='DECLINED',
+                    'text-warning': payment.status==='WAITING'
+                }"
+                  >
+                    {{payment.status}}
+                  </div>
+                </td>
+                <td style="width: 15%" class="text-center">
+                  <div *ngFor="let invoice of payment.service_invoices">
+                <span *ngFor="let root of invoice.order.root_production_list_products">
+                  {{root.nomenclature.name}}
+                </span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="9">
+                  <i *ngIf="isLoadingAuxPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoadingAuxPayments">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="st.paginator=false"
+                styleClass="p-button-text"
+              >All
+              </p-button>
+            </ng-template>
+          </p-table>
+        </div>
+        <div *ngIf="!st.paginator && !isLoadingAuxPayments && payments.length > 0" class="paginator-return-pagination">
+          <p-button
+            type="button"
+            (click)="st.paginator=true"
+            styleClass="p-button-text"
+          >
+            Return pagination
+          </p-button>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

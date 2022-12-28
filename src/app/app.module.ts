@@ -18,6 +18,7 @@ import {ToastModule} from 'primeng/toast';
 import {ProductStructureModule} from './product-structure/product-structure.module';
 import {NgxMaskModule} from 'ngx-mask';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {PaymentsModule} from "./payments/payments.module";
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -48,6 +49,7 @@ const INTERCEPTORS_ERROR: Provider = {
     GuideModule,
     ToastModule,
     PdfViewerModule,
+    PaymentsModule
   ],
   providers: [
     MessageService,
