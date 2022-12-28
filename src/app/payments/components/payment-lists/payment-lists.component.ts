@@ -30,12 +30,10 @@ export class PaymentListsComponent implements OnInit {
       {
         label: 'Go to Order',
         icon: 'pi pi-angle-double-right',
-        command: () => this
       },
       {
         label: 'Go to Invoice',
         icon: 'pi pi-angle-double-right',
-        command: () => this
       },
       {
         label: 'Files',
@@ -66,12 +64,10 @@ export class PaymentListsComponent implements OnInit {
       {
         label: 'Go to Order',
         icon: 'pi pi-angle-double-right',
-        command: () => this
       },
       {
         label: 'Go to Invoice',
         icon: 'pi pi-angle-double-right',
-        command: () => this
       },
       {
         label: 'File',
@@ -404,7 +400,7 @@ export class PaymentListsComponent implements OnInit {
       this.menuItems[0].items[0].disabled = this.selectedPayment.status !== 'CONFIRMED'
     }
     if (this.selectedPayment) {
-      this.menuItems[0].items[2].disabled = this.selectedPayment.status === 'PAID'
+      this.menuItems[0].items[5].disabled = this.selectedPayment.status === 'PAID'
     }
   }
 
@@ -413,7 +409,7 @@ export class PaymentListsComponent implements OnInit {
       this.menuItemsAux[0].items[0].disabled = this.selectedServicePayment.status !== 'CONFIRMED'
     }
     if (this.selectedServicePayment) {
-      this.menuItemsAux[0].items[2].disabled = this.selectedServicePayment.status === 'PAID'
+      this.menuItemsAux[0].items[5].disabled = this.selectedServicePayment.status === 'PAID'
     }
   }
 }
