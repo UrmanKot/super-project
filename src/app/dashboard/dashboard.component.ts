@@ -76,7 +76,8 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Payments',
     icon: 'icon-payments',
-    routerLink: ['/external', `${environment.link_url}dash/payments`],
+    // routerLink: ['/external', `${environment.link_url}dash/payments`],
+    routerLink: ['/payments'],
     requiredModulePermission: 'can_edit_payments'
   }, {
     label: 'Administration',

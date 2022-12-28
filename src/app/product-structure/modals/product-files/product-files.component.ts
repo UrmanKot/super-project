@@ -31,7 +31,7 @@ export class ProductFilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFiles();
-  }
+   }
 
   getFiles() {
     this.productService.getProductFiles(this.productId).subscribe(files => {

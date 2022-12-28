@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { SalesRouting } from './sales.routing';
 import { SalesListsComponent } from './components/sales-lists/sales-lists.component';
 import { SalesLayoutComponent } from './components/sales-layout/sales-layout.component';

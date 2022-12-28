@@ -1,11 +1,12 @@
 import {Order} from './order';
+import {Company} from "../../crm/models/company";
 
 export class Invoice {
   readonly id: number;
   self_serial_number?: string;
   self_proforma_serial_number?: string;
   supplier_serial_number: string;
-  // supplier?: Company;
+  supplier?: Company;
   total_price: number;
   ddv: number;
   tax: number;

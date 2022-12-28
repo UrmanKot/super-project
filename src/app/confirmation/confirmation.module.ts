@@ -14,21 +14,24 @@ import { ReservationConfirmationComponent } from './components/reservation-confi
 import { PaymentConfirmationLimitComponent } from './modals/payment-confirmation-limit/payment-confirmation-limit.component';
 
 @NgModule({
-  declarations: [
-    NomenclatureConfirmationComponent,
-    PaymentConfirmationComponent,
-    ConfirmationLayoutComponent,
-    WriteOffConfirmationComponent,
-    ProductionListConfirmationComponent,
-    SupplierConfirmationComponent,
-    ReservationConfirmationComponent,
-    PaymentConfirmationLimitComponent,
-  ],
-  imports: [
-    CommonModule,
-    ConfirmationRouting,
-    SharedModule,
-    LayoutModule,
-  ]
+    declarations: [
+        NomenclatureConfirmationComponent,
+        PaymentConfirmationComponent,
+        ConfirmationLayoutComponent,
+        WriteOffConfirmationComponent,
+        ProductionListConfirmationComponent,
+        SupplierConfirmationComponent,
+        ReservationConfirmationComponent,
+        PaymentConfirmationLimitComponent,
+    ],
+    exports: [
+        SupplierConfirmationComponent
+    ],
+    imports: [
+        CommonModule,
+        ConfirmationRouting,
+        SharedModule,
+        LayoutModule,
+    ]
 })
 export class ConfirmationModule { }
