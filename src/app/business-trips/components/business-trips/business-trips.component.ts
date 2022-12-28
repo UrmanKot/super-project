@@ -205,7 +205,6 @@ export class BusinessTripsComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         }
       });
-
   }
 
   createBusinessTrip() {

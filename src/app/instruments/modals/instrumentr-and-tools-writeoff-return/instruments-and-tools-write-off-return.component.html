@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="data.type=='writeOff'">Write Off</span>
+    <span *ngIf="data.type=='warehouseReturn'">Return To Warehouse</span>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <ng-container formArrayName="products">
+      <ng-container *ngFor="let lessonForm of products.controls; let i = index" >
+        <div [formGroupName]="i" class="form-group">
+          <label>{{data.product[i].nomenclature.code}} / {{data.product[i].nomenclature.name}} Quantity: <b>{{data.product[i].quantity}}</b></label>
+          <input
+            pInputText
+            formControlName="quantity"
+            class="form-control"
+            type="number"
+            id="name"
+          />
+        </div>
+      </ng-container>
+    </ng-container>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    *ngIf="data.type=='writeOff'"
+    type="button"
+    class="p-button-success"
+    [label]="'Write Off'"
+    (click)="writeOff()"
+  ></button>
+  <button
+    pButton
+    *ngIf="data.type=='warehouseReturn'"
+    type="button"
+    class="p-button-success"
+    [label]="'Return To Warehouse'"
+    (click)="returnToWarehouse()"
+  ></button>
+</mat-dialog-actions>

@@ -1,0 +1,123 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'instruments'" [isActive]="true"></pek-module-icon>
+      <h1>Tool Request</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="New Request"
+        (click)="createArea()">
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="filters-visibility">
+      <div class="filters-visibility__header">
+        <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+      </div>
+
+      <form
+        [formGroup]="searchForm"
+        class="form mb-3"
+      >
+        <div class="row">
+          <div class="col-3">
+          </div>
+          <div class="col-3">
+          </div>
+          <div class="col-2">
+          </div>
+          <div class="col-2">
+          </div>
+          <div class="col-2">
+          </div>
+          <div class="col-10">
+          </div>
+          <div class="col-2">
+            <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 335px)"
+        [scrollable]="true"
+        [rows]="10"
+        [(selection)]="selectedNode"
+        [value]="requests"
+      >
+        <ng-template pTemplate="colgroup">
+          <colgroup>
+            <col class="index-header"/>
+          </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="index-header">#</th>
+            <th style="width: 30%">Area</th>
+            <th style="width: 30%">Locator</th>
+            <th style="width: 35%">Creation Date</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order let-i="rowIndex">
+          <tr [pSelectableRow]="order">
+            <td>{{ i + 1 }}</td>
+            <td>{{order.area_locator.area.name}}</td>
+            <td>{{order.area_locator.name}}</td>
+            <td>{{order.created}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td class="text-center p-5" [attr.colspan]="6">
+              <span>No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!isShowAll" [class.paginator-wrap]="isLoading" class="paginator-wrapper">
+      <p-paginator
+        #paginator
+        [rows]="10"
+        [totalRecords]="count"
+        (onPageChange)="paginate($event)">
+      </p-paginator>
+      <p-button
+        class="paginator-all"
+        type="button"
+        styleClass="p-button-text"
+        (click)="onShowAll()"
+      >
+        All
+      </p-button>
+    </div>
+    <div *ngIf="isShowAll" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="onShowPartial()"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #actionButtons>
+  <div class="action-buttons">
+    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>
+  </div>
+</ng-template>
+

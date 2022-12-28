@@ -106,7 +106,7 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Instruments/Tools/Equipment',
     icon: 'pi pi-database',
-    routerLink: ['/external', `${environment.link_url}dash/instruments/instruments-and-tools`],
+    routerLink: [`/instruments/instruments-and-tools`],
     requiredModulePermission: 'can_edit_instruments_and_tools'
   }, {
     label: 'ERP Statistics',

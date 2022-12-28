@@ -128,6 +128,18 @@ export class WarehouseProductService {
     return this.httpClient.post(this.API_URL + 'bulk_move_serial_products/', product);
   }
 
+  return_to_qc(entity) {
+    return this.httpClient.post(this.API_URL + this.url + 'return_to_qc/', entity).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  write_off_confirmation(entity) {
+    return this.httpClient.post(this.API_URL + this.url + 'send_to_write_off_confirmation/', entity).pipe(map(response => {
+      return response;
+    }));
+  }
+
   openNomenclatureInfoModal(extraInfo: WarehouseProductExtraInfo[], nomenclature: Nomenclature) {
     return this.dialog
       .open<NomenclatureSerialInfoComponent>(NomenclatureSerialInfoComponent, {
