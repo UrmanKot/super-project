@@ -1,0 +1,81 @@
+<div class="warehouse-shipping-request-print" *ngIf="chain">
+  <div class="warehouse-shipping-request-print__header">
+    <h2>Delivery Note #{{chain?.serial_number}}</h2>
+    <div class="warehouse-shipping-request-print__header-row">
+      <div class="warehouse-shipping-request-print__header-col">
+        <h4>Pek Automotive d.o.o.</h4>
+        <p>
+          Idrijska cesta 42<br>
+          1360 Vrhnika<br>
+          Slovenija
+        </p>
+      </div>
+      <div class="warehouse-shipping-request-print__header-col">
+        <h4>{{chain?.customer.name}}</h4>
+        <p>{{chain?.customer.address}}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="warehouse-shipping-request-print__table" *ngIf="items">
+    <div
+      *ngFor="let item of items"
+      class="warehouse-shipping-request-print__row"
+    >
+      <div class="warehouse-shipping-request-print__box">
+        <div class="warehouse-shipping-request-print__col">
+          <h3>Serial number</h3>
+          <p>{{item.warehouse_product.serial_number?.type_with_number}}</p>
+        </div>
+        <div class="warehouse-shipping-request-print__col">
+          <h3>Code</h3>
+          <p>{{item.warehouse_product.nomenclature.code}}</p>
+        </div>
+        <div class="warehouse-shipping-request-print__col">
+          <h3>Name</h3>
+          <p>{{item.warehouse_product.nomenclature.name}}</p>
+        </div>
+        <div class="warehouse-shipping-request-print__col">
+          <h3>Quantity</h3>
+          <p>{{item.quantity}}</p>
+        </div>
+        <div class="warehouse-shipping-request-print__col">
+          <h3>Locator</h3>
+          <p>{{ translateLocator(item.warehouse_product.locator) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warehouse-shipping-request-print__bottom">
+    <div class="warehouse-shipping-request-print__column">
+      <div class="warehouse-shipping-request-print__left">
+        <div>
+          <h3>Sent</h3>
+          <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p>{{currentDate | date: 'dd.MM.y'}}</p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+      <div class="warehouse-shipping-request-print__right">
+        <div>
+          <h3>Retrieved</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

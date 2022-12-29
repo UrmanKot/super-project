@@ -57,6 +57,7 @@ import { PhysicalInventoryProductsChangesComponent } from './modals/physical-inv
 import {RippleModule} from 'primeng/ripple';
 import { WarehouseShippingRequestsComponent } from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
 import { WarehouseShippingRequestComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
+import { WarehouseShippingRequestPrintComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request-print/warehouse-shipping-request-print.component';
 
 
 
@@ -103,6 +104,7 @@ import { WarehouseShippingRequestComponent } from './components/warehouse-shippi
     PhysicalInventoryProductsChangesComponent,
     WarehouseShippingRequestsComponent,
     WarehouseShippingRequestComponent,
+    WarehouseShippingRequestPrintComponent,
   ],
     imports: [
         CommonModule,

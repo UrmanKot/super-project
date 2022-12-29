@@ -85,7 +85,7 @@ export class WarehouseShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   onPrint() {
-
+    window.print();
   }
 
   translateLocator(id: number) {

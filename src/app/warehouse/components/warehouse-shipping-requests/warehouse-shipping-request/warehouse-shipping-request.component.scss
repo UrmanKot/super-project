@@ -2,3 +2,22 @@ a:hover {
   cursor: pointer;
   text-decoration: underline;
 }
+
+@page {
+  size: portrait !important;
+}
+
+.print-page {
+  z-index: 9999;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  display: none;
+  height: 100%;
+
+  @media print {
+    display: block;
+  }
+}
