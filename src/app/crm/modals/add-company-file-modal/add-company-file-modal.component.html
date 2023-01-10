@@ -1,25 +1,27 @@
-<div class="modal-header">
-  <h2 class="modal-header__title">
-    Add File To Company
-  </h2>
+<div   pekPasteScreenImage (imageAdded)="fileAdded($event)">
+  <div class="modal-header">
+    <h2 class="modal-header__title">
+      Add File To Company
+    </h2>
+  </div>
+
+  <mat-dialog-content>
+    <pek-upload-file
+      (selectFile)="onSelectFiles($event)"
+      (removeFile)="onRemoveFile()"
+    ></pek-upload-file>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <button
+      pButton
+      type="button"
+      class="p-button-success"
+      label="Add File"
+      [disabled]="!uploadFile"
+      [loading]="isSaving"
+      (click)="onSave()"
+    ></button>
+  </mat-dialog-actions>
 </div>
-
-<mat-dialog-content>
-  <pek-upload-file
-    (selectFile)="onSelectFiles($event)"
-    (removeFile)="onRemoveFile()"
-  ></pek-upload-file>
-</mat-dialog-content>
-
-<mat-dialog-actions class="justify-content-between">
-  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
-  <button
-    pButton
-    type="button"
-    class="p-button-success"
-    label="Add File"
-    [disabled]="!uploadFile"
-    [loading]="isSaving"
-    (click)="onSave()"
-  ></button>
-</mat-dialog-actions>

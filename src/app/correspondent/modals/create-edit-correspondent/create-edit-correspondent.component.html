@@ -1,4 +1,4 @@
-<div class="create-edit-product-structure-category">
+<div class="create-edit-product-structure-category"  pekPasteScreenImage (imageAdded)="fileAdded($event)">
   <div class="modal-header">
     <h2 class="modal-header__title">
       {{data.type}} Correspondent
@@ -48,6 +48,8 @@
         <div class="form-group">
           <label>Files</label>
           <pek-upload-file-picker
+            #filePicker
+            [files]="this.files"
             [showLabel]="false"
             class="files" (fileChanged)="filesSelected($event)"></pek-upload-file-picker>
         </div>

@@ -34,6 +34,7 @@ import {BusinessLocationService} from '../../services/business-location.service'
 import {Hotel} from '../../models/hotel';
 import {BusinessTripHotelFilesService} from '../../services/business-trip-hotel-files.service';
 import {UploadFilePickerComponent} from '@shared/components/upload-file-picker/upload-file-picker.component';
+import {environment} from '@env/environment';
 
 export class DataToSend {
   readonly id?: number;
@@ -118,6 +119,7 @@ export class EditBusinessTripComponent implements OnInit {
   vehicleChangedEmit: Subject<void> = new Subject<void>();
   showFilePicker = true;
   private destroy$ = new Subject();
+  link = environment.image_path;
   constructor(
     private crmEmployeeService: CrmEmployeeService,
     private fb: FormBuilder,
@@ -1063,5 +1065,12 @@ export class EditBusinessTripComponent implements OnInit {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  fileAdded(file: File) {
+      this._hotel.get('files').setValue([file]);
+      setTimeout(() => {
+        this.updateFiles();
+      }, 1000);
   }
 }

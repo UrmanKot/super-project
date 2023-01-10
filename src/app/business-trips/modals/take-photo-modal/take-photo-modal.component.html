@@ -1,7 +1,15 @@
-<webcam
-  [class.taken]="isPhotoTaken"
-  [trigger]="invokeObservable"
-  [imageType]="'png'"
-  (imageCapture)="captureImg($event)"
-  (imageClick)="getSnapshot()"
-></webcam>
+  <webcam
+    pekPasteScreenImage [trackMousePosition]="false" (imageAdded)="fileAdded($event)"
+    [class.taken]="isPhotoTaken"
+    (load)="loaded()"
+    [trigger]="invokeObservable"
+    [imageType]="'png'"
+    (imageCapture)="captureImg($event)"
+  ></webcam>
+  <div class="background"></div>
+  <button
+    (click)="getSnapshot()"
+    class="take-photo">TAKE PHOTO</button>
+  <div class="cancel-photo" (click)="closeCamera()">
+    <i class="pi pi-times"></i>
+  </div>

@@ -139,7 +139,7 @@
       <div class="form-group col-6 pt-2 d-flex justify-content-end justify-content-center">
         <span>
           <a *ngIf="form.get('file').value && !form.get('uploaded_file').value"
-             href="javascript:void(0)" (click)="viewFile()">
+             [href]="link + form.get('file').value">
                 {{ getName(form.get('file').value) }}
           </a>
           <a *ngIf="form.get('uploaded_file').value" href="javascript:void(0)" (click)="viewFile()">

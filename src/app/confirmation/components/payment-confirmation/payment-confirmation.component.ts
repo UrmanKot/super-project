@@ -10,7 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   PaymentConfirmationLimitComponent
 } from '../../modals/payment-confirmation-limit/payment-confirmation-limit.component';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-payment-confirmation',

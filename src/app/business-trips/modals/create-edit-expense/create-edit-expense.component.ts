@@ -11,6 +11,7 @@ import {Currency} from '@shared/models/currency';
 import {ExpenseService} from '../../services/expense.service';
 import {ModalService} from '@shared/services/modal.service';
 import {Subject, takeUntil} from 'rxjs';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-create-edit-expense',
@@ -50,6 +51,8 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
   isEditDisabled = false;
   canVerify = false;
   private destroy$ = new Subject();
+  link = environment.image_path;
+
   constructor(
     private dialogRef: MatDialogRef<CreateEditExpenseComponent>,
     private fb: FormBuilder,

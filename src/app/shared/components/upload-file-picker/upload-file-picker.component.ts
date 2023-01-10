@@ -38,12 +38,16 @@ export class UploadFilePickerComponent implements OnInit {
   takePhoto() {
     this.businessService.takePhotoModal().subscribe(file => {
       if (file) {
-        let tempFiles = [...this.files, file];
-        this.files = null;
-        this.files = [...tempFiles];
-        tempFiles = null;
-        this.fileChanged.emit(this.files);
+        this.addPhotoToList(file);
       }
     });
+  }
+
+  addPhotoToList(file: File) {
+    let tempFiles = [...this.files, file];
+    this.files = null;
+    this.files = [...tempFiles];
+    tempFiles = null;
+    this.fileChanged.emit(this.files);
   }
 }

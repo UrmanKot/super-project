@@ -1,3 +1,53 @@
 .unique {
-  color: #002e72;
+  //color: #002e72;
+
+  &:host {
+    li {
+      background: green;
+    }
+  }
+}
+
+::ng-deep {
+  .group-locator-picker {
+    p-dropdownitem {
+      li {
+        padding: 0 !important;
+
+        .country-item {
+
+          div {
+            padding: 0.75rem 1.25rem;
+
+            &.unique {
+              color: white;
+              background: var(--theme-color-primary) !important;
+            }
+          }
+        }
+      }
+
+      li:hover {
+        .country-item {
+          div {
+            &.unique {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+
+      li.p-highlight {
+        .country-item {
+          div {
+            &.unique {
+              color: #495057;
+              background: #EFF6FF !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
 }

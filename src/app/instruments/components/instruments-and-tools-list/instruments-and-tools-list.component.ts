@@ -7,7 +7,7 @@ import {Paginator} from 'primeng/paginator';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
 import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {InstrumentAndToolsModalsService} from '../../services/instrument-and-tools-modals.service';
 

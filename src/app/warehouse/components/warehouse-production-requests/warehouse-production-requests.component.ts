@@ -8,7 +8,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {EAccountingType} from '@shared/pickers/accounting-type-picker/accounting-type-picker.component';
 import {Paginator} from 'primeng/paginator';
 import {AdapterService} from '@shared/services/adapter.service';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-warehouse-production-requests',

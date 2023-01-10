@@ -57,4 +57,14 @@ export class TakePhotoModalComponent implements OnInit, AfterViewInit, OnDestroy
     return new File([u8arr], filename, {type:mime});
   }
 
+  fileAdded(file: File) {
+    this.photoTaken.next(file);
+  }
+
+  closeCamera() {
+    this.dialogRef.close(null);
+  }
+
+  loaded() {
+  }
 }

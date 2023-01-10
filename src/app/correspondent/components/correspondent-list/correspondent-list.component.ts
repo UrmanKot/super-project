@@ -11,6 +11,7 @@ import {QuerySearch} from '@shared/models/other';
 import {take} from 'rxjs/operators';
 import {MenuItem} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-correspondent-list',
@@ -59,6 +60,7 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
       }
     ]
   }];
+  link = environment.image_path;
   constructor(
     private activatedRouter: ActivatedRoute,
     private modalService: ModalService,

@@ -12,7 +12,7 @@ import {List} from '../../models/list';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 import {Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';

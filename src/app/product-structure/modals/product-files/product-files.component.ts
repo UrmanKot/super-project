@@ -5,6 +5,8 @@ import {ProductFile} from '../../models/product';
 import {finalize} from 'rxjs';
 import {ModalService} from '@shared/services/modal.service';
 import {AdapterService} from '@shared/services/adapter.service';
+import {Route, Router} from '@angular/router';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-product-files',
@@ -12,6 +14,7 @@ import {AdapterService} from '@shared/services/adapter.service';
   styleUrls: ['./product-files.component.scss']
 })
 export class ProductFilesComponent implements OnInit {
+  link = environment.image_path;
   readonly deletion = new Set<number>();
   readonly addition = new Set<number>();
 
@@ -25,6 +28,7 @@ export class ProductFilesComponent implements OnInit {
     private readonly productService: ProductService,
     private readonly modalService: ModalService,
     private readonly adapterService: AdapterService,
+    private router: Router,
     @Inject(MAT_DIALOG_DATA) public productId: number,
   ) {
   }
@@ -45,9 +49,10 @@ export class ProductFilesComponent implements OnInit {
     return name[name.length - 1];
   }
 
-  onUploadFiles() {
+  onUploadFiles(file: File = null) {
     this.isPending = true;
-    this.productService.severalUploadFiles(this.productId, this.uploadFiles)
+    const sendFiles = file ? [file] : this.uploadFiles;
+    this.productService.severalUploadFiles(this.productId, sendFiles)
       .pipe(
         finalize(() => this.isPending = false)
       )
@@ -68,6 +73,10 @@ export class ProductFilesComponent implements OnInit {
     });
   }
 
+  openFileInBrowser(file: ProductFile) {
+    window.open(this.link + file.file, '_blank');
+  }
+
   onDownloadFile(file: ProductFile) {
     this.addition.add(file.id);
     this.productService.downloadProductFile(file.id).subscribe(response => {
@@ -79,5 +88,9 @@ export class ProductFilesComponent implements OnInit {
 
   onSelectFiles(files: File[]) {
     this.uploadFiles = files;
+  }
+
+  imageAdded(file: File) {
+    this.onUploadFiles(file)
   }
 }
