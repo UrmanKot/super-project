@@ -14,7 +14,7 @@ export class UploadFileComponent implements OnInit {
   @Input() multiple: boolean = false;
   @ViewChild('addFileInput') addFileInput: ElementRef;
 
-  uploadFiles: File[] = [];
+  @Input() uploadFiles: File[] = [];
 
   constructor() {
   }

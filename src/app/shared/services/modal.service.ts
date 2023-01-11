@@ -35,12 +35,12 @@ export class ModalService {
       .afterClosed();
   }
 
-  showPasteImageModal(imageSrc: string | ArrayBuffer) {
+  showPasteImageModal(imageSrc: string | ArrayBuffer, file: File) {
     return this.dialog
       .open<PasteImageComponent>(PasteImageComponent, {
         width: 'auto',
         height: 'auto',
-        data: imageSrc,
+        data: {imageSrc, file},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

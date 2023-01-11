@@ -6,6 +6,7 @@ import {ModalService} from "@shared/services/modal.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {finalize} from "rxjs";
 import {PaymentFile} from "../../models/payment";
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-payment-file-form',
@@ -21,6 +22,7 @@ export class PaymentFileFormComponent implements OnInit {
   files: PaymentFile[] = []
   isLoading = true;
   isPending = false;
+  link = environment.image_path;
 
   constructor(
     private readonly dialogRef: MatDialogRef<PaymentFileFormComponent>,
@@ -83,5 +85,9 @@ export class PaymentFileFormComponent implements OnInit {
         finalize(() => this.isPending = false)
       )
       .subscribe(files => this.dialogRef.close(files));
+  }
+
+  fileAdded(file: File) {
+    this.uploadFiles.push(file);
   }
 }

@@ -5,7 +5,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10000;
+    z-index: 10;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -17,9 +17,21 @@
     &.taken {
       video {
         animation: blink .2s ease-in;
+        z-index: 1;
       }
     }
   }
+}
+
+
+
+.background {
+  width: 100%;
+  height: 100%;
+  background: black;
+  top: 0;
+  left: 0;
+  position: fixed;
 }
 
 @keyframes blink {
@@ -32,5 +44,41 @@
   }
   100% {
     filter: brightness(1.0);
+  }
+}
+
+.take-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  height: 50px;
+  font-weight: 500;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--theme-color-primary);
+  color: #fff;
+  z-index: 12;
+  cursor: pointer;
+}
+
+.cancel-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  color: #fff;
+  z-index: 12;
+  cursor: pointer;
+  border-radius: 50%;
+  background: red;
+  padding: 1rem;
+
+  i {
+    font-size: 2rem;
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {CorrespondentTypes} from '../../enum/correspondent-types.enum';
@@ -8,6 +8,7 @@ import {CorrespondentService} from '../../services/correspondent.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {CorrespondentsCategory} from '../../models/correspondents-category';
 import {ModalService} from '@shared/services/modal.service';
+import {UploadFilePickerComponent} from '@shared/components/upload-file-picker/upload-file-picker.component';
 
 @Component({
   selector: 'pek-create-edit-correspondent',
@@ -15,6 +16,7 @@ import {ModalService} from '@shared/services/modal.service';
   styleUrls: ['./create-edit-correspondent.component.scss']
 })
 export class CreateEditCorrespondentComponent implements OnInit {
+  @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
   type: CorrespondentTypes;
   types = CorrespondentTypes;
 
@@ -162,8 +164,11 @@ export class CreateEditCorrespondentComponent implements OnInit {
   }
 
   viewFiles() {
-    // const files = this.form.get('hotel').value;
     const data: {links: any, files: any} = {links: this.correspondentFiles, files: []};
     this.correspondentService.viewFiles(data);
+  }
+
+  fileAdded(file: File) {
+    this.filePicker.addPhotoToList(file);
   }
 }

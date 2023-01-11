@@ -1,6 +1,17 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import {NomenclatureImage} from '@shared/models/nomenclature';
 import {ModalService} from '@shared/services/modal.service';
+import {fromEventPattern, Observable, Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'pek-images-slider',
@@ -17,7 +28,9 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
 
   @ViewChild('inputFile') inputFile: ElementRef;
   @ViewChild('slider') slider: ElementRef;
-
+  onPaste$: Observable<any>;
+  private destroy$ = new Subject();
+  isImagePasteOpened = false;
   activeSlideIndex = 1;
   isInit = false;
 
@@ -26,7 +39,9 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly modalService: ModalService,
+    private renderer: Renderer2
   ) {
+    this.createOnPastObservable(renderer);
   }
 
   ngOnInit(): void {
@@ -89,32 +104,56 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
   }
 
   onPasteImage() {
-    document.onpaste = (pasteEvent) => {
-      const item = pasteEvent.clipboardData.items[0];
+    this.onPaste$.subscribe(event => {
+      if (!this.isImagePasteOpened) {
+        this.isImagePasteOpened = true;
+        const item = event.clipboardData.items[0];
 
-      if (item.type.indexOf('image') === 0) {
-        const blob = item.getAsFile();
+        if (item.type.indexOf('image') === 0) {
+          const blob = item.getAsFile();
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
 
-          this.modalService.showPasteImageModal(event.target.result).subscribe(confirm => {
-            if (confirm) {
-              if (this.images.length === 0) {
-                this.activeSlideIndex = 1;
-                this.sliderWidth = this.slider.nativeElement.offsetWidth;
+            this.modalService.showPasteImageModal(event.target.result, blob).subscribe(confirm => {
+              this.isImagePasteOpened = false;
+              if (confirm) {
+
+                if (this.images.length === 0) {
+                  this.activeSlideIndex = 1;
+                  this.sliderWidth = this.slider.nativeElement.offsetWidth;
+                }
+
+                let send: File[] = [confirm];
+                this.choiceImages.emit(send);
+                this.inputFile.nativeElement.value = '';
               }
+            });
+          };
 
-              const send: File[] = [blob];
-              this.choiceImages.emit(send);
-              this.inputFile.nativeElement.value = '';
-            }
-          });
-        };
-
-        reader.readAsDataURL(blob);
+          reader.readAsDataURL(blob);
+        }
       }
+    });
+  }
+
+  private createOnPastObservable(renderer: Renderer2) {
+    let removePastEventListener: () => void;
+    const createPastEventListener = (
+      handler: (e: Event) => boolean | void
+    ) => {
+      removePastEventListener = renderer.listen("document", "paste", handler);
     };
+
+    this.onPaste$ = fromEventPattern<Event>(createPastEventListener, () =>
+      removePastEventListener()
+    ).pipe(takeUntil(this.destroy$));
+  }
+
+  ngOnDestroy(): void {
+    this.renderer.destroy();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onShowFullImage() {

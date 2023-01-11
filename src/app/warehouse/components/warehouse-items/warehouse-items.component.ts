@@ -10,7 +10,7 @@ import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-warehouse-items',

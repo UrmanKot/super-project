@@ -5,6 +5,7 @@ import {ModalService} from "@shared/services/modal.service";
 import {ServiceInvoicePayment, ServiceInvoicePaymentFile} from "../../../reports/models/service-invoice-payment";
 import {ServiceInvoicePaymentService} from "../../../reports/services/service-invoice-payment.service";
 import {finalize} from "rxjs";
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-service-payment-file-form',
@@ -19,6 +20,7 @@ export class ServicePaymentFileFormComponent implements OnInit {
   files: ServiceInvoicePaymentFile[] = []
   isLoading = true;
   isPending = false;
+  link = environment.image_path;
 
   constructor(
     private readonly dialogRef: MatDialogRef<ServicePaymentFileFormComponent>,
@@ -83,4 +85,7 @@ export class ServicePaymentFileFormComponent implements OnInit {
       .subscribe(files => this.dialogRef.close(files));
   }
 
+  fileAdded(file: File) {
+    this.uploadFiles.push(file);
+  }
 }

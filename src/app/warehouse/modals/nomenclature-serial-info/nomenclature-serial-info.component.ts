@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Router, UrlTree} from '@angular/router';
 import {WarehouseProductExtraInfo} from '../../models/warehouse-product';
 import {Nomenclature} from '@shared/models/nomenclature';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-nomenclature-serial-info',

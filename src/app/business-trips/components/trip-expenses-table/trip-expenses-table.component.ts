@@ -13,6 +13,7 @@ import {take} from 'rxjs/operators';
 import {ExpenseService} from '../../services/expense.service';
 import {Expense} from '../../models/expense';
 import {Subject, takeUntil} from 'rxjs';
+import {environment} from '@env/environment';
 @Component({
   selector: 'pek-trip-expenses-table',
   templateUrl: './trip-expenses-table.component.html',
@@ -101,6 +102,7 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
   //   const index = this.tripExpenses.findIndex(expense => expense === this.selectedTripExpense);
   //   this.editExpense.emit(index);
   // }
+  link = environment.image_path;
 
   getName(name) {
     const nameArr = name.split('/');

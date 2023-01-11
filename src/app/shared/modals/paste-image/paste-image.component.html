@@ -1,5 +1,5 @@
 <div class="paste-image">
-  <img [src]="imageSrc" alt="Изображение">
+  <img [src]="data.imageSrc" alt="Изображение">
 </div>
 
 <mat-dialog-actions class="justify-content-between">
@@ -10,11 +10,17 @@
       [mat-dialog-close]="false"
       class="p-button-danger mr-3"
     ></button>
+  <form
+    [formGroup]="form"
+    class="mr-3"
+  >
+    <input class="form-control" placeholder="Change File Name" formControlName="name" pInputText>
+  </form>
     <button
       pButton
       type="button"
       label="Paste Image"
-      [mat-dialog-close]="true"
+      (click)="acceptChanges()"
       class="p-button-success"
     ></button>
 </mat-dialog-actions>

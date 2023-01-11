@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 import {AuthService} from '../auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';

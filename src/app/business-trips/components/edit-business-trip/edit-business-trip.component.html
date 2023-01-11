@@ -259,7 +259,7 @@
     </div>
   </div>
 
-  <div class="page__content">
+  <div class="page__content" pekPasteScreenImage (imageAdded)="fileAdded($event)">
     <h2 class="mb-4">Hotel</h2>
     <div class="page__card">
       <div *ngIf="isDataPrepared else infoLoading">
@@ -404,8 +404,8 @@
                     <tr [pSelectableRow]="file">
                       <td>{{ i + 1 }}</td>
                       <td>
-                        <a href="javascript:void(0)" (click)="downloadHotelFile(file)">
-                          {{ getName(file.file) }}
+                        <a [href]="file.file">
+                          {{ getName(file.file) }} 22
                         </a>
                       </td>
                     </tr>

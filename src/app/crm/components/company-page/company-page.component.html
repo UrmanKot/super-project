@@ -530,7 +530,7 @@
             <tr [pSelectableRow]="file">
               <td style="width: 5%" class="text-center">{{ rowIndex + 1 }}</td>
               <td style="width: 85%">
-                <a (click)="onDownloadFile(file)">{{ getFileName(file.file) }}</a>
+                <a [href]="link + file.file">{{ getFileName(file.file) }}</a>
               </td>
               <td style="width: 10%" class="text-center">
                 <div class="d-flex justify-content-center">

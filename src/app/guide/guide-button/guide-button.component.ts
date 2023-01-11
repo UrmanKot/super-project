@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-guide-button',

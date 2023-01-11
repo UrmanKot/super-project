@@ -4,7 +4,7 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {TreeNode} from 'primeng/api';
 import {Category} from '../../../product-structure/models/category';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {Subject, takeUntil} from 'rxjs';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';

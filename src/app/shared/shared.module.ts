@@ -70,6 +70,7 @@ import {CurrencyPickerComponent} from '@shared/pickers/currency-picker/currency-
 import { AreaPickerComponent } from './pickers/area-picker/area-picker.component';
 import { AreaLocatorPickerComponent } from './pickers/area-locator-picker/area-locator-picker.component';
 import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-search.component';
+import { PasteScreenImageDirective } from './directives/paste-screen-image.directive';
 
 
 @NgModule({
@@ -121,6 +122,7 @@ import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-se
     AreaPickerComponent,
     AreaLocatorPickerComponent,
     WarehouseSearchComponent,
+    PasteScreenImageDirective,
   ],
   exports: [
     ButtonModule,
@@ -180,6 +182,7 @@ import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-se
     CurrencyPickerComponent,
     AreaPickerComponent,
     AreaLocatorPickerComponent,
+    PasteScreenImageDirective,
   ],
   imports: [
     CommonModule,

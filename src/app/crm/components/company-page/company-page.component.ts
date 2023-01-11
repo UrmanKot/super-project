@@ -16,7 +16,7 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {CompanyActivity} from '../../models/company-activity';
 import {EventCompanyService} from '../../services/event-company.service';
 import {EventCompany} from '../../models/event-company';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-company-page',

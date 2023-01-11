@@ -7,7 +7,7 @@ import {Paginator} from 'primeng/paginator';
 import {Subject, takeUntil} from 'rxjs';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
-import {environment} from '@env/environment.prod';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-sales-chains',

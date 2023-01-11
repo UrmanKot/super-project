@@ -39,7 +39,7 @@
             <td>{{ tripExpense.sum | moneyFormat }}</td>
             <td>{{ tripExpense.currency.name }}</td>
             <td>
-              <a *ngIf="tripExpense.id && tripExpense.file && !tripExpense.uploaded_file" href="javascript:void(0)" (click)="viewFile(tripExpense, tripExpense.file)">
+              <a *ngIf="tripExpense.id && tripExpense.file && !tripExpense.uploaded_file" [href]="link + tripExpense.file">
                 {{ getName(tripExpense.file) }}
               </a>
               <a  *ngIf="tripExpense.uploaded_file" href="javascript:void(0)" (click)="viewFile(tripExpense, tripExpense.uploaded_file)">

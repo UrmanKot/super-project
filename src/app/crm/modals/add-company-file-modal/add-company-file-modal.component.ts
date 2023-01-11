@@ -42,4 +42,9 @@ export class AddCompanyFileModalComponent implements OnInit {
   onRemoveFile() {
     this.uploadFile = null;
   }
+
+  fileAdded(file: File) {
+    this.uploadFile = file;
+    this.onSave();
+  }
 }
