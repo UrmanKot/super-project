@@ -37,7 +37,7 @@ export class InvoiceService {
         }
       });
     }
-    return this.httpClient.get<{ data: Invoice[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
+    return this.httpClient.get<{ data: Invoice[] }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }
