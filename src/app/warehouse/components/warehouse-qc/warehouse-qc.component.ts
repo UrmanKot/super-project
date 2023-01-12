@@ -4,7 +4,6 @@ import {InvoiceService} from '../../../procurement/services/invoice.service';
 import {Invoice} from '../../../procurement/models/invoice';
 import {Order} from '../../../procurement/models/order';
 import * as cloneDeep from 'lodash/cloneDeep';
-import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {TreeService} from '@shared/services/tree.service';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
@@ -57,10 +56,6 @@ export class WarehouseQcComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.getCategories();
-    // this.getInvoices();
-    // this.getOrders();
-
     forkJoin({
       categories: this.productStructureCategoriesService.get(),
       invoices: this.invoiceService.get([
@@ -75,6 +70,17 @@ export class WarehouseQcComponent implements OnInit {
       ])
     }).subscribe(({categories, invoices, orders}) => {
       this.categories = this.treeService.createTree(categories);
+
+      this.categories.unshift({
+        children: [],
+        data: {
+          name: 'Not Category',
+          id: -1,
+          level: 0,
+        },
+        expanded: false
+      })
+
       this.ownProductionCategorizedList = cloneDeep(this.categories);
 
       this.invoices = invoices;
@@ -91,38 +97,6 @@ export class WarehouseQcComponent implements OnInit {
 
       this.isLoading = false;
     })
-  }
-
-  getCategories() {
-    this.productStructureCategoriesService.get().subscribe(categories => {
-      // this.categories = this.treeService.createTree(categories);
-      // this.ownProductionCategorizedList = cloneDeep(this.categories);
-    });
-  }
-
-  getInvoices(): void {
-    this.invoiceService.get([
-      {name: 'completed', value: true},
-      {name: 'qc_completed', value: true},
-      {name: 'is_full_accepted', value: false}
-    ]).subscribe(invoices => {
-      this.invoices = invoices;
-      this.makeUniqueProductionPlansInvoice(<Invoice[]>this.invoices);
-      this.resetProductPaymentTree();
-      this.isLoading = false;
-    });
-  }
-
-  getOrders(): void {
-    this.orderService.get([
-      {name: 'completed', value: true},
-      {name: 'qc_completed', value: true},
-      {name: 'is_full_accepted', value: false}
-    ]).subscribe(orders => {
-      this.orders = orders;
-      this.makeUniqueProductionPlansInvoice(<Order[]>this.orders);
-      this.fillOwnProductionWithData();
-    });
   }
 
   makeUniqueProductionPlansInvoice(items: Invoice[] | Order[]): void {
@@ -153,6 +127,36 @@ export class WarehouseQcComponent implements OnInit {
         if (plan.root_nomenclature && plan.root_nomenclature.root_category) {
           const rootCatId = plan.root_nomenclature.root_category.id;
           const rootCatName = plan.root_nomenclature.root_category.name;
+          const rootLevel = 1;
+
+          const catId = plan.root_nomenclature.id;
+          const catName = plan.root_nomenclature.name;
+          const catLevel = 2;
+
+          const rootExistsIndex = categoriesTemp.findIndex(cat => cat.id === rootCatId && rootLevel === cat.level);
+
+          if (rootExistsIndex < 0) {
+            categoriesTemp.push({
+              id: rootCatId,
+              level: rootLevel,
+              name: rootCatName,
+              parentId: null
+            });
+          }
+
+          const catExistsIndex = categoriesTemp.findIndex(cat => cat.id === catId && catLevel === cat.level);
+
+          if (catExistsIndex < 0) {
+            categoriesTemp.push({
+              id: catId,
+              level: catLevel,
+              name: catName,
+              parentId: rootCatId
+            });
+          }
+        } else if (plan.root_nomenclature && !plan.root_nomenclature.root_category) {
+          const rootCatId = -1;
+          const rootCatName = 'Not Category';
           const rootLevel = 1;
 
           const catId = plan.root_nomenclature.id;
