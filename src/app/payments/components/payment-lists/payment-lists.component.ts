@@ -58,14 +58,6 @@ export class PaymentListsComponent implements OnInit {
         disabled: true
       },
       {
-        label: 'Go to Order',
-        icon: 'pi pi-angle-double-right',
-      },
-      {
-        label: 'Go to Invoice',
-        icon: 'pi pi-angle-double-right',
-      },
-      {
         label: 'File',
         icon: 'pi pi-file',
         command: () => this.onShowFilesAuxiliaryPayments()
