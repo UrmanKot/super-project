@@ -68,8 +68,8 @@ class DashboardComponent {
             }, {
                 label: 'Production Lists Procurement',
                 icon: 'icon-manufacturing-procurement',
-                // routerLink: ['/external', `${environment.link_url}dash/procurement/orders`],
-                routerLink: ['/procurement'],
+                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/procurement/orders`],
+                // routerLink: ['/procurement'],
                 requiredModulePermission: 'can_edit_manufacturing_procurement'
             }, {
                 label: 'Outsourcing',
