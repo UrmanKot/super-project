@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PaymentService} from '../../../reports/services/payment.service';
-import {Payment} from '../../../reports/models/payment';
-import {ServiceInvoicePaymentService} from '../../../reports/services/service-invoice-payment.service';
-import {ServiceInvoicePayment} from '../../../reports/models/service-invoice-payment';
+import {ServiceInvoicePaymentService} from '../../../payments/services/service-invoice-payment.service';
+import {ServiceInvoicePayment} from '../../../payments/models/service-invoice-payment';
 import {ModalService} from '@shared/services/modal.service';
 import {TreeNode} from 'primeng/api';
 import {finalize, forkJoin, Subject, takeUntil} from 'rxjs';
@@ -11,6 +9,8 @@ import {
   PaymentConfirmationLimitComponent
 } from '../../modals/payment-confirmation-limit/payment-confirmation-limit.component';
 import {environment} from '@env/environment';
+import {Payment} from '../../../payments/models/payment';
+import {PaymentService} from '../../../payments/services/payment.service';
 
 @Component({
   selector: 'pek-payment-confirmation',

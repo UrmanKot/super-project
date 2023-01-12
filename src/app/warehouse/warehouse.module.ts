@@ -106,16 +106,19 @@ import { WarehouseShippingRequestPrintComponent } from './components/warehouse-s
     WarehouseShippingRequestComponent,
     WarehouseShippingRequestPrintComponent,
   ],
-    imports: [
-        CommonModule,
-        WarehouseRouting,
-        LayoutModule,
-        SharedModule,
-        TreeModule,
-        ProductStructureModule,
-        QrCodeModule,
-        RippleModule,
-    ]
+  exports: [
+    WarehouseCategoriesComponent
+  ],
+  imports: [
+    CommonModule,
+    WarehouseRouting,
+    LayoutModule,
+    SharedModule,
+    TreeModule,
+    ProductStructureModule,
+    QrCodeModule,
+    RippleModule,
+  ]
 })
 export class WarehouseModule {
 }

@@ -1,7 +1,9 @@
+import {Company} from '../../crm/models/company';
+
 export class Order {
   readonly id: number;
   request: string;
-  // supplier: Company;
+  supplier: Company;
   created?: any;
   updated?: string;
   deadline?: Date;
@@ -12,8 +14,9 @@ export class Order {
   type;
   accointing_type;
   status?;
-  order_products?
-  root_lists?;
+  order_products?: any[];
+  root_lists?: any[];
+  root_production_list_products?: any[];
   root_search_lists?;
   created_to?;
   completed?: boolean;

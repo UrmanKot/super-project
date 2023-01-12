@@ -4,15 +4,15 @@ import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {forkJoin, Observable} from 'rxjs';
 import {ServiceInvoicePayment, ServiceInvoicePaymentFile} from '../models/service-invoice-payment';
-import {Payment} from "../../payments/models/payment";
+import {Payment} from "../models/payment";
 import {ModalActionType} from "@shared/models/modal-action";
 import {MatDialog} from "@angular/material/dialog";
 import {
   CreateEditServicePaymentFormComponent
-} from "../../payments/modals/create-edit-service-payment-form/create-edit-service-payment-form.component";
+} from "../modals/create-edit-service-payment-form/create-edit-service-payment-form.component";
 import {
   ServicePaymentFileFormComponent
-} from "../../payments/modals/service-payment-file-form/service-payment-file-form.component";
+} from "../modals/service-payment-file-form/service-payment-file-form.component";
 
 @Injectable({
   providedIn: 'root'
@@ -52,8 +52,8 @@ export class ServiceInvoicePaymentService {
     );
   }
 
-  delete(payment: Payment): Observable<any> {
-    return this.httpClient.delete(this.API_URL + this.url + `${payment.id}/`)
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.API_URL + this.url + `${id}/`)
   };
 
   get(query?: { name: string, value: any }[]): Observable<ServiceInvoicePayment[]> {

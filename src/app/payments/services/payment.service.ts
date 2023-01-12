@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {forkJoin, Observable} from "rxjs";
+import {forkJoin, Observable, of} from 'rxjs';
 import {environment} from "@env/environment";
 import {Payment, PaymentFile} from "../models/payment";
-import {map} from "rxjs/operators";
+import {catchError, map} from 'rxjs/operators';
 import {QuerySearch} from "@shared/models/other";
 import {ModalActionType} from "@shared/models/modal-action";
 import {MatDialog} from "@angular/material/dialog";
 import {CreateEditPaymentFormComponent} from "../modals/create-edit-payment-form/create-edit-payment-form.component";
 import {PaymentFileFormComponent} from "../modals/payment-file-form/payment-file-form.component";
-import {ProductFile} from "../../product-structure/models/product";
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +75,33 @@ export class PaymentService {
     return this.http.get<{data: PaymentFile[]}>(this.API_URL + `payment_files/${paymentId}/`).pipe(
       map(response => response.data)
     )
+  }
+
+  getConfirmationPayments(): Observable<Payment[]> {
+    return this.http.get<{ data: Payment[] }>(this.API_URL + this.url + 'confirmation_list/').pipe(
+      map(response => response.data));
+  }
+
+  severalConfirm(ids: number[]): Observable<any[]> {
+    return forkJoin(...ids.map(id => this.http.post<{ data: Payment }>(this.API_URL + this.url + `confirm/${id}/`, null).pipe(
+      catchError(() => of(null)),
+    )));
+  }
+
+  severalDecline(ids: number[]): Observable<any[]> {
+    return forkJoin(...ids.map(id => this.http.post<{ data: Payment }>(this.API_URL + this.url + `decline/${id}/`, null).pipe(
+      catchError(() => of(null)),
+    )));
+  }
+
+  getLimit(): Observable<{ id: number; value: string }[]> {
+    return this.http.get<{ data: { id: number; value: string }[] }>(this.API_URL + 'maximum_confirmed_payment_amount/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  setLimit(limit: { id: number, value: string }): Observable<any> {
+    return this.http.patch(this.API_URL + 'maximum_confirmed_payment_amount/' + limit.id + '/', limit);
   }
 
   severalUploadFiles(paymentId: number, files: File[]): Observable<PaymentFile[]> {

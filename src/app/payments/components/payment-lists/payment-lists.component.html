@@ -82,7 +82,7 @@
           <p-table
             #dt
             selectionMode="single"
-            scrollHeight="calc(100vh - 18.8rem)"
+            scrollHeight="calc(100vh - 28.25rem)"
             [scrollable]="true"
             [paginator]="payments.length > 0"
             [rows]="10"
@@ -91,9 +91,29 @@
             (selectionChange)="onSelectPayment()"
           >
             <ng-template pTemplate="caption">
-              <div class="d-flex buttons">
+              <div class="d-flex buttons align-items-center">
+                <p class="subtitle" *ngIf="!selectedPayment">Choose the Payment to edit</p>
+                <button
+                  class="ml-auto mr-2"
+                  pButton
+                  type="button"
+                  icon="pi pi-angle-double-right"
+                  label="Invoice"
+                  (click)="goToPaymentInvoice()"
+                  [disabled]="!selectedPayment || selectedPayment?.invoices?.length !== 1"
+                >
+                </button>
+                <button
+                  class="mr-2"
+                  pButton
+                  type="button"
+                  icon="pi pi pi-angle-double-right"
+                  label="Order"
+                  (click)="goToPaymentOrder()"
+                  [disabled]="!selectedPayment || selectedPayment?.invoices?.length !== 1"
+                >
+                </button>
                 <p-menubar
-                  class="ml-auto"
                   [model]="menuItems"
                   [class.disabled]="!selectedPayment"
                 ></p-menubar>
@@ -102,9 +122,9 @@
             <ng-template pTemplate="header">
               <tr>
                 <th class="text-center" style="width: 4%">#</th>
-                <th style="width: 10%">Payment ID</th>
+                <th style="width: 10%" class="text-center">Payment ID</th>
                 <th style="width: 10%">Date</th>
-                <th style="width: 14%">Supplier</th>
+                <th style="width: 16%">Supplier</th>
                 <th style="width: 10%" class="text-center">Invoice</th>
                 <th style="width: 10%" class="text-center">Amount</th>
                 <th style="width: 10%" class="text-center">Order ID</th>
@@ -115,22 +135,27 @@
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
               <tr [pSelectableRow]="payment">
                 <td class="text-center" style="width: 4%">{{i + 1}}</td>
-                <td style="width: 10%">{{payment.id}}</td>
-                <td style="width: 10%">{{payment.payment_date | date:'dd/MM/yyyy'}}</td>
-                <td style="width: 14%">
+                <td style="width: 10%" class="text-center">{{payment.id}}</td>
+                <td style="width: 10%">
+                  <div class="payment-paperclip">
+                    {{payment.payment_date | date:'dd/MM/yyyy'}}
+                    <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                  </div>
+                </td>
+                <td style="width: 16%">
                   <div *ngFor="let invoice of payment.invoices">
-                    {{invoice.supplier.name}}
+                    <div class="word-break">{{invoice.supplier.name}}</div>
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.invoices">
-                    {{invoice.self_serial_number}}
+                    <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.invoices">
-                    {{invoice.order.id}}
+                    <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
                   </div>
                 </td>
                 <td style="width: 15%" class="text-center">
@@ -146,10 +171,11 @@
                   </div>
                 </td>
                 <td style="width: 15%" class="text-center">
-                  <div *ngFor="let invoice of payment.invoices">
-                <span *ngFor="let root of invoice.order.root_production_list_products">
-                  {{root.nomenclature.name}}
-                </span>
+                  <div *ngFor="let invoice of payment.invoices; let idx = index">
+                    <span *ngFor="let root of invoice.order.root_production_list_products">
+                      {{root.nomenclature.name}}<i
+                      *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -248,7 +274,7 @@
           <p-table
             #st
             selectionMode="single"
-            scrollHeight="calc(100vh - 18.8rem)"
+            scrollHeight="calc(100vh - 28.25rem)"
             [scrollable]="true"
             [paginator]="servicePayments.length > 0"
             [rows]="10"
@@ -257,9 +283,28 @@
             (selectionChange)="onSelectAuxiliaryPayment()"
           >
             <ng-template pTemplate="caption">
-              <div class="d-flex buttons">
+              <div class="d-flex buttons align-items-center">
+                <p class="subtitle" *ngIf="!selectedServicePayment">Choose the Auxiliary Payment to edit</p>
+                <button
+                  class="ml-auto mr-2"
+                  pButton
+                  type="button"
+                  icon="pi pi-angle-double-right"
+                  label="Invoice"
+                  (click)="goToServicePaymentInvoice()"
+                  [disabled]="!selectedServicePayment || selectedServicePayment?.service_invoices?.length !== 1"
+                >
+                </button>
+                <button
+                  class="mr-2"
+                  pButton
+                  type="button"
+                  icon="pi pi pi-angle-double-right"
+                  label="Order"
+                  (click)="goToServicePaymentOrder()"
+                  [disabled]="!selectedServicePayment || selectedServicePayment?.service_invoices?.length !== 1"
+                ></button>
                 <p-menubar
-                  class="ml-auto"
                   [model]="menuItemsAux"
                   [class.disabled]="!selectedServicePayment"
                 ></p-menubar>
@@ -268,9 +313,9 @@
             <ng-template pTemplate="header">
               <tr>
                 <th class="text-center" style="width: 4%">#</th>
-                <th style="width: 10%">Payment ID</th>
+                <th style="width: 10%" class="text-center">Payment ID</th>
                 <th style="width: 10%">Date</th>
-                <th style="width: 14%">Supplier</th>
+                <th style="width: 16%">Supplier</th>
                 <th style="width: 10%" class="text-center">Invoice</th>
                 <th style="width: 10%" class="text-center">Amount</th>
                 <th style="width: 10%" class="text-center">Order ID</th>
@@ -281,22 +326,27 @@
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
               <tr [pSelectableRow]="payment">
                 <td class="text-center" style="width: 4%">{{i + 1}}</td>
-                <td style="width: 10%">{{payment.id}}</td>
-                <td style="width: 10%">{{payment.payment_date | date:'dd/MM/yyyy'}}</td>
-                <td style="width: 14%">
+                <td style="width: 10%" class="text-center">{{payment.id}}</td>
+                <td style="width: 10%">
+                  <div class="payment-paperclip">
+                    {{payment.payment_date | date:'dd/MM/yyyy'}}
+                    <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                  </div>
+                </td>
+                <td style="width: 16%">
                   <div *ngFor="let invoice of payment.service_invoices">
-                    {{invoice.supplier.name}}
+                    <div class="word-break">{{invoice.supplier.name}}</div>
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.service_invoices">
-                    {{invoice.self_serial_number}}
+                    <a (click)="goToLinkServicePaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.service_invoices">
-                    {{invoice.order.id}}
+                    <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
                   </div>
                 </td>
                 <td style="width: 15%" class="text-center">
@@ -313,9 +363,10 @@
                 </td>
                 <td style="width: 15%" class="text-center">
                   <div *ngFor="let invoice of payment.service_invoices">
-                <span *ngFor="let root of invoice.order.root_production_list_products">
-                  {{root.nomenclature.name}}
-                </span>
+                    <span *ngFor="let root of invoice.order.root_production_list_products; let idx = index">
+                      {{root.nomenclature.name}}<i
+                      *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
+                    </span>
                   </div>
                 </td>
               </tr>

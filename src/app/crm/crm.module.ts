@@ -12,7 +12,6 @@ import { EventTypesComponent } from './components/event-types/event-types.compon
 import { CreateEditEventTypeComponent } from './modals/create-edit-event-type/create-edit-event-type.component';
 import {ColorPickerModule} from 'primeng/colorpicker';
 import { CrmEmployeePickerComponent } from './pickers/crm-employee-picker/crm-employee-picker.component';
-import {MultiSelectModule} from 'primeng/multiselect';
 import { CrmEmployeesComponent } from './components/crm-employees/crm-employees.component';
 import { CreateEditCrmEmployeeComponent } from './modals/create-edit-crm-employee/create-edit-crm-employee.component';
 import { CrmExternalEventsComponent } from './components/crm-external-events/crm-external-events.component';
@@ -54,7 +53,6 @@ import { CreateEditEventComponent } from './modals/create-edit-event/create-edit
 import {InputSwitchModule} from 'primeng/inputswitch';
 import { CreateEditLinkedContactComponent } from './modals/create-edit-linked-contact/create-edit-linked-contact.component';
 import { AddEventToContactPersonComponent } from './modals/add-event-to-contact-person/add-event-to-contact-person.component';
-import {NgxMaskModule} from 'ngx-mask';
 import { CrmPositionsComponent } from './components/crm-positions/crm-positions.component';
 import { CreateUpdateCrmPositionsComponent } from './modals/create-update-crm-positions/create-update-crm-positions.component';
 import {BusinessTripsModule} from '../business-trips/business-trips.module';
@@ -116,7 +114,6 @@ FullCalendarModule.registerPlugins([
     SharedModule,
     LayoutModule,
     ColorPickerModule,
-    MultiSelectModule,
     SliderModule,
     FullCalendarModule,
     InputSwitchModule,

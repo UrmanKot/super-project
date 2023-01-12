@@ -46,8 +46,7 @@ export class EventTypesComponent implements OnInit {
 
   getEventTypes() {
     this.eventTypesService.get([
-      {name: 'is_inner', value: true,},
-      {name: 'is_auto', value: false,},
+      {name: 'is_auto', value: false},
     ]).subscribe(types => {
       this.eventTypes = types;
       this.isLoading = false;

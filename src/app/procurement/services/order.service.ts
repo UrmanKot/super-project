@@ -77,6 +77,12 @@ export class OrderService {
     );
   }
 
+  getFiles(orderId: number): Observable<any> {
+    return this.httpClient.get<{ data: any }>(this.API_URL + 'order_files/' + orderId + '/').pipe(
+      map(response => response.data)
+    );
+  }
+
   getTechnicalEquipmentToAccept(id: number): Observable<OrderTechnicalEquipment[]> {
     return this.httpClient.get<{ data: OrderTechnicalEquipment[] }>(this.API_URL + this.url + id + '/order_technical_equipment_to_accept/').pipe(
       map(response => response.data)

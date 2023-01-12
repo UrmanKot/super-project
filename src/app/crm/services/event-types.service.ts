@@ -21,6 +21,7 @@ export class EventTypesService {
   readonly url = 'event_types/';
 
   eventTypes: EventType[];
+  externalEventTypes: EventType[];
 
   constructor(
     private httpClient: HttpClient,
@@ -28,10 +29,12 @@ export class EventTypesService {
   ) {
   }
 
-  get(query?: QuerySearch[]): Observable<EventType[]> {
+  get(query: QuerySearch[] = []): Observable<EventType[]> {
     if (this.eventTypes) {
       return of(this.eventTypes);
     }
+
+    query.push({name: 'is_inner', value: true});
 
     let queryParams = '';
     if (query) {
@@ -48,6 +51,32 @@ export class EventTypesService {
       map(response => {
         const eventTypes = response.data;
         this.eventTypes = eventTypes;
+        return eventTypes;
+      }));
+  }
+
+  getExternalEventTypes(query: QuerySearch[] = []): Observable<EventType[]> {
+    if (this.externalEventTypes) {
+      return of(this.externalEventTypes);
+    }
+
+    query.push({name: 'is_inner', value: false});
+
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: EventType[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => {
+        const eventTypes = response.data;
+        this.externalEventTypes = eventTypes;
         return eventTypes;
       }));
   }

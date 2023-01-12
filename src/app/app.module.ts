@@ -20,6 +20,7 @@ import {NgxMaskModule} from 'ngx-mask';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PaymentsModule} from "./payments/payments.module";
 import {QrCodeModule} from './qr-code/qr-code.module';
+import {PurchasingModule} from './purchasing/purchasing.module';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -51,7 +52,8 @@ const INTERCEPTORS_ERROR: Provider = {
     GuideModule,
     ToastModule,
     PdfViewerModule,
-    PaymentsModule
+    PaymentsModule,
+    PurchasingModule,
   ],
   providers: [
     MessageService,

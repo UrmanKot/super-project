@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {PaymentService} from '../../../reports/services/payment.service';
 import {MatDialogRef} from '@angular/material/dialog';
 import {finalize, Subject, takeUntil} from 'rxjs';
+import {PaymentService} from '../../../payments/services/payment.service';
 
 @Component({
   selector: 'pek-payment-confirmation-limit',
