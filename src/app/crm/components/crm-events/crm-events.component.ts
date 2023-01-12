@@ -162,15 +162,15 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.searchForm.get('start').value) {
       this.query.push({
-        name: 'from_datetime',
-        value: this.adapterService.dateTimeAdapter(new Date(this.searchForm.get('start').value.setHours(0, 0, 0, 0))),
+        name: 'start_end_range_after',
+        value: this.adapterService.dateAdapter(new Date(this.searchForm.get('start').value)),
       });
     }
 
     if (this.searchForm.get('end').value) {
       this.query.push({
-        name: 'to_datetime',
-        value: this.adapterService.dateTimeAdapter(new Date(this.searchForm.get('end').value.setHours(23, 59, 59, 999))),
+        name: 'start_end_range_before',
+        value: this.adapterService.dateAdapter(new Date(this.searchForm.get('end').value)),
       });
     }
 
@@ -336,8 +336,10 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
         this.eventsListService.delete(this.selectedEventItem.id).subscribe(() => {
-          this.search();
-          this.getEventsDays();
+          setTimeout(() => {
+            this.search();
+            this.getEventsDays();
+          }, 5_000);
         });
       }
     });

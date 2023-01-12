@@ -155,12 +155,12 @@ form {
       }
 
       td {
-        background: #e9ecef !important;
+        background: #e9ecef;
         color: #495057 !important;
         transition: none !important;
 
         .report-event {
-          background: #e9ecef !important;
+          //background: #e9ecef;
         }
       }
     }
@@ -277,51 +277,51 @@ h4 {
     min-height: 1.875rem;
 
     .row-0 {
-      background-color: $first-group;
+      background-color: $first-group !important;
 
       .report-event {
         &:nth-child(2n) {
-          background-color: $first-group;
+          background-color: $first-group !important;
         }
       }
     }
 
     .row-1 {
-      background-color: $second-group;
+      background-color: $second-group !important;
 
       .report-event {
         &:nth-child(2n) {
-          background-color: $second-group;
+          background-color: $second-group !important;
         }
       }
     }
 
     .row-2 {
-      background-color: $third-group;
+      background-color: $third-group !important;
 
       .report-event {
         &:nth-child(2n) {
-          background-color: $third-group;
+          background-color: $third-group !important;
         }
       }
     }
 
     .row-3 {
-      background-color: $fifth-group;
+      background-color: $fifth-group !important;
 
       .report-event {
         &:nth-child(2n) {
-          background-color: $fifth-group;
+          background-color: $fifth-group !important;
         }
       }
     }
 
     .row-4 {
-      background-color: $sixth-group;
+      background-color: $sixth-group !important;
 
       .report-event {
         &:nth-child(2n) {
-          background-color: $sixth-group;
+          background-color: $sixth-group !important;
         }
       }
     }

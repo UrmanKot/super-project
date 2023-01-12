@@ -60,13 +60,21 @@ export class CreateEditEventComponent implements OnInit {
     private readonly eventListService: EventsListService,
     private readonly adapterService: AdapterService,
     private readonly messageService: MessageService,
-    @Inject(MAT_DIALOG_DATA) public data: { modalType: ModalActionType, type: AddEventModalType, event: EventItem, companyId: number },
+    @Inject(MAT_DIALOG_DATA) public data: { modalType: ModalActionType,
+      type: AddEventModalType,
+      event: EventItem,
+      companyId: number,
+      isLinkedEvent:boolean },
   ) {
   }
 
   ngOnInit(): void {
     if (this.data.companyId) {
       this.form.get('company_ids').patchValue([this.data.companyId]);
+    }
+
+    if (this.data.isLinkedEvent) {
+      this.form.get('parent').patchValue(this.data.event.id);
     }
 
     if (this.data.modalType === 'edit') {

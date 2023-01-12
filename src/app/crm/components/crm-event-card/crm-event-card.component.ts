@@ -3,7 +3,7 @@ import {EventItem} from '../../models/event-item';
 import {EventsListService} from '../../services/events-list.service';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Subject, takeUntil} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {EventCompanyService} from '../../services/event-company.service';
@@ -21,6 +21,11 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   eventCompanyMenuItems: MenuItem[] = [{
     label: 'Selected Company',
     items: [
+      {
+        label: 'View Company',
+        icon: 'pi pi-eye',
+        command: () => this.onViewCompany()
+      },
       {
         label: 'Create Linked Event',
         icon: 'pi pi-share-alt',
@@ -77,6 +82,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   constructor(
     private readonly eventListService: EventsListService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly modalService: ModalService,
     private readonly eventCompanyService: EventCompanyService,
     private readonly eventContactPersonService: EventContactPersonService,
@@ -190,7 +196,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   }
 
   onCreateLinkedEvent() {
-    this.eventListService.openCreateEventEventModal('create', 'withEmployee', this.event, this.selectedEventCompany.company.id).subscribe(event => {
+    this.eventListService.openCreateEventEventModal('create', 'withEmployee', this.event, this.selectedEventCompany.company.id, true).subscribe(event => {
       if (event) {
         this.getEvent();
       }
@@ -200,5 +206,9 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  private onViewCompany() {
+    this.router.navigate(['/crm/business-partners/company-page/', this.selectedEventCompany.company.id]);
   }
 }

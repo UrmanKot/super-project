@@ -149,12 +149,16 @@ export class EventsListService {
       .afterClosed();
   }
 
-  openCreateEventEventModal(modalType: ModalActionType, type: AddEventModalType, event?: EventItem, companyId?: number): Observable<EventItem> {
+  openCreateEventEventModal(modalType: ModalActionType,
+                            type: AddEventModalType,
+                            event?: EventItem,
+                            companyId?: number,
+                            isLinkedEvent?: boolean): Observable<EventItem> {
     return this.dialog
       .open<CreateEditEventComponent>(CreateEditEventComponent, {
         width: '60rem',
         height: 'auto',
-        data: {modalType, type, event, companyId},
+        data: {modalType, type, event, companyId, isLinkedEvent},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'
