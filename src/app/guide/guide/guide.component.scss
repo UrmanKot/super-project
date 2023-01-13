@@ -1200,6 +1200,7 @@
 
     &_2 {
       width: 120px;
+
       .guide__button {
         &::ng-deep {
           .guide-button__inner {
@@ -1503,6 +1504,10 @@
         &:nth-child(4) {
           margin-top: 211px;
 
+          pek-guide-button {
+            margin-top: 6px;
+          }
+
           span {
             display: block;
             position: absolute;
@@ -1512,19 +1517,19 @@
               right: -150px;
               width: 148px;
               height: 2px;
-              top: 20px;
+              top: 29px;
             }
 
             &:nth-child(2) {
               right: 90px;
               width: 55px;
               height: 2px;
-              top: 20px;
+              top: 29px;
             }
 
             &:nth-child(3) {
               width: 2px;
-              height: 79px;
+              height: 88px;
               top: -57px;
               left: -57px;
 
@@ -1557,7 +1562,59 @@
         }
 
         &:nth-child(7) {
-          margin-top: 56px;
+          margin-top: 296px;
+
+          span {
+            &:nth-child(1) {
+              width: 2px;
+              height: 129px;
+              left: 44px;
+              top: 38px;
+            }
+
+            &:nth-child(2) {
+              width: 2px;
+              height: 85px;
+              left: 44px;
+              top: -83px;
+            }
+
+            &:nth-child(3) {
+              width: 77px;
+              height: 2px;
+              top: 165px;
+              left: 44px;
+            }
+
+            &:nth-child(4) {
+              width: 83px;
+              height: 2px;
+              top: -85px;
+              left: 44px;
+            }
+
+            &:nth-child(5) {
+              width: 2px;
+              height: 19px;
+              left: 125px;
+              top: -103px;
+
+              &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-45deg);
+                right: -13px;
+                bottom: 0;
+                top: 2px;
+              }
+            }
+          }
         }
 
         &:nth-child(8) {
