@@ -2,8 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {AdapterService} from "@shared/services/adapter.service";
 import {ModalService} from "@shared/services/modal.service";
-import {ServiceInvoicePayment, ServiceInvoicePaymentFile} from "../../../reports/models/service-invoice-payment";
-import {ServiceInvoicePaymentService} from "../../../reports/services/service-invoice-payment.service";
+import {ServiceInvoicePayment, ServiceInvoicePaymentFile} from "../../models/service-invoice-payment";
+import {ServiceInvoicePaymentService} from "../../services/service-invoice-payment.service";
 import {finalize} from "rxjs";
 import {environment} from '@env/environment';
 

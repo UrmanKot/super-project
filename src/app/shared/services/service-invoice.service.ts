@@ -13,7 +13,7 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceInvoicesService {
+export class ServiceInvoiceService {
 
   API_URL = environment.base_url + environment.procurement_url;
   readonly url = 'service_invoices/';

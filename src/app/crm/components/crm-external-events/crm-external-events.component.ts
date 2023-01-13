@@ -44,7 +44,7 @@ export class CrmExternalEventsComponent implements OnInit, OnDestroy {
   }
 
   getEventTypes() {
-    this.eventTypesService.get([{name: 'is_inner', value: false}]).pipe(
+    this.eventTypesService.getExternalEventTypes().pipe(
       takeUntil(this.destroy$)
     ).subscribe(eventTypes => {
       this.externalEvents = eventTypes;

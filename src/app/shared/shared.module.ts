@@ -71,6 +71,7 @@ import { AreaPickerComponent } from './pickers/area-picker/area-picker.component
 import { AreaLocatorPickerComponent } from './pickers/area-locator-picker/area-locator-picker.component';
 import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-search.component';
 import { PasteScreenImageDirective } from './directives/paste-screen-image.directive';
+import { OrderPageComponent } from './components/order-page/order-page.component';
 
 
 @NgModule({
@@ -123,6 +124,7 @@ import { PasteScreenImageDirective } from './directives/paste-screen-image.direc
     AreaLocatorPickerComponent,
     WarehouseSearchComponent,
     PasteScreenImageDirective,
+    OrderPageComponent,
   ],
   exports: [
     ButtonModule,
@@ -183,8 +185,11 @@ import { PasteScreenImageDirective } from './directives/paste-screen-image.direc
     AreaPickerComponent,
     AreaLocatorPickerComponent,
     PasteScreenImageDirective,
+    MultiSelectModule,
+    OrderPageComponent,
   ],
   imports: [
+    MultiSelectModule,
     CommonModule,
     ButtonModule,
     InputTextModule,

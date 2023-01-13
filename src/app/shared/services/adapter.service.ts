@@ -8,6 +8,10 @@ export class AdapterService {
   constructor() {
   }
 
+  removeDuplicates(data: any[], key: any) {
+    return [...new Map(data.map(x => [key(x), x])).values()];
+  }
+
   isValidHttpUrl(string: string): boolean {
     return string.includes('http:') || string.includes('https:');
   }

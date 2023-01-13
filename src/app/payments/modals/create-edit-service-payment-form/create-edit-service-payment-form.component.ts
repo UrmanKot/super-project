@@ -8,8 +8,8 @@ import {ModalActionType} from "@shared/models/modal-action";
 import {Payment} from "../../models/payment";
 import {CreateEditPaymentFormComponent} from "../create-edit-payment-form/create-edit-payment-form.component";
 import {Company} from "../../../crm/models/company";
-import {ServiceInvoicePaymentService} from "../../../reports/services/service-invoice-payment.service";
-import {ServiceInvoicesService} from "@shared/services/service-invoices.service";
+import {ServiceInvoicePaymentService} from "../../services/service-invoice-payment.service";
+import {ServiceInvoiceService} from "@shared/services/service-invoice.service";
 import {Invoice} from "../../../procurement/models/invoice";
 
 @Component({
@@ -38,7 +38,7 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     private invoiceService: InvoiceService,
     private paymentService: PaymentService,
     private serviceInvoicePaymentService: ServiceInvoicePaymentService,
-    private serviceInvoice: ServiceInvoicesService,
+    private serviceInvoice: ServiceInvoiceService,
     @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment }
   ) {
   }

@@ -20,6 +20,11 @@ const routes: Routes = [
         loadChildren: () => import('./product-structure/product-structure.module').then(m => m.ProductStructureModule)
       },
       {
+        path: 'procurement',
+        title: 'Procurement',
+        loadChildren: () => import('./procurement/procurement.module').then(m => m.ProcurementModule)
+      },
+      {
         path: 'confirmation',
         title: 'Confirmation',
         loadChildren: () => import('./confirmation/confirmation.module').then(m => m.ConfirmationModule)
@@ -57,15 +62,18 @@ const routes: Routes = [
       {
         path: 'business-trips',
         title: 'Business Trips',
-        loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule) },
+        loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule)
+      },
       {
         path: 'correspondents',
         title: 'Correspondents',
-        loadChildren: () => import('./correspondent/correspondent.module').then(m => m.CorrespondentModule) },
+        loadChildren: () => import('./correspondent/correspondent.module').then(m => m.CorrespondentModule)
+      },
       {
         path: 'instruments',
         title: 'Instruments',
-        loadChildren: () => import('./instruments/instruments.module').then(m => m.InstrumentsModule) },
+        loadChildren: () => import('./instruments/instruments.module').then(m => m.InstrumentsModule)
+      },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },
