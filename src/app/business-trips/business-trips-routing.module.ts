@@ -31,7 +31,8 @@ const routes: Routes = [{
       component: VehiclesComponent
     },
     {
-      path: 'Business Trip Expenses',
+      title: 'Business Trip Expenses',
+      path: 'expenses',
       component: ExpansesComponent
     },
     {

@@ -7,7 +7,7 @@ import {BusinessTripHotel} from '../../models/business-trip-hotel';
 import {BusinessTripLocation} from '../../models/business-trip-location';
 import {BusinessTripStatus} from '../../models/business-trip-status.enum';
 import {BusinessTrip} from '../../models/business-trip';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {BusinessTripLocationTypes} from '../../enums/business-trip-location-status.enum';
 import {HotelFiles} from '../../models/hotel-files';
 import {QuerySearch} from '@shared/models/other';
@@ -332,6 +332,8 @@ export class EditBusinessTripComponent implements OnInit {
 
   updateExpenses(expenses: BusinessTripExpense[]) {
     if (expenses.length > 0) {
+      this.form.removeControl('expenses');
+      this.form.addControl('expenses', this.fb.array([]));
       expenses.forEach(expense => {
         let expensePrepared: Expense = {
           id: null,
@@ -351,6 +353,7 @@ export class EditBusinessTripComponent implements OnInit {
         if (expense.custom_expense) {
           customExpensePrepared = expense.custom_expense as Expense;
         }
+
         (this.form.get('expenses') as FormArray).push(this.fb.group({
           base64File: null,
           currency: expense.currency,
@@ -369,6 +372,8 @@ export class EditBusinessTripComponent implements OnInit {
       (this.form.get('expenses') as FormArray).controls.forEach(group => {
         this.tripExpenses.push(group.value);
       });
+
+      console.log(this.form.get('expenses').value);
     }
   }
 

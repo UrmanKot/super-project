@@ -110,34 +110,39 @@
       </div>
     </div>
 
-    <div *ngIf="auth.user.can_verify_expenses && canVerify" class="row">
-      <div class="form-group col-2">
-        <label for="is_verified">Is Verified</label><br>
-        <p-checkbox
-          id="is_verified"
-          formControlName="is_verified"
-          [binary]="true"
-        ></p-checkbox>
+    <div class="row">
+      <div  *ngIf="auth.user.can_verify_expenses && canVerify" class="col-2">
+        <div class="form-group ">
+          <label for="is_verified">Is Verified</label>
+          <p-checkbox
+            id="is_verified"
+            formControlName="is_verified"
+            [binary]="true"
+          ></p-checkbox>
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-6">
-        <label for="file" class="input-file d-flex align-items-center">
-          <input [disabled]="isEditDisabled" type="file" id="file" #inputFile
-                 (input)="imageManipulation($event, $event.target)">
-          <span><i class="fa fa-download"></i>Choose File</span>
+      <div class="col-6">
+        <div class="form-group ">
+          <label for="file" class="input-file d-flex align-items-center">
+            <input [disabled]="isEditDisabled" type="file" id="file" #inputFile
+                   (input)="imageManipulation($event, $event.target)">
+            <span><i class="fa fa-download"></i>Choose File</span>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-camera"
-            class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small ml-3 mt-1"
-            (click)="takePhoto()"
-          ></button>
-        </label>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-camera"
+              class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small ml-3 mt-1"
+              (click)="takePhoto()"
+            ></button>
+          </label>
+        </div>
       </div>
-      <div class="form-group col-6 pt-2 d-flex justify-content-end justify-content-center">
-        <span>
+      <div class="col-6 ">
+        <div class="form-group pt-2 d-flex justify-content-end justify-content-center">
+                  <span>
           <a *ngIf="form.get('file').value && !form.get('uploaded_file').value"
              [href]="link + form.get('file').value">
                 {{ getName(form.get('file').value) }}
@@ -150,6 +155,8 @@
       Remove File
     </button>
         </span>
+        </div>
+
       </div>
     </div>
   </form>
