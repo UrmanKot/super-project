@@ -14463,10 +14463,9 @@ const environment = {
     staff_url: 'staff/',
     sales_url: 'sales/',
     business_trips_url: 'business-trips/',
-    // image_path: 'https://rwave.pekauto.com',
-    link_url: 'https://pekauto.unitcode.ru/',
-    // link_url: 'http://localhost:4201/',
-    // link_url: 'https://rwave.pekauto.com/'
+    image_path: 'https://rwave.pekauto.com',
+    // link_url: 'http://localhost:4201/'
+    link_url: 'https://rwave.pekauto.com/'
 };
 
 

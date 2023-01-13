@@ -520,7 +520,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ProcurementModule": () => (/* binding */ ProcurementModule)
 /* harmony export */ });
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/common */ 94666);
 /* harmony import */ var _procurement_routing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./procurement.routing */ 55591);
 /* harmony import */ var _components_chains_chains_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/chains/chains.component */ 90558);
 /* harmony import */ var _components_procurement_layout_procurement_layout_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/procurement-layout/procurement-layout.component */ 98933);
@@ -529,7 +529,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pickers_statuses_picker_statuses_picker_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pickers/statuses-picker/statuses-picker.component */ 39165);
 /* harmony import */ var _warehouse_warehouse_module__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../warehouse/warehouse.module */ 10273);
 /* harmony import */ var _components_procurement_order_page_procurement_order_page_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/procurement-order-page/procurement-order-page.component */ 32346);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _modals_edit_order_product_quantity_edit_order_product_quantity_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modals/edit-order-product-quantity/edit-order-product-quantity.component */ 9899);
+/* harmony import */ var _modals_edit_order_product_delivery_date_edit_order_product_delivery_date_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modals/edit-order-product-delivery-date/edit-order-product-delivery-date.component */ 53855);
+/* harmony import */ var _modals_add_order_product_to_order_add_order_product_to_order_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modals/add-order-product-to-order/add-order-product-to-order.component */ 25103);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/core */ 22560);
+
+
+
 
 
 
@@ -543,16 +549,19 @@ __webpack_require__.r(__webpack_exports__);
 class ProcurementModule {
 }
 ProcurementModule.ɵfac = function ProcurementModule_Factory(t) { return new (t || ProcurementModule)(); };
-ProcurementModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdefineNgModule"]({ type: ProcurementModule });
-ProcurementModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵdefineInjector"]({ imports: [_angular_common__WEBPACK_IMPORTED_MODULE_9__.CommonModule,
+ProcurementModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineNgModule"]({ type: ProcurementModule });
+ProcurementModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineInjector"]({ imports: [_angular_common__WEBPACK_IMPORTED_MODULE_12__.CommonModule,
         _procurement_routing__WEBPACK_IMPORTED_MODULE_0__.ProcurementRouting,
         _layout_layout_module__WEBPACK_IMPORTED_MODULE_3__.LayoutModule,
         _shared_shared_module__WEBPACK_IMPORTED_MODULE_4__.SharedModule,
         _warehouse_warehouse_module__WEBPACK_IMPORTED_MODULE_6__.WarehouseModule] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵsetNgModuleScope"](ProcurementModule, { declarations: [_components_chains_chains_component__WEBPACK_IMPORTED_MODULE_1__.ChainsComponent,
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵsetNgModuleScope"](ProcurementModule, { declarations: [_components_chains_chains_component__WEBPACK_IMPORTED_MODULE_1__.ChainsComponent,
         _components_procurement_layout_procurement_layout_component__WEBPACK_IMPORTED_MODULE_2__.ProcurementLayoutComponent,
         _pickers_statuses_picker_statuses_picker_component__WEBPACK_IMPORTED_MODULE_5__.StatusesPickerComponent,
-        _components_procurement_order_page_procurement_order_page_component__WEBPACK_IMPORTED_MODULE_7__.ProcurementOrderPageComponent], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_9__.CommonModule,
+        _components_procurement_order_page_procurement_order_page_component__WEBPACK_IMPORTED_MODULE_7__.ProcurementOrderPageComponent,
+        _modals_edit_order_product_quantity_edit_order_product_quantity_component__WEBPACK_IMPORTED_MODULE_8__.EditOrderProductQuantityComponent,
+        _modals_edit_order_product_delivery_date_edit_order_product_delivery_date_component__WEBPACK_IMPORTED_MODULE_9__.EditOrderProductDeliveryDateComponent,
+        _modals_add_order_product_to_order_add_order_product_to_order_component__WEBPACK_IMPORTED_MODULE_10__.AddOrderProductToOrderComponent], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_12__.CommonModule,
         _procurement_routing__WEBPACK_IMPORTED_MODULE_0__.ProcurementRouting,
         _layout_layout_module__WEBPACK_IMPORTED_MODULE_3__.LayoutModule,
         _shared_shared_module__WEBPACK_IMPORTED_MODULE_4__.SharedModule,
