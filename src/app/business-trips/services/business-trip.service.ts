@@ -158,6 +158,7 @@ export class BusinessTripService {
   }
 
   async exportToExcel(businessTripData: DataToSend, expensesSum: ExpensesSum[]) {
+    console.log('businessTripData', businessTripData);
     // Создаем книгу Excel
     const workbook = new Excel.Workbook();
     let worksheet: any;

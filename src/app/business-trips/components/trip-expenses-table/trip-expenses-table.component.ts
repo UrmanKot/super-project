@@ -98,10 +98,6 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
     this.expenseSumEmit.emit(this.sumOfVerifiedExpenses);
   }
 
-  // editTripExpense() {
-  //   const index = this.tripExpenses.findIndex(expense => expense === this.selectedTripExpense);
-  //   this.editExpense.emit(index);
-  // }
   link = environment.image_path;
 
   getName(name) {
