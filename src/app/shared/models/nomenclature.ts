@@ -36,6 +36,13 @@ export class NomenclatureImage {
   file?: File;
 }
 
+export class NomenclatureFile {
+  readonly id: number;
+  file: string;
+  nomenclature: number;
+}
+
+
 export class Nomenclatures {
   count: number;
   next: string;

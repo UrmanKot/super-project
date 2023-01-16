@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CRMEmployee} from '../../../crm/models/crm-employee';
 import {CrmPosition} from '../../models/crm-position';
 import {Vehicle} from '../../models/vehicle';
@@ -68,7 +68,7 @@ export class DataToSend {
   templateUrl: './edit-business-trip.component.html',
   styleUrls: ['./edit-business-trip.component.scss']
 })
-export class EditBusinessTripComponent implements OnInit {
+export class EditBusinessTripComponent implements OnInit, OnDestroy {
   @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
 
   tripExpenses: BusinessTripExpense[] = [];

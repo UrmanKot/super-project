@@ -41,11 +41,11 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
     private readonly modalService: ModalService,
     private renderer: Renderer2
   ) {
-    this.createOnPastObservable(renderer);
+    // this.createOnPastObservable(renderer);
   }
 
   ngOnInit(): void {
-    this.onPasteImage();
+    // this.onPasteImage();
   }
 
   ngAfterViewInit() {
@@ -158,5 +158,9 @@ export class ImagesSliderComponent implements OnInit, AfterViewInit {
 
   onShowFullImage() {
     this.modalService.showImageGallery(this.images, null, this.activeSlideIndex).subscribe();
+  }
+
+  fileAdded(file: File) {
+    this.choiceImages.emit([file]);
   }
 }

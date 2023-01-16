@@ -1,4 +1,6 @@
-<div class="images-slider" #slider>
+<div class="images-slider"
+     pekPasteScreenImage [trackMousePosition]="true" (imageAdded)="fileAdded($event)"
+     #slider>
   <div class="images-slider__slider"
        [style.width]="width"
        [style.height]="height"
