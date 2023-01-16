@@ -134,28 +134,29 @@
             <ng-template pTemplate="header">
               <tr>
                 <th class="text-center" style="width: 5%;">#</th>
-                <th class="text-center" style="width: 10%;">ID</th>
-                <th class="text-center" style="width: 30%;">Created Date</th>
-                <th class="text-center" style="width: 30%;">Closing Date</th>
-                <th style="width: 45%;">Root Lists</th>
+                <th class="text-center" style="width: 5%;">ID</th>
+                <th class="text-center" style="width: 15%;">Created Date</th>
+                <th class="text-center" style="width: 15%;">Closing Date</th>
+                <th style="width: 25%;">Root Lists</th>
+                <th style="width: 25%;">Technologies</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-order let-i="rowIndex">
               <tr [pSelectableRow]="order">
                 <td class="text-center"
                     style="width: 5%;">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
-                <td class="text-center" style="width: 10%;">
+                <td class="text-center" style="width: 5%;">
                   <a [routerLink]="[order.id]" target="_blank">
                     {{order.id}}
                   </a>
                 </td>
-                <td class="text-center" style="width: 30%;">
+                <td class="text-center" style="width: 15%;">
                   {{order.created | date:'dd/MM/yyyy HH:MM'}}
                 </td>
-                <td class="text-center" style="width: 30%;">
+                <td class="text-center" style="width: 15%;">
                   {{order.production_requests_fully_completed | date:'dd/MM/yyyy HH:MM'}}
                 </td>
-                <td style="width: 45%;">
+                <td style="width: 25%;">
                   <div *ngFor="let plan of order.root_production_plans">
                     <a (click)="goProductionList(plan.id)">{{plan.list_product.nomenclature.name}}</a>
                   </div>
@@ -196,6 +197,11 @@
                   <!--                      </ng-template>-->
                   <!--                    </ng-template>-->
                   <!--                  </div>-->
+                </td>
+                <td style="width: 25%;">
+                  <span *ngFor="let tech of order.ordered_items_technologies; let last=last">
+                    {{tech}}<span *ngIf="!last">,</span>
+                  </span>
                 </td>
               </tr>
             </ng-template>

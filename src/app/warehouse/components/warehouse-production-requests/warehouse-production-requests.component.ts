@@ -10,6 +10,10 @@ import {Paginator} from 'primeng/paginator';
 import {AdapterService} from '@shared/services/adapter.service';
 import {environment} from '@env/environment';
 
+class ProductRequestListOrder extends Order {
+  ordered_items_technologies?: string[];
+}
+
 @Component({
   selector: 'pek-warehouse-production-requests',
   templateUrl: './warehouse-production-requests.component.html',
@@ -31,8 +35,8 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
   isHideFilters = false;
 
   isLoading = true;
-  orders: Order[] = [];
-  selectedOrder: Order;
+  orders: ProductRequestListOrder[] = [];
+  selectedOrder: ProductRequestListOrder;
 
   searchForm: FormGroup = this.fb.group({
     page: 1,
@@ -77,7 +81,19 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     ).subscribe(orders => {
       this.count = orders.count;
       this.orders = orders.results;
-
+      this.orders.forEach(order => {
+        order.ordered_items_technologies = [];
+        order.order_products.forEach(product => {
+          if (product.current_technology) {
+            const canAddTechnology = order.ordered_items_technologies
+              .findIndex(el => el === product.current_technology.name) < 0;
+            if (canAddTechnology) {
+              order.ordered_items_technologies.push(product.current_technology.name);
+            }
+          }
+        });
+        console.log(order.ordered_items_technologies);
+      });
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
       }
