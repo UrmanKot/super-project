@@ -7,7 +7,7 @@
 <mat-dialog-content class="overflow-visible">
   <form [formGroup]="form" *ngIf="!errorStr">
     <div class="form-group"
-         *ngIf="data.entity.serial_warehouse_products.length == 0 && data.entity.nomenclature.bulk_or_serial === '0'">
+         *ngIf="data.entity.available_serial_warehouse_products.length == 0 && data.entity.nomenclature.bulk_or_serial === '0'">
       <label>Actual Quantity</label>
       <input formControlName="actual_quantity" pInputText class="form-control" type="number">
     </div>

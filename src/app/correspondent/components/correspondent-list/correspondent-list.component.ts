@@ -31,7 +31,10 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
     externalId: [null],
     date_received_after: [null],
     date_received_before: [null],
+    letter_registration_number: [null],
+    external_date: [null],
     categories: [null],
+    origin: [null],
     page: [1],
   });
   correspondents: Correspondent[] = [];
@@ -109,10 +112,32 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
       });
     }
 
+    if (this.searchForm.get('external_date').value) {
+      const external_date = this.searchForm.get('external_date').value;
+      query.push({
+        name: 'external_date',
+        value: this.adapterService.dateAdapter(new Date(external_date))
+      });
+    }
+
     if (this.searchForm.get('categories').value) {
       query.push({
         name: 'categories',
         value: this.searchForm.get('categories').value
+      });
+    }
+
+    if (this.searchForm.get('letter_registration_number').value) {
+      query.push({
+        name: 'letter_registration_number',
+        value: this.searchForm.get('letter_registration_number').value
+      });
+    }
+
+    if (this.searchForm.get('origin').value) {
+      query.push({
+        name: 'origin',
+        value: this.searchForm.get('origin').value
       });
     }
 
@@ -200,6 +225,7 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   }
 
   changeCorrespondentEnd(endDate: Date) {
+    console.log('max dates');
     this.maxDate = endDate;
     this.searchByDate();
   }
@@ -257,5 +283,16 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  externalDateChanged(date: any) {
+
+  }
+
+  setExternalDate(date: any) {
+    console.log('search date');
+    this.paginator.changePage(0);
+    this.searchForm.get('page').patchValue(1);
+    this.search();
   }
 }

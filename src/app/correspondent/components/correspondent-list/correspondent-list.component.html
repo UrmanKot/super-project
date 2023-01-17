@@ -32,7 +32,7 @@
           <div class="row">
             <div class="col-3">
               <div class="form-group">
-                <label>Date Received From</label>
+                <label>Letter Registration Date From</label>
                 <p-calendar
                   inputId="basic"
                   dateFormat="dd/mm/yy"
@@ -44,7 +44,7 @@
             </div>
             <div class="col-3">
               <div class="form-group">
-                <label>Date Received To</label>
+                <label>Letter Registration Date To</label>
                 <p-calendar
                   inputId="basic"
                   dateFormat="dd/mm/yy"
@@ -54,10 +54,29 @@
                 ></p-calendar>
               </div>
             </div>
+            <div class="col-3"  *ngIf="type === types.INCOMING">
+              <div class="form-group">
+                <label>External Date</label>
+                <p-calendar
+                  [showClear]="true"
+                  inputId="basic"
+                  dateFormat="dd/mm/yy"
+                  formControlName="external_date"
+                  (ngModelChange)="setExternalDate($event)"
+                  [readonlyInput]="true"
+                ></p-calendar>
+              </div>
+            </div>
             <div class="col-3">
               <div class="form-group">
                 <label>ID</label>
                 <input pInputText formControlName="id" type="number" class="form-control" (ngModelChange)="search()">
+              </div>
+            </div>
+            <div class="col-3" *ngIf="type === types.OUTGOING">
+              <div class="form-group" >
+                <label>Letter Registration Number</label>
+                <input pInputText formControlName="letter_registration_number" type="text" class="form-control" (ngModelChange)="search()">
               </div>
             </div>
             <div class="col-3" *ngIf="type === types.INCOMING" >
@@ -75,6 +94,19 @@
             </div>
             <div class="col-3">
               <div class="form-group">
+                <label>{{type === types.INCOMING ? 'From' : 'To'}}</label>
+                <input
+                  id="origin"
+                  class="form-control"
+                  type="text"
+                  pInputText
+                  formControlName="origin"
+                  (ngModelChange)="search()"
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
                 <label>Correspondent Categories</label>
                 <pek-correspondetn-multi-category-picker
                   (emitSelectedCategories)="searchByCategories($event)"
@@ -84,6 +116,10 @@
             <div class="col-3">
             </div>
             <div class="col-3" *ngIf="type === types.OUTGOING" >
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
             </div>
             <div class="col-3">
             </div>
@@ -108,13 +144,16 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="index-header text-center" style="width: 5%">ID</th>
+              <th class="index-header text-center"  *ngIf="type === types.OUTGOING" style="width: 15%">Letter Registration Number</th>
               <th *ngIf="type === types.INCOMING" style="width: 15%">
                 ExternalID
               </th>
-              <th style="width: 10%">Date Received</th>
+              <th style="width: 10%">Letter Registration Date</th>
+              <th style="width: 10%"  *ngIf="type === types.INCOMING">External Date</th>
               <th style="width: 15%">Description</th>
               <th style="width: 15%">Category</th>
-              <th style="width: 30%">Files</th>
+              <th style="width: 15%">{{type === types.INCOMING ? 'From' : 'To'}}</th>
+              <th style="width: 15%">Files</th>
             </tr>
           </ng-template>
 
@@ -123,17 +162,26 @@
               <td style="width: 5%" class="text-center">
                 {{ correspondent.id}}
               </td>
+              <td *ngIf="type === types.OUTGOING" style="width: 5%" class="text-center">
+                {{ correspondent.letter_registration_number}}
+              </td>
               <td *ngIf="type === types.INCOMING" style="width: 15%">
                 {{ correspondent.external_id}}
               </td>
               <td style="width: 10%">
                 {{ correspondent.date_received | date: "dd/MM/yyyy" }}
               </td>
+              <td style="width: 10%" *ngIf="type === types.INCOMING">
+                {{ correspondent.external_date | date: "dd/MM/yyyy" }}
+              </td>
               <td style="width: 20%">
                 {{ correspondent.description}}
               </td>
               <td style="width: 10%">
                 {{ correspondent.category ? correspondent.category.name : null }}
+              </td>
+              <td style="width: 10%">
+                {{ correspondent.origin }}
               </td>
               <td class="files-cont" style="width: 30%">
                 <span *ngIf="correspondent.files.length > 1">
@@ -166,7 +214,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage" let-columns>
             <tr class="no-content">
-              <td style="width: 100%;" class="text-center p-4" [attr.colspan]="type === types.INCOMING ? 6 : 5">
+              <td style="width: 100%;" class="text-center p-4" [attr.colspan]="type === types.INCOMING ? 8 : 7">
                 <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin fa-3x "></i>
                 <span *ngIf="!isLoading">
               No Records Found

@@ -17,6 +17,7 @@ import {
 import {
   UploadedDataViewerComponent
 } from '../../business-trips/modals/uploaded-data-viewer/uploaded-data-viewer.component';
+import {Schedule} from '../../crm/models/schedule';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,13 @@ export class CorrespondentService {
       qString).pipe(map(response => {
       return response.data;
     }));
+  }
+
+  getById(correspondentType: CorrespondentTypes, id: number): Observable<Correspondent> {
+    this.setTypeUrl(correspondentType);
+    return this.httpClient.get<{ data: Correspondent }>(this.API_URL + this.url + this.typeUrl + id + '/').pipe(
+      map(response => response.data)
+    );
   }
 
   create(correspondentType: CorrespondentTypes, correspondent: Correspondent) {

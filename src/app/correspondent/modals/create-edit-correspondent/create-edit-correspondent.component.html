@@ -9,7 +9,7 @@
     <form [formGroup]="form" class="d-flex justify-content-around pb-4">
       <div style="width: 48%">
         <div class="form-group">
-          <label>Date Received*</label>
+          <label>Letter Registration Date</label>
           <p-calendar
             class="position-relative"
             formControlName="date_received"
@@ -20,8 +20,27 @@
           ></p-calendar>
         </div>
         <div *ngIf="type === types.INCOMING" class="form-group">
-          <label for="external_id">ExternalID*</label>
+          <label>External date *</label>
+          <p-calendar
+            class="position-relative"
+            formControlName="external_date"
+            inputId="basic"
+            dateFormat="dd/mm/yy"
+            id="external_date"
+            [readonlyInput]="true"
+          ></p-calendar>
+        </div>
+        <div *ngIf="type === types.INCOMING" class="form-group">
+          <label for="external_id">ExternalID *</label>
           <input type="text" id="external_id" pInputText formControlName="external_id">
+        </div>
+        <div *ngIf="type === types.OUTGOING" class="form-group">
+          <label for="letter_registration_number">Letter Registration Number</label>
+          <input type="text"  id="letter_registration_number" pInputText formControlName="letter_registration_number" [disabled]="true">
+        </div>
+        <div class="form-group">
+          <label for="origin">{{type === types.OUTGOING ? 'To' : 'From'}}</label>
+          <input type="text"  id="origin" pInputText formControlName="origin">
         </div>
         <div class="form-group">
           <label for="description">Description</label>
