@@ -51,7 +51,8 @@ const routes = [{
                 component: _components_layouts_vehicles_vehicles_component__WEBPACK_IMPORTED_MODULE_3__.VehiclesComponent
             },
             {
-                path: 'Business Trip Expenses',
+                title: 'Business Trip Expenses',
+                path: 'expenses',
                 component: _components_layouts_expanses_expanses_component__WEBPACK_IMPORTED_MODULE_4__.ExpansesComponent
             },
             {
@@ -1009,7 +1010,7 @@ function EditBusinessTripComponent_div_41_ng_template_7_ng_template_46_Template(
     _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵadvance"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵproperty"]("href", file_r61.file, _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵsanitizeUrl"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵtextInterpolate1"](" ", ctx_r55.getName(file_r61.file), " 22 ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵtextInterpolate1"](" ", ctx_r55.getName(file_r61.file), " ");
 } }
 function EditBusinessTripComponent_div_41_ng_template_7_Template(rf, ctx) { if (rf & 1) {
     const _r64 = _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵgetCurrentView"]();
@@ -1424,6 +1425,8 @@ class EditBusinessTripComponent {
     }
     updateExpenses(expenses) {
         if (expenses.length > 0) {
+            this.form.removeControl('expenses');
+            this.form.addControl('expenses', this.fb.array([]));
             expenses.forEach(expense => {
                 let expensePrepared = {
                     id: null,
@@ -1459,6 +1462,7 @@ class EditBusinessTripComponent {
             this.form.get('expenses').controls.forEach(group => {
                 this.tripExpenses.push(group.value);
             });
+            console.log(this.form.get('expenses').value);
         }
     }
     setStartValue(start) {
@@ -2118,7 +2122,7 @@ EditBusinessTripComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵloadQuery"]()) && (ctx.filePicker = _t.first);
-    } }, decls: 57, vars: 23, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-file-excel", "label", "Export to xls", 1, "p-button-secondary", "mr-2", 3, "click"], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Save", 3, "click"], [3, "formGroup"], [1, "page__content"], [1, "mb-4"], [1, "page__card"], [4, "ngIf", "ngIfElse"], [1, "mb-4", "d-flex", "justify-content-between"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Intermediate Point", 3, "click"], ["pekPasteScreenImage", "", 1, "page__content", 3, "imageAdded"], [3, "businessTripId", "isVerify", "currentBusinessTripExpenses", "deleteExpense", "editExpense", "unverifyTrip", "expenseSumEmit"], ["class", "d-flex justify-content-center", 4, "ngIf"], ["infoLoading", ""], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 3, "click"], [1, "row"], [1, "col-12"], [1, "form-group"], ["for", "other"], ["id", "other", "formControlName", "isOtherEmployee", 3, "binary", "onChange"], ["predefinedEmployee", ""], [1, "col-4"], ["pInputText", "", "formControlName", "employee_first_name", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "employee_last_name", 1, "form-control", 3, "ngModelChange"], [3, "position", "valueChange"], ["formGroupName", "employee"], [3, "filters", "showProfession", "employee", "valueChange"], ["pInputText", "", "formControlName", "last_name", 1, "form-control", 3, "disabled"], ["pInputText", "", "disabled", "", 1, "form-control", 3, "ngModel", "ngModelOptions"], [1, "col-6"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "date", "setDate"], ["placeholder", "Choice End Date and Time", 3, "minDate", "date", "setDate"], [3, "country", "address", "locationId", "type", "showHr", "countryChanged", "addressChanged"], [3, "country", "address", "locationId", "type", "showHr", "companiesFilters", "showAddMeetings", "meetingsChanged", "countryChanged", "addressChanged"], ["class", "location", 3, "country", "address", "locationId", "showHr", "last", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged", 4, "ngFor", "ngForOf"], [1, "location", 3, "country", "address", "locationId", "showHr", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged"], [1, "d-flex", "justify-content-center"], ["pInputText", "", "formControlName", "purpose_short", 1, "form-control", 3, "ngModelChange"], ["pInputTextarea", "", "formControlName", "purpose_full", "id", "comment", 1, "form-control", 3, "ngModelChange"], [1, "col-1"], ["formControlName", "showHotel", 3, "binary", "ngModelChange"], [3, "ngIf"], ["formGroupName", "hotel"], ["pInputText", "", "formControlName", "hotel_name", 1, "form-control", 3, "ngModelChange"], [3, "country", "valueChangeFull"], ["pInputText", "", "formControlName", "hotel_address", 1, "form-control", 3, "ngModelChange"], ["hourFormat", "24", "formControlName", "residence_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["startHotel", ""], ["class", "d-flex justify-content-center align-items-center", 4, "ngIf"], ["hourFormat", "24", "formControlName", "residence_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "minDate", "disabled", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["endHotel", ""], [3, "fileChanged"], ["filePicker", ""], [1, "col-11"], ["pButton", "", "type", "button", "icon", "fa fa-eye", "label", "View files", 3, "click"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "d-flex", "justify-content-center", "align-items-center"], [1, "btn", "btn-primary", "position-absolute", "mb-5", 3, "click"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], [3, "href"], [3, "type", "valueChange"], ["class", "row", 4, "ngIf"], ["pInputText", "", "formControlName", "vehicle_model", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "vehicle_number", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "vehicle", 1, "col-4"], [3, "placeholder", "vehicle", "valueChange"], ["pInputText", "", "formControlName", "number", 1, "form-control", 3, "disabled"], ["pInputText", "", "formControlName", "start_mileage", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "end_mileage", 1, "form-control", 3, "ngModelChange"], [3, "employee", "valueChange"], [1, "info-loading"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditBusinessTripComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, decls: 57, vars: 23, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-file-excel", "label", "Export to xls", 1, "p-button-secondary", "mr-2", 3, "click"], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", "class", "mr-2", 3, "click", 4, "ngIf"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Save", 3, "click"], [3, "formGroup"], [1, "page__content"], [1, "mb-4"], [1, "page__card"], [4, "ngIf", "ngIfElse"], [1, "mb-4", "d-flex", "justify-content-between"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Add Intermediate Point", 3, "click"], ["pekPasteScreenImage", "", 1, "page__content", 3, "imageAdded"], [3, "businessTripId", "isVerify", "currentBusinessTripExpenses", "deleteExpense", "editExpense", "unverifyTrip", "expenseSumEmit"], ["class", "d-flex justify-content-center", 4, "ngIf"], ["infoLoading", ""], ["pButton", "", "type", "button", "icon", "pi pi-check", "label", "Verify BT", 1, "mr-2", 3, "click"], [1, "row"], [1, "col-12"], [1, "form-group"], ["for", "other"], ["id", "other", "formControlName", "isOtherEmployee", 3, "binary", "onChange"], ["predefinedEmployee", ""], [1, "col-4"], ["pInputText", "", "formControlName", "employee_first_name", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "employee_last_name", 1, "form-control", 3, "ngModelChange"], [3, "position", "valueChange"], ["formGroupName", "employee"], [3, "filters", "showProfession", "employee", "valueChange"], ["pInputText", "", "formControlName", "last_name", 1, "form-control", 3, "disabled"], ["pInputText", "", "disabled", "", 1, "form-control", 3, "ngModel", "ngModelOptions"], [1, "col-6"], ["placeholder", "Choice Start Date and Time", 3, "maxDate", "date", "setDate"], ["placeholder", "Choice End Date and Time", 3, "minDate", "date", "setDate"], [3, "country", "address", "locationId", "type", "showHr", "countryChanged", "addressChanged"], [3, "country", "address", "locationId", "type", "showHr", "companiesFilters", "showAddMeetings", "meetingsChanged", "countryChanged", "addressChanged"], ["class", "location", 3, "country", "address", "locationId", "showHr", "last", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged", 4, "ngFor", "ngForOf"], [1, "location", 3, "country", "address", "locationId", "showHr", "showDelete", "companiesFilters", "type", "showAddMeetings", "emitDeletePoint", "meetingsChanged", "countryChanged", "addressChanged"], [1, "d-flex", "justify-content-center"], ["pInputText", "", "formControlName", "purpose_short", 1, "form-control", 3, "ngModelChange"], ["pInputTextarea", "", "formControlName", "purpose_full", "id", "comment", 1, "form-control", 3, "ngModelChange"], [1, "col-1"], ["formControlName", "showHotel", 3, "binary", "ngModelChange"], [3, "ngIf"], ["formGroupName", "hotel"], ["pInputText", "", "formControlName", "hotel_name", 1, "form-control", 3, "ngModelChange"], [3, "country", "valueChangeFull"], ["pInputText", "", "formControlName", "hotel_address", 1, "form-control", 3, "ngModelChange"], ["hourFormat", "24", "formControlName", "residence_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["startHotel", ""], ["class", "d-flex justify-content-center align-items-center", 4, "ngIf"], ["hourFormat", "24", "formControlName", "residence_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "firstDayOfWeek", "minDate", "disabled", "hideOnDateTimeSelect", "showButtonBar", "readonlyInput", "onClickOutside"], ["endHotel", ""], [3, "fileChanged"], ["filePicker", ""], [1, "col-11"], ["pButton", "", "type", "button", "icon", "fa fa-eye", "label", "View files", 3, "click"], ["selectionMode", "single", 3, "paginator", "rows", "value", "scrollable", "selection", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "d-flex", "justify-content-center", "align-items-center"], [1, "btn", "btn-primary", "position-absolute", "mb-5", 3, "click"], [1, "d-flex", "align-items-center"], ["class", "subtitle ml-1 mr-2", 4, "ngIf"], [1, "ml-auto", "mr-2", 3, "model"], [1, "subtitle", "ml-1", "mr-2"], [1, "index-header"], [3, "pSelectableRow"], [3, "href"], [3, "type", "valueChange"], ["class", "row", 4, "ngIf"], ["pInputText", "", "formControlName", "vehicle_model", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "vehicle_number", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "vehicle", 1, "col-4"], [3, "placeholder", "vehicle", "valueChange"], ["pInputText", "", "formControlName", "number", 1, "form-control", 3, "disabled"], ["pInputText", "", "formControlName", "start_mileage", 1, "form-control", 3, "ngModelChange"], ["pInputText", "", "formControlName", "end_mileage", 1, "form-control", 3, "ngModelChange"], [3, "employee", "valueChange"], [1, "info-loading"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"]], template: function EditBusinessTripComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
         _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵelement"](3, "pek-module-icon", 3);
         _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵelementStart"](4, "h1");
@@ -3782,10 +3786,6 @@ class TripExpensesTableComponent {
             }];
         this.formData = new FormData();
         this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_8__.Subject();
-        // editTripExpense() {
-        //   const index = this.tripExpenses.findIndex(expense => expense === this.selectedTripExpense);
-        //   this.editExpense.emit(index);
-        // }
         this.link = _env_environment__WEBPACK_IMPORTED_MODULE_1__.environment.image_path;
     }
     ngOnInit() {
@@ -4022,16 +4022,16 @@ function CreateEditExpenseComponent_span_3_Template(rf, ctx) { if (rf & 1) {
 } }
 function CreateEditExpenseComponent_ng_template_12_Template(rf, ctx) { if (rf & 1) {
     const _r12 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 29)(1, "div", 10)(2, "div", 6)(3, "label", 30);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 28)(1, "div", 10)(2, "div", 6)(3, "label", 29);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](4, " Expanse Title ");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](5, "input", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](5, "input", 30);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("ngModelChange", function CreateEditExpenseComponent_ng_template_12_Template_input_ngModelChange_5_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r12); const ctx_r11 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r11.changedField()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](6, "div", 10)(7, "div", 6)(8, "label", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](6, "div", 10)(7, "div", 6)(8, "label", 31);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](9, " Expanse Description ");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](10, "input", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](10, "input", 32);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("ngModelChange", function CreateEditExpenseComponent_ng_template_12_Template_input_ngModelChange_10_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r12); const ctx_r13 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r13.changedField()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()()();
 } if (rf & 2) {
@@ -4043,16 +4043,16 @@ function CreateEditExpenseComponent_ng_template_12_Template(rf, ctx) { if (rf & 
 } }
 function CreateEditExpenseComponent_ng_template_13_Template(rf, ctx) { if (rf & 1) {
     const _r15 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 34)(1, "div", 10)(2, "div", 6)(3, "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 33)(1, "div", 10)(2, "div", 6)(3, "label");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](4, "Expense Title");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](5, "pek-expense-picker", 35);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](5, "pek-expense-picker", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("valueChange", function CreateEditExpenseComponent_ng_template_13_Template_pek_expense_picker_valueChange_5_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r15); const ctx_r14 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); ctx_r14.expenseChanged($event); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r14.changedField()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](6, "div", 10)(7, "div", 6)(8, "label", 36);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](6, "div", 10)(7, "div", 6)(8, "label", 35);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](9, " Expanse Description ");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](10, "input", 37);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](10, "input", 36);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()();
 } if (rf & 2) {
     const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"]();
@@ -4061,18 +4061,18 @@ function CreateEditExpenseComponent_ng_template_13_Template(rf, ctx) { if (rf & 
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("disabled", true);
 } }
-function CreateEditExpenseComponent_div_25_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 4)(1, "div", 38)(2, "label", 39);
+function CreateEditExpenseComponent_div_26_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 37)(1, "div", 6)(2, "label", 38);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](3, "Is Verified");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](4, "br")(5, "p-checkbox", 40);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](4, "p-checkbox", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()();
 } if (rf & 2) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("binary", true);
 } }
-function CreateEditExpenseComponent_a_37_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "a", 41);
+function CreateEditExpenseComponent_a_40_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "a", 40);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } if (rf & 2) {
@@ -4081,10 +4081,10 @@ function CreateEditExpenseComponent_a_37_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" ", ctx_r6.getName(ctx_r6.form.get("file").value), " ");
 } }
-function CreateEditExpenseComponent_a_38_Template(rf, ctx) { if (rf & 1) {
+function CreateEditExpenseComponent_a_41_Template(rf, ctx) { if (rf & 1) {
     const _r17 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "a", 42);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_a_38_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r17); const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r16.viewFile()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "a", 41);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_a_41_Template_a_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r17); const ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r16.viewFile()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } if (rf & 2) {
@@ -4092,26 +4092,26 @@ function CreateEditExpenseComponent_a_38_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" ", ctx_r7.form.get("uploaded_file").value.name, " ");
 } }
-function CreateEditExpenseComponent_button_39_Template(rf, ctx) { if (rf & 1) {
+function CreateEditExpenseComponent_button_42_Template(rf, ctx) { if (rf & 1) {
     const _r19 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 43);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_39_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r19); const ctx_r18 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r18.clearFile()); });
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](1, "i", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_42_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r19); const ctx_r18 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r18.clearFile()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](1, "i", 43);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](2, " Remove File ");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } }
-function CreateEditExpenseComponent_button_42_Template(rf, ctx) { if (rf & 1) {
+function CreateEditExpenseComponent_button_45_Template(rf, ctx) { if (rf & 1) {
     const _r21 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_42_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r21); const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r20.addExpanse()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_45_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r21); const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r20.addExpanse()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } if (rf & 2) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("label", "Add");
 } }
-function CreateEditExpenseComponent_button_43_Template(rf, ctx) { if (rf & 1) {
+function CreateEditExpenseComponent_button_46_Template(rf, ctx) { if (rf & 1) {
     const _r23 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_43_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r23); const ctx_r22 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r22.editExpanse()); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "button", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_button_46_Template_button_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r23); const ctx_r22 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](); return _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵresetView"](ctx_r22.editExpanse()); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } if (rf & 2) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("label", "Edit");
@@ -4321,7 +4321,7 @@ class CreateEditExpenseComponent {
     }
 }
 CreateEditExpenseComponent.ɵfac = function CreateEditExpenseComponent_Factory(t) { return new (t || CreateEditExpenseComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_11__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_8__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_crm_services_crm_positions_service__WEBPACK_IMPORTED_MODULE_1__.CrmPositionsService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_11__.MAT_DIALOG_DATA), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_expense_service__WEBPACK_IMPORTED_MODULE_2__.ExpenseService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_shared_services_adapter_service__WEBPACK_IMPORTED_MODULE_3__.AdapterService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_4__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_auth_auth_service__WEBPACK_IMPORTED_MODULE_5__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_12__.MessageService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_business_trip_service__WEBPACK_IMPORTED_MODULE_4__.BusinessTripService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_6__.ModalService)); };
-CreateEditExpenseComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: CreateEditExpenseComponent, selectors: [["pek-create-edit-expense"]], decls: 44, vars: 18, consts: [[1, "modal-header"], [1, "modal-header__title"], [4, "ngIf"], [3, "formGroup"], [1, "row"], [1, "col-3"], [1, "form-group"], ["for", "other", 2, "display", "block"], ["id", "other", "formControlName", "isOther", 3, "disabled", "binary", "onChange"], [3, "ngIf"], [1, "col-6"], ["formGroupName", "expense", 1, "form-group"], [3, "isDisabled", "currency", "valueChange"], ["for", "price"], ["pInputText", "", "id", "price", "formControlName", "sum", "type", "number", "step", "0.01", "min", "0", 1, "form-control", 3, "ngModelChange"], ["class", "row", 4, "ngIf"], [1, "form-group", "col-6"], ["for", "file", 1, "input-file", "d-flex", "align-items-center"], ["type", "file", "id", "file", 3, "disabled", "input"], ["inputFile", ""], [1, "fa", "fa-download"], ["pButton", "", "type", "button", "icon", "pi pi-camera", 1, "p-button-primary", "p-button-rounded", "p-button-outlined", "p-button-rounded_small", "ml-3", "mt-1", 3, "click"], [1, "form-group", "col-6", "pt-2", "d-flex", "justify-content-end", "justify-content-center"], [3, "href", 4, "ngIf"], ["href", "javascript:void(0)", 3, "click", 4, "ngIf"], ["class", "remove", 3, "click", 4, "ngIf"], [1, "justify-content-between"], ["pButton", "", "label", "Cancel", "type", "button", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", "class", "p-button-success", 3, "label", "click", 4, "ngIf"], ["formGroupName", "custom_expense", 1, "row"], ["for", "name"], ["pInputText", "", "formControlName", "name", "type", "text", "id", "name", 1, "form-control", 3, "ngModelChange"], ["for", "custom_description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "custom_description", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "expense", 1, "row"], [3, "isDisabled", "expense", "valueChange"], ["for", "description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "description", 1, "form-control", 3, "disabled"], [1, "form-group", "col-2"], ["for", "is_verified"], ["id", "is_verified", "formControlName", "is_verified", 3, "binary"], [3, "href"], ["href", "javascript:void(0)", 3, "click"], [1, "remove", 3, "click"], [1, "pi", "pi-times"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "click"]], template: function CreateEditExpenseComponent_Template(rf, ctx) { if (rf & 1) {
+CreateEditExpenseComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: CreateEditExpenseComponent, selectors: [["pek-create-edit-expense"]], decls: 47, vars: 18, consts: [[1, "modal-header"], [1, "modal-header__title"], [4, "ngIf"], [3, "formGroup"], [1, "row"], [1, "col-3"], [1, "form-group"], ["for", "other", 2, "display", "block"], ["id", "other", "formControlName", "isOther", 3, "disabled", "binary", "onChange"], [3, "ngIf"], [1, "col-6"], ["formGroupName", "expense", 1, "form-group"], [3, "isDisabled", "currency", "valueChange"], ["for", "price"], ["pInputText", "", "id", "price", "formControlName", "sum", "type", "number", "step", "0.01", "min", "0", 1, "form-control", 3, "ngModelChange"], ["class", "col-2", 4, "ngIf"], ["for", "file", 1, "input-file", "d-flex", "align-items-center"], ["type", "file", "id", "file", 3, "disabled", "input"], ["inputFile", ""], [1, "fa", "fa-download"], ["pButton", "", "type", "button", "icon", "pi pi-camera", 1, "p-button-primary", "p-button-rounded", "p-button-outlined", "p-button-rounded_small", "ml-3", "mt-1", 3, "click"], [1, "form-group", "pt-2", "d-flex", "justify-content-end", "justify-content-center"], [3, "href", 4, "ngIf"], ["href", "javascript:void(0)", 3, "click", 4, "ngIf"], ["class", "remove", 3, "click", 4, "ngIf"], [1, "justify-content-between"], ["pButton", "", "label", "Cancel", "type", "button", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", "class", "p-button-success", 3, "label", "click", 4, "ngIf"], ["formGroupName", "custom_expense", 1, "row"], ["for", "name"], ["pInputText", "", "formControlName", "name", "type", "text", "id", "name", 1, "form-control", 3, "ngModelChange"], ["for", "custom_description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "custom_description", 1, "form-control", 3, "ngModelChange"], ["formGroupName", "expense", 1, "row"], [3, "isDisabled", "expense", "valueChange"], ["for", "description"], ["pInputText", "", "formControlName", "description", "type", "text", "id", "description", 1, "form-control", 3, "disabled"], [1, "col-2"], ["for", "is_verified"], ["id", "is_verified", "formControlName", "is_verified", 3, "binary"], [3, "href"], ["href", "javascript:void(0)", 3, "click"], [1, "remove", 3, "click"], [1, "pi", "pi-times"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "click"]], template: function CreateEditExpenseComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](2, CreateEditExpenseComponent_span_2_Template, 2, 0, "span", 2);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](3, CreateEditExpenseComponent_span_3_Template, 2, 0, "span", 2);
@@ -4346,26 +4346,28 @@ CreateEditExpenseComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](24, "input", 14);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("ngModelChange", function CreateEditExpenseComponent_Template_input_ngModelChange_24_listener() { return ctx.changedField(); });
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](25, CreateEditExpenseComponent_div_25_Template, 6, 1, "div", 15);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](26, "div", 4)(27, "div", 16)(28, "label", 17)(29, "input", 18, 19);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("input", function CreateEditExpenseComponent_Template_input_input_29_listener($event) { return ctx.imageManipulation($event, $event.target); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](25, "div", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](26, CreateEditExpenseComponent_div_26_Template, 5, 1, "div", 15);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](31, "span");
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](32, "i", 20);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](33, "Choose File");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](27, "div", 4)(28, "div", 10)(29, "div", 6)(30, "label", 16)(31, "input", 17, 18);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("input", function CreateEditExpenseComponent_Template_input_input_31_listener($event) { return ctx.imageManipulation($event, $event.target); });
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](34, "button", 21);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_Template_button_click_34_listener() { return ctx.takePhoto(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](35, "div", 22)(36, "span");
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](37, CreateEditExpenseComponent_a_37_Template, 2, 2, "a", 23);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](38, CreateEditExpenseComponent_a_38_Template, 2, 1, "a", 24);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](39, CreateEditExpenseComponent_button_39_Template, 3, 0, "button", 25);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()()()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](40, "mat-dialog-actions", 26);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](41, "button", 27);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](42, CreateEditExpenseComponent_button_42_Template, 1, 1, "button", 28);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](43, CreateEditExpenseComponent_button_43_Template, 1, 1, "button", 28);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](33, "span");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](34, "i", 19);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](35, "Choose File");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](36, "button", 20);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function CreateEditExpenseComponent_Template_button_click_36_listener() { return ctx.takePhoto(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](37, "div", 10)(38, "div", 21)(39, "span");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](40, CreateEditExpenseComponent_a_40_Template, 2, 2, "a", 22);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](41, CreateEditExpenseComponent_a_41_Template, 2, 1, "a", 23);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](42, CreateEditExpenseComponent_button_42_Template, 3, 0, "button", 24);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](43, "mat-dialog-actions", 25);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](44, "button", 26);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](45, CreateEditExpenseComponent_button_45_Template, 1, 1, "button", 27);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](46, CreateEditExpenseComponent_button_46_Template, 1, 1, "button", 27);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](2);
@@ -4384,11 +4386,11 @@ CreateEditExpenseComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("isDisabled", ctx.isEditDisabled)("currency", ctx._currency.get("code").value);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵattribute"]("disabled", ctx.isEditDisabled ? "" : null);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](2);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.auth.user.can_verify_expenses && ctx.canVerify);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("disabled", ctx.isEditDisabled);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](9);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.form.get("file").value && !ctx.form.get("uploaded_file").value);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.form.get("uploaded_file").value);

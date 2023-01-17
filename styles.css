@@ -13342,6 +13342,15 @@ textarea::-webkit-scrollbar {
   z-index: 3;
   background: transparent;
 }
+.p-tree::-webkit-scrollbar-thumb {
+  border-radius: 0.625rem;
+  background-color: #d1d2d8;
+}
+.p-tree::-webkit-scrollbar {
+  cursor: auto;
+  width: 0.5rem;
+  background-color: #f8f9fa;
+}
 .locators .p-datatable .p-datatable-tbody > tr.p-highlight,
 .locators .p-datatable .p-treetable-tbody > tr.p-highlight,
 .locators .p-treetable .p-datatable-tbody > tr.p-highlight,
