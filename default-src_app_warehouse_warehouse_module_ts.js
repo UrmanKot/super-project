@@ -4932,9 +4932,9 @@ class WarehouseItemsComponent {
         this.isHideFilters = !this.isHideFilters;
         this.setTableScrollHeight();
     }
-    onSelectCategory(node) {
-        if (node) {
-            this.searchForm.get('category').patchValue(node.data.id);
+    onSelectCategory(category) {
+        if (category) {
+            this.searchForm.get('category').patchValue(category.id);
         }
         else {
             this.searchForm.get('category').patchValue(null);
