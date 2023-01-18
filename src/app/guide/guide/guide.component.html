@@ -695,6 +695,33 @@
     <!--    </div>-->
   </div>
   <div class="guide__col guide__col_8">
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="primary"
+        title="Confirmation"
+        routeUrl="/confirmation"
+        buttonsPosition="top"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Schedule Confirmation"
+        routeUrl="/confirmation"
+        buttonsPosition="top"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
     <div class="guide__button guide__button_arrow-right">
       <pek-guide-button
         btnStyle="secondary"
