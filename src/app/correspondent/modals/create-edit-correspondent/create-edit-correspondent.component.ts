@@ -152,6 +152,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
 
   createEmpty(): void {
     this.form.get('date_received').enable();
+    this.form.get('date_received').setValue( this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
     this.form.get('letter_registration_number').enable();
     if (this.form.get('external_id')) {
       this.trim('external_id');
@@ -161,6 +162,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.correspondentService.getById(this.type, res.data.id).subscribe(response => {
         this.form.addControl('id', new FormControl(null));
         this.form.get('id').patchValue(response.id);
+        this.form.get('date_received').setValue( new Date(response.date_received));
         this.form.get('letter_registration_number').patchValue(response.letter_registration_number);
         this.form.get('date_received').disable();
         this.form.get('letter_registration_number').disable();
@@ -176,7 +178,12 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.deleteFiles();
       this.attachFiles(res.data.id);
       this.dialogRef.close(res);
-    });
+    },
+      error => {
+        this.form.get('date_received').setValue(new Date(this.form.get('date_received').value));
+        this.form.get('external_date').setValue(new Date(this.form.get('external_date').value));
+        this.form.get('date_received').disable();
+      });
   }
 
   change(): void {
@@ -187,24 +194,31 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.deleteFiles();
       this.attachFiles(res.data.id);
       this.dialogRef.close(res);
-    });
+    },
+      error => {
+        this.form.get('date_received').setValue(new Date(this.form.get('date_received').value));
+        this.form.get('external_date').setValue(new Date(this.form.get('external_date').value));
+        this.form.get('date_received').disable();
+      });
   }
 
   onSave() {
-    this.form.get('date_received').enable();
-    if (this.type === this.types.INCOMING) {
-      const externalDate = this.form.get('external_date').value;
-      console.log();
-      this.form.get('external_date').setValue( this.adapterService.dateAdapter(new Date(externalDate)))
-    }
-    if (this.type === this.types.OUTGOING) {
-      this.form.get('letter_registration_number').enable();
-    }
-    if (this.data.type === 'edit' || this.type === this.types.OUTGOING) {
-      this.change();
-    } else {
+    if (this.form.valid) {
+      this.form.get('date_received').enable();
       if (this.type === this.types.INCOMING) {
-        this.add();
+        const externalDate = this.form.get('external_date').value;
+        this.form.get('external_date').setValue( this.adapterService.dateAdapter(new Date(externalDate)))
+      }
+      this.form.get('date_received').setValue( this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
+      if (this.type === this.types.OUTGOING) {
+        this.form.get('letter_registration_number').enable();
+      }
+      if (this.data.type === 'edit' || this.type === this.types.OUTGOING) {
+        this.change();
+      } else {
+        if (this.type === this.types.INCOMING) {
+          this.add();
+        }
       }
     }
   }
