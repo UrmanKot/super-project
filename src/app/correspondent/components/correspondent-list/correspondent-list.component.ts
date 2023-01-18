@@ -195,7 +195,7 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
 
   delete() {
     const correspondent = this.selectedNode
-    this.modalService.confirm().pipe(take(1), takeUntil(this.destroy$)).subscribe(confirm => {
+    this.modalService.confirm('danger', 'Confirm').pipe(take(1), takeUntil(this.destroy$)).subscribe(confirm => {
       if (confirm) {
         this.correspondentService.delete(this.type, correspondent).pipe(take(1)).subscribe(del => {
           this.selectedNode = null;
