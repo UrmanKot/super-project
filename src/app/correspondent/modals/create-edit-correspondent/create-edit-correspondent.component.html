@@ -8,7 +8,7 @@
   <mat-dialog-content>
     <form [formGroup]="form" class="d-flex justify-content-around pb-4">
       <div style="width: 48%">
-        <div class="form-group">
+        <div class="form-group dark-disabled">
           <label>Letter Registration Date</label>
           <p-calendar
             class="position-relative"
@@ -34,7 +34,7 @@
           <label for="external_id">ExternalID *</label>
           <input type="text" id="external_id" pInputText formControlName="external_id">
         </div>
-        <div *ngIf="type === types.OUTGOING" class="form-group">
+        <div *ngIf="type === types.OUTGOING" class="form-group dark-disabled highlight">
           <label for="letter_registration_number">Letter Registration Number</label>
           <input type="text"  id="letter_registration_number" pInputText formControlName="letter_registration_number" [disabled]="true">
         </div>

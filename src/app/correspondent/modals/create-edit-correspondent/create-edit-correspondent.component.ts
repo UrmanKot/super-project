@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {CorrespondentTypes} from '../../enum/correspondent-types.enum';
@@ -15,7 +15,7 @@ import {UploadFilePickerComponent} from '@shared/components/upload-file-picker/u
   templateUrl: './create-edit-correspondent.component.html',
   styleUrls: ['./create-edit-correspondent.component.scss']
 })
-export class CreateEditCorrespondentComponent implements OnInit {
+export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
   @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
   type: CorrespondentTypes;
   types = CorrespondentTypes;
@@ -26,6 +26,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
   startDate = null;
   filesIdsToDelete: number[] = [];
   files: File[] = [];
+  isCreatedForOutgoing = false;
 
   constructor(
     private fb: FormBuilder,
@@ -88,6 +89,13 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.form.get('letter_registration_number').disable();
     }
   }
+
+  ngOnDestroy(): void {
+        if (this.isCreatedForOutgoing) {
+          this.correspondentService.delete(this.type, this.form.value).subscribe(() => {
+          });
+        }
+    }
 
   ngOnInit(): void {
   }
@@ -160,6 +168,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
     this.form.get('');
     this.correspondentService.create(this.type, this.form.value).subscribe(res => {
       this.correspondentService.getById(this.type, res.data.id).subscribe(response => {
+        this.isCreatedForOutgoing = true;
         this.form.addControl('id', new FormControl(null));
         this.form.get('id').patchValue(response.id);
         this.form.get('date_received').setValue( new Date(response.date_received));
@@ -191,6 +200,7 @@ export class CreateEditCorrespondentComponent implements OnInit {
       this.trim('external_id');
     }
     this.correspondentService.update(this.type, this.form.value).subscribe(res => {
+      this.isCreatedForOutgoing = false;
       this.deleteFiles();
       this.attachFiles(res.data.id);
       this.dialogRef.close(res);

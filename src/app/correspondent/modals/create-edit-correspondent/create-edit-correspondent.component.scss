@@ -6,4 +6,17 @@
       padding: 0.5rem 1rem !important;
     }
   }
+
+  .dark-disabled {
+    input {
+      opacity: 1 !important;
+    }
+
+    &.highlight {
+      input {
+        font-weight: 500;
+      }
+
+    }
+  }
 }
