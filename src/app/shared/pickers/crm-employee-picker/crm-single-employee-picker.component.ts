@@ -18,7 +18,7 @@ export class CrmSingleEmployeePickerComponent implements OnInit, ControlValueAcc
   @Input() selectedEmployee: CRMEmployee;
   @Input() placeholder = 'Choose Employee';
   @Input() showProfession = false;
-  @Input() filters: [QuerySearch];
+  @Input() filters: QuerySearch[];
   @Input() showClear: boolean;
 
   employees: CRMEmployee[];
@@ -33,6 +33,7 @@ export class CrmSingleEmployeePickerComponent implements OnInit, ControlValueAcc
   }
 
   getAll() {
+    console.log('this.filters', this.filters);
     this.crmEmployeeService
       .get(this.filters)
       .pipe(take(1))

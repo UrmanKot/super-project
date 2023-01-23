@@ -93,7 +93,6 @@ export class ExpenseService {
         width: '800px',
         data: {type: entity ? 'edit' : 'add', entity, canVerify },
         disableClose: true,
-        panelClass: 'modal-overflow-visible',
       })
       .afterClosed()
       .pipe();

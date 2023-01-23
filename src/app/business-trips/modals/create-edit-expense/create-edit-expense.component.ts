@@ -12,6 +12,7 @@ import {ExpenseService} from '../../services/expense.service';
 import {ModalService} from '@shared/services/modal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {environment} from '@env/environment';
+import {BusinessTripExpenseFile} from '../../models/business-trip-expense';
 
 @Component({
   selector: 'pek-create-edit-expense',
@@ -23,7 +24,7 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
   file: File;
   form: FormGroup = this.fb.group({
     id: [null],
-    is_verified: [false],
+    is_verified: [null],
     isOther: [false],
     expense: this.fb.group({
       id: [null],
@@ -43,15 +44,33 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
     }),
     sum: [0, [Validators.required]],
     file: [null],
+    type: ['0'],
     uploaded_file: [null],
     clear_file: [false],
-    base64File: [null]
+    base64File: [null],
+    deleteImagesIds: [[]],
+    files: [[]],
+    uploadedFiles: [[]],
   });
+
+  types = [
+    {
+      name: 'Corporate',
+      value: '0'
+    },
+    {
+      name: 'Own',
+      value: '1'
+    }
+  ]
 
   isEditDisabled = false;
   canVerify = false;
   private destroy$ = new Subject();
   link = environment.image_path;
+  selectedType = this.types[0];
+  expensesFiles: BusinessTripExpenseFile[];
+  private filesIdsToDelete: number[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<CreateEditExpenseComponent>,
@@ -75,6 +94,8 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
       } else {
         this.form.get('isOther').setValue(true);
       }
+      this.expensesFiles = this.data.entity.files;
+      this.selectedType = this.types.find(type => type.value === this.data.entity.type);
     }
     // @ts-ignore
     this.canVerify = this.data.canVerify;
@@ -126,6 +147,9 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
     if (!this.form.get('currency').value.code) {
       this.messageService.add({severity: 'error', summary: 'Validation Error', detail: `Select Currency`});
       return;
+    }
+    if (this.filesIdsToDelete.length > 0) {
+      this.form.get('deleteImagesIds').setValue(this.filesIdsToDelete);
     }
     if (this.form.valid) {
       this.dialogRef.close((this.form as FormGroup) as FormGroup);
@@ -241,5 +265,31 @@ export class CreateEditExpenseComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  typeChanged($event: any) {
+    this.form.get('type').setValue($event.value);
+  }
+
+  filesChanged(files: File[]) {
+    this.form.get('uploadedFiles').setValue(files);
+  }
+
+  isFileToBeDisplayed(id) {
+    return this.filesIdsToDelete.findIndex(el => el === id) < 0;
+  }
+
+  downloadFile(file: any) {
+
+  }
+
+  deleteExpensesFile(id) {
+    this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+      if (confirm) {
+        const index = this.expensesFiles.findIndex(el => el.id === id);
+        this.expensesFiles.splice(index, 1);
+        this.filesIdsToDelete.push(id);
+      }
+    });
   }
 }

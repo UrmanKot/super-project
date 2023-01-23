@@ -17,6 +17,9 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {DatePipe, formatDate} from '@angular/common';
 import {BusinessTripLocation} from '../models/business-trip-location';
 import {BusinessTripHotel} from '../models/business-trip-hotel';
+import {BusinessTripExpensesType} from '../enums/business-trip-expenses-type';
+import {Currency} from '@shared/models/currency';
+import {BusinessTripVehicleType} from '../enums/business-trip-vehicle-type';
 
 const SPACE_BETWEEN = 4;
 
@@ -95,16 +98,6 @@ export class BusinessTripService {
       );
   }
 
-  add_hotel_files(send): Observable<BusinessTrip> {
-    return this.httpClient
-      .post<{ data: BusinessTrip }>(this.API_URL + this.url+ 'add_business_trip_hotel_files/', send)
-      .pipe(
-        map((response) => {
-          return response.data;
-        })
-      );
-  }
-
   updateBusinessTripEmployee(id: number, hotelData: DataToSend): Observable<BusinessTrip> {
     return this.httpClient
       .post<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/update_business_trip_employee/', hotelData)
@@ -158,7 +151,6 @@ export class BusinessTripService {
   }
 
   async exportToExcel(businessTripData: DataToSend, expensesSum: ExpensesSum[]) {
-    console.log('businessTripData', businessTripData);
     // Создаем книгу Excel
     const workbook = new Excel.Workbook();
     let worksheet: any;
@@ -264,6 +256,7 @@ export class BusinessTripService {
         worksheet = this.makeGap(worksheet, 1);
       });
     }
+
     worksheet = this.makeGap(worksheet, 2);
     intermediateLocations.forEach((location, index) => {
       worksheet.addRow({
@@ -318,41 +311,43 @@ export class BusinessTripService {
       this.totalDisplayedRows++;
     }
 
-    if (businessTripData.hotel) {
-      worksheet = this.makeGap(worksheet, 1);
-      // Hotel
-      if (businessTripData.hotel) {
-        worksheet.addRow({
-          index: this.totalDisplayedRows,
-          firstCol: 'Hotel Name',
-          secondCol: businessTripData.hotel.name
-        });
-        this.totalIndex++;
-        this.totalDisplayedRows++;
-
-        if (businessTripData.hotel.fullCountry) {
+    if (businessTripData.hotels.length > 0) {
+      businessTripData.hotels.forEach(hotel => {
+        worksheet = this.makeGap(worksheet, 1);
+        // Hotel
+        // if (businessTripData.hotel) {
           worksheet.addRow({
             index: this.totalDisplayedRows,
-            firstCol: 'Hotel Address',
-            secondCol: businessTripData.hotel.fullCountry.name + ', ' + businessTripData.hotel.address
+            firstCol: 'Hotel Name',
+            secondCol: hotel.name
           });
           this.totalIndex++;
           this.totalDisplayedRows++;
-        }
 
-        const start = businessTripData.hotel.residence_start ?
-          formatDate(businessTripData.hotel.residence_start, 'dd/MM/yyyy', 'en') : '-';
-        const end = businessTripData.hotel.residence_end ?
-          formatDate(businessTripData.hotel.residence_end, 'dd/MM/yyyy', 'en') : '-';
-        worksheet.addRow({
-          index: this.totalDisplayedRows,
-          firstCol: 'Hotel Residence start/end',
-          secondCol: start + '  -  ' + end
-        });
-        this.totalIndex++;
-        this.totalDisplayedRows++;
-        worksheet = this.makeGap(worksheet, 1);
-      }
+          if (hotel.fullCountry) {
+            worksheet.addRow({
+              index: this.totalDisplayedRows,
+              firstCol: 'Hotel Address',
+              secondCol: hotel.fullCountry.name + ', ' + hotel.address
+            });
+            this.totalIndex++;
+            this.totalDisplayedRows++;
+          }
+
+          const start = hotel.residence_start ?
+            formatDate(hotel.residence_start, 'dd/MM/yyyy', 'en') : '-';
+          const end = hotel.residence_end ?
+            formatDate(hotel.residence_end, 'dd/MM/yyyy', 'en') : '-';
+          worksheet.addRow({
+            index: this.totalDisplayedRows,
+            firstCol: 'Hotel Residence start/end',
+            secondCol: start + '  -  ' + end
+          });
+          this.totalIndex++;
+          this.totalDisplayedRows++;
+          worksheet = this.makeGap(worksheet, 1);
+        // }
+      });
     }
 
     // Vehicle
@@ -365,13 +360,13 @@ export class BusinessTripService {
       this.totalIndex++;
       this.totalDisplayedRows++;
       let type = '';
-      if (businessTripData.vehicle_type === '1') {
+      if (businessTripData.vehicle_type === BusinessTripVehicleType.PRIVATE) {
         type = 'Private';
       }
-      if (businessTripData.vehicle_type === '2') {
+      if (businessTripData.vehicle_type === BusinessTripVehicleType.RENT) {
         type = 'Rent';
       }
-      if (businessTripData.vehicle_type === '3') {
+      if (businessTripData.vehicle_type === BusinessTripVehicleType.COMPANY_CAR) {
         type = 'Company Car';
       }
       worksheet.addRow({
@@ -413,20 +408,35 @@ export class BusinessTripService {
     // Gap
     worksheet = this.makeGap(worksheet);
 
-    if (businessTripData.expenses.length > 0) {
+    const ownEvidences = businessTripData.expenses
+      .filter(expense => expense.type === BusinessTripExpensesType.OWN &&
+              expense.is_verified === true);
+
+    if (ownEvidences.length > 0) {
       // Expenses
       worksheet.addRow({
+        index: '',
+        firstCol: 'OWN EVIDENCES',
+        secondCol: '',
+        thirdCol: '',
+        fourthCol: '',
+        fifthCol: '',
+      });
+      this.totalIndex++;
+      worksheet = this.makeHeader(worksheet);
+      worksheet.addRow({
         index: '#',
-        firstCol: 'Expense Name',
-        secondCol: 'Expense Description',
-        thirdCol: 'Expense Sum',
-        fourthCol: 'Expense Currency',
-        fifthCol: 'Expense Status',
+        firstCol: 'Evidence Name',
+        secondCol: 'Evidence Description',
+        thirdCol: 'Evidence Sum',
+        fourthCol: 'Evidence Currency',
+        fifthCol: 'Evidence Status',
+        sixthCol: 'Evidence Type',
       });
       this.totalIndex++;
       worksheet = this.makeHeader(worksheet);
 
-      businessTripData.expenses.forEach((expense, index) => {
+      ownEvidences.forEach((expense, index) => {
         worksheet.addRow({
           index: (index + 1),
           firstCol: expense.fullExpense.name,
@@ -434,12 +444,25 @@ export class BusinessTripService {
           thirdCol: expense.sum,
           fourthCol: expense.currency,
           fifthCol: expense.is_verified ? 'Verified' : 'Need Verification',
+          sixthCol: 'Own Evidence',
         });
         this.totalIndex++;
       });
       this.makeGap(worksheet, 1);
+      const ownSum: {currency: string | Currency, amount: number }[] = [];
+      ownEvidences.forEach(expense => {
+        const sumForCurrency = ownSum.find(evidence => evidence.currency === expense.currency);
+        if (sumForCurrency) {
+          sumForCurrency.amount += +expense.sum;
+        } else {
+          ownSum.push({
+            currency: expense.currency,
+            amount: +expense.sum
+          });
+        }
+      });
 
-      if (expensesSum && expensesSum.length > 0) {
+      if (ownSum.length > 0) {
         // Expenses Sum
         worksheet.addRow({
           index: '',
@@ -452,13 +475,179 @@ export class BusinessTripService {
         this.totalIndex++;
         worksheet = this.makeHeader(worksheet);
 
-        expensesSum.forEach(expenseSum => {
+        ownSum.forEach(expenseSum => {
           worksheet.addRow({
             index: '',
             firstCol: '',
             secondCol: '',
-            thirdCol: expenseSum.sum,
-            fourthCol: expenseSum.currency.code,
+            thirdCol: expenseSum.amount,
+            fourthCol: expenseSum.currency,
+            fifthCol: '',
+          });
+          this.totalIndex++;
+        });
+        this.makeGap(worksheet, 3);
+      }
+    }
+
+    const corporateEvidences = businessTripData.expenses
+      .filter(expense => expense.type === BusinessTripExpensesType.CORPORATE &&
+        expense.is_verified === true);
+
+    if (corporateEvidences.length > 0) {
+      // Expenses
+      worksheet.addRow({
+        index: '',
+        firstCol: 'CORPORATE EVIDENCES',
+        secondCol: '',
+        thirdCol: '',
+        fourthCol: '',
+        fifthCol: '',
+        sixthCol: '',
+      });
+      this.totalIndex++;
+      worksheet = this.makeHeader(worksheet);
+      worksheet.addRow({
+        index: '#',
+        firstCol: 'Evidence Name',
+        secondCol: 'Evidence Description',
+        thirdCol: 'Evidence Sum',
+        fourthCol: 'Evidence Currency',
+        fifthCol: 'Evidence Status',
+        sixthCol: 'Evidence Type',
+      });
+      this.totalIndex++;
+      worksheet = this.makeHeader(worksheet);
+
+      corporateEvidences.forEach((expense, index) => {
+        worksheet.addRow({
+          index: (index + 1),
+          firstCol: expense.fullExpense.name,
+          secondCol: expense.fullExpense.description,
+          thirdCol: expense.sum,
+          fourthCol: expense.currency,
+          fifthCol: expense.is_verified ? 'Verified' : 'Need Verification',
+          sixthCol: 'Corporate Evidence',
+        });
+        this.totalIndex++;
+      });
+      this.makeGap(worksheet, 1);
+
+      const corporateSum: {currency: string | Currency, amount: number }[] = [];
+      corporateEvidences.forEach(expense => {
+        const sumForCurrency = corporateSum.find(evidence => evidence.currency === expense.currency);
+        if (sumForCurrency) {
+          sumForCurrency.amount += +expense.sum;
+        } else {
+          corporateSum.push({
+            currency: expense.currency,
+            amount: +expense.sum
+          });
+        }
+      });
+
+      if (corporateSum.length > 0) {
+        // Expenses Sum
+        worksheet.addRow({
+          index: '',
+          firstCol: '',
+          secondCol: '',
+          thirdCol: 'Total Sum (Verified)',
+          fourthCol: 'Total Currency (Verified)',
+          fifthCol: '',
+        });
+        this.totalIndex++;
+        worksheet = this.makeHeader(worksheet);
+
+        corporateSum.forEach(expenseSum => {
+          worksheet.addRow({
+            index: '',
+            firstCol: '',
+            secondCol: '',
+            thirdCol: expenseSum.amount,
+            fourthCol: expenseSum.currency,
+            fifthCol: '',
+          });
+          this.totalIndex++;
+        });
+        this.makeGap(worksheet, 3);
+      }
+    }
+
+    const canceledEvidences = businessTripData.expenses
+      .filter(expense => expense.is_verified === false);
+
+    if (canceledEvidences.length > 0) {
+      // Expenses
+      worksheet.addRow({
+        index: '',
+        firstCol: 'CANCELED EVIDENCES',
+        secondCol: '',
+        thirdCol: '',
+        fourthCol: '',
+        fifthCol: '',
+      });
+      this.totalIndex++;
+      worksheet = this.makeHeader(worksheet);
+      worksheet.addRow({
+        index: '#',
+        firstCol: 'Evidence Name',
+        secondCol: 'Evidence Description',
+        thirdCol: 'Evidence Sum',
+        fourthCol: 'Evidence Currency',
+        fifthCol: 'Evidence Status',
+        sixthCol: 'Evidence Type',
+      });
+      this.totalIndex++;
+      worksheet = this.makeHeader(worksheet);
+
+      canceledEvidences.forEach((expense, index) => {
+        worksheet.addRow({
+          index: (index + 1),
+          firstCol: expense.fullExpense.name,
+          secondCol: expense.fullExpense.description,
+          thirdCol: expense.sum,
+          fourthCol: expense.currency,
+          fifthCol: 'Canceled',
+          sixthCol: expense.type === BusinessTripExpensesType.OWN ? 'Own Evidence' : 'Corporate Evidence',
+        });
+        this.totalIndex++;
+      });
+      this.makeGap(worksheet, 1);
+
+      const canceledSum: {currency: string | Currency, amount: number }[] = [];
+      canceledEvidences.forEach(expense => {
+        const sumForCurrency = canceledSum.find(evidence => evidence.currency === expense.currency);
+        if (sumForCurrency) {
+          sumForCurrency.amount += +expense.sum;
+        } else {
+          canceledSum.push({
+            currency: expense.currency,
+            amount: +expense.sum
+          });
+        }
+      });
+
+      if (canceledSum.length > 0) {
+        // Expenses Sum
+        worksheet.addRow({
+          index: '',
+          firstCol: '',
+          secondCol: '',
+          thirdCol: 'Total Sum (Verified)',
+          fourthCol: 'Total Currency (Verified)',
+          fifthCol: '',
+        });
+        this.totalIndex++;
+        worksheet = this.makeHeader(worksheet);
+
+        canceledSum.forEach(expenseSum => {
+          worksheet.addRow({
+            index: '',
+            firstCol: '',
+            secondCol: '',
+            thirdCol: expenseSum.amount,
+            fourthCol: expenseSum.currency,
             fifthCol: '',
           });
           this.totalIndex++;

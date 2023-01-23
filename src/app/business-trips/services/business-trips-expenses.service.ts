@@ -5,10 +5,11 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {MatDialog} from '@angular/material/dialog';
 import {environment} from '@env/environment';
-import {BusinessTripExpense} from '../models/business-trip-expense';
+import {BusinessTripExpense, BusinessTripExpenseFile} from '../models/business-trip-expense';
 import {QuerySearch} from '@shared/models/other';
 import {BusinessTripLocationMeeting} from '../models/business-trip-location-meeting';
 import {NomenclatureImage} from '@shared/models/nomenclature';
+import {BusinessTrip} from '../models/business-trip';
 
 @Injectable({
   providedIn: 'root'
@@ -68,5 +69,26 @@ export class BusinessTripsExpensesService {
     }
 
     return this.httpClient.post(this.API_URL + this.url + expenseId + '/add_file_to_expense/', formData).pipe();
+  }
+
+  uploadFiles(send: BusinessTripExpenseFile): Observable<BusinessTripExpenseFile> {
+    const formData = new FormData();
+
+    for (const key in send) {
+      if (send[key] !== null) {
+        formData.append(key, send[key]);
+      }
+    }
+    return this.httpClient
+      .post<{ data: BusinessTripExpenseFile }>(this.API_URL + 'business-trips-expense-files/', formData)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
+  deleteFiles(id: number) {
+    return this.httpClient.delete(this.API_URL + 'business-trips-expense-files/' + id + '/');
   }
 }

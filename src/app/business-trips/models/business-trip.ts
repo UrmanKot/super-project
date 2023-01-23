@@ -5,6 +5,7 @@ import {Hotel} from './hotel';
 import {Vehicle} from './vehicle';
 import {BusinessTripExpense} from './business-trip-expense';
 import {BusinessTripLocation} from './business-trip-location';
+import {BusinessTripHotel} from './business-trip-hotel';
 
 export class BusinessTrip {
   readonly id: number;
@@ -21,6 +22,7 @@ export class BusinessTrip {
   vehicle?: Vehicle | number;
   custom_vehicle?: Vehicle | number;
   expenses?: BusinessTripExpense[] | number;
+  hotels?: BusinessTripHotel[] | number;
   initiator?: number;
   start_mileage?: number;
   end_mileage?: number;

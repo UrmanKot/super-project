@@ -24,3 +24,88 @@ h2 {
     margin-bottom: 0;
   }
 }
+
+
+.input-file {
+  cursor: pointer;
+  margin-top: 10px;
+  width: fit-content;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  i {
+    display: inline-block;
+    margin-right: 5px;
+    color: #002e72;
+  }
+
+  span {
+    display: flex;
+    font-weight: 500;
+    color: #002e72;
+  }
+
+  &:hover {
+    span {
+      text-decoration: underline;
+    }
+  }
+}
+
+.delete-image {
+  background: transparent;
+  border: none;
+  color: #dc3545;
+  padding: 0;
+  position: relative;
+  top: 2px;
+
+  i {
+    margin-right: 5px;
+    font-size: 16px;
+    position: relative;
+    top: 1px;
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.remove {
+  cursor: pointer;
+  font: inherit;
+  right: -15.375rem;;
+  bottom: 0.25rem;
+  font-weight: 500;
+  padding: 0.375rem 1.125rem;
+  color: var(--theme-color-danger);
+  border-radius: 0.625rem;
+  width: 9.875rem;
+  background: #ffeded75;
+  margin-left: .5rem;
+
+  i {
+    position: relative;
+    top: 1px;
+    margin-right: 0.5rem;
+  }
+}
+
+.vehicle-file-selector {
+  display: flex;
+  flex-direction: revert;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -28,9 +28,9 @@ export class CrmEmployeeService {
   }
 
   get(query?: QuerySearch[]): Observable<CRMEmployee[]> {
-    if (this.employees) {
-      return of(this.employees);
-    }
+    // if (this.employees) {
+    //   return of(this.employees);
+    // }
 
     let queryParams = '';
 
@@ -44,7 +44,9 @@ export class CrmEmployeeService {
       });
     }
 
-    return this.httpClient.get<{ data: CRMEmployee[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
+    console.log('query', query);
+
+    return this.httpClient.get<{ data: CRMEmployee[] }>(this.API_URL + this.url  + queryParams).pipe(
       map(response => {
         const employees = response.data.map(e => {
           return {

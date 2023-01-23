@@ -1,0 +1,148 @@
+<div class="page__card"  pekPasteScreenImage (imageAdded)="fileAdded($event)">
+  <div>
+    <div>
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label>Name</label>
+            <input pInputText (ngModelChange)="hotelChanged.next()" [(ngModel)]="tripHotel.name" class="form-control">
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label>Country</label>
+            <pek-business-trip-country-picker [country]="country"
+                                              (valueChangeFull)="tripHotel.country = $event; hotelChanged.next()"></pek-business-trip-country-picker>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label>Address</label>
+            <input pInputText (ngModelChange)="hotelChanged.next()" [(ngModel)]="tripHotel.address" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Residence Start Date</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              (onClickOutside)="clickHotelOutside('start')"
+              #startHotel
+              [hideOnDateTimeSelect]="false"
+              hourFormat="24"
+              [showButtonBar]="true"
+              [ngModel]="startDate"
+              dataType="date"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+            >
+              <p-footer
+                class="d-flex justify-content-center align-items-center"
+                *ngIf="startHotel.value"
+              >
+                <button
+                  class="btn btn-primary position-absolute mb-5"
+                  (click)="setHotelStartValue(startHotel.value); hotelChanged.next(); startHotel.toggle()"
+                >
+                  Set Date
+                </button>
+              </p-footer>
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>Residence End Date</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              (onClickOutside)="clickHotelOutside('end')"
+              #endHotel
+              [minDate]="startDate"
+              [disabled]="!startDate"
+              [hideOnDateTimeSelect]="false"
+              [showButtonBar]="true"
+              hourFormat="24"
+              [ngModel]="endDate"
+              dataType="date"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+            >
+              <p-footer
+                class="d-flex justify-content-center align-items-center"
+                *ngIf="endHotel.value"
+              >
+                <button
+                  class="btn btn-primary position-absolute mb-5"
+                  (click)="setHotelEndValue(endHotel.value); hotelChanged.next(); endHotel.toggle()"
+                >
+                  Set Date
+                </button>
+              </p-footer>
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <pek-upload-file-picker #filePicker  (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-11">
+          <div class="form-group">
+          </div>
+        </div>
+        <div class="col-1">
+          <div class="form-group">
+            <button pButton type="button" icon="fa fa-eye" label="View files" (click)="viewHotelFiles()"></button>
+          </div>
+        </div>
+      </div>
+      <p-table
+        [paginator]="true"
+        [rows]="10"
+        [value]="preparedFiles"
+        selectionMode="single"
+        [scrollable]="true"
+        [(selection)]="selectedHotelFile"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center">
+            <p class="subtitle ml-1 mr-2" *ngIf="!selectedHotelFile">Choose the Hotel Files to edit</p>
+            <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedHotelFile"></p-menubar>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="index-header">#</th>
+            <th>File</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-file let-i="rowIndex">
+          <tr [pSelectableRow]="file">
+            <td>{{ i + 1 }}</td>
+            <td>
+              <a [href]="file.file">
+                {{ getName(file.file) }}
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="row">
+        <div class="col-10"></div>
+        <div class="col-2">
+          <div class="form-group">
+            <button pButton type="button" class="p-button-danger"  icon="fa fa-trash" label="Delete Hotel" (click)="deleteHotel()"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -225,7 +225,6 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   }
 
   changeCorrespondentEnd(endDate: Date) {
-    console.log('max dates');
     this.maxDate = endDate;
     this.searchByDate();
   }
@@ -290,7 +289,6 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   }
 
   setExternalDate(date: any) {
-    console.log('search date');
     this.paginator.changePage(0);
     this.searchForm.get('page').patchValue(1);
     this.search();

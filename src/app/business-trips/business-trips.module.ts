@@ -27,6 +27,8 @@ import { BusinessTripsMultiEmployeeWithCustomComponent } from './components/pick
 import {MultiSelectModule} from 'primeng/multiselect';
 import { TakePhotoModalComponent } from './modals/take-photo-modal/take-photo-modal.component';
 import {WebcamModule} from 'ngx-webcam';
+import { HotelsListComponent } from './components/edit-business-trip/component/hotels-list/hotels-list.component';
+import { HotelListItemComponent } from './components/edit-business-trip/component/hotels-list/hotel-list-item/hotel-list-item.component';
 
 
 @NgModule({
@@ -51,6 +53,8 @@ import {WebcamModule} from 'ngx-webcam';
         BusinessTripsMultiStatusPickerComponent,
         BusinessTripsMultiEmployeeWithCustomComponent,
         TakePhotoModalComponent,
+        HotelsListComponent,
+        HotelListItemComponent,
     ],
     imports: [
         CommonModule,

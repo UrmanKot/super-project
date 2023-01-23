@@ -9,9 +9,18 @@ export class BusinessTripExpense {
   currency?: Currency | string;
   sum?: number;
   file?: string;
+  files?:BusinessTripExpenseFile[];
+  uploadedFiles?: File[];
   base64File?: string;
   fullExpense?: Expense;
   clear_file?: boolean;
   business_trip?: number;
   uploaded_file?: string;
+  type?: string;
+}
+
+export class BusinessTripExpenseFile {
+  id?: number;
+  business_trip_expense?: number;
+  file?: File | string;
 }

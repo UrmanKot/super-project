@@ -1,6 +1,17 @@
 <h2 class="mb-4 d-flex justify-content-between">
-  Expenses
-  <button pButton type="button" icon="pi pi-plus" label="Add Expense" (click)="addTripExpanses()"></button>
+  Evidences
+  <div class="d-flex align-items-center">
+    <button
+      pButton
+      *ngIf="isVerify"
+      type="button"
+      icon="pi pi-check"
+      label="Verify Business Trip"
+      class="mr-2"
+      (click)="verifyBusinessTrip.next()">
+    </button>
+    <button pButton type="button" icon="pi pi-plus" label="Add Evidence" (click)="addTripExpanses()"></button>
+  </div>
 </h2>
 <div class="page__card">
 <div class="content">
@@ -10,14 +21,34 @@
         [paginator]="true"
         [rows]="10"
         [value]="tripExpenses"
-        [scrollable]="true"
+        [scrollable]="false"
         selectionMode="single"
         [(selection)]="selectedTripExpense"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex align-items-center">
-            <p class="subtitle ml-1 mr-2" *ngIf="!selectedTripExpense">Choose the Expenses to edit</p>
-            <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedTripExpense || selectedTripExpense && selectedTripExpense.is_verified"></p-menubar>
+          <div class="d-flex align-items-center justify-content-between">
+            <p class="subtitle ml-1 mr-2" *ngIf="!selectedTripExpense">Choose the Evidences to edit</p>
+            <p *ngIf="selectedTripExpense"></p>
+            <div class="d-flex align-items-center">
+              <button *ngIf="isVerify && selectedTripExpense"
+                      pButton
+                      [disabled]="selectedTripExpense.is_verified === false || selectedTripExpense.is_verified === true"
+                      type="button"
+                      icon="pi pi-check"
+                      class="mr-3"
+                      label="Verify Evidence"
+                      (click)="updateVerifyStatusOfExpense(true)"></button>
+              <button
+                *ngIf="isVerify && selectedTripExpense"
+                pButton
+                type="button"
+                icon="pi pi-times"
+                class="p-button-danger mr-3"
+                label="Cancel Evidence"
+                [disabled]="selectedTripExpense.is_verified === false || selectedTripExpense.is_verified === true"
+                (click)="updateVerifyStatusOfExpense(false)"></button>
+              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedTripExpense || selectedTripExpense && (selectedTripExpense.is_verified || selectedTripExpense.is_verified === false)"></p-menubar>
+            </div>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -28,6 +59,7 @@
             <th>Sum</th>
             <th>Currency</th>
             <th>File</th>
+            <th>Evidence Type</th>
             <th>Status</th>
           </tr>
         </ng-template>
@@ -38,19 +70,37 @@
             <td>{{ tripExpense.expense && tripExpense.expense.name ? tripExpense.expense.description : tripExpense.custom_expense.description }}</td>
             <td>{{ tripExpense.sum | moneyFormat }}</td>
             <td>{{ tripExpense.currency.name }}</td>
-            <td>
-              <a *ngIf="tripExpense.id && tripExpense.file && !tripExpense.uploaded_file" [href]="link + tripExpense.file">
-                {{ getName(tripExpense.file) }}
-              </a>
-              <a  *ngIf="tripExpense.uploaded_file" href="javascript:void(0)" (click)="viewFile(tripExpense, tripExpense.uploaded_file)">
-                {{ tripExpense.uploaded_file.name }}
-              </a>
+            <td class="files-cont" >
+              <span *ngIf="tripExpense.files.length > 1">
+                  <a [href]="tripExpense.files[0].file">
+                     {{ getName(tripExpense.files[0].file) }} (F {{tripExpense.files.length}})
+                  </a>
+                </span>
+              <span *ngIf="tripExpense.files.length === 1">
+                  <a [href]="tripExpense.files[0].file">
+                     {{ getName(tripExpense.files[0].file) }}
+                  </a>
+                </span>
+              <div *ngIf="tripExpense.files.length > 1" class="files-list">
+                  <span *ngFor="let file of tripExpense.files">
+                     <a [href]="file.file">
+                       {{ getName(file.file) }}
+                     </a>
+                     <br>
+                  </span>
+              </div>
             </td>
             <td>
-              <span *ngIf="!tripExpense.is_verified">
+              {{tripExpense.type === BusinessTripExpensesType.CORPORATE ? 'Corporate' : 'Own'}}
+            </td>
+            <td>
+              <span *ngIf="tripExpense.is_verified === false">
+                Canceled
+              </span>
+              <span *ngIf="!tripExpense.is_verified && tripExpense.is_verified !== false">
                 Need To Be Verified
               </span>
-              <span *ngIf="tripExpense.is_verified">
+              <span *ngIf="tripExpense.is_verified === true">
                 Verified
               </span>
             </td>
@@ -76,7 +126,7 @@
 
         <div *ngIf="sumOfVerifiedExpenses.length === 0">
           <h3>
-            No Verified Expenses
+            No Verified Evidences
           </h3>
         </div>
       </div>

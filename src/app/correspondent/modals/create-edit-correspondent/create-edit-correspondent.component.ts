@@ -70,8 +70,6 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
         if (this.data.correspondent.external_date) {
           this.form.get('external_date').patchValue(new Date(this.data.correspondent.external_date));
         }
-        console.log('this.data.correspondent', this.data.correspondent);
-        console.log('this.form', this.form.value);
       }
 
       if (this.type === this.types.OUTGOING) {

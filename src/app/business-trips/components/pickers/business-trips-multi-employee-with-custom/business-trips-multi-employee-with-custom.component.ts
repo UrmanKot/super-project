@@ -5,6 +5,7 @@ import {map} from 'rxjs/operators';
 import {CRMEmployee} from '../../../../crm/models/crm-employee';
 import {CrmEmployeeService} from '../../../../crm/services/crm-employee.service';
 import {merge} from 'rxjs';
+import {QuerySearch} from '@shared/models/other';
 export class EmployeeWithCustom {
   employee?: CRMEmployee;
   customEmployee?: CRMEmployee;
@@ -27,7 +28,7 @@ export class BusinessTripsMultiEmployeeWithCustomComponent implements OnInit, Co
   employees: CRMEmployee[];
   customEmployees: EmployeeWithCustom[] = [];
   selectedEmployees: string[];
-
+  employeeFilter: [QuerySearch] = [{name: 'by_user_trip_permissions', value: true}];
   constructor(
     private crmEmployeeService: CrmEmployeeService,
     private customEmployeesService: CustomEmployeesService,
@@ -38,7 +39,7 @@ export class BusinessTripsMultiEmployeeWithCustomComponent implements OnInit, Co
   }
 
   getContactPersons() {
-    return this.crmEmployeeService.get().pipe(map(employees => {
+    return this.crmEmployeeService.get(this.employeeFilter).pipe(map(employees => {
       return employees.map(employee =>  {
         return {
           employee, order: 1, id: 'e' + employee.id
