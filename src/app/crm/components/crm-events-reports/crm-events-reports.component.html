@@ -67,99 +67,162 @@
         <div class="col-3">
           <div class="form-group">
             <label>Event Date Filter</label>
-            <p-dropdown
-              formControlName="datesLastFilterType"
-              [options]="dateLastFilterTypes"
-              [showClear]="true"
-              placeholder="Select Date Filter Type"
+            <p-multiSelect
+              [options]="dateFilters"
+              [(ngModel)]="selectedFilters"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Select Date Filters Types"
+              (ngModelChange)="updated($event)"
               optionLabel="name"
-              (onChange)="changeLastsDateFilterType($event)"
-              optionValue="value"
-            >
-            </p-dropdown>
+              optionValue="value"></p-multiSelect>
           </div>
         </div>
-        <div class="col-3" *ngIf="searchForm.get('datesLastFilterType').value">
-          <div class="form-group">
-            <label>Event Date From</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              dateFormat="dd/mm/yy"
-              formControlName="last_events_date_start"
-              (ngModelChange)="searchByLastDate()"
-              [readonlyInput]="true"
-              [maxDate]="dateRangeLimit"
-            ></p-calendar>
-          </div>
-        </div>
-        <div class="col-3" *ngIf="searchForm.get('datesLastFilterType').value">
-          <div class="form-group">
-            <label>Event Date To</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="last_events_date_end"
-              (ngModelChange)="searchByLastDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [maxDate]="dateRangeLimit"
-            ></p-calendar>
-          </div>
-        </div>
-        <!--          </div>-->
-        <!--        </ng-template>-->
-
-        <!--     DATE RANGE FILTERS   -->
-        <!--        <ng-template [ngIf]="selectedFilterType === 'nextDate'">-->
-
-      </div>
-      <div class="row">
         <div class="col-3">
-          <div class="form-group">
-            <label>Event Date Filter</label>
-            <p-dropdown
-              formControlName="datesFutureFilterType"
-              [options]="dateFutureFilterTypes"
-              [showClear]="true"
-              placeholder="Select Date Filter Type"
-              optionLabel="name"
-              (onChange)="changeFeatureDateFilterType($event)"
-              optionValue="value"
+
+          <div *ngIf="isLastEventStartFilterOpen" class="form-group">
+            <label>Last Events Date Start From</label>
+                <p-calendar
+                  [firstDayOfWeek]="1"
+                  [showButtonBar]="true"
+                  inputId="basic"
+                  dateFormat="dd/mm/yy"
+                  formControlName="last_events_date_start_after"
+                  (ngModelChange)="filterByLastStartDate()"
+                  [readonlyInput]="true"
+                  [maxDate]="lastBeforeStartDateSelected ? lastBeforeStartDateSelected : dateRangeLimit"
+                ></p-calendar>
+          </div>
+          <div *ngIf="isLastEventEndFilterOpen" class="form-group">
+            <label>Last Events Date End From</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              dateFormat="dd/mm/yy"
+              formControlName="last_events_date_end_after"
+              (ngModelChange)="filterByLastEndDate()"
+              [readonlyInput]="true"
+              [maxDate]="lastBeforeEndDateSelected ? lastBeforeEndDateSelected : dateRangeLimit"
+            ></p-calendar>
+          </div>
+          <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
+            <label>Feature Events Date Start From</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              formControlName="next_events_date_start_after"
+              (ngModelChange)="filterByFeatureStartDate()"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [minDate]="dateRangeLimit"
+              [maxDate]="featureBeforeStartDateSelected ? featureBeforeStartDateSelected : null"
+            ></p-calendar>
+          </div>
+          <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
+            <label>Feature Events Date End From</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              formControlName="next_events_date_end_after"
+              (ngModelChange)="filterByFeatureEndDate()"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [minDate]="dateRangeLimit"
+              [maxDate]="featureBeforeEndDateSelected ? featureBeforeEndDateSelected : null"
+            ></p-calendar>
+          </div>
+        </div>
+<!--   UNTIL     -->
+        <div class="col-3">
+          <div *ngIf="isLastEventStartFilterOpen" class="form-group">
+            <label>Last Events Date Start To</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="last_events_date_start_before"
+                (ngModelChange)="filterByLastStartDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [maxDate]="dateRangeLimit"
+                [minDate]="lastAfterStartDateSelected ? lastAfterStartDateSelected : lastAfterStartDateSelected"
+              ></p-calendar>
+          </div>
+          <div *ngIf="isLastEventEndFilterOpen" class="form-group">
+            <label>Last Events Date End To</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              formControlName="last_events_date_end_before"
+              (ngModelChange)="filterByLastEndDate()"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [maxDate]="dateRangeLimit"
+              [minDate]="lastAfterEndDateSelected ? lastAfterEndDateSelected : dateRangeLimit"
+            ></p-calendar>
+          </div>
+          <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
+            <label>Feature Events Date Start To</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              formControlName="next_events_date_start_before"
+              (ngModelChange)="filterByFeatureStartDate()"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [minDate]="featureAfterStartDateSelected ? featureAfterStartDateSelected : dateRangeLimit"
+            ></p-calendar>
+          </div>
+          <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
+            <label>Feature Events Date End To</label>
+            <p-calendar
+              [firstDayOfWeek]="1"
+              [showButtonBar]="true"
+              inputId="basic"
+              formControlName="next_events_date_end_before"
+              (ngModelChange)="filterByFeatureEndDate()"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [minDate]="featureAfterEndDateSelected ? featureAfterEndDateSelected : dateRangeLimit"
+            ></p-calendar>
+          </div>
+        </div>
+<!--   CHECK BOX    -->
+        <div class="col-3">
+          <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen">
+            <label>Intersections Last Events Dates</label>
+            <p-checkbox
+              class="checkbox-big"
+              name="group1"
+              [binary]="true"
+              inputId="auto-events"
+              (onChange)="search()"
+              formControlName="intersect_last_event"
             >
-            </p-dropdown>
+            </p-checkbox>
           </div>
-        </div>
-        <div class="col-3" *ngIf="searchForm.get('datesFutureFilterType').value">
-          <div class="form-group">
-            <label>Event Date From</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              dateFormat="dd/mm/yy"
-              formControlName="feature_events_date_start"
-              (ngModelChange)="searchByFeatureDate()"
-              [readonlyInput]="true"
-              [minDate]="dateRangeLimit"
-            ></p-calendar>
+          <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
+           isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen &&
+            (!isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
+             isLastEventStartFilterOpen && !isLastEventEndFilterOpen )">
+            <label >&nbsp;</label>
+            <div style="height: 33px"></div>
           </div>
-        </div>
-        <div class="col-3" *ngIf="searchForm.get('datesFutureFilterType').value">
-          <div class="form-group">
-            <label>Event Date To</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="feature_events_date_end"
-              (ngModelChange)="searchByFeatureDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [minDate]="dateRangeLimit"
-            ></p-calendar>
+          <div class="form-group" *ngIf="isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen">
+            <label>Intersections Last Feature Dates</label>
+            <p-checkbox
+              class="checkbox-big"
+              name="group1"
+              [binary]="true"
+              inputId="auto-events"
+              (onChange)="search()"
+              formControlName="intersect_next_event"
+            >
+            </p-checkbox>
           </div>
         </div>
       </div>

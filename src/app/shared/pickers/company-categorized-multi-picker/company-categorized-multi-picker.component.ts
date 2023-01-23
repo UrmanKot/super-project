@@ -1,18 +1,19 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CompanyService} from '../../../crm/services/company.service';
 import {TreeNode} from 'primeng/api';
 import {Company} from '../../../crm/models/company';
 import {CompanyCategoryService} from '../../../crm/services/company-category.service';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {CompanyCategory} from '../../../crm/models/company-category';
-import {tap} from 'rxjs/operators';
+import {debounceTime, tap} from 'rxjs/operators';
+import {logMessages} from '@angular-devkit/build-angular/src/builders/browser-esbuild/esbuild';
 
 @Component({
   selector: 'pek-company-categorized-multi-picker',
   templateUrl: './company-categorized-multi-picker.component.html',
   styleUrls: ['./company-categorized-multi-picker.component.scss']
 })
-export class CompanyCategorizedMultiPickerComponent implements OnInit {
+export class CompanyCategorizedMultiPickerComponent implements OnInit, OnDestroy {
   nodes: any[];
   companyCategories: CompanyCategory[] = [];
   companies: Partial<Company>[] = [];
@@ -24,6 +25,8 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
   selectedNode: TreeNode[] = [];
   selectedUniqueNodes: TreeNode[] = [];
   isLoading = true;
+  private destroy$ = new Subject();
+  private dataCollected = new Subject();
 
   constructor(
     private readonly companyService: CompanyService,
@@ -32,40 +35,39 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    forkJoin(
-      this.getCategories(),
-      this.getCompanies()
-    ).subscribe(() => {
-      this.companyCategories.forEach(category => {
-        const companiesOfCategory = this.companies.filter(company => company.categories.findIndex(id => id === category.id) > -1);
-        const preparedCategory: TreeNode = {
-          label: category.name,
-          data: {category: category, type: 'category'},
-          key: 'category' + category.id,
-          expandedIcon: 'pi pi-folder-open',
-          collapsedIcon: 'pi pi-folder',
-          children: []
-        }
-        if (companiesOfCategory.length > 0) {
-          companiesOfCategory
-            .sort((a, b) => {
-              return a.name.localeCompare(b.name);
-            }).forEach(company => {
-            const preparedCompany: TreeNode = {
-              label: company.name,
-              data: {company: company, type: 'company'},
-              key: 'company' + company.id,
-              children: [],
-            }
-            preparedCategory.children.push(preparedCompany);
-          });
-        }
-        this.groupedCategories.push(preparedCategory)
-      })
-      this.nodes = this.groupedCategories;
-      this.setSelectedNode();
-      this.isLoading = false;
-    });
+    this.getCategories();
+  }
+
+  formTree() {
+    this.companyCategories.forEach(category => {
+      const companiesOfCategory = this.companies.filter(company => company.categories.findIndex(id => id === category.id) > -1);
+      const preparedCategory: TreeNode = {
+        label: category.name,
+        data: {category: category, type: 'category'},
+        key: 'category' + category.id,
+        expandedIcon: 'pi pi-folder-open',
+        collapsedIcon: 'pi pi-folder',
+        children: []
+      }
+      if (companiesOfCategory.length > 0) {
+        companiesOfCategory
+          .sort((a, b) => {
+            return a.name.localeCompare(b.name);
+          }).forEach(company => {
+          const preparedCompany: TreeNode = {
+            label: company.name,
+            data: {company: company, type: 'company'},
+            key: 'company' + company.id,
+            children: [],
+          }
+          preparedCategory.children.push(preparedCompany);
+        });
+      }
+      this.groupedCategories.push(preparedCategory)
+    })
+    this.nodes = this.groupedCategories;
+    this.setSelectedNode();
+    this.isLoading = false;
   }
 
   setSelectedNode() {
@@ -98,13 +100,18 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
   getCategories() {
     return this.companyCategoryService.get().pipe(tap(categories => {
       this.companyCategories = categories;
-    }));
+      this.dataCollected.next(true);
+    }), takeUntil(this.destroy$)).subscribe(() => {
+      this.getCompanies();
+    });
   }
 
   getCompanies() {
     return this.companyService.getShorts().pipe(tap(companies => {
       this.companies = companies;
-    }));
+      this.dataCollected.next(true);
+      this.formTree();
+    }), takeUntil(this.destroy$)).subscribe();
   }
 
   selectionChanged() {
@@ -123,5 +130,11 @@ export class CompanyCategorizedMultiPickerComponent implements OnInit {
 
   onlyUniqueByKey(value, index, self) {
     return self.findIndex(innerValue => innerValue.key === value.key) === index;
+  }
+
+  ngOnDestroy() {
+    console.log('Destroy');
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

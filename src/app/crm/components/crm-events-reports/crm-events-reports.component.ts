@@ -7,6 +7,7 @@ import {Paginator} from 'primeng/paginator';
 import {Table} from 'primeng/table';
 import {EventType} from '../../models/event-type';
 import {Subject, takeUntil} from 'rxjs';
+import {AdapterService} from '@shared/services/adapter.service';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -22,6 +23,43 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   isShowAll = false;
   isStartOnePage = false;
   reportsCount = 0;
+
+  dateFilters: {name: string, value: string}[] = [
+    {
+      name: 'Last Events Date Start',
+      value: 'last_events_date_start'
+    },
+    {
+      name: 'Last Events Date End',
+      value: 'last_events_date_end'
+    },
+    {
+      name: 'Future Events Date Start',
+      value: 'future_events_date_start'
+    },
+    {
+      name: 'Future Events Date End',
+      value: 'future_events_date_end'
+    },
+  ];
+  selectedFilters: any;
+
+  lastAfterStartDateSelected: Date;
+  lastBeforeStartDateSelected: Date;
+  lastAfterEndDateSelected: Date;
+  lastBeforeEndDateSelected: Date;
+
+  featureAfterStartDateSelected: Date;
+  featureBeforeStartDateSelected: Date;
+  featureAfterEndDateSelected: Date;
+  featureBeforeEndDateSelected: Date;
+
+  isLastEventStartFilterOpen = false;
+  isLastEventEndFilterOpen = false;
+
+  isFeatureEventStartFilterOpen = false;
+  isFeatureEventEndFilterOpen = false;
+
 
   public dateRangeLimit: Date;
 
@@ -175,7 +213,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   searchForm: FormGroup = this.fb.group({
     page: [1],
-    name: [null],
+    id: [null],
     categories_ids: [null],
     chain_status_ids: [null],
     employees_ids: [null],
@@ -191,11 +229,21 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     last_events_date_end: [null],
     feature_events_date_start: [null],
     feature_events_date_end: [null],
+    last_events_date_start_after: [null],
+    last_events_date_start_before: [null],
+    last_events_date_end_after: [null],
+    last_events_date_end_before: [null],
+    next_events_date_start_after: [null],
+    next_events_date_start_before: [null],
+    next_events_date_end_after: [null],
+    next_events_date_end_before: [null],
     dateFilterType: [null],
     datesLastFilterType: [null],
     datesFutureFilterType: [null],
     autoEvents: [true],
-    groupView: [false]
+    groupView: [false],
+    intersect_last_event: [false],
+    intersect_next_event: [false],
   });
 
   rangeCalendar: any = [new Date(), new Date()];
@@ -211,7 +259,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   selectedFilterType = 'lastNextDate';
 
-  queryKey = 'name:null/categories_ids:null/chain_status_ids:null/employees_ids:null/is_null_chain_status:null';
+  queryKey = 'id:null/categories_ids:null/chain_status_ids:null/employees_ids:null/is_null_chain_status:null';
 
   dateLastFilterTypes = [
     {name: 'Last events date start', value: 'lastStart'},
@@ -231,7 +279,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly eventsReportService: EventsReportService
+    private readonly eventsReportService: EventsReportService,
+    private  adapterService: AdapterService,
   ) {
   }
 
@@ -247,8 +296,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   search() {
     this.destroy$.next(true);
-    // console.log('search');
-
+    const todayDate = this.adapterService.dateAdapter(new Date());
     const hour = new Date().getHours();
     const minutes = new Date().getMinutes();
 
@@ -256,7 +304,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.eventsReports = [];
     this.selectedEventsReport = null;
 
-    const newQueryKey = `name:${this.searchForm.get('name').value}/categories_ids:${this.searchForm.get('categories_ids').value}/chain_status_ids:${this.searchForm.get('chain_status_ids').value}/employees_ids:${this.searchForm.get('employees_ids').value}/is_null_chain_status:${this.searchForm.get('is_null_chain_status').value}`;
+    const newQueryKey = `id:${this.searchForm.get('id').value}/categories_ids:${this.searchForm.get('categories_ids').value}/chain_status_ids:${this.searchForm.get('chain_status_ids').value}/employees_ids:${this.searchForm.get('employees_ids').value}/is_null_chain_status:${this.searchForm.get('is_null_chain_status').value}`;
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
       this.searchForm.get('page').patchValue(1);
@@ -268,7 +316,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       {name: 'page', value: this.searchForm.get('page').value},
     ];
 
-    if (this.searchForm.get('name').value) this.query.push({name: 'name', value: this.searchForm.get('name').value});
+    if (this.searchForm.get('id').value) this.query.push({name: 'id', value: this.searchForm.get('id').value});
     if (this.searchForm.get('categories_ids').value && this.searchForm.get('categories_ids').value.length > 0) {
       this.query.push({
         name: 'categories_ids',
@@ -283,44 +331,57 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.searchForm.get('datesLastFilterType').value) {
-      let startDateValue = null;
-      let endDateValue = null;
+    let isCustomFilterByLastStartValues = false;
+    let isCustomFilterByLastEndValues = false;
 
-      if (this.searchForm.get('last_events_date_start').value) {
-        startDateValue = new Date(this.searchForm.get('last_events_date_start')
-          .value.setHours(hour, minutes)).toISOString();
+
+
+    if (this.isLastEventStartFilterOpen) {
+      const selectedDate = this.adapterService.dateAdapter(new Date(this.searchForm.get('last_events_date_start_before').value));
+      let hourBefore = 23;
+      let minuteBefore = 59;
+      if (selectedDate === todayDate) {
+        hourBefore = hour;
+        minuteBefore = minutes;
       }
 
-      if (this.searchForm.get('last_events_date_end').value) {
-        endDateValue = new Date(this.searchForm.get('last_events_date_end')
-          .value.setHours(hour, minutes)).toISOString();
+      isCustomFilterByLastStartValues = this.fillDateFilter(
+        'last_events_date_start_after',
+        'last_events_date_start_before',
+        '00',
+        '00',
+        this.padTo2Digits(hourBefore),
+          this.padTo2Digits(minuteBefore));
+    }
+
+    if (this.isLastEventEndFilterOpen) {
+      const selectedDate = this.adapterService.dateAdapter(new Date(this.searchForm.get('last_events_date_end_before').value));
+      let hourBefore = 23;
+      let minuteBefore = 59;
+      if (selectedDate === todayDate) {
+        hourBefore = hour;
+        minuteBefore = minutes;
       }
 
-      if (startDateValue && endDateValue) {
-        if (this.searchForm.get('datesLastFilterType').value === 'lastStart') {
-          this.query.push({
-            name: 'last_events_date_start_after',
-            value: startDateValue
-          });
-          this.query.push({
-            name: 'last_events_date_start_before',
-            value: endDateValue
-          });
-        }
+      isCustomFilterByLastEndValues = this.fillDateFilter(
+        'last_events_date_end_after',
+        'last_events_date_end_before',
+        '00',
+        '00',
+        this.padTo2Digits(hourBefore),
+        this.padTo2Digits(minuteBefore));
+    }
 
-        if (this.searchForm.get('datesLastFilterType').value === 'lastEnd') {
-          this.query.push({
-            name: 'last_events_date_end_after',
-            value: startDateValue
-          });
-          this.query.push({
-            name: 'last_events_date_end_before',
-            value: endDateValue
-          });
-        }
+    if (this.isLastEventStartFilterOpen && this.isLastEventEndFilterOpen) {
+      if (this.searchForm.get('intersect_last_event').value) {
+        this.query.push({
+          name: 'intersect_last_event',
+          value: true
+        });
       }
-    } else {
+    }
+
+    if (!isCustomFilterByLastStartValues && !isCustomFilterByLastEndValues) {
       this.query.push({
         name: 'last_events_date_start_after',
         value: new Date(this.lastTenDays.setHours(hour, minutes)).toISOString()
@@ -331,44 +392,53 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.searchForm.get('datesFutureFilterType').value) {
-      let startDateValue = null;
-      let endDateValue = null;
+    let isCustomFilterByFeatureStartValues = false;
+    let isCustomFilterByFeatureEndValues = false;
 
-      if (this.searchForm.get('feature_events_date_start').value) {
-        startDateValue = new Date(this.searchForm.get('feature_events_date_start')
-          .value.setHours(hour, minutes)).toISOString();
+    if (this.isFeatureEventStartFilterOpen) {
+      const selectedDate = this.adapterService.dateAdapter(new Date(this.searchForm.get('next_events_date_start_after').value));
+      let hourAfter = 0;
+      let minuteAfter = 0;
+      if (selectedDate === todayDate) {
+        hourAfter = hour;
+        minuteAfter = minutes;
       }
+      isCustomFilterByFeatureStartValues = this.fillDateFilter(
+        'next_events_date_start_after',
+        'next_events_date_start_before',
+        this.padTo2Digits(hourAfter),
+        this.padTo2Digits(minuteAfter),
+        23,
+        59);
+    }
 
-      if (this.searchForm.get('feature_events_date_end').value) {
-        endDateValue = new Date(this.searchForm.get('feature_events_date_end')
-          .value.setHours(hour, minutes)).toISOString();
+    if (this.isFeatureEventEndFilterOpen) {
+      const selectedDate = this.adapterService.dateAdapter(new Date(this.searchForm.get('next_events_date_end_after').value));
+      let hourAfter = 0;
+      let minuteAfter = 0;
+      if (selectedDate === todayDate) {
+        hourAfter = hour;
+        minuteAfter = minutes;
       }
+      isCustomFilterByFeatureEndValues = this.fillDateFilter(
+        'next_events_date_end_after',
+        'next_events_date_end_before',
+        this.padTo2Digits(hourAfter),
+        this.padTo2Digits(minuteAfter),
+        23,
+        59);
+    }
 
-      if (startDateValue && endDateValue) {
-        if (this.searchForm.get('datesFutureFilterType').value === 'futureStart') {
-          this.query.push({
-            name: 'next_events_date_start_after',
-            value: startDateValue
-          });
-          this.query.push({
-            name: 'next_events_date_start_before',
-            value: endDateValue
-          });
-        }
-
-        if (this.searchForm.get('datesFutureFilterType').value === 'futureEnd') {
-          this.query.push({
-            name: 'next_events_date_end_after',
-            value: startDateValue
-          });
-          this.query.push({
-            name: 'next_events_date_end_before',
-            value: endDateValue
-          });
-        }
+    if (this.isFeatureEventStartFilterOpen && this.isFeatureEventEndFilterOpen) {
+      if (this.searchForm.get('intersect_next_event').value) {
+        this.query.push({
+          name: 'intersect_next_event',
+          value: true
+        });
       }
-    } else {
+    }
+
+    if (!isCustomFilterByFeatureStartValues && !isCustomFilterByFeatureEndValues) {
       this.query.push({
         name: 'next_events_date_start_after',
         value: new Date(this.today.setHours(hour, minutes)).toISOString()
@@ -410,6 +480,31 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.searchForm.get('page').patchValue(1);
       this.get();
     } else this.getForPagination();
+  }
+
+  fillDateFilter(fieldAfter: string, fieldBefore: string, hourAfter, minutesAfter, hourBefore, minutesBefore): boolean {
+    if (this.searchForm.get(fieldAfter).value && this.searchForm.get(fieldBefore).value) {
+
+      const lastStartAfter = new Date(this.searchForm.get(fieldAfter)
+        .value.setHours(hourAfter, minutesAfter)).toISOString();
+      const lastStartBefore = new Date(this.searchForm.get(fieldBefore)
+        .value.setHours(hourBefore, minutesBefore)).toISOString();
+
+      this.query.push({
+        name: fieldAfter,
+        value: lastStartAfter
+      });
+      this.query.push({
+        name: fieldBefore,
+        value:  lastStartBefore
+      });
+      return true;
+    }
+    return false;
+  }
+
+  padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
   }
 
   preSearch(value: number[]) {
@@ -483,6 +578,46 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
   }
 
+  filterByLastStartDate(): void {
+    const startDateValue = this.searchForm.get('last_events_date_start_after').value;
+    const endDateValue = this.searchForm.get('last_events_date_start_before').value;
+    this.lastAfterStartDateSelected = startDateValue;
+    this.lastBeforeStartDateSelected = endDateValue;
+    if (startDateValue && endDateValue) {
+      this.search();
+    }
+  }
+
+  filterByLastEndDate(): void {
+    const startDateValue = this.searchForm.get('last_events_date_end_after').value;
+    const endDateValue = this.searchForm.get('last_events_date_end_before').value;
+    this.lastAfterEndDateSelected = startDateValue;
+    this.lastBeforeEndDateSelected = endDateValue;
+    if (startDateValue && endDateValue) {
+      this.search();
+    }
+  }
+
+  filterByFeatureStartDate(): void {
+    const startDateValue = this.searchForm.get('next_events_date_start_after').value;
+    const endDateValue = this.searchForm.get('next_events_date_start_before').value;
+    this.featureAfterStartDateSelected = startDateValue;
+    this.featureBeforeStartDateSelected = endDateValue;
+    if (startDateValue && endDateValue) {
+      this.search();
+    }
+  }
+
+  filterByFeatureEndDate(): void {
+    const startDateValue = this.searchForm.get('next_events_date_end_after').value;
+    const endDateValue = this.searchForm.get('next_events_date_end_before').value;
+    this.featureAfterEndDateSelected = startDateValue;
+    this.featureBeforeEndDateSelected = endDateValue;
+    if (startDateValue && endDateValue) {
+      this.search();
+    }
+  }
+
   getSmallComment(comment: string) {
     if (comment) return comment.substring(0, 13) + '...';
   }
@@ -538,7 +673,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   }
 
   onSelectCompany(id: number) {
-    this.searchForm.get('name').patchValue(id);
+    this.searchForm.get('id').patchValue(id);
     this.search();
   }
 
@@ -569,5 +704,46 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  filtersTypeChanged($event: any) {
+
+  }
+
+  updated($event: any) {
+    this.isLastEventStartFilterOpen = this.selectedFilters.findIndex(el => el === 'last_events_date_start') > -1;
+    this.isLastEventEndFilterOpen  = this.selectedFilters.findIndex(el => el === 'last_events_date_end') > -1;
+    this.isFeatureEventStartFilterOpen  = this.selectedFilters.findIndex(el => el === 'future_events_date_start') > -1;
+    this.isFeatureEventEndFilterOpen  = this.selectedFilters.findIndex(el => el === 'future_events_date_end') > -1;
+
+    if (!this.isLastEventStartFilterOpen) {
+      this.searchForm.get('last_events_date_start_after').reset(null);
+      this.searchForm.get('last_events_date_start_before').reset(null);
+    }
+
+    if (!this.isLastEventEndFilterOpen) {
+      this.searchForm.get('last_events_date_end_after').reset(null);
+      this.searchForm.get('last_events_date_end_before').reset(null);
+    }
+
+    if (!this.isFeatureEventStartFilterOpen) {
+      this.searchForm.get('next_events_date_start_after').reset(null);
+      this.searchForm.get('next_events_date_start_before').reset(null);
+    }
+
+    if (!this.isFeatureEventEndFilterOpen) {
+      this.searchForm.get('next_events_date_end_after').reset(null);
+      this.searchForm.get('next_events_date_end_before').reset(null);
+    }
+
+    if (!this.isLastEventStartFilterOpen && !this.isLastEventEndFilterOpen) {
+      this.searchForm.get('intersect_last_event').reset(false);
+    }
+
+    if (!this.isFeatureEventStartFilterOpen && !this.isFeatureEventEndFilterOpen) {
+      this.searchForm.get('intersect_next_event').reset(false);
+    }
+
+    this.search();
   }
 }
