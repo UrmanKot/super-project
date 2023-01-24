@@ -68,19 +68,18 @@ class DashboardComponent {
             }, {
                 label: 'Production Lists Procurement',
                 icon: 'icon-manufacturing-procurement',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/procurement/orders`],
-                // routerLink: ['/procurement'],
+                routerLink: ['/procurement'],
                 requiredModulePermission: 'can_edit_manufacturing_procurement'
             }, {
                 label: 'Outsourcing',
                 icon: 'icon-outsourcing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/outsource/outsource-chain`],
+                routerLink: ['/outsourcing'],
                 requiredModulePermission: 'can_edit_outsourcing'
             }, {
                 label: 'General Procurement',
                 icon: 'icon-manufacturing-procurement',
                 // icon: 'icon-purchasing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/purchasing/orders`],
+                routerLink: ['/purchasing'],
                 requiredModulePermission: 'can_edit_purchase'
             }, {
                 label: 'Contacts & Events',
@@ -124,7 +123,7 @@ class DashboardComponent {
                 requiredModulePermission: 'can_edit_reports'
             }, {
                 label: 'Delivery',
-                icon: 'icon-delivery-chains',
+                icon: 'icon-delivery-procurement-chains',
                 routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/delivery-chains`],
                 requiredModulePermission: 'can_edit_delivery_chain'
             }, {

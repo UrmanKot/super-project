@@ -13226,6 +13226,7 @@ textarea::-webkit-scrollbar {
   width: fit-content !important;
   display: flex;
   align-items: center;
+  font-weight: 500;
 }
 .custom-button button .p-button-icon {
   order: -1;
@@ -13302,8 +13303,10 @@ textarea::-webkit-scrollbar {
   display: flex;
   position: relative;
   border-bottom: 1px solid #dee2e6;
+  z-index: 1;
 }
 .paginator-wrapper_hide {
+  visibility: hidden;
   display: none;
 }
 .paginator-all {

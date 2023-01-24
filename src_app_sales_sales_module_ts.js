@@ -750,7 +750,7 @@ class SalesChainsComponent {
         this.getSalesChainsForPagination();
     }
     createSaleChain() {
-        this.salesChainService.createEditWarehouseModal().subscribe(salesChain => {
+        this.salesChainService.createEditSalesChainModal().subscribe(salesChain => {
             if (salesChain) {
                 this.searchChains();
             }
@@ -893,7 +893,7 @@ class SalesChainsComponent {
     }
 }
 SalesChainsComponent.ɵfac = function SalesChainsComponent_Factory(t) { return new (t || SalesChainsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_10__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_sales_chain_service__WEBPACK_IMPORTED_MODULE_1__.SalesChainService), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_shared_services_modal_service__WEBPACK_IMPORTED_MODULE_2__.ModalService)); };
-SalesChainsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: SalesChainsComponent, selectors: [["pek-sales-chains"]], viewQuery: function SalesChainsComponent_Query(rf, ctx) { if (rf & 1) {
+SalesChainsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: SalesChainsComponent, selectors: [["pek-sales-procurement-chains"]], viewQuery: function SalesChainsComponent_Query(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵviewQuery"](_c0, 5);
     } if (rf & 2) {
         let _t;
@@ -993,7 +993,7 @@ class SalesLayoutComponent {
     constructor() {
         this.routes = [
             // {label: 'Make Production List', commands: ['lists']},
-            { label: 'Sales Chains', commands: ['sales-chains'] },
+            { label: 'Sales Chains', commands: ['sales-procurement-chains'] },
             // {label: 'Configs', commands: ['configs/nomenclature-price']},
             // {label: 'Statuses', commands: ['statuses']},
             // {label: 'Countries & Regions', commands: ['regions']},
@@ -1807,9 +1807,9 @@ const routes = [
         path: '',
         component: _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_0__.SalesLayoutComponent,
         children: [
-            { path: '', redirectTo: 'sales-chains', pathMatch: 'full' },
+            { path: '', redirectTo: 'sales-procurement-chains', pathMatch: 'full' },
             // {path: 'lists', title: 'Make Production List', component: SalesListsComponent},
-            { path: 'sales-chains', title: 'Sales Chains', component: _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_1__.SalesChainsComponent },
+            { path: 'sales-procurement-chains', title: 'Sales Chains', component: _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_1__.SalesChainsComponent },
             { path: 'statuses', title: 'Statuses Type', component: _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_3__.SalesStatusesComponent },
             { path: 'regions', title: 'Countries & Regions', component: _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_4__.RegionsComponent },
             {
@@ -1895,7 +1895,7 @@ class SalesChainService {
     delete(salesChain) {
         return this.httpClient.delete(this.API_URL + 'sales_chains/' + salesChain.id + '/');
     }
-    createEditWarehouseModal() {
+    createEditSalesChainModal() {
         return this.dialog
             .open(_modals_create_sales_chain_create_sales_chain_component__WEBPACK_IMPORTED_MODULE_1__.CreateSalesChainComponent, {
             width: '35rem',
