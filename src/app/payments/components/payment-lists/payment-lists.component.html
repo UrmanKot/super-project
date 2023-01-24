@@ -127,9 +127,10 @@
                 <th style="width: 16%">Supplier</th>
                 <th style="width: 10%" class="text-center">Invoice</th>
                 <th style="width: 10%" class="text-center">Amount</th>
+                <th style="width: 10%" class="text-center">Converted Amount</th>
                 <th style="width: 10%" class="text-center">Order ID</th>
-                <th style="width: 15%" class="text-center">Status</th>
-                <th style="width: 15%" class="text-center">Root list</th>
+                <th style="width: 10%" class="text-center">Status</th>
+                <th style="width: 10%" class="text-center">Root list</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
@@ -153,12 +154,13 @@
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.invoices">
                     <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
                   </div>
                 </td>
-                <td style="width: 15%" class="text-center">
+                <td style="width: 10%" class="text-center">
                   <div
                     [ngClass]="{
                     'text-primary': payment.status==='PAID',
@@ -170,7 +172,7 @@
                     {{payment.status}}
                   </div>
                 </td>
-                <td style="width: 15%" class="text-center">
+                <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.invoices; let idx = index">
                     <span *ngFor="let root of invoice.order.root_production_list_products">
                       {{root.nomenclature.name}}<i
@@ -182,7 +184,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td class="text-center p-4" [attr.colspan]="9">
+                <td class="text-center p-4" [attr.colspan]="10">
                   <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                   <span *ngIf="!isLoadingPayments">No Records Found</span>
                 </td>
@@ -318,9 +320,10 @@
                 <th style="width: 16%">Supplier</th>
                 <th style="width: 10%" class="text-center">Invoice</th>
                 <th style="width: 10%" class="text-center">Amount</th>
+                <th style="width: 10%" class="text-center">Converted Amount</th>
                 <th style="width: 10%" class="text-center">Order ID</th>
-                <th style="width: 15%" class="text-center">Status</th>
-                <th style="width: 15%" class="text-center">Root list</th>
+                <th style="width: 10%" class="text-center">Status</th>
+                <th style="width: 10%" class="text-center">Root list</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
@@ -344,12 +347,13 @@
                   </div>
                 </td>
                 <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
+                <td style="width: 10%" class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
                 <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.service_invoices">
                     <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
                   </div>
                 </td>
-                <td style="width: 15%" class="text-center">
+                <td style="width: 10%" class="text-center">
                   <div
                     [ngClass]="{
                     'text-primary': payment.status==='PAID',
@@ -361,7 +365,7 @@
                     {{payment.status}}
                   </div>
                 </td>
-                <td style="width: 15%" class="text-center">
+                <td style="width: 10%" class="text-center">
                   <div *ngFor="let invoice of payment.service_invoices">
                     <span *ngFor="let root of invoice.order.root_production_list_products; let idx = index">
                       {{root.nomenclature.name}}<i
@@ -373,7 +377,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td class="text-center p-4" [attr.colspan]="9">
+                <td class="text-center p-4" [attr.colspan]="10">
                   <i *ngIf="isLoadingAuxPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                   <span *ngIf="!isLoadingAuxPayments">No Records Found</span>
                 </td>

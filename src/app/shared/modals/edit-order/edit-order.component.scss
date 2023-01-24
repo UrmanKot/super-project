@@ -1,0 +1,52 @@
+.status-row {
+
+}
+
+.label-status {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  display: block;
+}
+
+.statuses {
+  &::ng-deep {
+    .p-checkbox {
+      width: 2.375rem !important;
+      height: 2.375rem !important;
+
+      .p-checkbox-box {
+        width: 2.375rem !important;
+        height: 2.375rem !important;
+      }
+    }
+  }
+}
+
+.add-button {
+  margin: 0.25rem 0;
+}
+
+.remove-button {
+  background: var(--theme-color-danger);
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  margin-top: 2.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    color: #fff;
+    position: relative;
+    top: 1px;
+  }
+}
+
+.statuses-list {
+  padding: 0.25rem 1rem 0.625rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.625rem;
+}

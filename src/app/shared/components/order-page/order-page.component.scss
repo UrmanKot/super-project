@@ -57,3 +57,40 @@
   align-items: center;
   justify-content: center;
 }
+
+.pi-paperclip {
+  position: relative;
+  top: 2px;
+}
+
+.pi-times {
+  color: var(--theme-color-danger);
+  position: relative;
+  top: 2px;
+}
+
+.pi-check-circle {
+  color: var(--theme-color-success);
+  position: relative;
+  top: 2px;
+}
+
+.purchase-category {
+  display: flex;
+  flex-direction: column;
+}
+
+.purchase-category-dropdown {
+  max-width: 25rem;
+}
+
+.supplier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}

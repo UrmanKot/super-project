@@ -34,28 +34,26 @@ export class DashboardComponent implements OnInit {
     icon: 'icon-warehouse',
     routerLink: ['/warehouse'],
     requiredModulePermission: 'can_edit_warehouse'
-    // routerLink: ['/external', `${environment.link_url}dash/warehouse/products`],
   }, {
     label: 'Production Lists Procurement',
     icon: 'icon-manufacturing-procurement',
-    routerLink: ['/external', `${environment.link_url}dash/procurement/orders`],
+    routerLink: ['/procurement'],
     requiredModulePermission: 'can_edit_manufacturing_procurement'
   }, {
     label: 'Outsourcing',
     icon: 'icon-outsourcing',
-    routerLink: ['/external', `${environment.link_url}dash/outsource/outsource-chain`],
+    routerLink: ['/outsourcing'],
     requiredModulePermission: 'can_edit_outsourcing'
   }, {
     label: 'General Procurement',
     icon: 'icon-manufacturing-procurement',
     // icon: 'icon-purchasing',
-    routerLink: ['/external', `${environment.link_url}dash/purchasing/orders`],
+    routerLink: ['/purchasing'],
     requiredModulePermission: 'can_edit_purchase'
   }, {
     label: 'Contacts & Events',
     icon: 'icon-contacts-events',
     routerLink: ['/crm'],
-    // routerLink: ['/external', `${environment.link_url}dash/crm/businnes-partners`],
     requiredModulePermission: 'can_edit_contacts_and_events'
   }, {
     label: 'QC',
@@ -70,13 +68,11 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Sales',
     icon: 'icon-sales',
-    // routerLink: ['/external', `${environment.link_url}dash/sales/lists`],
     routerLink: ['/sales'],
     requiredModulePermission: 'can_edit_sales'
   }, {
     label: 'Payments',
     icon: 'icon-payments',
-    // routerLink: ['/external', `${environment.link_url}dash/payments`],
     routerLink: ['/payments'],
     requiredModulePermission: 'can_edit_payments'
   }, {
@@ -96,7 +92,7 @@ export class DashboardComponent implements OnInit {
     requiredModulePermission: 'can_edit_reports'
   }, {
     label: 'Delivery',
-    icon: 'icon-delivery-chains',
+    icon: 'icon-delivery-procurement-chains',
     routerLink: ['/external', `${environment.link_url}dash/delivery-chains`],
     requiredModulePermission: 'can_edit_delivery_chain'
   }, {

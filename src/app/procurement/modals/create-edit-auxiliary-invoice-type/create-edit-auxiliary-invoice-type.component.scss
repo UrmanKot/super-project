@@ -1,0 +1,38 @@
+.box {
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.table {
+  border: 1px solid #ced4da;
+  border-radius: 0.625rem;
+  overflow: hidden;
+}
+
+.create-edit-product-structure-category {
+
+  .table {
+    &::ng-deep {
+      .p-treetable-scrollable-header {
+          border-top-left-radius: 0.625rem;
+          border-top-right-radius: 0.625rem;
+      }
+
+      table {
+        tr {
+          &:last-child {
+            border-bottom-right-radius: 0.625rem;
+            border-bottom-left-radius: 0.625rem;
+
+            td {
+              border-radius: 0.625rem;
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import {Company} from '../../crm/models/company';
+import {PurchasingCategory} from '../../purchasing/models/purchasing-category';
 
 export class Order {
   readonly id: number;
@@ -26,7 +27,7 @@ export class Order {
   quality_control: boolean;
   is_closed?: boolean;
   is_prepared?: boolean;
-  // purchase_category?: PurchasingCategory;
+  purchase_category?: PurchasingCategory;
   companyId?: number;
   statusesIds?: number[];
   dateFrom?: Date;

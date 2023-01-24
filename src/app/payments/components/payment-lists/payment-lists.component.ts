@@ -388,18 +388,14 @@ export class PaymentListsComponent implements OnInit {
   onSelectPayment() {
     if (this.selectedPayment) {
       this.menuItems[0].items[0].disabled = this.selectedPayment.status !== 'CONFIRMED';
-    }
-    if (this.selectedPayment) {
-      this.menuItems[0].items[5].disabled = this.selectedPayment.status === 'PAID';
+      this.menuItems[0].items[3].disabled = this.selectedPayment.status === 'PAID';
     }
   }
 
   onSelectAuxiliaryPayment() {
     if (this.selectedServicePayment) {
       this.menuItemsAux[0].items[0].disabled = this.selectedServicePayment.status !== 'CONFIRMED';
-    }
-    if (this.selectedServicePayment) {
-      this.menuItemsAux[0].items[5].disabled = this.selectedServicePayment.status === 'PAID';
+      this.menuItemsAux[0].items[3].disabled = this.selectedServicePayment.status === 'PAID';
     }
   }
 

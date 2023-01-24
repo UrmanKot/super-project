@@ -18,11 +18,13 @@ import {Invoice} from "../../../procurement/models/invoice";
   styleUrls: ['./create-edit-service-payment-form.component.scss']
 })
 export class CreateEditServicePaymentFormComponent implements OnInit {
+  isDisabledCompanyPicker = false;
 
   form = this.fb.group({
     supplier: [<number>null, Validators.required],
     service_invoices: [<number[]>[], Validators.required],
     amount: [<number>0, [Validators.required, Validators.min(0)]],
+    converted_amount: [0],
     exchange_rate: [1, Validators.required],
     payment_date: [<Date | string>'', Validators.required],
     accountant_number: ['', Validators.required],
@@ -39,12 +41,13 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     private paymentService: PaymentService,
     private serviceInvoicePaymentService: ServiceInvoicePaymentService,
     private serviceInvoice: ServiceInvoiceService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment }
+    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment, companyId: number }
   ) {
   }
 
   ngOnInit(): void {
-    console.log(this.data.payment)
+    this.form.get('converted_amount').disable()
+
     if (this.data.type === 'create')
       this.form.get('service_invoices').disable()
 
@@ -58,6 +61,12 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
       this.form.get('payment_date').patchValue(new Date(this.data.payment.payment_date))
       this.form.get('service_invoices').disable()
       this.amount = this.data.payment.amount
+    }
+
+    if (this.data.companyId) {
+      this.form.get('supplier').patchValue(this.data.companyId);
+      this.onSelectCompany({id: this.data.companyId});
+      this.isDisabledCompanyPicker = true;
     }
   }
 
@@ -151,11 +160,11 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     }
 
     if (this.data.type === 'create') {
-      this.form.get('amount').patchValue(this.form.get('exchange_rate').value * sum)
+      this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * sum);
+      this.form.get('amount').patchValue(sum)
       sum = this.roundValue(sum);
-      console.log(this.form.get('amount').value)
     } else {
-      this.form.get('amount').patchValue(this.form.get('exchange_rate').value * +this.amount)
+      this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * +this.amount)
     }
   }
 

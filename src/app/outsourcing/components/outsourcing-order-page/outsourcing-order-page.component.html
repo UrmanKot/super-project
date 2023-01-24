@@ -1,0 +1,39 @@
+<div class="procurement-order-page">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'outsourcing'" [isActive]="true"></pek-module-icon>
+        <h1>Order {{orderId}}</h1>
+      </div>
+      <div class="page__tools">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-file"
+          label="Order Files"
+          class="mr-2"
+          (click)="openOrderFiles()"
+          [disabled]="isOrderLoading"
+        >
+        </button>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Lead Date & Status"
+          (click)="editOrder()"
+          [disabled]="isOrderLoading"
+        >
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <pek-order-page
+      (loaded)="loaded()"
+      [orderId]="orderId"
+      [orderType]="'outsourcing'"
+    ></pek-order-page>
+  </div>
+</div>

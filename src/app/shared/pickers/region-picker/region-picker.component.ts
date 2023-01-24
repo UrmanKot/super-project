@@ -31,7 +31,7 @@ export class RegionPickerComponent implements OnInit {
     });
   }
 
-  onSelectCompany() {
+  onSelectRegion() {
     this.selectRegion.emit(this.selectedRegionId);
   }
 

@@ -1,0 +1,191 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'manufacturing-procurement'" [isActive]="true"></pek-module-icon>
+      <h1>Procurement Chains</h1>
+    </div>
+    <div class="page__tools">
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+
+    <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
+      <div class="filters-visibility__header">
+        <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+      </div>
+
+      <button
+        class="icon pi"
+        [class.pi-angle-double-up]="!isHideFilters"
+        [class.pi-angle-double-down]="isHideFilters"
+      ></button>
+
+      <form
+        [formGroup]="searchForm"
+        class="form mb-3"
+      >
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Nomenclature</label>
+              <p-dropdown
+                [filter]="true"
+                [showClear]="true"
+                [options]="nomenclaturesList"
+                optionValue="id"
+                optionLabel="name"
+                placeholder="No Nomenclature Selected"
+              ></p-dropdown>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Company</label>
+              <pek-company-picker></pek-company-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Root List</label>
+              <p-dropdown
+                [filter]="true"
+                [showClear]="true"
+                [options]="rootLists"
+                optionValue="fullName"
+                optionLabel="fullName"
+                placeholder="No List Selected"
+              ></p-dropdown>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Status</label>
+              <pek-multi-statuses-picker
+                [accountingType]="4"
+              ></pek-multi-statuses-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>From</label>
+              <p-calendar
+                dataType="date"
+                [showButtonBar]="true"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>To</label>
+              <p-calendar
+                dataType="date"
+                [showButtonBar]="true"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Product Structure Categories</label>
+              <pek-multi-product-structure-categories-picker></pek-multi-product-structure-categories-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
+        [scrollable]="true"
+        dataKey="id"
+        [paginator]="orders.length > 0"
+        [rows]="10"
+        [(selection)]="selectedOrder"
+        [value]="orders"
+        styleClass="p-datatable-gridlines"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 3%;">#</th>
+            <th class="text-center" style="width: 10%;">Date</th>
+            <th class="text-center" style="width: 7%;">Order ID</th>
+            <th class="text-center" style="width: 15%;">Supplier</th>
+            <th class="text-center" style="width: 15%;">Purchase category</th>
+            <th style="width: 15%;">Comment</th>
+            <th style="width: 15%;">Root Lists</th>
+            <th class="text-center" style="width: 10%;">Status</th>
+            <th class="text-center" style="width: 10%;">Completion</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order let-i="rowIndex">
+          <tr [pSelectableRow]="order">
+            <td class="text-center" style="width: 3%;">{{i + 1}}</td>
+            <td class="text-center" style="width: 10%;">{{order.created | date:'dd/MM/yyyy'}}</td>
+            <td class="text-center" style="width: 7%;">{{order.id}}</td>
+            <td class="text-center" style="width: 15%;">{{order.supplier?.name}}</td>
+            <td class="text-center" style="width: 15%;">{{order.purchase_category?.name}}</td>
+            <td style="width: 15%;">
+              <div class="word-break">
+                {{order.comment}}
+              </div>
+            </td>
+            <td style="width: 15%;">
+              <div class="word-break"
+                   *ngFor="let item of getRootLists(order.root_production_list_products); let idx = index">
+                {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+              </div>
+            </td>
+            <td class="text-center" style="width: 10%;">{{order.status?.value}}</td>
+            <td class="text-center" style="width: 10%;">{{order?.activeStatusDate | date: 'dd/MM/yyyy'}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="9">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && orders.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #actionButtons>
+  <div class="action-buttons">
+    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedOrder"></p-menubar>
+  </div>
+</ng-template>

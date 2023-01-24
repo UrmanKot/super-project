@@ -12,7 +12,7 @@ import {QuerySearch} from '@shared/models/other';
 export class DeliveryChainService {
 
   API_URL = environment.base_url + environment.delivery_url;
-  readonly url = 'chains/';
+  readonly url = 'procurement-chains/';
   readonly filesUrl = 'files/';
 
   constructor(

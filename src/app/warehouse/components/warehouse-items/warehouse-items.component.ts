@@ -322,9 +322,9 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     this.setTableScrollHeight();
   }
 
-  onSelectCategory(node: TreeNode<Category>) {
-    if (node) {
-      this.searchForm.get('category').patchValue(node.data.id);
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('category').patchValue(category.id);
     } else {
       this.searchForm.get('category').patchValue(null);
     }

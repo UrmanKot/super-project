@@ -11,8 +11,8 @@
       <pek-company-picker
         [currentCompanyId]="form.get('supplier').value"
         (selectCompanyFull)="onSelectCompany($event)"
+        [isDisabled]="data.type === 'edit' || isDisabledCompanyPicker"
       >
-
       </pek-company-picker>
     </div>
     <div class="form-group">
@@ -47,6 +47,13 @@
       <input
         class="p-inputtext"
         formControlName="amount"
+      >
+    </div>
+    <div class="form-group">
+      <label>Converted Payment Amount</label>
+      <input
+        class="p-inputtext disabled"
+        formControlName="converted_amount"
       >
     </div>
     <div class="form-group">

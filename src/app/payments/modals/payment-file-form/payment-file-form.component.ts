@@ -17,7 +17,6 @@ export class PaymentFileFormComponent implements OnInit {
   readonly deletion = new Set<number>();
   readonly addition = new Set<number>();
 
-
   uploadFiles: File[] = [];
   files: PaymentFile[] = []
   isLoading = true;
@@ -34,12 +33,10 @@ export class PaymentFileFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFiles()
-    console.log(this.paymentId)
   }
 
   getFiles() {
     this.paymentService.getPaymentFiles(this.paymentId).subscribe(files => {
-      console.log(`Files`,files)
       this.files = files;
       this.isLoading = false;
     });

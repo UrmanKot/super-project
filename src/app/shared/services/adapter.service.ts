@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,16 @@ export class AdapterService {
     } else {
       return date.toISOString();
     }
+  }
+
+  generateQueryKey(form: FormGroup) {
+    let queryKeyString = '';
+
+    for (const key in form.controls) {
+      queryKeyString += `${key}:${form.controls[key].value}/`
+    }
+
+    return queryKeyString.slice(0, -1);
   }
 
   downloadFile(filename: string, response: Blob) {

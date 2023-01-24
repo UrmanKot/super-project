@@ -1,0 +1,27 @@
+<div class="procurement-order-statuses">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'manufacturing-procurement'" [isActive]="true"></pek-module-icon>
+        <h1>Order Statuses</h1>
+      </div>
+      <div class="page__tools">
+
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Manual Statuses</h2>
+
+    <div class="page__card mb-4">
+      <pek-order-statuses [statusType]="4"></pek-order-statuses>
+    </div>
+
+    <h2 class="mb-4">Automatic Statuses</h2>
+
+    <div class="page__card">
+      <pek-order-statuses [statusType]="4" [isAutoStatus]="true"></pek-order-statuses>
+    </div>
+  </div>
+</div>

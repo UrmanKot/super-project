@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Create
+    <ng-container [ngSwitch]="data.orderType">
+      <ng-container *ngSwitchCase="'procurement'">Procurement</ng-container>
+      <ng-container *ngSwitchCase="'outsourcing'">Outsourcing</ng-container>
+      <ng-container *ngSwitchCase="'purchase'">Procurement</ng-container>
+    </ng-container>
+    Chain
+  </h2>
+</div>
+
+<div class="row">
+  <div class="col-6">
+    <div class="form-group">
+      <label>Company*</label>
+      <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+    </div>
+  </div>
+  <div class="col-6" *ngIf="data.orderType === 'purchase'">
+    <div class="form-group">
+      <label>Purchase Category</label>
+      <p-dropdown
+        *ngIf="!isLoadingCategories else spinner"
+        [showClear]="true"
+        [options]="purchasingCategories"
+        optionValue="id"
+        optionLabel="name"
+        [(ngModel)]="selectedPurchasingCategoryId"
+        placeholder="Choice Purchase Category"
+      >
+      </p-dropdown>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div class="mt-3">
+    <form [formGroup]="form">
+      <p-table
+        selectionMode="single"
+        dataKey="id"
+        [value]="products.controls"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="text-center">#</th>
+            <th style="width: 20%">Code</th>
+            <th style="width: 20%">Name</th>
+            <th style="width: 15%" class="text-center">Request Quantity</th>
+            <th style="width: 15%" class="text-center">Ordered Quantity</th>
+            <th style="width: 25%" class="text-center">Quantity To Order</th>
+          </tr>
+        </ng-template>
+        <ng-template formArrayName="order_products_id" let-i="rowIndex" pTemplate="body">
+          <tr [formGroupName]="i">
+            <td class="text-center">{{i + 1}}</td>
+            <td>{{orderProducts[i].nomenclature.code}}</td>
+            <td>{{orderProducts[i].nomenclature.name}}</td>
+            <td class="text-center">{{orderProducts[i].initial_quantity}}</td>
+            <td class="text-center">{{orderProducts[i].ordered_quantity}}</td>
+            <td>
+              <div class="quantity">
+                <input pInputText min="1" type="number" formControlName="quantity" class="form-control">
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="12">
+              <span>No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Create"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onCreate()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

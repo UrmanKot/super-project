@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ListProduct} from '../../../warehouse/models/list-product';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderMaterial, OrderProduct} from '../../../procurement/models/order-product';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {Invoice} from '../../../procurement/models/invoice';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
@@ -12,7 +12,22 @@ import {ServiceInvoiceService} from '@shared/services/service-invoice.service';
 import {ServiceInvoicePayment} from '../../../payments/models/service-invoice-payment';
 import {ServiceInvoicePaymentService} from '../../../payments/services/service-invoice-payment.service';
 import {MenuItem} from 'primeng/api';
+import {ModalService} from '@shared/services/modal.service';
+import {environment} from '@env/environment';
+import {AdapterService} from '@shared/services/adapter.service';
+import {finalize} from 'rxjs/operators';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {OrderSupplier, OrderSupplierConfirmation} from '../../../confirmation/models/order-supplier';
+import {OrderSupplierService} from '../../../confirmation/services/order-supplier.service';
+import {RequestService} from '../../../warehouse/services/request.service';
+import {OrderTechnicalEquipment} from '../../../warehouse/models/order-technical-equipment';
+import {OrderTechnicalEquipmentsService} from '../../../warehouse/services/order-technical-equipments.service';
+import {PurchasingCategory} from '../../../purchasing/models/purchasing-category';
+import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 
+export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
+
+@UntilDestroy()
 @Component({
   selector: 'pek-order-page',
   templateUrl: './order-page.component.html',
@@ -20,6 +35,13 @@ import {MenuItem} from 'primeng/api';
 })
 export class OrderPageComponent implements OnInit {
   @Input() orderId: number;
+  @Input() orderType: OrderType;
+  @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
+
+  orderSuppliers: OrderSupplier[] = [];
+  selectedOrderSupplier: OrderSupplier = null;
+
+  link = environment.link_url + 'dash/';
 
   productMenuItems: MenuItem[] = [{
     label: 'Selected Item',
@@ -27,14 +49,17 @@ export class OrderPageComponent implements OnInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onEditOrderProductQuantity(),
       },
       {
         label: 'Date of Delivery',
         icon: 'pi pi-calendar',
+        command: () => this.onEditOrderProductDeliveryDate(),
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
+        command: () => this.onRemoveOrderProduct(),
       }
     ]
   }];
@@ -45,14 +70,17 @@ export class OrderPageComponent implements OnInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onGoToProformaInvoicePage()
       },
       {
         label: 'Files',
         icon: 'pi pi pi-file',
+        command: () => this.openProformaInvoiceFilesModal()
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
+        command: () => this.onRemoveProformaInvoice()
       }
     ]
   }];
@@ -63,14 +91,17 @@ export class OrderPageComponent implements OnInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onGoToInvoicePage()
       },
       {
         label: 'Files',
         icon: 'pi pi pi-file',
+        command: () => this.openInvoiceFilesModal()
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
+        command: () => this.onRemoveInvoice()
       }
     ]
   }];
@@ -81,14 +112,17 @@ export class OrderPageComponent implements OnInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onGoToProformaServiceInvoicePage()
       },
       {
         label: 'Files',
         icon: 'pi pi pi-file',
+        command: () => this.openServiceProformaInvoiceFilesModal()
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
+        command: () => this.onRemoveProformaServiceInvoice()
       }
     ]
   }];
@@ -99,17 +133,41 @@ export class OrderPageComponent implements OnInit {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
+        command: () => this.onGoToServiceInvoicePage()
       },
       {
         label: 'Files',
         icon: 'pi pi pi-file',
+        command: () => this.openServiceInvoiceFilesModal()
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
+        command: () => this.onRemoveServiceInvoice()
       }
     ]
   }];
+
+  orderSupplierMenuItems: MenuItem[] = [{
+    label: 'Selected Supplier',
+    items: [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.onEditOrderSupplier()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.onRemoveOrderSupplier()
+      }
+    ]
+  }];
+
+  readonly deletion = new Set<number>();
+  readonly addition = new Set<number>();
+
+  isSuppliersConfirmed = false;
 
   isLoading = true;
   isLoadingProducts = true;
@@ -118,16 +176,23 @@ export class OrderPageComponent implements OnInit {
   isLoadingServiceInvoices = true;
   isLoadingServicePayments = true;
   isLoadingFiles = true;
+  isLoadingSuppliers = true;
+  isLoadingTechnicalEquipments = true;
+  isLoadingPurchasingCategories = true;
 
   products: OrderProduct[] = [];
   proformaInvoices: Invoice[] = [];
   invoices: Invoice[] = [];
   payments: Payment[] = [];
+  orderMaterials: OrderMaterial[] = [];
+  technicalEquipments: OrderTechnicalEquipment[] = [];
+  purchasingCategories: PurchasingCategory[] = [];
   files: any[] = [];
 
   serviceProformaInvoices: Invoice[] = [];
   serviceInvoices: Invoice[] = [];
   servicePayments: ServiceInvoicePayment[] = [];
+
 
   selectedInvoice: Invoice;
   selectedProduct: OrderProduct;
@@ -139,6 +204,8 @@ export class OrderPageComponent implements OnInit {
   selectedFile: any;
 
   order: Order;
+  orderSupplierConfirmation: OrderSupplierConfirmation;
+  selectedPurchasingCategoryId: number;
 
   constructor(
     private readonly orderService: OrderService,
@@ -146,26 +213,63 @@ export class OrderPageComponent implements OnInit {
     private readonly orderProductService: OrderProductService,
     private readonly serviceInvoiceService: ServiceInvoiceService,
     private readonly paymentService: PaymentService,
+    private readonly modalService: ModalService,
+    private readonly adapterService: AdapterService,
     private readonly servicePaymentService: ServiceInvoicePaymentService,
+    private readonly orderSupplierService: OrderSupplierService,
+    private readonly requestService: RequestService,
+    private readonly orderTechnicalEquipmentService: OrderTechnicalEquipmentsService,
+    private readonly purchasingCategoryService: PurchasingCategoryService,
   ) {
   }
 
   ngOnInit(): void {
     this.getOrder();
-    this.getProducts();
     this.getInvoices();
     this.getPayments();
     this.getServiceInvoices();
     this.getServicePayments();
     this.getFiles();
+
+    if (this.orderType === 'outsourcing') {
+      this.getOrderSuppliers();
+      this.getOrderTechnicalEquipments();
+    }
+
+    this.orderService.filesModal$.pipe(
+      untilDestroyed(this),
+    ).subscribe(() => this.openOrderFilesModal());
+
+    this.orderService.editOrderModal$.pipe(
+      untilDestroyed(this),
+    ).subscribe(() => this.openEditOrderModal());
+  }
+
+  getOrderSuppliers() {
+    this.orderSupplierService.getOrderSupplierListForOrder(this.orderId).subscribe(orderSuppliers => {
+      this.orderSuppliers = orderSuppliers;
+      this.isSuppliersConfirmed = orderSuppliers.some(c => c.confirm_status === 2);
+      this.isLoadingSuppliers = false;
+    });
+
+    this.orderSupplierService.getOrderSupplierConfirmation(this.orderId).subscribe(orderSuppliers => {
+      this.orderSupplierConfirmation = orderSuppliers[0];
+    });
   }
 
   getOrder() {
     this.orderService.getById(this.orderId).subscribe(order => {
       order.statuses.map(x => x.estimated_date_sort = new Date(x.estimated_date));
-      order.statuses.sort((a, b) => a.estimated_date_sort - b.estimated_date_sort || a.is_active - b.is_active );
+      order.statuses.sort((a, b) => a.estimated_date_sort - b.estimated_date_sort || a.is_active - b.is_active);
       this.order = order;
+      this.loaded.next();
       this.isLoading = false;
+
+      this.getProducts();
+
+      if (this.orderType === 'purchase') {
+        this.getPurchasingCategories();
+      }
     });
   }
 
@@ -173,7 +277,11 @@ export class OrderPageComponent implements OnInit {
     this.orderProductService.get([
       {name: 'order', value: this.orderId}
     ]).subscribe(products => {
-      products.forEach(product => {
+      products.forEach((product, idx) => {
+
+        product.details = this.order.order_products[idx];
+        product.isReady = product.is_technology_ready ? product.is_technology_ready : false;
+
         if (!this.products.find(p => p.nomenclature.id === product.nomenclature.id)) {
           product.quantity = products.filter(p => p.nomenclature.id === product.nomenclature.id).reduce((sum, p) => sum + p.quantity, 0);
 
@@ -197,6 +305,20 @@ export class OrderPageComponent implements OnInit {
 
       this.products = this.products.map(p => p);
 
+      if (this.orderType === 'outsourcing') {
+        const materials = [];
+
+        products.forEach(product => {
+          if (product.details.task_materials.length > 0) {
+            product.details.task_materials.forEach(m => {
+              materials.push(m);
+            });
+          }
+        });
+
+        this.orderMaterials = materials.map(m => m);
+      }
+
       this.isLoadingProducts = false;
     });
   }
@@ -212,6 +334,9 @@ export class OrderPageComponent implements OnInit {
   getPayments() {
     this.paymentService.get([{name: 'order', value: this.orderId}]).subscribe(payments => {
       this.payments = payments;
+
+      if (this.selectedPayment) this.selectedPayment = this.payments.find(p => p.id === this.selectedPayment.id);
+
       this.isLoadingPayments = false;
     });
   }
@@ -231,8 +356,8 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  getRootLists(rootLists: ListProduct[]): {list: ListProduct, count?: number}[] {
-    const lists: {list: ListProduct, count?: number}[] = [];
+  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
+    const lists: { list: ListProduct, count?: number }[] = [];
     rootLists.forEach((res: ListProduct) => {
       if (res) {
         const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
@@ -254,7 +379,321 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  onAddProduct() {
+  onEditOrderProductQuantity() {
+    this.orderProductService.editOrderProductQuantity(this.selectedProduct).subscribe(orderProduct => {
+      if (orderProduct) {
+        this.selectedProduct.quantity = orderProduct.quantity;
+      }
+    });
+  }
 
+  onEditOrderProductDeliveryDate() {
+    this.orderProductService.editOrderProductDeliveryDate(this.selectedProduct).subscribe(orderProduct => {
+      if (orderProduct) {
+        this.selectedProduct.reception_date = orderProduct.reception_date;
+      }
+    });
+  }
+
+  onRemoveOrderProduct() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.orderProductService.removeFromOrder(this.selectedProduct).subscribe(() => {
+          this.products = this.products.filter(p => p.id !== this.selectedProduct.id);
+          this.selectedProduct = null;
+        });
+      }
+    });
+  }
+
+  onAddProduct() {
+    this.orderProductService.openAddProductToOrderModal(false, this.orderId).subscribe(product => {
+      if (product) {
+        this.getProducts();
+      }
+    });
+  }
+
+  onCreateProformaInvoice() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.orderService.createProformaInvoice(this.orderId).subscribe(() => this.getInvoices());
+      }
+    });
+  }
+
+  onGoToProformaInvoicePage() {
+    window.open(`${this.link}accounting/invoices/products/${this.selectedProformaInvoice?.id}`);
+  }
+
+  openProformaInvoiceFilesModal() {
+    this.invoiceService.openInvoiceFilesModal(this.selectedProformaInvoice).subscribe();
+  }
+
+  onRemoveProformaInvoice() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.invoiceService.delete(this.selectedProformaInvoice.id).subscribe(() => {
+          this.selectedProformaInvoice = null;
+          this.getInvoices();
+        });
+      }
+    });
+  }
+
+  onCreateInvoice() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.orderService.createInvoice(this.orderId).subscribe(() => this.getInvoices());
+      }
+    });
+  }
+
+  onGoToInvoicePage() {
+    window.open(`${this.link}accounting/invoices/products/${this.selectedInvoice?.id}`);
+  }
+
+  openInvoiceFilesModal() {
+    this.invoiceService.openInvoiceFilesModal(this.selectedInvoice).subscribe();
+  }
+
+  onRemoveInvoice() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.invoiceService.delete(this.selectedInvoice.id).subscribe(() => {
+          this.selectedInvoice = null;
+          this.getInvoices();
+        });
+      }
+    });
+  }
+
+  onCreatePayment() {
+    this.paymentService.openCreateEditPaymentForm('create', null, this.order.supplier.id).subscribe(payment => {
+      if (payment) {
+        this.getPayments();
+      }
+    });
+  }
+
+  onEditPayment() {
+    this.paymentService.openCreateEditPaymentForm('edit', this.selectedPayment).subscribe(payment => {
+      if (payment) {
+        this.getPayments();
+      }
+    });
+  }
+
+  onCreateProformaServiceInvoice() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.serviceInvoiceService.create({
+          order: this.orderId,
+          supplier: this.order.supplier.id,
+          is_proforma: true,
+        }).subscribe(invoice => {
+          this.getServiceInvoices();
+          window.open(`${this.link}accounting/invoices/service-invoice/${invoice.id}`);
+        });
+      }
+    });
+  }
+
+  onCreateServiceInvoice() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.serviceInvoiceService.create({
+          order: this.orderId,
+          supplier: this.order.supplier.id,
+          is_proforma: false,
+        }).subscribe(invoice => {
+          this.getServiceInvoices();
+          window.open(`${this.link}accounting/invoices/service-invoice/${invoice.id}`);
+        });
+      }
+    });
+  }
+
+  onRemoveProformaServiceInvoice() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.serviceInvoiceService.delete(this.selectedServiceProformaInvoice?.id).subscribe(() => {
+          this.getServiceInvoices();
+          this.selectedServiceProformaInvoice = null;
+        });
+      }
+    });
+  }
+
+  onRemoveServiceInvoice() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.serviceInvoiceService.delete(this.selectedServiceInvoice?.id).subscribe(() => {
+          this.getServiceInvoices();
+          this.selectedServiceInvoice = null;
+        });
+      }
+    });
+  }
+
+  openServiceProformaInvoiceFilesModal() {
+    this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceProformaInvoice).subscribe();
+  }
+
+  openServiceInvoiceFilesModal() {
+    this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceInvoice).subscribe();
+  }
+
+  onGoToProformaServiceInvoicePage() {
+    window.open(`${this.link}accounting/invoices/service-invoice/${this.selectedServiceProformaInvoice?.id}`);
+  }
+
+  onGoToServiceInvoicePage() {
+    window.open(`${this.link}accounting/invoices/service-invoice/${this.selectedServiceInvoice?.id}`);
+  }
+
+  onCreateServicePayment() {
+    this.servicePaymentService.openCreateEditServicePaymentForm('create', null, this.order.supplier.id).subscribe(confirm => {
+      if (confirm) {
+        this.getServicePayments();
+      }
+    });
+  }
+
+  onEditServicePayment() {
+    this.servicePaymentService.openCreateEditServicePaymentForm('edit', this.selectedServicePayment).subscribe(payment => {
+      if (payment) {
+        this.getPayments();
+      }
+    });
+  }
+
+  getFileName(name) {
+    const nameArr = name.split('/');
+    return nameArr[nameArr.length - 1];
+  }
+
+  openOrderFilesModal() {
+    this.modalService.openAddFileToOrderModal(this.orderId).subscribe(confirm => {
+      this.getFiles();
+    });
+  }
+
+  openEditOrderModal() {
+    this.orderService.openEditOrderModal(this.order, this.orderType).subscribe(confirm => {
+      if (confirm) {
+        this.getOrder();
+      }
+    });
+  }
+
+  onDownloadFile(file: any) {
+    this.addition.add(file.id);
+    this.orderService.downloadFile(file.id).pipe(
+      finalize(() => this.addition.delete(file.id))
+    ).subscribe(response => {
+      const filename = this.getFileName(file.file);
+      this.adapterService.downloadFile(filename, response);
+    });
+  }
+
+  getConfirmStatus(status: number) {
+    switch (status) {
+      case 0:
+        return 'Untached';
+      case 1:
+        return 'Declined';
+      case 2:
+        return 'Confirmed';
+    }
+  }
+
+  onRemoveFile(id: number) {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.deletion.add(id);
+
+        this.orderService.deleteFile(id).pipe(
+          finalize(() => this.deletion.delete(id))
+        ).subscribe(() => {
+          const index = this.files.findIndex(f => f.id === id);
+          this.files.splice(index, 1);
+        });
+      }
+    });
+  }
+
+  openAddSupplier() {
+    this.orderSupplierService.openAddSupplierToOrderModal(this.orderSupplierConfirmation.id).subscribe(orderSupplier => {
+      if (orderSupplier) {
+        this.getOrderSuppliers();
+        this.selectedOrderSupplier = null;
+      }
+    });
+  }
+
+  onOrderSupplierConfirm() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.orderSupplierService.orderSupplierConfirm(this.orderSupplierConfirmation.id).subscribe();
+        this.selectedOrderSupplier = null;
+        this.orderSupplierConfirmation.sent_to_confirmation = true;
+      }
+    });
+  }
+
+  onEditOrderSupplier() {
+    this.orderSupplierService.openEditSupplierModal(this.selectedOrderSupplier).subscribe(orderSupplier => {
+      if (orderSupplier) {
+        this.getOrderSuppliers();
+        this.selectedOrderSupplier = null;
+      }
+    });
+  }
+
+  onRemoveOrderSupplier() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.orderSupplierService.deleteSupplier(this.selectedOrderSupplier.id).subscribe(() => {
+          this.getOrderSuppliers();
+          this.selectedOrderSupplier = null;
+        });
+      }
+    });
+  }
+
+  onCancelOrderMaterials() {
+    this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
+      if (confirm) {
+        this.requestService.cancel(this.orderId).subscribe();
+      }
+    });
+  }
+
+  getOrderTechnicalEquipments() {
+    this.orderTechnicalEquipmentService.get([{name: 'order', value: this.orderId}]).subscribe(technicalEquipments => {
+      this.technicalEquipments = technicalEquipments;
+      this.isLoadingTechnicalEquipments = false;
+    });
+  }
+
+  getPurchasingCategories() {
+    this.purchasingCategoryService.get([{
+      name: 'is_material', value: true
+    }]).subscribe(categories => {
+      this.purchasingCategories = categories;
+      this.selectedPurchasingCategoryId = this.purchasingCategories.find(c => c.id === this.order.purchase_category?.id)?.id;
+      this.isLoadingPurchasingCategories = false;
+    });
+  }
+
+  onSelectPurchaseCategory() {
+   const send = {
+     purchase_category: this.selectedPurchasingCategoryId,
+     id: this.order.id
+   }
+
+    // this.order.purchase_category = purchasedCategory;
+    this.orderService.updatePartly(send).subscribe();
   }
 }

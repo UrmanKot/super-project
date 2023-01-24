@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
-import {TreeNode} from 'primeng/api';
 import {Category} from '../../../product-structure/models/category';
 import {WarehouseProduct} from '../../../warehouse/models/warehouse-product';
 import {environment} from '@env/environment';
@@ -44,6 +43,7 @@ export class WarehouseSearchComponent implements OnInit, OnDestroy {
     {name: 'at_area', value: false}
   ];
   private destroy$ = new Subject();
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<WarehouseSearchComponent>,
@@ -57,9 +57,9 @@ export class WarehouseSearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectCategory(node: TreeNode<Category>) {
-    if (node) {
-      this.searchForm.get('category').patchValue(node.data.id);
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('category').patchValue(category.id);
     } else {
       this.searchForm.get('category').patchValue(null);
     }
@@ -200,7 +200,7 @@ export class WarehouseSearchComponent implements OnInit, OnDestroy {
   }
 
   locatorSelected($event: number) {
-    this.searchForm.get('warehouse').setValue($event)
+    this.searchForm.get('warehouse').setValue($event);
   }
 
   select() {

@@ -1,18 +1,38 @@
 import {Component, OnInit} from '@angular/core';
+import {MenuItem} from 'primeng/api';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Order} from '../../../procurement/models/order';
 import {Nomenclature} from '@shared/models/nomenclature';
-import {OrderService} from '../../services/order.service';
 import {QuerySearch} from '@shared/models/other';
-import {Order} from '../../models/order';
+import {OrderService} from '../../../procurement/services/order.service';
+import {Router} from '@angular/router';
 import {AdapterService} from '@shared/services/adapter.service';
+import {ModalService} from '@shared/services/modal.service';
 import {ListProduct} from '../../../warehouse/models/list-product';
 
 @Component({
-  selector: 'pek-chains',
-  templateUrl: './chains.component.html',
-  styleUrls: ['./chains.component.scss']
+  selector: 'pek-purchasing-chains',
+  templateUrl: './purchasing-chains.component.html',
+  styleUrls: ['./purchasing-chains.component.scss']
 })
-export class ChainsComponent implements OnInit {
+export class PurchasingChainsComponent implements OnInit {
+
+  menuItems: MenuItem[] = [{
+    label: 'Selected Chain',
+    items: [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.onGoToOderPage()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.onRemoveChain()
+      }
+    ]
+  }];
+
   searchForm: FormGroup = this.fb.group({
     page: [1],
     name: [''],
@@ -35,7 +55,7 @@ export class ChainsComponent implements OnInit {
 
   query: QuerySearch[] = [
     {name: 'accounting_type', value: 1},
-    {name: 'has_purchase_category', value: false},
+    {name: 'has_purchase_category', value: true},
     {name: 'exclude_with_active_final_status', value: true}
   ];
 
@@ -44,7 +64,9 @@ export class ChainsComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly orderService: OrderService,
+    private readonly router: Router,
     private readonly adapterService: AdapterService,
+    private readonly modalService: ModalService,
   ) {
   }
 
@@ -66,6 +88,8 @@ export class ChainsComponent implements OnInit {
       });
 
       this.generateNomenclaturesListAndRootLists();
+
+      this.isLoading = false;
     });
   }
 
@@ -107,8 +131,8 @@ export class ChainsComponent implements OnInit {
     });
   }
 
-  getRootLists(rootLists: ListProduct[]): {list: ListProduct, count?: number}[] {
-    const lists: {list: ListProduct, count?: number}[] = [];
+  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
+    const lists: { list: ListProduct, count?: number }[] = [];
     rootLists.forEach((res: ListProduct) => {
       const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
       if (found) {
@@ -118,5 +142,20 @@ export class ChainsComponent implements OnInit {
       }
     });
     return lists;
+  }
+
+  private onGoToOderPage() {
+    this.router.navigate(['/purchasing/chains/order', this.selectedOrder?.id]);
+  }
+
+  onRemoveChain() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.orderService.delete(this.selectedOrder.id).subscribe(() => {
+          this.orders = this.orders.filter(x => x.id !== this.selectedOrder.id);
+          this.selectedOrder = null;
+        });
+      }
+    });
   }
 }

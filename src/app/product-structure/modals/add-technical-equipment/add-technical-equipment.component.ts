@@ -140,9 +140,9 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectCategory(node: TreeNode<Category>) {
-    if (node) {
-      this.form.get('category').patchValue(node.data.id);
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.form.get('category').patchValue(category.id);
     } else {
       this.form.get('category').patchValue(null);
     }

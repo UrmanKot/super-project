@@ -10,7 +10,7 @@ export class SalesLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     // {label: 'Make Production List', commands: ['lists']},
-    {label: 'Sales Chains', commands: ['sales-chains']},
+    {label: 'Sales Chains', commands: ['sales-procurement-chains']},
     // {label: 'Configs', commands: ['configs/nomenclature-price']},
     // {label: 'Statuses', commands: ['statuses']},
     // {label: 'Countries & Regions', commands: ['regions']},

@@ -35,6 +35,7 @@ export class HeaderComponent implements OnInit {
     '/accounting/accounting-services',
     '/accounting/filters',
     '/purchasing/categories',
+    '/purchasing/statuses',
     '/product-structure/technologies',
     '/product-structure/prefixes',
     '/quality-control/protocols',
@@ -49,6 +50,7 @@ export class HeaderComponent implements OnInit {
     '/business-trips/expenses',
     '/correspondents/outgoing-categories',
     '/correspondents/incoming-categories',
+    '/outsourcing/statuses',
   ];
 
   settingModules = [
@@ -61,7 +63,7 @@ export class HeaderComponent implements OnInit {
     '/quality-control/',
     '/crm/',
     '/sales/',
-    '/outsource/',
+    '/outsourcing/',
     '/business-trips/',
     '/correspondents/',
   ];
