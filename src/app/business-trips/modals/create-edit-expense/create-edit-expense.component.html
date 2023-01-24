@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    <span *ngIf="data.type === 'add'">Add Expense</span>
-    <span *ngIf="data.type === 'edit'">Edit Expense</span>
+    <span *ngIf="data.type === 'add'">Add Evidence</span>
+    <span *ngIf="data.type === 'edit'">Edit Evidence</span>
   </h2>
 </div>
 
@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-3">
         <div class="form-group">
-          <label style="display: block" for="other">Not Listed Expenses</label>
+          <label style="display: block" for="other">Not Listed Evidences</label>
           <p-checkbox
             id="other"
             [disabled]="isEditDisabled"
@@ -25,7 +25,7 @@
       <div class="row" formGroupName="custom_expense">
         <div class="col-6">
           <div class="form-group">
-            <label for="name"> Expanse Title </label>
+            <label for="name"> Evidence Title </label>
             <input
               pInputText
               formControlName="name"
@@ -39,7 +39,7 @@
         </div>
         <div class="col-6">
           <div class="form-group">
-            <label for="custom_description"> Expanse Description </label>
+            <label for="custom_description"> Evidence Description </label>
             <input
               pInputText
               formControlName="description"
@@ -58,7 +58,7 @@
       <div class="row" formGroupName="expense">
         <div class="col-6">
           <div class="form-group">
-            <label>Expense Title</label>
+            <label>Evidence Title</label>
             <pek-expense-picker
               [isDisabled]="isEditDisabled"
               [expense]="_expense.get('id').value"
@@ -68,9 +68,9 @@
         </div>
         <div class="col-6">
           <div class="form-group">
-            <label for="description"> Expanse Description </label>
+            <label for="description"> Evidence Description </label>
             <input
-              [disabled]="true"
+              [attr.disabled]="true"
               pInputText
               formControlName="description"
               class="form-control"
@@ -110,54 +110,80 @@
       </div>
     </div>
 
+<!--    <div class="row">-->
+<!--      <div  *ngIf="auth.user.can_verify_expenses && canVerify" class="col-2">-->
+<!--        <div class="form-group ">-->
+<!--          <label for="is_verified">Is Verified</label>-->
+<!--          <p-checkbox-->
+<!--            id="is_verified"-->
+<!--            formControlName="is_verified"-->
+<!--            [binary]="true"-->
+<!--          ></p-checkbox>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
     <div class="row">
-      <div  *ngIf="auth.user.can_verify_expenses && canVerify" class="col-2">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="is_verified">Evidence type</label>
+          <p-dropdown [options]="types" [(ngModel)]="selectedType" (ngModelChange)="typeChanged($event)" optionLabel="name" [ngModelOptions]="{standalone: true}"></p-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
         <div class="form-group ">
-          <label for="is_verified">Is Verified</label>
-          <p-checkbox
-            id="is_verified"
-            formControlName="is_verified"
-            [binary]="true"
-          ></p-checkbox>
+          <pek-upload-file-picker #filePicker  (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-6">
-        <div class="form-group ">
-          <label for="file" class="input-file d-flex align-items-center">
-            <input [disabled]="isEditDisabled" type="file" id="file" #inputFile
-                   (input)="imageManipulation($event, $event.target)">
-            <span><i class="fa fa-download"></i>Choose File</span>
+      <p-table
+        class="table-full-loading adaptive-table adaptive-table_filters"
+        [rows]="5"
+        [paginator]="true"
+        [value]="expensesFiles"
+        selectionMode="single"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 80%">Name</th>
+            <th style="width: 20%">Actions</th>
+          </tr>
+        </ng-template>
 
-            <button
-              pButton
-              type="button"
-              icon="pi pi-camera"
-              class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small ml-3 mt-1"
-              (click)="takePhoto()"
-            ></button>
-          </label>
-        </div>
-      </div>
-      <div class="col-6 ">
-        <div class="form-group pt-2 d-flex justify-content-end justify-content-center">
-                  <span>
-          <a *ngIf="form.get('file').value && !form.get('uploaded_file').value"
-             [href]="link + form.get('file').value">
-                {{ getName(form.get('file').value) }}
-          </a>
-          <a *ngIf="form.get('uploaded_file').value" href="javascript:void(0)" (click)="viewFile()">
-            {{ form.get('uploaded_file').value.name }}
-          </a>
-              <button *ngIf="file || this.form.get('file').value || this.form.get('uploaded_file').value || this.form.get('base64File').value" class="remove" (click)="clearFile()">
-      <i class="pi pi-times"></i>
-      Remove File
-    </button>
-        </span>
-        </div>
-
-      </div>
+        <ng-template pTemplate="body" let-file let-i="rowIndex">
+          <tr [pSelectableRow]="file" *ngIf="isFileToBeDisplayed(file.id)">
+            <td style="width: 20%">
+              <a [href]="file.file">
+                {{ getName(file.file) }}
+              </a>
+            </td>
+            <td style="width: 30%">
+              <div class="d-flex justify-content-center">
+                <button
+                  pButton
+                  (click)="deleteExpensesFile(file.id)"
+                  type="button"
+                  class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                  icon="pi pi-trash"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr class="no-content">
+            <td style="width: 100%;" class="text-center p-4" [attr.colspan]="3">
+              <span>
+              No Files Found
+            </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </form>
 </mat-dialog-content>

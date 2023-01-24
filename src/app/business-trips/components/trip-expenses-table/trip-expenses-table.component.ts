@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
-import {AdapterService} from '@shared/services/adapter.service';
-import {FormArray, FormBuilder} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {Currency} from '@shared/models/currency';
 import {ExpensesSum} from '../../models/expenses-sum';
 import {ModalService} from '@shared/services/modal.service';
@@ -12,8 +11,10 @@ import {BusinessTripsExpensesService} from '../../services/business-trips-expens
 import {take} from 'rxjs/operators';
 import {ExpenseService} from '../../services/expense.service';
 import {Expense} from '../../models/expense';
-import {Subject, takeUntil} from 'rxjs';
+import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {environment} from '@env/environment';
+import {BusinessTripExpensesType} from '../../enums/business-trip-expenses-type';
+
 @Component({
   selector: 'pek-trip-expenses-table',
   templateUrl: './trip-expenses-table.component.html',
@@ -26,11 +27,12 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
   @Input() businessTripId: number;
   @Input() isVerify: boolean;
   @Output() editExpense: EventEmitter<number> = new EventEmitter<number>();
+  @Output() verifyBusinessTrip: EventEmitter<void> = new EventEmitter<void>();
   @Output() currentBusinessTripExpenses: EventEmitter<BusinessTripExpense[]> = new EventEmitter<BusinessTripExpense[]>();
   @Output() deleteExpense: EventEmitter<BusinessTripExpense> = new EventEmitter<BusinessTripExpense>();
   @Output() expenseSumEmit: EventEmitter<ExpensesSum[]> = new EventEmitter<ExpensesSum[]>();
   @Output() unverifyTrip: Subject<void> = new Subject<void>();
-
+  BusinessTripExpensesType = BusinessTripExpensesType;
   statuses = BusinessTripExpenseStatus;
 
   sumOfVerifiedExpenses: ExpensesSum[] = [];
@@ -38,7 +40,7 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
 
 
   menuItems: MenuItem[] = [{
-    label: 'Selected Expense',
+    label: 'Selected Evidence',
     items: [
       {
         label: 'Edit',
@@ -64,10 +66,10 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.getBusinessTrips();
+    this.getBusinessTripsExpenses();
   }
 
-  getBusinessTrips() {
+  getBusinessTripsExpenses() {
     this.businessTripsExpensesService.get([{name: 'business_trip_id', value: this.businessTripId}]).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.tripExpenses = res;
       this.currentBusinessTripExpenses.emit(this.tripExpenses);
@@ -109,7 +111,7 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
     this.modalService.confirm('danger', 'Confirm').pipe(takeUntil(this.destroy$)).subscribe(confirm => {
       if (confirm) {
         this.businessTripsExpensesService.delete(this.selectedTripExpense).pipe(takeUntil(this.destroy$)).subscribe(res => {
-          this.getBusinessTrips();
+          this.getBusinessTripsExpenses();
           this.selectedTripExpense = null;
         });
       }
@@ -124,17 +126,24 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
       .subscribe((tripExpense: BusinessTripExpense) => {
         const preparedData = this.prepareExpense(tripExpense)
         this.businessTripsExpensesService.create(preparedData).pipe(takeUntil(this.destroy$)).subscribe(response => {
-            if (tripExpense.base64File) {
-              const data = {
-                id: response.id,
-                file: tripExpense.uploaded_file
-              }
-              this.businessTripsExpensesService.uploadImage(data, response.id).pipe(takeUntil(this.destroy$)).subscribe(res => {
-                this.getBusinessTrips();
-                this.unverifyTrip.next();
+          if (tripExpense.uploadedFiles.length > 0) {
+            let uploadImages = [];
+            tripExpense.uploadedFiles.forEach(file => {
+              const call = this.businessTripsExpensesService.uploadFiles({
+                business_trip_expense: response.id,
+                file: file
               });
-            } else {
-              this.getBusinessTrips();
+              uploadImages.push(call);
+            });
+
+            forkJoin([
+              ...uploadImages
+            ]).pipe(takeUntil(this.destroy$)).subscribe(res => {
+              this.getBusinessTripsExpenses();
+              this.unverifyTrip.next();
+            });
+          } else {
+              this.getBusinessTripsExpenses();
               this.unverifyTrip.next();
             }
         });
@@ -147,16 +156,17 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
       currency: tripExpense.currency,
       id: tripExpense.id,
       sum: tripExpense.sum,
+      type: tripExpense.type,
       business_trip: this.businessTripId,
       is_verified: tripExpense.is_verified,
       clear_file: tripExpense.clear_file,
     };
-    if ((tripExpense.expense as Expense).name) {
+    if ((tripExpense.expense as Expense)?.name) {
       businessExpense.expense = (tripExpense.expense as Expense).id;
       businessExpense.currency = (tripExpense.currency as Currency).code as string;
       businessExpense.fullExpense = (tripExpense.expense as Expense);
     }
-    if (tripExpense.custom_expense.name) {
+    if (tripExpense.custom_expense?.name) {
       businessExpense.custom_expense = tripExpense.custom_expense;
       businessExpense.currency = (tripExpense.currency as Currency).code as string;
       businessExpense.fullExpense = tripExpense.custom_expense;
@@ -184,17 +194,36 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
       .subscribe((tripExpense) => {
         const preparedData = this.prepareExpense(tripExpense.value);
         this.businessTripsExpensesService.update(tripExpense.value.id, preparedData).pipe(takeUntil(this.destroy$)).subscribe(response => {
-          if (tripExpense.value.base64File) {
-            const data = {
-              id: response.data.id,
-              file: tripExpense.value.uploaded_file
+          if (tripExpense.value.deleteImagesIds.length > 0 || tripExpense.value.uploadedFiles.length > 0) {
+            let uploadImages = [];
+            let deleteImages = [];
+
+            if (tripExpense.value.uploadedFiles.length > 0) {
+              tripExpense.value.uploadedFiles.forEach(file => {
+                const call = this.businessTripsExpensesService.uploadFiles({
+                  business_trip_expense: response.data.id,
+                  file: file
+                });
+                uploadImages.push(call);
+              });
             }
-            this.businessTripsExpensesService.uploadImage(data, response.data.id).pipe(takeUntil(this.destroy$)).subscribe(res => {
-              this.getBusinessTrips();
+
+            if (tripExpense.value.deleteImagesIds.length > 0) {
+              tripExpense.value.deleteImagesIds.forEach(fileId => {
+                const call = this.businessTripsExpensesService.deleteFiles(fileId);
+                deleteImages.push(call);
+              });
+            }
+            forkJoin([
+              ...uploadImages,
+              ...deleteImages,
+            ]).pipe(takeUntil(this.destroy$)).subscribe(() => {
+              this.getBusinessTripsExpenses();
               this.unverifyTrip.next();
             });
-          } else {
-            this.getBusinessTrips();
+          }
+           else {
+            this.getBusinessTripsExpenses();
             this.unverifyTrip.next();
           }
         });
@@ -204,4 +233,14 @@ export class TripExpensesTableComponent implements OnInit, OnChanges, OnDestroy 
     this.destroy$.next(true);
     this.destroy$.complete();
   }
+
+  updateVerifyStatusOfExpense(isVerified: boolean) {
+    this.selectedTripExpense.is_verified = isVerified;
+    const preparedData = this.prepareExpense(this.selectedTripExpense);
+    this.businessTripsExpensesService.create(preparedData).pipe(takeUntil(this.destroy$)).subscribe(response => {
+      this.getBusinessTripsExpenses();
+    });
+
+  }
+
 }

@@ -77,7 +77,7 @@ export class CompanyService {
 
   getShorts(): Observable<Partial<Company>[]> {
     if (this.isLoadingShortCompanies) {
-      return this.shortsCompaniesResult
+      return this.shortsCompaniesResult;
     } else {
       this.isLoadingShortCompanies = true;
       return this.getShortsCompanies();

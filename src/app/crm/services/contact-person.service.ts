@@ -39,7 +39,7 @@ export class ContactPersonService {
     if (this.contactPersons) {
       return of(this.contactPersons);
     }
-    this.getForce(query, true);
+    return this.getForce(query, true);
   }
 
   getForce(query?: QuerySearch[], saveCache = false): Observable<ContactPerson[]> {

@@ -1,12 +1,13 @@
 import {BusinessTripCountry} from './business-trip-country';
 
 export class BusinessTripHotel {
-  readonly id?: number;
-  residence_start?: string;
-  residence_end?: string;
+  id?: number;
+  residence_start?: Date | string;
+  business_trip?: number;
+  residence_end?: Date | string;
   file?: string;
   address?: string;
-  country?: string;
+  country?: BusinessTripCountry | string;
   fullCountry?: BusinessTripCountry;
   name?: string;
   files?: any;

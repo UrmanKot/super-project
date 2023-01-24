@@ -127,7 +127,6 @@ export class CorrespondentService {
       .open<CreateEditCorrespondentComponent>(CreateEditCorrespondentComponent, {
         width: '80rem',
         height: 'auto',
-        panelClass: 'modal-overflow-visible',
         data: {type, correspondent, correspondentType},
         autoFocus: false,
         enterAnimationDuration: '250ms'

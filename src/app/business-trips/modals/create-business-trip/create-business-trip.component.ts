@@ -56,8 +56,9 @@ export class CreateBusinessTripComponent implements OnInit, OnDestroy {
     return (this.form.get('employee') as FormGroup) as FormGroup;
   }
   addBusinessTrip() {
+    const employee = this.form.value.employee.id ? this.form.value.employee.id : null;
     this.businessService
-      .create({id: null})
+      .create({id: null, employee})
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res) => {
         this.tripId = res.id;

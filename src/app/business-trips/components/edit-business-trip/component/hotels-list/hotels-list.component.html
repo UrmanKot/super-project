@@ -1,0 +1,13 @@
+<div *ngFor="let hotel of tripHotels; let first=first">
+  <pek-hotel-list-item
+    [class.space-up]="!first"
+    (hotelUpdated)="hotelUpdated(hotel, $event)"
+    (hotelDeleted)="getBusinessTripHotels()"
+    [businessTripId]="businessTripId"
+    [tripHotel]="hotel"></pek-hotel-list-item>
+</div>
+<div class="d-flex justify-content-center" *ngIf="tripHotels.length === 0">
+  <h2>
+    No Hotels
+  </h2>
+</div>

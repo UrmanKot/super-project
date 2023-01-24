@@ -5,6 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {HotelFiles} from '../models/hotel-files';
+import {BusinessTrip} from '../models/business-trip';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,15 @@ export class BusinessTripHotelFilesService {
       );
   }
 
+  add_hotel_files(send): Observable<BusinessTrip> {
+    return this.httpClient
+      .post<{ data: BusinessTrip }>(this.API_URL + this.url+ 'add_business_trip_hotel_files/', send)
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
 
   delete(entity: HotelFiles) {
     return this.httpClient.delete(this.API_URL + this.url + entity.id + '/');

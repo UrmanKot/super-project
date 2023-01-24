@@ -144,15 +144,15 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="index-header text-center" style="width: 5%">ID</th>
+              <th style="width: 10%">Letter Registration Date</th>
               <th class="index-header text-center"  *ngIf="type === types.OUTGOING" style="width: 15%">Letter Registration Number</th>
               <th *ngIf="type === types.INCOMING" style="width: 15%">
                 ExternalID
               </th>
-              <th style="width: 10%">Letter Registration Date</th>
               <th style="width: 10%"  *ngIf="type === types.INCOMING">External Date</th>
-              <th style="width: 15%">Description</th>
-              <th style="width: 15%">Category</th>
               <th style="width: 15%">{{type === types.INCOMING ? 'From' : 'To'}}</th>
+              <th style="width: 15%">Category</th>
+              <th style="width: 15%">Description</th>
               <th style="width: 15%">Files</th>
             </tr>
           </ng-template>
@@ -162,26 +162,27 @@
               <td style="width: 5%" class="text-center">
                 {{ correspondent.id}}
               </td>
+              <td style="width: 10%">
+                {{ correspondent.date_received | date: "dd/MM/yyyy" }}
+              </td>
               <td *ngIf="type === types.OUTGOING" style="width: 5%" class="text-center">
                 {{ correspondent.letter_registration_number}}
               </td>
               <td *ngIf="type === types.INCOMING" style="width: 15%">
                 {{ correspondent.external_id}}
               </td>
-              <td style="width: 10%">
-                {{ correspondent.date_received | date: "dd/MM/yyyy" }}
-              </td>
+
               <td style="width: 10%" *ngIf="type === types.INCOMING">
                 {{ correspondent.external_date | date: "dd/MM/yyyy" }}
               </td>
-              <td style="width: 20%">
-                {{ correspondent.description}}
+              <td style="width: 10%">
+                {{ correspondent.origin }}
               </td>
               <td style="width: 10%">
                 {{ correspondent.category ? correspondent.category.name : null }}
               </td>
-              <td style="width: 10%">
-                {{ correspondent.origin }}
+              <td style="width: 20%">
+                {{ correspondent.description}}
               </td>
               <td class="files-cont" style="width: 30%">
                 <span *ngIf="correspondent.files.length > 1">

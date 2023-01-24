@@ -1,3 +1,30 @@
+::ng-deep {
+  pek-upload-file-picker {
+    div.p-fileupload-content {
+      max-height: 15.875rem;
+      overflow: auto;
+      padding: 0.5rem 1rem !important;
+    }
+  }
+
+  .dark-disabled {
+    input {
+      opacity: 1 !important;
+    }
+
+    &.highlight {
+      input {
+        font-weight: 500;
+      }
+
+    }
+  }
+}
+
+.modal-overflow-visible mat-dialog-content {
+  overflow: auto !important;
+}
+
 .input-file {
   cursor: pointer;
   margin-top: 10px;

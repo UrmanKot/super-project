@@ -7,7 +7,7 @@ import {BusinessTripHotel} from '../../models/business-trip-hotel';
 import {BusinessTripLocation} from '../../models/business-trip-location';
 import {BusinessTripStatus} from '../../models/business-trip-status.enum';
 import {BusinessTrip} from '../../models/business-trip';
-import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {BusinessTripLocationTypes} from '../../enums/business-trip-location-status.enum';
 import {HotelFiles} from '../../models/hotel-files';
 import {QuerySearch} from '@shared/models/other';
@@ -31,10 +31,12 @@ import {BusinessTripLocationMeeting} from '../../models/business-trip-location-m
 import {ExpenseService} from '../../services/expense.service';
 import {deepCopy} from 'deep-copy-ts';
 import {BusinessLocationService} from '../../services/business-location.service';
-import {Hotel} from '../../models/hotel';
 import {BusinessTripHotelFilesService} from '../../services/business-trip-hotel-files.service';
 import {UploadFilePickerComponent} from '@shared/components/upload-file-picker/upload-file-picker.component';
 import {environment} from '@env/environment';
+import {HotelsListComponent} from './component/hotels-list/hotels-list.component';
+import {BusinessTripVehicleService} from '../../services/business-trip-vehicle.service';
+import {BusinessTripVehicleType} from '../../enums/business-trip-vehicle-type';
 
 export class DataToSend {
   readonly id?: number;
@@ -47,12 +49,14 @@ export class DataToSend {
   initiator?: number;
   expenses?: BusinessTripExpense[];
   hotel?: BusinessTripHotel;
+  hotels?: BusinessTripHotel[];
   vehicle?: Vehicle;
   custom_vehicle?: Vehicle;
   locations?: BusinessTripLocation[];
   purpose_full?: string;
   purpose_short?: string;
   vehicle_type?: string;
+  business_trip_id?: number;
   trip_end?: string;
   trip_start?: string;
   status?: BusinessTripStatus;
@@ -70,8 +74,9 @@ export class DataToSend {
 })
 export class EditBusinessTripComponent implements OnInit, OnDestroy {
   @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
-
+  @ViewChild('hotelsList') hotelsList: HotelsListComponent;
   tripExpenses: BusinessTripExpense[] = [];
+  tripHotels: BusinessTripHotel[] = [];
   businessTrip: BusinessTrip;
   tripStatuses = BusinessTripStatus;
   form: FormGroup;
@@ -98,7 +103,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
   isVerify = false;
   isExportView = false;
   expensesSum: ExpensesSum[];
-
+  BusinessTripVehicleType = BusinessTripVehicleType;
   companiesFilters: Company[];
 
   menuItems: MenuItem[] = [{
@@ -126,6 +131,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
     private businessService: BusinessTripService,
     private modalService: ModalService,
     private adapterService: AdapterService,
+    private businessTripVehicleService: BusinessTripVehicleService,
     private route: ActivatedRoute,
     private messageService: MessageService,
     private employeePositionService: CrmPositionsService,
@@ -173,6 +179,33 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
     });
   }
 
+  getBusinessTripVehicle() {
+    this.businessTripVehicleService.get([{name: 'business_trip', value: this.tripId}]).subscribe(res => {
+      if (res.length > 0) {
+        this.form.get('business_trip_vehicle_id').setValue(res[0].id);
+        this.form.get('vehicle_type').setValue(res[0].vehicle_type);
+        this.form.get('start_mileage').setValue(res[0].start_mileage);
+        this.form.get('end_mileage').setValue(res[0].end_mileage);
+        this.form.get('end_mileage').setValue(res[0].end_mileage);
+        this.form.get('start_mileage_file').setValue(res[0].start_mileage_file);
+        this.form.get('end_mileage_file').setValue(res[0].end_mileage_file);
+
+        if (res[0].custom_vehicle) {
+          const vehicle = res[0].custom_vehicle as Vehicle;
+          this.form.get('isOtherVehicle').setValue(true);
+          this.form.get('vehicle_model').setValue(vehicle.model);
+          this.form.get('vehicle_number').setValue(vehicle.number);
+          this.form.get('vehicle_id').setValue(vehicle.id);
+        }
+
+        if (res[0].vehicle) {
+          this.form.get('isOtherVehicle').setValue(false);
+          this.form.get('vehicle').setValue(res[0].vehicle);
+        }
+      }
+    });
+  }
+
   loadCompanies() {
     this.companiesService.get([{name: 'by_user', value: true}]).pipe(takeUntil(this.destroy$)).subscribe(companies => {
         this.companiesFilters = companies;
@@ -200,7 +233,8 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       start_location_country: [null],
       start_location_address: [null],
       last_location_id: [null],
-      vehicle_type: ['0'],
+      vehicle_type: [BusinessTripVehicleType.WITHOUT],
+      business_trip_vehicle_id: [null],
       last_location_country: [null],
       last_location_address: [null],
       last_location_meetings: this.fb.array([]),
@@ -217,9 +251,12 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       vehicle_number: [''],
       start_mileage: [0],
       end_mileage: [0],
+      start_mileage_file: [''],
+      end_mileage_file: [''],
       vehicle_id: [null],
       showHotel: [false],
       expenses: this.fb.array([]),
+      hotels: this.fb.array([]),
       hotel: this.fb.group({
         id: [null],
         residence_start: [null],
@@ -258,39 +295,10 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       if (this.businessTrip.trip_start) {
         this.form.get('trip_start').setValue(new Date(this.businessTrip.trip_start));
       }
-      this.form.get('vehicle_type').setValue(this.businessTrip.vehicle_type);
+
       this.form.get('purpose_full').setValue(this.businessTrip.purpose_full);
       this.form.get('purpose_short').setValue(this.businessTrip.purpose_short);
-      this.form.get('start_mileage').setValue(this.businessTrip.start_mileage);
-      this.form.get('end_mileage').setValue(this.businessTrip.end_mileage);
 
-      if (this.businessTrip.custom_vehicle) {
-        const vehicle = this.businessTrip.custom_vehicle as Vehicle;
-        this.form.get('isOtherVehicle').setValue(true);
-        this.form.get('vehicle_model').setValue(vehicle.model);
-        this.form.get('vehicle_number').setValue(vehicle.number);
-        this.form.get('vehicle_id').setValue(vehicle.id);
-      }
-
-      if (this.businessTrip.vehicle) {
-        this.form.get('isOtherVehicle').setValue(false);
-        this.form.get('vehicle').setValue(this.businessTrip.vehicle);
-      }
-      if (this.businessTrip.hotel) {
-        const hotel = this.businessTrip.hotel as BusinessTripHotel;
-        this.form.get('showHotel').setValue(true);
-        this.form.get('hotel').setValue({
-          id: hotel.id,
-          residence_start: hotel.residence_start ? new Date(hotel.residence_start) : null,
-          residence_end: hotel.residence_end ? new Date(hotel.residence_end) : null,
-          hotel_name: hotel.name,
-          hotel_country: hotel.country,
-          hotel_address: hotel.address,
-          files: [],
-          base64Files: [],
-        });
-        this.loadHotelFiles(hotel.id);
-      }
       // Locations
       this.businessTrip.locations.forEach(location => {
         if (location.type === BusinessTripLocationTypes.FIRST) {
@@ -320,18 +328,17 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
           }));
         }
       });
-      // Expenses
-      const expenses = this.businessTrip.expenses as BusinessTripExpense[];
-      this.updateExpenses(expenses);
 
       this.form.get('initiator').setValue(this.businessTrip.initiator);
+
+      this.getBusinessTripVehicle();
 
       this.isDataPrepared = true;
     });
   }
 
   updateExpenses(expenses: BusinessTripExpense[]) {
-    if (expenses.length > 0) {
+    if (expenses && expenses.length > 0) {
       this.form.removeControl('expenses');
       this.form.addControl('expenses', this.fb.array([]));
       expenses.forEach(expense => {
@@ -363,6 +370,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
           sum: expense.sum,
           isOther: !!customExpensePrepared.id,
           is_verified: expense.is_verified,
+          type: expense.type,
           file: expense.file,
           uploaded_file: null,
           clear_file: false,
@@ -372,8 +380,31 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       (this.form.get('expenses') as FormArray).controls.forEach(group => {
         this.tripExpenses.push(group.value);
       });
+    }
+  }
 
-      console.log(this.form.get('expenses').value);
+  updateHotels(hotels: BusinessTripHotel[]) {
+    if (hotels.length > 0) {
+      this.form.get('showHotel').setValue(true);
+      this.form.removeControl('hotels');
+      this.form.addControl('hotels', this.fb.array([]));
+      hotels.forEach(hotel => {
+
+        (this.form.get('hotels') as FormArray).push(this.fb.group({
+          id: hotel.id,
+          residence_start: hotel.residence_start ? new Date(hotel.residence_start) : null,
+          residence_end: hotel.residence_end ? new Date(hotel.residence_end) : null,
+          files: [],
+          hotel_name: hotel.name,
+          hotel_country: hotel.country,
+          hotel_address: hotel.address,
+          base64Files: this.fb.array([])
+        }));
+      });
+      this.tripHotels = [];
+      (this.form.get('hotels') as FormArray).controls.forEach(group => {
+        this.tripHotels.push(group.value);
+      });
     }
   }
 
@@ -435,28 +466,6 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
           });
         }
       });
-  }
-
-  changedValue($event: any) {
-  }
-
-  clickHotelOutside(type) {
-    if (this._hotel.value.residence_end?.getTime() !== this.hotelStartDate?.getTime()) {
-      this._hotel.get('residence_end').patchValue(this.hotelStartDate);
-    }
-    if (this._hotel.value.residence_end?.getTime() !== this.hotelEndDate?.getTime()) {
-      this._hotel.get('residence_end').patchValue(this.hotelEndDate);
-    }
-  }
-
-  setHotelStartValue(start) {
-    if (start) {
-      this.hotelStartDate = start;
-      if (this._hotel.get('residence_end').value &&
-        this._hotel.get('residence_end').value < this._hotel.get('residence_start').value) {
-        this.setHotelEndValue(this._hotel.get('residence_end').value);
-      }
-    }
   }
 
   setHotelEndValue(end) {
@@ -563,35 +572,32 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       trip_end: tripEnd ? tripEnd : null,
       trip_start: tripStart ? tripStart : null,
       expenses: [],
+      hotels: [],
       start_mileage: tempFormValue.start_mileage,
       end_mileage: tempFormValue.end_mileage,
       status,
     };
+    tempFormValue.hotels.forEach(hotel => {
+      if (hotel.hotel_name) {
+        const hotelStartDate = hotel.residence_start ?
+          this.adapterService.dateAdapter(new Date(hotel.residence_start)) : null;
+        const hotelEndDate = hotel.residence_end ?
+          this.adapterService.dateAdapter(new Date(hotel.residence_end)) : null;
+        const hotelInfo = {
+          residence_start: hotelStartDate ? new Date(hotel.residence_start) : null,
+          residence_end: hotelEndDate ? new Date(hotel.residence_end) : null,
+          address: hotel.hotel_address,
+          country: hotel.hotel_country.code,
+          fullCountry: hotel.hotel_country,
+          name: hotel.hotel_name,
+          id: hotel.id,
+          files: hotel.files,
+        };
 
-    if (tempFormValue.hotel.hotel_name && tempFormValue.showHotel) {
-      const hotelStartDate = tempFormValue.hotel.residence_start ?
-        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_start)) : null;
-      const hotelEndDate = tempFormValue.hotel.residence_end ?
-        this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_end)) : null;
-      dataToSend.hotel = {
-        residence_start: hotelStartDate ? hotelStartDate : null,
-        residence_end: hotelEndDate ? hotelEndDate : null,
-        address: tempFormValue.hotel.hotel_address,
-        country: tempFormValue.hotel.hotel_country.code,
-        fullCountry: tempFormValue.hotel.hotel_country,
-        name: tempFormValue.hotel.hotel_name,
-        id: tempFormValue.hotel.id,
-        files: tempFormValue.hotel.files,
-      };
-
-      if (!dataToSend.hotel.residence_start ||
-        !dataToSend.hotel.residence_end ||
-        !dataToSend.hotel.address ||
-        !dataToSend.hotel.country ||
-        !dataToSend.hotel.name) {
-        this.messageService.add({severity: 'error', summary: 'Validation Error', detail: `Fill Hotel Data`});
+        dataToSend.hotels.push(hotelInfo);
       }
-    }
+    });
+
 
     if (tempFormValue.employee.id) {
       dataToSend.employee = tempFormValue.employee.id;
@@ -606,10 +612,10 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       dataToSend.full_employee = dataToSend.custom_employee;
     }
 
-    if (tempFormValue.vehicle_type !== '0') {
-      if (tempFormValue.vehicle.id && tempFormValue.vehicle_type === '3') {
+    if (tempFormValue.vehicle_type !== BusinessTripVehicleType.WITHOUT) {
+      if (tempFormValue.vehicle.id && tempFormValue.vehicle_type === BusinessTripVehicleType.COMPANY_CAR) {
         dataToSend.vehicle = tempFormValue.vehicle.id;
-      } else if ((tempFormValue.vehicle_type === '1' || tempFormValue.vehicle_type === '2') && tempFormValue.vehicle_model) {
+      } else if ((tempFormValue.vehicle_type === BusinessTripVehicleType.PRIVATE || tempFormValue.vehicle_type === BusinessTripVehicleType.RENT) && tempFormValue.vehicle_model) {
         dataToSend.custom_vehicle = {
           id: tempFormValue.vehicle_id,
           model: tempFormValue.vehicle_model,
@@ -633,6 +639,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
           sum: tripExpense.sum,
           is_verified: tripExpense.is_verified,
           clear_file: tripExpense.clear_file,
+          type: tripExpense.type,
         };
         if ((tripExpense.expense as Expense).name) {
           businessExpense.expense = (tripExpense.expense as Expense).id;
@@ -697,14 +704,18 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
   }
 
   vehicleUpdate() {
-    const vehicleData: DataToSend = {};
+    const vehicleData: any = {};
     const formData = this.form.value;
     vehicleData.vehicle_type = formData.vehicle_type;
-    if (formData.vehicle_type !== '0') {
-      if (formData.vehicle.id && formData.vehicle_type === '3') {
+    vehicleData.business_trip = this.tripId;
+    vehicleData.start_mileage = formData.start_mileage;
+    vehicleData.end_mileage = formData.end_mileage;
+
+    if (formData.vehicle_type !== BusinessTripVehicleType.WITHOUT) {
+      if (formData.vehicle.id && formData.vehicle_type === BusinessTripVehicleType.COMPANY_CAR) {
         vehicleData.vehicle = formData.vehicle.id;
         vehicleData.custom_vehicle = null;
-      } else if ((formData.vehicle_type === '1' || formData.vehicle_type === '2') && formData.vehicle_model) {
+      } else if ((formData.vehicle_type === BusinessTripVehicleType.PRIVATE || formData.vehicle_type === BusinessTripVehicleType.RENT) && formData.vehicle_model) {
         const model = formData.vehicle_model;
         const number = formData.vehicle_number;
         if (!model || !number) {
@@ -724,14 +735,9 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       vehicleData.vehicle = null;
       vehicleData.custom_vehicle = null;
     }
-    this.businessService
-      .updateBusinessTripVehicle(this.tripId, vehicleData)
-      .pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((trip) => {
-        if (trip.custom_vehicle) {
-          const vehicle = trip.custom_vehicle as Vehicle;
-          this.form.get('vehicle_id').setValue(vehicle.id);
-        }
+    const vehicleId = this.form.get('business_trip_vehicle_id').value;
+      this.businessTripVehicleService.update_vehicle(vehicleId, vehicleData).subscribe(response => {
+        this.form.get('business_trip_vehicle_id').setValue(response.data.id);
       });
   }
 
@@ -890,7 +896,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
   lastPointMeetingChanged($event: BusinessTripLocationMeeting[]) {
   }
 
-  changedVechicleType($event: string) {
+  changedVehicleType($event: string) {
     this.form.get('vehicle_type').setValue($event);
   }
 
@@ -1010,7 +1016,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
 
   updateHotelInfo() {
     const tempFormValue = deepCopy(this.form.value);
-    if (tempFormValue.hotel.hotel_name && tempFormValue.showHotel) {
+    if (tempFormValue.hotel.hotel_name) {
       const hotelStartDate = tempFormValue.hotel.residence_start ?
         this.adapterService.dateAdapter(new Date(tempFormValue.hotel.residence_start)) : null;
       const hotelEndDate = tempFormValue.hotel.residence_end ?
@@ -1033,9 +1039,9 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.businessService.updateHotelInfo(this.tripId, hotelData).pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this._hotel.get('id').setValue((res.hotel as Hotel).id);
-      });
+      // this.businessService.updateHotelInfo(this.tripId, hotelData).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      //   this._hotel.get('id').setValue((res.hotel as Hotel).id);
+      // });
     }
   }
 
@@ -1061,7 +1067,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       id: this._hotel.get('id').value
     }
     const result = this.obj2FormData(send);
-    this.businessService.add_hotel_files(result).pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.businessTripHotelFilesService.add_hotel_files(result).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.loadHotelFiles(this._hotel.get('id').value);
       this.filePicker.clearFiles();
     })
@@ -1077,5 +1083,91 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.updateFiles();
       }, 1000);
+  }
+
+  addHotels() {
+    this.hotelsList.addHotel();
+  }
+
+  start_mileage_file: File;
+  end_mileage_file: File;
+
+  imageManipulation($event: Event, files: EventTarget, field: string) {
+    // @ts-ignore
+    const newFiles: File = Array.from(files.files);
+    const vehicleId = this.form.get('business_trip_vehicle_id').value;
+    if (field === 'start_mileage_file') {
+      this.start_mileage_file = newFiles[0];
+
+      const toUpdate = {
+        start_mileage_file: newFiles[0]
+      }
+      const sendDate = this.obj2FormData(toUpdate)
+      this.businessTripVehicleService.update(vehicleId, sendDate).subscribe(res => {
+        if (field === 'start_mileage_file') {
+          this.form.get('start_mileage_file').setValue(res.data.start_mileage_file);
+        }
+      });
+    }
+    if (field === 'end_mileage_file') {
+      this.end_mileage_file = newFiles[0];
+
+      const toUpdate = {
+        end_mileage_file: newFiles[0]
+      }
+      const sendDate = this.obj2FormData(toUpdate)
+
+      this.businessTripVehicleService.update(vehicleId, sendDate).subscribe(res => {
+        if (field === 'end_mileage_file') {
+          this.form.get('end_mileage_file').setValue(res.data.end_mileage_file);
+        }
+      });
+    }
+    this.vehicleChangedEmit.next();
+  }
+
+  removeMileageFile(field: string) {
+    let toUpdate;
+    const vehicleId = this.form.get('business_trip_vehicle_id').value;
+    if (field === 'start_mileage_file') {
+      toUpdate = {
+        start_mileage_file: null
+      }
+    }
+    if (field === 'end_mileage_file') {
+      toUpdate = {
+        end_mileage_file: null
+      }
+    }
+
+    this.businessTripVehicleService.update(vehicleId, toUpdate).subscribe(res => {
+      if (field === 'start_mileage_file') {
+        this.form.get('start_mileage_file').setValue(res.data.start_mileage_file);
+      }
+      if (field === 'end_mileage_file') {
+        this.form.get('end_mileage_file').setValue(res.data.end_mileage_file);
+      }
+    });
+  }
+
+  takePhoto(field: any) {
+    this.businessService.takePhotoModal().pipe(takeUntil(this.destroy$)).subscribe(file => {
+      if (file) {
+        field = file;
+        this.vehicleChangedEmit.next();
+      }
+    });
+  }
+
+  viewFile() {
+
+  }
+
+  clearFile() {
+
+  }
+
+  hotelsUpdated($event: BusinessTripHotel[]) {
+
   }
 }
