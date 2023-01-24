@@ -18,6 +18,9 @@ import {EditOrderComponent} from '@shared/modals/edit-order/edit-order.component
 import {OrderType} from '@shared/components/order-page/order-page.component';
 import {CreateChainComponent} from '@shared/modals/create-chain/create-chain.component';
 import {AddProductsToChainComponent} from '@shared/modals/add-products-to-chain/add-products-to-chain.component';
+import {
+  CreateOutsourcingRequestComponent
+} from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
 
 @Injectable({
   providedIn: 'root'

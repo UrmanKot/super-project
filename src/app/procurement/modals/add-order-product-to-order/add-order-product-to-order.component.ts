@@ -158,6 +158,7 @@ export class AddOrderProductToOrderComponent implements OnInit {
 
   clearCreatForm() {
     this.createForm.get('quantity').patchValue(0);
+    this.createForm.get('quantity').patchValue(0);
   }
 
   onSelectProduct() {

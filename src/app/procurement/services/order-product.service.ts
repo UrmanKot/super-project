@@ -15,6 +15,10 @@ import {
 import {
   AddOrderProductToOrderComponent
 } from '../modals/add-order-product-to-order/add-order-product-to-order.component';
+import {Order} from '../models/order';
+import {
+  CreateOutsourcingRequestComponent
+} from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +118,19 @@ export class OrderProductService {
 
   removeFromOrder(orderProduct: OrderProduct): Observable<any> {
     return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct)
+  }
+
+  openAddOutsourcingRequestModal(): Observable<OrderProduct> {
+    return this.dialog
+      .open<CreateOutsourcingRequestComponent>(CreateOutsourcingRequestComponent, {
+        width: '70rem',
+        height: 'auto',
+        data: {},
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 
   editOrderProductQuantity(orderProduct: OrderProduct): Observable<OrderProduct> {

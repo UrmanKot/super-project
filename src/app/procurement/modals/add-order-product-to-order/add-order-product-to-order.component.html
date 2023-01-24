@@ -1,9 +1,14 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    Add a New Item To Order
+    <ng-container *ngIf="!data.isPurchased">
+      Add a New Item To Order
+    </ng-container>
+    <ng-container *ngIf="data.isPurchased">
+      Add a New Item To Request
+    </ng-container>
   </h2>
 
-  <p>
+  <p *ngIf="data.isPurchased">
     Please Search the Item from catalogue and select items for request
   </p>
 </div>

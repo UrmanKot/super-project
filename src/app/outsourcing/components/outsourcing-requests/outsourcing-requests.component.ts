@@ -8,6 +8,7 @@ import {map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {AdapterService} from '@shared/services/adapter.service';
+import {OrderService} from '../../../procurement/services/order.service';
 
 @UntilDestroy()
 @Component({
@@ -61,6 +62,7 @@ export class OutsourcingRequestsComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly orderProductService: OrderProductService,
+    private readonly orderService: OrderService,
     private readonly adapterService: AdapterService,
   ) {
   }
@@ -130,6 +132,10 @@ export class OutsourcingRequestsComponent implements OnInit {
   }
 
   onCreateRequest() {
-
+    this.orderProductService.openAddOutsourcingRequestModal().subscribe(products => {
+      if (products) {
+        this.search$.next();
+      }
+    });
   }
 }
