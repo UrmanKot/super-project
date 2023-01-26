@@ -38,6 +38,8 @@ export class OrderPageComponent implements OnInit {
   @Input() orderType: OrderType;
   @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
 
+  isPurchaseOrderNonMaterial = false;
+
   orderSuppliers: OrderSupplier[] = [];
   selectedOrderSupplier: OrderSupplier = null;
 
@@ -269,6 +271,10 @@ export class OrderPageComponent implements OnInit {
         this.getProducts();
       }
 
+      if (!this.order.purchase_category.is_material) {
+        this.isPurchaseOrderNonMaterial = true;
+      }
+
       if (this.orderType === 'purchase') {
         this.getPurchasingCategories();
       }
@@ -481,7 +487,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   onCreatePayment() {
-    this.paymentService.openCreateEditPaymentForm('create', null, this.order.supplier.id).subscribe(payment => {
+    this.paymentService.openCreateEditPaymentForm('create', null, this.order.supplier.id, this.orderId).subscribe(payment => {
       if (payment) {
         this.getPayments();
       }
@@ -565,7 +571,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   onCreateServicePayment() {
-    this.servicePaymentService.openCreateEditServicePaymentForm('create', null, this.order.supplier.id).subscribe(confirm => {
+    this.servicePaymentService.openCreateEditServicePaymentForm('create', null, this.order.supplier.id, this.orderId).subscribe(confirm => {
       if (confirm) {
         this.getServicePayments();
       }

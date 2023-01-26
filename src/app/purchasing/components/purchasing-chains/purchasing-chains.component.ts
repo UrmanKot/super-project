@@ -147,7 +147,7 @@ export class PurchasingChainsComponent implements OnInit {
   }
 
   private onGoToOderPage() {
-    this.router.navigate(['/purchasing/chains/order', this.selectedOrder?.id]);
+    window.open('/purchasing/chains/order/' + this.selectedOrder?.id, '_blank');
   }
 
   onRemoveChain() {

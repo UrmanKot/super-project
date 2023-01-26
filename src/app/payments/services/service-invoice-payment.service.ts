@@ -106,12 +106,12 @@ export class ServiceInvoicePaymentService {
     )
   }
 
-  openCreateEditServicePaymentForm(type: ModalActionType, payment?: ServiceInvoicePayment, companyId?: number): Observable<ServiceInvoicePayment[]> {
+  openCreateEditServicePaymentForm(type: ModalActionType, payment?: ServiceInvoicePayment, companyId?: number, orderId?: number): Observable<ServiceInvoicePayment[]> {
     return this.dialog
       .open<CreateEditServicePaymentFormComponent>(CreateEditServicePaymentFormComponent, {
         width: '55rem',
         height: 'auto',
-        data: {type, payment, companyId},
+        data: {type, payment, companyId, orderId},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

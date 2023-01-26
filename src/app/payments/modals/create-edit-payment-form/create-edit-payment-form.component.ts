@@ -36,12 +36,12 @@ export class CreateEditPaymentFormComponent implements OnInit {
     private readonly adapterService: AdapterService,
     private invoiceService: InvoiceService,
     private paymentService: PaymentService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment, companyId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment, companyId: number, orderId: number }
   ) {
   }
 
   ngOnInit(): void {
-    this.form.get('converted_amount').disable()
+    this.form.get('converted_amount').disable();
 
     if (this.data.type === 'create')
       this.form.get('invoices').disable();
@@ -113,10 +113,16 @@ export class CreateEditPaymentFormComponent implements OnInit {
   }
 
   private getInvoicesByCompany() {
-    this.invoiceService.get([{
+    const query = [{
       name: 'supplier',
       value: this.form.get('supplier').value
-    }]).subscribe(invoices => {
+    }];
+
+    if (this.data.orderId) {
+      query.push({name: 'order', value: this.data.orderId});
+    }
+
+    this.invoiceService.get(query).subscribe(invoices => {
       this.invoices = invoices;
       invoices.forEach(i => {
         if (i.is_proforma) {
@@ -152,7 +158,7 @@ export class CreateEditPaymentFormComponent implements OnInit {
 
     if (this.data.type === 'create') {
       this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * sum);
-      this.form.get('amount').patchValue(sum)
+      this.form.get('amount').patchValue(sum);
       sum = this.roundValue(sum);
     } else {
       this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * +this.amount);

@@ -145,7 +145,7 @@ export class OutsourcingChainsComponent implements OnInit {
   }
 
   private onGoToOderPage() {
-    this.router.navigate(['/outsourcing/chains/order', this.selectedOrder?.id]);
+    window.open('/outsourcing/chains/order/' + this.selectedOrder?.id, '_blank');
   }
 
   onRemoveChain() {
