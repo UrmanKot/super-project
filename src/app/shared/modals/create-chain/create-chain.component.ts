@@ -5,7 +5,7 @@ import {OrderProduct} from '../../../procurement/models/order-product';
 import {OrderType} from '@shared/components/order-page/order-page.component';
 import {OrderService} from '../../../procurement/services/order.service';
 import {finalize} from 'rxjs/operators';
-import {PurchasingCategory} from '../../../purchasing/models/purchasing-category';
+import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class CreateChainComponent implements OnInit {
     order_products_id: this.fb.array([]),
   });
 
-  purchasingCategories: PurchasingCategory[] = [];
+  purchasingCategories: PurchaseCategory[] = [];
   selectedPurchasingCategoryId: number;
 
   orderProducts: OrderProduct[] = [];
