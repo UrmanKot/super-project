@@ -16,6 +16,7 @@ import {PaymentService} from '../../services/payment.service';
 })
 export class CreateEditPaymentFormComponent implements OnInit {
   isDisabledCompanyPicker = false;
+  isLoading = false;
 
   form = this.fb.group({
     supplier: [<number>null, Validators.required],
@@ -113,6 +114,7 @@ export class CreateEditPaymentFormComponent implements OnInit {
   }
 
   private getInvoicesByCompany() {
+    this.isLoading = true;
     const query = [{
       name: 'supplier',
       value: this.form.get('supplier').value
@@ -131,6 +133,7 @@ export class CreateEditPaymentFormComponent implements OnInit {
           i.label = i.self_serial_number + ' (Invoice)' + ` (price: ${i.total_price_converted} €)`;
         }
       });
+      this.isLoading = false;
     });
   }
 

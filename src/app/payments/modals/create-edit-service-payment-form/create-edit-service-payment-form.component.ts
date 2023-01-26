@@ -19,6 +19,7 @@ import {Invoice} from '../../../procurement/models/invoice';
 })
 export class CreateEditServicePaymentFormComponent implements OnInit {
   isDisabledCompanyPicker = false;
+  isLoading = false;
 
   form = this.fb.group({
     supplier: [<number>null, Validators.required],
@@ -117,6 +118,7 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
   }
 
   getInvoicesByCompany() {
+    this.isLoading = true;
     const query = [
       {name: 'completed', value: true},
       {name: 'supplier', value: this.form.get('supplier').value},
@@ -135,6 +137,8 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
           i.label = i.self_serial_number + ' (Invoice)' + ` (price: ${i.total_price_converted} €)`;
         }
       });
+
+      this.isLoading = false;
     });
   }
 

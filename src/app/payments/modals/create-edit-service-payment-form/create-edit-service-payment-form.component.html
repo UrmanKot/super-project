@@ -17,29 +17,31 @@
     </div>
     <div class="form-group">
       <label>Invoice*</label>
-      <ng-container *ngIf="data.type === 'create'">
-        <p-multiSelect
-          formControlName="service_invoices"
-          class="disabled"
-          placeholder="Choose Invoice"
-          [options]="serviceInvoices"
-          optionValue="id"
-          optionLabel="label"
-          (onChange)="countSum()"
-        >
-        </p-multiSelect>
-      </ng-container>
-      <ng-container *ngIf="data.type === 'edit'">
-        <p-multiSelect
-          formControlName="service_invoices"
-          class="disabled"
-          placeholder="Choose Invoice"
-          [options]="serviceInvoices"
-          optionValue="id"
-          optionLabel="self_serial_number"
-          (onChange)="countSum()"
-        >
-        </p-multiSelect>
+      <ng-container *ngIf="!isLoading; else spinner">
+        <ng-container *ngIf="data.type === 'create'">
+          <p-multiSelect
+            formControlName="service_invoices"
+            class="disabled"
+            placeholder="Choose Invoice"
+            [options]="serviceInvoices"
+            optionValue="id"
+            optionLabel="label"
+            (onChange)="countSum()"
+          >
+          </p-multiSelect>
+        </ng-container>
+        <ng-container *ngIf="data.type === 'edit'">
+          <p-multiSelect
+            formControlName="service_invoices"
+            class="disabled"
+            placeholder="Choose Invoice"
+            [options]="serviceInvoices"
+            optionValue="id"
+            optionLabel="self_serial_number"
+            (onChange)="countSum()"
+          >
+          </p-multiSelect>
+        </ng-container>
       </ng-container>
     </div>
     <div class="form-group">
@@ -99,4 +101,8 @@
   ></button>
 </mat-dialog-actions>
 
-
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>
