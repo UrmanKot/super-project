@@ -267,9 +267,7 @@ export class OrderPageComponent implements OnInit {
       this.loaded.next();
       this.isLoading = false;
 
-      if (this.orderType !== 'purchase') {
-        this.getProducts();
-      }
+      this.getProducts();
 
       if (!this.order.purchase_category.is_material) {
         this.isPurchaseOrderNonMaterial = true;
@@ -415,15 +413,13 @@ export class OrderPageComponent implements OnInit {
   }
 
   onAddProduct() {
-    if (this.orderType === 'procurement') {
+    if (this.orderType !== 'outsourcing') {
       this.orderProductService.openAddProductToOrderModal(false, this.orderId).subscribe(product => {
         if (product) {
           this.getProducts();
         }
       });
-    }
-
-    if (this.orderType === 'outsourcing') {
+    } else {
       this.orderProductService.openAddOutsourcingRequestModal(this.orderId).subscribe(product => {
         if (product) {
           this.getProducts();

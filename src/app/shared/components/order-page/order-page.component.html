@@ -17,6 +17,7 @@
             </p>
           </div>
           <h4><span>Comment:</span> {{order.comment}}</h4>
+          <h4 *ngIf="orderType === 'purchase'"><span>Type:</span> {{order.purchase_category?.is_material ? 'Tangible' : 'Intangible'}}</h4>
           <div class="purchase-category" *ngIf="orderType === 'purchase'">
             <h4>
               <span>Purchase Category:</span>
@@ -68,7 +69,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="orderType !== 'purchase'">
+  <ng-container *ngIf="orderType !== 'purchase' || (orderType === 'purchase' && !isPurchaseOrderNonMaterial)">
     <h2 class="mb-4">Ordered Items</h2>
 
     <div class="page__card mb-4">

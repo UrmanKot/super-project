@@ -46,7 +46,7 @@ export class CreateChainComponent implements OnInit {
     this.orderProducts.forEach(p => {
       const product = this.fb.group({
         id: p.id,
-        quantity: [p.initial_quantity, [Validators.required, Validators.min(1), Validators.max(p.initial_quantity)]],
+        quantity: [p.initial_quantity, [Validators.required, Validators.min(1)]],
       });
 
       this.products.push(product);
