@@ -1,6 +1,12 @@
 <div class="modal-header">
-  <h2 class="modal-header__title">Add a New Item To Request</h2>
-  <p>Please Search the Item from catalogue and select items for request</p>
+  <ng-container *ngIf="!data.orderId">
+    <h2 class="modal-header__title">Add a New Item To Request</h2>
+    <p>Please Search the Item from catalogue and select items for request</p>
+  </ng-container>
+
+  <ng-container *ngIf="data.orderId">
+    <h2 class="modal-header__title">Add A New Item To Order</h2>
+  </ng-container>
 </div>
 
 <form [formGroup]="searchForm">
@@ -127,7 +133,8 @@
                       optionValue="id"
                     >
                     </p-dropdown>
-                    <div class="text-danger" *ngIf="product.technologies.length === 0">No technology to select from</div>
+                    <div class="text-danger" *ngIf="product.technologies.length === 0">No technology to select from
+                    </div>
                   </div>
                 </div>
               </div>

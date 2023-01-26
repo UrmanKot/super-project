@@ -1,0 +1,73 @@
+<div class="create-empty-purchasing-chain">
+  <div class="modal-header">
+    <h2 class="modal-header__title">
+      Create Empty Procurement Chain
+    </h2>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Supplier*</label>
+        <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+      </div>
+    </form>
+
+    <p class="mb-2 mt-2">Parent Category</p>
+
+    <div class="table mt-2" *ngIf="!form.get('is_for_root')?.value">
+      <p-treeTable
+        [value]="categoriesTree"
+        selectionMode="single"
+        [(selection)]="selectedNode"
+        [scrollable]="true"
+        (selectionChange)="onSelection()"
+        scrollHeight="calc(100vh - 36.25rem)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 50%; padding-left: 48px">Name</th>
+            <th style="width: 50%">Comment</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr
+            [ttRow]="rowNode"
+            [ttSelectableRow]="rowNode"
+          >
+            <td style="width: 50%">
+              <div class="table-toggle">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span>{{rowData.name}}</span>
+              </div>
+            </td>
+            <td style="width: 50%">
+              {{rowData.comment}}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="3">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <button
+      pButton
+      type="button"
+      class="p-button-success"
+      label="Create"
+      [loading]="isSaving"
+      [disabled]="form.invalid"
+      (click)="onCreate()"
+    ></button>
+  </mat-dialog-actions>
+</div>

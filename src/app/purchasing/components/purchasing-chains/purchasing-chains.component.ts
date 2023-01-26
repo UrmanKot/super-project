@@ -76,17 +76,6 @@ export class PurchasingChainsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const swipers = document.querySelectorAll('.swiper');
-    const swiperWrappers = document.querySelectorAll('.swiper-wrapper');
-
-    swipers.forEach((s, index) => {
-      if (s.clientWidth <= swiperWrappers[index].clientWidth) {
-        s.classList.add('hide')
-      }
-    })
-
-
-
     this.search$.pipe(
       tap(() => this.prepareForSearch()),
       switchMap(() => this.orderService.get(this.query)),
@@ -226,5 +215,13 @@ export class PurchasingChainsComponent implements OnInit {
   onSelectPurchaseCategories(ids: number[]) {
     this.searchForm.get('purchase_categories').patchValue(ids?.join(',') || null);
     this.search$.next();
+  }
+
+  onCreatePurchaseChain() {
+    this.orderService.openCreateEmptyPurchaseChainModal().subscribe(order => {
+      if (order) {
+        this.router.navigate(['/purchasing/chains/order', order.id])
+      }
+    })
   }
 }

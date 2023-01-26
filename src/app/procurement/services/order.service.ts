@@ -21,6 +21,12 @@ import {AddProductsToChainComponent} from '@shared/modals/add-products-to-chain/
 import {
   CreateOutsourcingRequestComponent
 } from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
+import {
+  CreateEditPurchasingCategoryComponent
+} from '../../purchasing/modals/create-edit-purchasing-category/create-edit-purchasing-category.component';
+import {
+  CreateEmptyPurchaseChainComponent
+} from '../../purchasing/modals/create-empty-purchase-chain/create-empty-purchase-chain.component';
 
 @Injectable({
   providedIn: 'root'
@@ -213,6 +219,18 @@ export class OrderService {
         data: {products, orderType},
         autoFocus: false,
         panelClass: 'modal-picker',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openCreateEmptyPurchaseChainModal(): Observable<Order> {
+    return this.dialog
+      .open<CreateEmptyPurchaseChainComponent>(CreateEmptyPurchaseChainComponent, {
+        width: '54rem',
+        height: 'auto',
+        data: {},
+        autoFocus: false,
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
