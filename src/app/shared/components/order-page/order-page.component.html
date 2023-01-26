@@ -68,107 +68,161 @@
     </div>
   </div>
 
-  <h2 class="mb-4">Ordered Items</h2>
+  <ng-container *ngIf="orderType !== 'purchase'">
+    <h2 class="mb-4">Ordered Items</h2>
 
-  <div class="page__card mb-4">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 24rem)"
-        [scrollable]="true"
-        [paginator]="products.length > 0"
-        [rows]="10"
-        [(selection)]="selectedProduct"
-        [value]="products"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
-            <p-menubar
-              class="ml-auto"
-              [model]="productMenuItems"
-              [class.disabled]="!selectedProduct"></p-menubar>
-            <button
-              (click)="onAddProduct()"
-              pButton type="button"
-              icon="pi pi-plus"
-              class="ml-2"
-              label="Add Item"
-              [disabled]="isLoadingProducts"
-            >
-            </button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
-            <th style="width: 14%">Code</th>
-            <th style="width: 18%">Name</th>
-            <th style="width: 15%">Description</th>
-            <th style="width: 12%" class="text-center">Ordered Quantity</th>
-            <th style="width: 8%" class="text-center">Date</th>
-            <th style="width: 10%" class="text-center">Delivery Date</th>
-            <th style="width: 10%" class="text-center">Request Type</th>
-            <th style="width: 20%" class="text-center">Root Lists</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr [pSelectableRow]="product">
-            <td style="width: 5%" class="text-center">{{i + 1}}</td>
-            <td style="width: 14%">{{product.nomenclature.code}}</td>
-            <td style="width: 18%">{{product.nomenclature.name}}</td>
-            <td style="width: 15%">
-              <div class="word-break">{{product.nomenclature.description}}</div>
-            </td>
-            <td style="width: 12%" class="text-center">
-              {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
-            </td>
-            <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
-            <td style="width: 10%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
-            <td style="width: 10%" class="text-center">
-              <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
-              <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
-            </td>
-            <td style="width: 20%">
-              <div
-                class="d-block"
-                *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #dt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="products.length > 0"
+          [rows]="10"
+          [(selection)]="selectedProduct"
+          [value]="products"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="productMenuItems"
+                [class.disabled]="!selectedProduct"></p-menubar>
+              <button
+                (click)="onAddProduct()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Item"
+                [disabled]="isLoadingProducts"
               >
-                {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="9">
-              <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoadingProducts">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
-      </p-table>
+              </button>
+            </div>
+          </ng-template>
+          <ng-container *ngIf="orderType !== 'outsourcing'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 5%" class="index-header text-center">#</th>
+                <th style="width: 14%">Code</th>
+                <th style="width: 18%">Name</th>
+                <th style="width: 15%">Description</th>
+                <th style="width: 12%" class="text-center">Ordered Quantity</th>
+                <th style="width: 8%" class="text-center">Date</th>
+                <th style="width: 10%" class="text-center">Delivery Date</th>
+                <th style="width: 10%" class="text-center">Request Type</th>
+                <th style="width: 20%" class="text-center">Root Lists</th>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType === 'outsourcing'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 3%" class="index-header text-center">#</th>
+                <th style="width: 14%">Code</th>
+                <th style="width: 14%">Name</th>
+                <th style="width: 15%">Description</th>
+                <th style="width: 8%" class="text-center">Technology</th>
+                <th style="width: 8%" class="text-center">Ordered Quantity</th>
+                <th style="width: 8%" class="text-center">Date</th>
+                <th style="width: 8%" class="text-center">Delivery Date</th>
+                <th style="width: 8%" class="text-center">Request Type</th>
+                <th style="width: 14%" class="text-center">Root Lists</th>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType !== 'outsourcing'">
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td style="width: 5%" class="text-center">{{i + 1}}</td>
+                <td style="width: 14%">{{product.nomenclature.code}}</td>
+                <td style="width: 18%">{{product.nomenclature.name}}</td>
+                <td style="width: 15%">
+                  <div class="word-break">{{product.nomenclature.description}}</div>
+                </td>
+                <td style="width: 12%" class="text-center">
+                  {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
+                </td>
+                <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 10%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 10%" class="text-center">
+                  <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
+                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                </td>
+                <td style="width: 20%">
+                  <div
+                    class="d-block"
+                    *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
+                  >
+                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType === 'outsourcing'">
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td style="width: 3%" class="text-center">{{i + 1}}</td>
+                <td style="width: 14%">{{product.nomenclature.code}}</td>
+                <td style="width: 14%">{{product.nomenclature.name}}</td>
+                <td style="width: 15%">
+                  <div class="word-break">{{product.nomenclature.description}}</div>
+                </td>
+                <td style="width: 8%" class="text-center">
+                  {{product.current_technology?.name}}
+                </td>
+                <td style="width: 8%" class="text-center">
+                  {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
+                </td>
+                <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 8%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 8%" class="text-center">
+                  <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
+                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                </td>
+                <td style="width: 14%">
+                  <div
+                    class="d-block"
+                    *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
+                  >
+                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="10">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
     </div>
-    <div *ngIf="!dt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
-      <p-button
-        type="button"
-        (click)="dt.paginator=true"
-        styleClass="p-button-text"
-      >
-        Return pagination
-      </p-button>
-    </div>
-  </div>
+  </ng-container>
 
   <ng-container *ngIf="orderType === 'outsourcing'">
     <h2 class="mb-4">

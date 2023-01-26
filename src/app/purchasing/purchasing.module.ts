@@ -12,6 +12,7 @@ import {SharedModule} from '@shared/shared.module';
 import { CreateEditPurchasingCategoryComponent } from './modals/create-edit-purchasing-category/create-edit-purchasing-category.component';
 import { PurchasingChainCreationListComponent } from './components/purchasing-chain-creation-list/purchasing-chain-creation-list.component';
 import { PurchasingRequestsComponent } from './components/purchasing-requests/purchasing-requests.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { PurchasingRequestsComponent } from './components/purchasing-requests/pu
     CommonModule,
     SharedModule,
     PurchasingRouting,
-    LayoutModule
+    LayoutModule,
+    TriStateCheckboxModule
   ]
 })
 export class PurchasingModule { }

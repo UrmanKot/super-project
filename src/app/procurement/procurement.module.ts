@@ -17,6 +17,7 @@ import { AuxiliaryInvoicesTypesListComponent } from './components/auxiliary-invo
 import { CreateEditAuxiliaryInvoiceTypeComponent } from './modals/create-edit-auxiliary-invoice-type/create-edit-auxiliary-invoice-type.component';
 import { ProcurementOrderStatusesComponent } from './components/procurement-order-statuses/procurement-order-statuses.component';
 import { ProcurementChainCreationListComponent } from './components/procurement-chain-creation-list/procurement-chain-creation-list.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ProcurementChainCreationListComponent } from './components/procurement-
     ProcurementRouting,
     LayoutModule,
     SharedModule,
-    WarehouseModule
+    WarehouseModule,
+    TriStateCheckboxModule
   ]
 })
 export class ProcurementModule { }

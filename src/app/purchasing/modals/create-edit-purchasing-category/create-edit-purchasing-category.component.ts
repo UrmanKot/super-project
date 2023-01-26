@@ -5,7 +5,7 @@ import {TreeService} from '@shared/services/tree.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {finalize} from 'rxjs/operators';
-import {PurchasingCategory} from '../../models/purchasing-category';
+import {PurchaseCategory} from '../../models/purchase-category';
 import {PurchasingCategoryService} from '../../services/purchasing-category.service';
 
 @Component({
@@ -22,9 +22,9 @@ export class CreateEditPurchasingCategoryComponent implements OnInit {
   ];
 
   isLoading = true;
-  categories: PurchasingCategory[] = [];
-  selectedNode: TreeNode<PurchasingCategory>;
-  categoriesTree: TreeNode<PurchasingCategory>[] = [];
+  categories: PurchaseCategory[] = [];
+  selectedNode: TreeNode<PurchaseCategory>;
+  categoriesTree: TreeNode<PurchaseCategory>[] = [];
 
   form = this.fb.group({
     name: ['', [Validators.required]],
@@ -39,7 +39,7 @@ export class CreateEditPurchasingCategoryComponent implements OnInit {
     private readonly treeService: TreeService,
     private dialogRef: MatDialogRef<CreateEditPurchasingCategoryComponent>,
     private purchasingCategoryService: PurchasingCategoryService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, category: PurchasingCategory }
+    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, category: PurchaseCategory }
   ) {
   }
 
@@ -56,7 +56,7 @@ export class CreateEditPurchasingCategoryComponent implements OnInit {
   }
 
   findNode() {
-    const find = (nodes: TreeNode<PurchasingCategory>[]) => {
+    const find = (nodes: TreeNode<PurchaseCategory>[]) => {
       const foundNode = nodes.find(n => n.data.id === this.data.category.id);
 
       if (foundNode) {

@@ -1,5 +1,6 @@
 <div class="technology-picker">
   <p-multiSelect
+    [showClear]="true"
     *ngIf="!isLoading; else spinner"
     [options]="technologies"
     [(ngModel)]="selectedTechnologies"

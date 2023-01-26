@@ -35,70 +35,106 @@
                 [filter]="true"
                 [showClear]="true"
                 [options]="nomenclaturesList"
+                formControlName="contains_nomenclature"
                 optionValue="id"
                 optionLabel="name"
                 placeholder="No Nomenclature Selected"
+                (ngModelChange)="search$.next()"
               ></p-dropdown>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Company</label>
-              <pek-company-picker></pek-company-picker>
+              <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Root List</label>
+                  <p-dropdown
+                    [filter]="true"
+                    [showClear]="true"
+                    [options]="rootLists"
+                    formControlName="order_root_list_id"
+                    (ngModelChange)="search$.next()"
+                    optionValue="list.id"
+                    optionLabel="fullName"
+                    placeholder="No List Selected"
+                  ></p-dropdown>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Status</label>
+                  <pek-multi-statuses-picker
+                    (selectStatuses)="onSelectStatuses($event)"
+                    [accountingType]="1"
+                  ></pek-multi-statuses-picker>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label>Root List</label>
-              <p-dropdown
-                [filter]="true"
-                [showClear]="true"
-                [options]="rootLists"
-                optionValue="fullName"
-                optionLabel="fullName"
-                placeholder="No List Selected"
-              ></p-dropdown>
+              <label>Purchase Categories</label>
+              <pek-multi-purchase-category-picker (choiceCategories)="onSelectPurchaseCategories($event)"></pek-multi-purchase-category-picker>
             </div>
           </div>
           <div class="col-3">
-            <div class="form-group">
-              <label>Status</label>
-              <pek-multi-statuses-picker
-                [accountingType]="4"
-              ></pek-multi-statuses-picker>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-group">
-              <label>From</label>
-              <p-calendar
-                dataType="date"
-                [showButtonBar]="true"
-                dateFormat="dd/mm/yy"
-                [readonlyInput]="true"
-              >
-              </p-calendar>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-group">
-              <label>To</label>
-              <p-calendar
-                dataType="date"
-                [showButtonBar]="true"
-                dateFormat="dd/mm/yy"
-                [readonlyInput]="true"
-              >
-              </p-calendar>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>From</label>
+                  <p-calendar
+                    formControlName="created_after"
+                    dataType="date"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="search$.next()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>To</label>
+                  <p-calendar
+                    dataType="date"
+                    formControlName="created_before"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="search$.next()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Product Structure Categories</label>
-              <pek-multi-product-structure-categories-picker></pek-multi-product-structure-categories-picker>
+              <pek-multi-product-structure-categories-picker (choiceCategories)="onSelectRootCategories($event)"></pek-multi-product-structure-categories-picker>
             </div>
           </div>
           <div class="col-3">
+            <div class="form-group">
+              <label>Warehouse Category</label>
+              <pek-multi-product-categories-picker (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
+            </div>
+          </div>
+          <div class="col-3 d-flex">
+            <div class="form-group form-group_checkbox">
+              <label>Declined</label>
+              <p-triStateCheckbox
+                formControlName="contains_declined_payment"
+                (ngModelChange)="search$.next()"
+              ></p-triStateCheckbox>
+            </div>
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
         </div>
@@ -108,6 +144,7 @@
     <div class="page__table">
       <p-table
         #dt
+        [(first)]="firstPage"
         selectionMode="single"
         [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
         [scrollable]="true"
@@ -116,7 +153,6 @@
         [rows]="10"
         [(selection)]="selectedOrder"
         [value]="orders"
-        styleClass="p-datatable-gridlines"
       >
         <ng-template pTemplate="header">
           <tr>

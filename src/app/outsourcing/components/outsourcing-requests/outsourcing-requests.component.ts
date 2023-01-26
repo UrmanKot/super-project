@@ -3,12 +3,13 @@ import {Paginator} from 'primeng/paginator';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
 import {OrderProduct} from '../../../procurement/models/order-product';
-import {BehaviorSubject, Observable, switchMap} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {OrderService} from '../../../procurement/services/order.service';
+import {Technology} from '../../../product-structure/models/technology';
 
 @UntilDestroy()
 @Component({
@@ -26,10 +27,10 @@ export class OutsourcingRequestsComponent implements OnInit {
   ];
 
   searchForm: FormGroup = this.fb.group({
-    name: [''],
-    code: [''],
-    root_categories: [null],
-    category: [null],
+    nomenclature__name: [''],
+    nomenclature__code: [''],
+    request_date: [null],
+    technologies_ids: [null],
     status: ['not_ordered']
   });
 
@@ -45,6 +46,8 @@ export class OutsourcingRequestsComponent implements OnInit {
   selectedProducts: OrderProduct[] = [];
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  name$: Subject<void> = new Subject<void>();
+  code$: Subject<void> = new Subject<void>();
 
   orderProducts$: Observable<OrderProduct[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
@@ -68,6 +71,19 @@ export class OutsourcingRequestsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.name$.pipe(
+      debounceTime(150),
+      tap(() => this.search$.next()),
+      distinctUntilChanged(),
+      untilDestroyed(this)
+    ).subscribe();
+
+    this.code$.pipe(
+      debounceTime(150),
+      tap(() => this.search$.next()),
+      distinctUntilChanged(),
+      untilDestroyed(this)
+    ).subscribe();
   }
 
   setProductStatus(product: OrderProduct) {
@@ -102,11 +118,19 @@ export class OutsourcingRequestsComponent implements OnInit {
     ];
 
     for (const key in this.searchForm.controls) {
-      if (this.searchForm.controls[key].value) {
-        this.query.push({
-          name: key,
-          value: this.searchForm.controls[key].value
-        });
+      if (this.searchForm.controls[key].value !== null) {
+
+        if (this.searchForm.controls[key].value instanceof Date) {
+          this.query.push({
+            name: key,
+            value: this.adapterService.dateAdapter(this.searchForm.controls[key].value)
+          });
+        } else {
+          this.query.push({
+            name: key,
+            value: this.searchForm.controls[key].value
+          });
+        }
       }
     }
   }
@@ -132,10 +156,15 @@ export class OutsourcingRequestsComponent implements OnInit {
   }
 
   onCreateRequest() {
-    this.orderProductService.openAddOutsourcingRequestModal().subscribe(products => {
+    this.orderProductService.openAddOutsourcingRequestModal(null).subscribe(products => {
       if (products) {
         this.search$.next();
       }
     });
+  }
+
+  onSelectTechnologies(technologies: Technology[]) {
+    this.searchForm.get('technologies_ids').patchValue(technologies?.map(t => t.id)?.join(',') || null);
+    this.search$.next();
   }
 }

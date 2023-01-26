@@ -13,6 +13,7 @@ import { EditOrderSupplierComponent } from './modals/edit-order-supplier/edit-or
 import { OutsourcingChainCreationListComponent } from './components/outsourcing-chain-creation-list/outsourcing-chain-creation-list.component';
 import { OutsourcingRequestsComponent } from './components/outsourcing-requests/outsourcing-requests.component';
 import { CreateOutsourcingRequestComponent } from './modals/create-outsourcing-request/create-outsourcing-request.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { CreateOutsourcingRequestComponent } from './modals/create-outsourcing-r
     OutsourcingRouting,
     SharedModule,
     LayoutModule,
+    TriStateCheckboxModule,
   ]
 })
 export class OutsourcingModule { }

@@ -3,7 +3,7 @@ import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {QuerySearch} from '@shared/models/other';
 import {Observable} from 'rxjs';
-import {PurchasingCategory} from '../models/purchasing-category';
+import {PurchaseCategory} from '../models/purchase-category';
 import {map} from 'rxjs/operators';
 import {ModalActionType} from '@shared/models/modal-action';
 import {
@@ -24,7 +24,7 @@ export class PurchasingCategoryService {
   ) {
   }
 
-  get(query?: QuerySearch[]): Observable<PurchasingCategory[]> {
+  get(query?: QuerySearch[]): Observable<PurchaseCategory[]> {
     let queryParams = '';
     if (query) {
       query.forEach((element, index) => {
@@ -35,25 +35,25 @@ export class PurchasingCategoryService {
         }
       });
     }
-    return this.httpClient.get<{ data: PurchasingCategory[] }>(this.API_URL + this.url + queryParams).pipe(
+    return this.httpClient.get<{ data: PurchaseCategory[] }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }
 
-  getAll(): Observable<PurchasingCategory[]> {
-    return this.httpClient.get<{ data: PurchasingCategory[] }>(this.API_URL + this.url + 'all/').pipe(
+  getAll(): Observable<PurchaseCategory[]> {
+    return this.httpClient.get<{ data: PurchaseCategory[] }>(this.API_URL + this.url + 'all/').pipe(
       map(response => response.data)
     );
   }
 
-  create(category: Partial<PurchasingCategory>): Observable<PurchasingCategory> {
-    return this.httpClient.post<{ data: PurchasingCategory }>(this.API_URL + this.url, category).pipe(
+  create(category: Partial<PurchaseCategory>): Observable<PurchaseCategory> {
+    return this.httpClient.post<{ data: PurchaseCategory }>(this.API_URL + this.url, category).pipe(
       map(response => response.data)
     );
   }
 
-  update(category: Partial<PurchasingCategory>, id: number): Observable<PurchasingCategory> {
-    return this.httpClient.patch<{ data: PurchasingCategory }>(this.API_URL + this.url + `${id}/`, category).pipe(
+  update(category: Partial<PurchaseCategory>, id: number): Observable<PurchaseCategory> {
+    return this.httpClient.patch<{ data: PurchaseCategory }>(this.API_URL + this.url + `${id}/`, category).pipe(
       map(response => response.data)
     );
   }
@@ -62,7 +62,7 @@ export class PurchasingCategoryService {
     return this.httpClient.delete(this.API_URL + this.url + `${id}/`);
   }
 
-  createEditCategory(type: ModalActionType, category?: PurchasingCategory): Observable<PurchasingCategory> {
+  createEditCategory(type: ModalActionType, category?: PurchaseCategory): Observable<PurchaseCategory> {
     return this.dialog
       .open<CreateEditPurchasingCategoryComponent>(CreateEditPurchasingCategoryComponent, {
         width: '54rem',

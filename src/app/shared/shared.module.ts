@@ -82,6 +82,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { CreateEditStatusComponent } from './modals/create-edit-status/create-edit-status.component';
 import { CreateChainComponent } from './modals/create-chain/create-chain.component';
 import { AddProductsToChainComponent } from './modals/add-products-to-chain/add-products-to-chain.component';
+import { MultiProductCategoriesPickerComponent } from './pickers/multi-product-categories-picker/multi-product-categories-picker.component';
+import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-category-picker/multi-purchase-category-picker.component';
 
 
 @NgModule({
@@ -143,6 +145,8 @@ import { AddProductsToChainComponent } from './modals/add-products-to-chain/add-
     CreateEditStatusComponent,
     CreateChainComponent,
     AddProductsToChainComponent,
+    MultiProductCategoriesPickerComponent,
+    MultiPurchaseCategoryPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -207,6 +211,8 @@ import { AddProductsToChainComponent } from './modals/add-products-to-chain/add-
     MultiSelectModule,
     OrderPageComponent,
     OrderStatusesComponent,
+    MultiProductCategoriesPickerComponent,
+    MultiPurchaseCategoryPickerComponent,
   ],
   imports: [
     MultiSelectModule,

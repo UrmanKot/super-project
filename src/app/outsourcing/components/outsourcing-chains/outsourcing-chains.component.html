@@ -43,16 +43,18 @@
                 [filter]="true"
                 [showClear]="true"
                 [options]="nomenclaturesList"
+                formControlName="contains_nomenclature"
                 optionValue="id"
                 optionLabel="name"
                 placeholder="No Nomenclature Selected"
+                (ngModelChange)="search$.next()"
               ></p-dropdown>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Company</label>
-              <pek-company-picker></pek-company-picker>
+              <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
             </div>
           </div>
           <div class="col-3">
@@ -62,7 +64,9 @@
                 [filter]="true"
                 [showClear]="true"
                 [options]="rootLists"
-                optionValue="fullName"
+                formControlName="order_root_list_id"
+                (ngModelChange)="search$.next()"
+                optionValue="list.id"
                 optionLabel="fullName"
                 placeholder="No List Selected"
               ></p-dropdown>
@@ -72,6 +76,7 @@
             <div class="form-group">
               <label>Status</label>
               <pek-multi-statuses-picker
+                (selectStatuses)="onSelectStatuses($event)"
                 [accountingType]="2"
               ></pek-multi-statuses-picker>
             </div>
@@ -80,10 +85,12 @@
             <div class="form-group">
               <label>From</label>
               <p-calendar
+                formControlName="created_after"
                 dataType="date"
                 [showButtonBar]="true"
                 dateFormat="dd/mm/yy"
                 [readonlyInput]="true"
+                (ngModelChange)="search$.next()"
               >
               </p-calendar>
             </div>
@@ -93,15 +100,23 @@
               <label>To</label>
               <p-calendar
                 dataType="date"
+                formControlName="created_before"
                 [showButtonBar]="true"
                 dateFormat="dd/mm/yy"
                 [readonlyInput]="true"
+                (ngModelChange)="search$.next()"
               >
               </p-calendar>
             </div>
           </div>
           <div class="col-3">
-
+            <div class="form-group form-group_checkbox">
+              <label>Declined</label>
+              <p-triStateCheckbox
+                formControlName="contains_declined_payment"
+                (ngModelChange)="search$.next()"
+              ></p-triStateCheckbox>
+            </div>
           </div>
           <div class="col-3">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
@@ -117,11 +132,11 @@
         [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
         [scrollable]="true"
         dataKey="id"
+        [(first)]="firstPage"
         [paginator]="orders.length > 0"
         [rows]="10"
         [(selection)]="selectedOrder"
         [value]="orders"
-        styleClass="p-datatable-gridlines"
       >
         <ng-template pTemplate="header">
           <tr>

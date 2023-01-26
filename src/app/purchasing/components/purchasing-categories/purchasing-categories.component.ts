@@ -4,7 +4,7 @@ import {TreeService} from '@shared/services/tree.service';
 import {ModalService} from '@shared/services/modal.service';
 import {cloneDeep} from 'lodash-es';
 import {PurchasingCategoryService} from '../../services/purchasing-category.service';
-import {PurchasingCategory} from '../../models/purchasing-category';
+import {PurchaseCategory} from '../../models/purchase-category';
 
 @Component({
   selector: 'pek-purchasing-categories',
@@ -13,9 +13,9 @@ import {PurchasingCategory} from '../../models/purchasing-category';
 })
 export class PurchasingCategoriesComponent implements OnInit {
   isLoading = true;
-  purchasingCategories: PurchasingCategory[] = [];
-  selectedNode: TreeNode<PurchasingCategory>;
-  categoriesTree: TreeNode<PurchasingCategory>[] = [];
+  purchasingCategories: PurchaseCategory[] = [];
+  selectedNode: TreeNode<PurchaseCategory>;
+  categoriesTree: TreeNode<PurchaseCategory>[] = [];
 
   expanseMap = {};
 

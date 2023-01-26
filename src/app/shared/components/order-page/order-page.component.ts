@@ -22,7 +22,7 @@ import {OrderSupplierService} from '../../../confirmation/services/order-supplie
 import {RequestService} from '../../../warehouse/services/request.service';
 import {OrderTechnicalEquipment} from '../../../warehouse/models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../../warehouse/services/order-technical-equipments.service';
-import {PurchasingCategory} from '../../../purchasing/models/purchasing-category';
+import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 
 export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
@@ -186,7 +186,7 @@ export class OrderPageComponent implements OnInit {
   payments: Payment[] = [];
   orderMaterials: OrderMaterial[] = [];
   technicalEquipments: OrderTechnicalEquipment[] = [];
-  purchasingCategories: PurchasingCategory[] = [];
+  purchasingCategories: PurchaseCategory[] = [];
   files: any[] = [];
 
   serviceProformaInvoices: Invoice[] = [];
@@ -265,7 +265,9 @@ export class OrderPageComponent implements OnInit {
       this.loaded.next();
       this.isLoading = false;
 
-      this.getProducts();
+      if (this.orderType !== 'purchase') {
+        this.getProducts();
+      }
 
       if (this.orderType === 'purchase') {
         this.getPurchasingCategories();
@@ -407,11 +409,21 @@ export class OrderPageComponent implements OnInit {
   }
 
   onAddProduct() {
-    this.orderProductService.openAddProductToOrderModal(false, this.orderId).subscribe(product => {
-      if (product) {
-        this.getProducts();
-      }
-    });
+    if (this.orderType === 'procurement') {
+      this.orderProductService.openAddProductToOrderModal(false, this.orderId).subscribe(product => {
+        if (product) {
+          this.getProducts();
+        }
+      });
+    }
+
+    if (this.orderType === 'outsourcing') {
+      this.orderProductService.openAddOutsourcingRequestModal(this.orderId).subscribe(product => {
+        if (product) {
+          this.getProducts();
+        }
+      })
+    }
   }
 
   onCreateProformaInvoice() {

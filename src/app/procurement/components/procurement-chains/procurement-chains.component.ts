@@ -9,7 +9,11 @@ import {ListProduct} from '../../../warehouse/models/list-product';
 import {MenuItem} from 'primeng/api';
 import {Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
+import {BehaviorSubject, switchMap} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'pek-procurement-chains',
   templateUrl: './procurement-chains.component.html',
@@ -33,14 +37,15 @@ export class ProcurementChainsComponent implements OnInit {
   }];
 
   searchForm: FormGroup = this.fb.group({
-    page: [1],
-    name: [''],
-    code: [''],
-    responsible_employee_id: [null],
-    date_created_after: [null],
-    date_created_before: [null],
-    category_ids: null,
-    root_categories: null,
+    contains_nomenclature: [null],
+    supplier: [null],
+    order_root_list_id: [null],
+    active_status__in: [null],
+    created_after: [null],
+    created_before: [null],
+    root_production_list_products_root_categories: [null],
+    contains_nomenclatures_by_categories: [null],
+    contains_declined_payment: [null],
   });
 
   orders: Order[] = [];
@@ -52,13 +57,12 @@ export class ProcurementChainsComponent implements OnInit {
   nomenclaturesList: Nomenclature[] = [];
   rootLists: any[] = [];
 
-  query: QuerySearch[] = [
-    {name: 'accounting_type', value: 1},
-    {name: 'has_purchase_category', value: false},
-    {name: 'exclude_with_active_final_status', value: true}
-  ];
+  query: QuerySearch[] = [];
+
+  search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
 
   tableScrollHeight = '29.625rem';
+  firstPage: number = 0;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -70,25 +74,23 @@ export class ProcurementChainsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getOrders();
-  }
-
-  getOrders() {
-    this.isLoading = true;
-
-    this.orderService.get(this.query).subscribe(orders => {
-      this.orders = orders;
-
-      this.orders.map(x => {
-        x.created = new Date(x.created);
-        x.created_to = x.created;
-        x.status = x.statuses.filter(stat => stat.is_active)[0]?.status;
-        x.activeStatusDate = x.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
-      });
-
-      this.generateNomenclaturesListAndRootLists();
-      this.isLoading = false;
-    });
+    this.search$.pipe(
+      tap(() => this.prepareForSearch()),
+      switchMap(() => this.orderService.get(this.query)),
+      map(orders =>
+        orders.map(order => {
+          order.created = new Date(order.created);
+          order.created_to = order.created;
+          order.status = order.statuses.filter(stat => stat.is_active)[0]?.status;
+          order.activeStatusDate = order.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
+          return order;
+        })
+      ),
+      tap(orders => this.orders = orders),
+      tap(() => this.generateNomenclaturesListAndRootLists()),
+      tap(() => this.isLoading = false),
+      untilDestroyed(this)
+    ).subscribe();
   }
 
   generateNomenclaturesListAndRootLists() {
@@ -127,6 +129,8 @@ export class ProcurementChainsComponent implements OnInit {
       if (a.fullName > b.fullName) return 1;
       return 0;
     });
+
+    console.log(this.rootLists);
   }
 
   getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
@@ -155,5 +159,56 @@ export class ProcurementChainsComponent implements OnInit {
         });
       }
     });
+  }
+
+  private prepareForSearch() {
+    this.isLoading = true;
+    this.selectedOrder = null;
+    this.orders = [];
+
+    this.query = [
+      {name: 'accounting_type', value: 1},
+      {name: 'has_purchase_category', value: false},
+      {name: 'exclude_with_active_final_status', value: true}
+    ];
+
+    for (const key in this.searchForm.controls) {
+      if (this.searchForm.controls[key].value !== null) {
+
+        if (this.searchForm.controls[key].value instanceof Date) {
+          this.query.push({
+            name: key,
+            value: this.adapterService.dateAdapter(this.searchForm.controls[key].value)
+          });
+        } else {
+          this.query.push({
+            name: key,
+            value: this.searchForm.controls[key].value
+          });
+        }
+      }
+    }
+
+    this.firstPage = 0;
+  }
+
+  onSelectCompany(id: number) {
+    this.searchForm.get('supplier').patchValue(id);
+    this.search$.next();
+  }
+
+  onSelectStatuses(ids: number[]) {
+    this.searchForm.get('active_status__in').patchValue(ids?.join(',') || null);
+    this.search$.next();
+  }
+
+  onSelectRootCategories(ids: string) {
+    this.searchForm.get('root_production_list_products_root_categories').patchValue(ids);
+    this.search$.next();
+  }
+
+  onSelectCategories(ids: number[]) {
+    this.searchForm.get('contains_nomenclatures_by_categories').patchValue(ids?.join(',') || null);
+    this.search$.next();
   }
 }

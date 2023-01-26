@@ -72,7 +72,7 @@ export class CreateOutsourcingRequestComponent implements OnInit {
     private readonly orderProductService: OrderProductService,
     private readonly adapterService: AdapterService,
     private dialogRef: MatDialogRef<CreateOutsourcingRequestComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {}
+    @Inject(MAT_DIALOG_DATA) public data: { orderId: number }
   ) {
   }
 
@@ -90,6 +90,8 @@ export class CreateOutsourcingRequestComponent implements OnInit {
       distinctUntilChanged(),
       untilDestroyed(this)
     ).subscribe();
+
+    this.createForm.get('order').patchValue(this.data.orderId);
   }
 
   paginateToFistPage() {

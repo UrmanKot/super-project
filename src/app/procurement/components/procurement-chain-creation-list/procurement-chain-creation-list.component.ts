@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OrderProduct} from '../../models/order-product';
-import {BehaviorSubject, Observable, switchMap} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -31,10 +31,9 @@ export class ProcurementChainCreationListComponent implements OnInit {
   ];
 
   searchForm: FormGroup = this.fb.group({
-    name: [''],
-    code: [''],
-    root_categories: [null],
-    category: [null],
+    nomenclature__name: [''],
+    categories_ids: [null],
+    request_date: [null],
     status: ['not_ordered']
   });
 
@@ -50,6 +49,7 @@ export class ProcurementChainCreationListComponent implements OnInit {
   selectedProducts: OrderProduct[] = [];
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  name$: Subject<void> = new Subject<void>();
 
   orderProducts$: Observable<OrderProduct[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
@@ -75,6 +75,12 @@ export class ProcurementChainCreationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.name$.pipe(
+      debounceTime(150),
+      tap(() => this.search$.next()),
+      distinctUntilChanged(),
+      untilDestroyed(this)
+    ).subscribe();
   }
 
   setProductStatus(product: OrderProduct) {
@@ -114,11 +120,19 @@ export class ProcurementChainCreationListComponent implements OnInit {
     ];
 
     for (const key in this.searchForm.controls) {
-      if (this.searchForm.controls[key].value) {
-        this.query.push({
-          name: key,
-          value: this.searchForm.controls[key].value
-        });
+      if (this.searchForm.controls[key].value !== null) {
+
+        if (this.searchForm.controls[key].value instanceof Date) {
+          this.query.push({
+            name: key,
+            value: this.adapterService.dateAdapter(this.searchForm.controls[key].value)
+          });
+        } else {
+          this.query.push({
+            name: key,
+            value: this.searchForm.controls[key].value
+          });
+        }
       }
     }
   }
@@ -215,5 +229,10 @@ export class ProcurementChainCreationListComponent implements OnInit {
         this.search$.next();
       }
     });
+  }
+
+  onSelectCategories(ids: number[]) {
+    this.searchForm.get('categories_ids').patchValue(ids?.join(',') || null);
+    this.search$.next();
   }
 }

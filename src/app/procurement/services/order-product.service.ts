@@ -120,12 +120,12 @@ export class OrderProductService {
     return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct)
   }
 
-  openAddOutsourcingRequestModal(): Observable<OrderProduct> {
+  openAddOutsourcingRequestModal(orderId: number): Observable<OrderProduct> {
     return this.dialog
       .open<CreateOutsourcingRequestComponent>(CreateOutsourcingRequestComponent, {
         width: '70rem',
         height: 'auto',
-        data: {},
+        data: {orderId},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

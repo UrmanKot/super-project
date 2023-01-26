@@ -1,4 +1,4 @@
-export class PurchasingCategory {
+export class PurchaseCategory {
   readonly id: number;
   name: string;
   description: string;
@@ -12,5 +12,5 @@ export class PurchasingCategories {
   count: number;
   next: string;
   previous: string;
-  results: PurchasingCategory[];
+  results: PurchaseCategory[];
 }
