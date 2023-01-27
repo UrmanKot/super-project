@@ -72,17 +72,17 @@ export class CrmTreeCompanyPickerComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.tree.forEach(country => {
-      country.children.forEach(region => {
-        if (region.data.region.id === this.selectedRegion.id) {
-          this.selectedNode = region;
-        }
+    if (this.selectedRegion) {
+      this.tree.forEach(country => {
+        country.children.forEach(region => {
+          if (region.data.region.id === this.selectedRegion.id) {
+            this.selectedNode = region;
+          }
+        });
       });
-    });
-    // this.countries
-    this.tree = this.tree.map(n => n);
+    }
 
-    console.log('this.tree', this.tree);
+    this.tree = this.tree.map(n => n);
   }
 
   ngOnDestroy() {
@@ -92,6 +92,5 @@ export class CrmTreeCompanyPickerComponent implements OnInit, OnDestroy {
 
   changed($event: any) {
     this.regionSelected.emit($event.data.region);
-    console.log('Changed ', $event);
   }
 }
