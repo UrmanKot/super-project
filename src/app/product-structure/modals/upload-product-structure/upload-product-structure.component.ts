@@ -50,8 +50,7 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
   previewStructure() {
     const dataFprStructurePreview = {
       file_xls: this.fileToUpload,
-      root_product_id: this.data.productId,
-      selected_product_id: this.data.productId
+      root_product_id: this.data.productId
     };
 
     this.productService.compare_structure(dataFprStructurePreview)

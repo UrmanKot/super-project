@@ -118,8 +118,7 @@ export class ProductService {
   compare_structure(
     data: {
       file_xls: File,
-      root_product_id: number,
-      selected_product_id: number
+      root_product_id: number
     }): Observable<{ data: ProductStructureCompareResult }> {
     const formData = new FormData();
 
