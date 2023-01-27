@@ -27,6 +27,7 @@ export class User {
   can_verify_expenses?: boolean;
   can_edit_business_trips?: boolean;
   can_edit_instruments_and_tools?: boolean;
+  can_accept_changes_on_import?: boolean;
 }
 
 export class Users {

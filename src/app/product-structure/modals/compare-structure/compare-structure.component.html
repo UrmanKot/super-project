@@ -1,0 +1,210 @@
+<div class="d-flex align-items-center mb-2">
+  <div class="d-flex align-items-center ">
+    <span class="color-box name-changed"></span>
+    <div>
+      Name Changed
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center ml-3">
+    <span class="color-box is-deleted"></span>
+    <div>
+      Is Deleted
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center ml-3">
+    <span class="color-box quantity-changed"></span>
+    <div>
+      Quantity Changed
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center ml-3">
+    <span class="color-box is-cycled"></span>
+    <div>
+      Is Looped
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center ml-3">
+    <span class="color-box is-new"></span>
+    <div>
+      Is New
+    </div>
+  </div>
+</div>
+<div class="compare">
+  <div class=" page__table mr-2">
+    <div class="page__title">
+      <h1 style="width: 100%" class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          Current Structure
+        </div>
+        <div>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-down"
+            label="Expand All"
+            class="mr-2"
+            (click)="expandAllCurrent()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-up"
+            label="Collapse All"
+            (click)="collapseAllCurrent()"
+          ></button>
+        </div>
+      </h1>
+    </div>
+    <p-treeTable
+      #dt
+      [value]="currentProductsTree"
+      selectionMode="single"
+      [scrollable]="true"
+      scrollHeight="calc(100vh - 19.2rem)"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 30%; padding-left: 40px">Code</th>
+          <th style="width: 20%">Name</th>
+          <th style="width: 7%" class="text-center">Quantity</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
+            [class.is-new]="rowData?.isNew"
+            [class.quantity-changed]="rowData?.hasQuantityChanged && !rowData?.hasNameChanged && !rowData?.isDeleted"
+            [class.name-changed]="rowData?.hasNameChanged && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.is-deleted]="rowData?.isDeleted && !rowData?.hasQuantityChanged && !rowData?.hasNameChanged">
+          <td
+            style="width: 30%"
+            [ngStyle]="{'padding-left': rowNode.level * 0.5 + 'rem'}"
+          >
+            <div class="table-toggle">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <span>
+                    {{rowData?.code}}
+                </span>
+            </div>
+          </td>
+          <td style="width: 20%">
+            {{rowData?.name}}</td>
+          <td
+            style="width: 7%"
+            class="text-center"
+          >
+            {{rowData ? rowData?.quantity : rowData | json}}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="7">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+
+  <div class="page__table">
+    <div class="page__title ml-2">
+      <h1 style="width: 100%" class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          New Structure
+        </div>
+        <div>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-down"
+            label="Expand All"
+            class="mr-2"
+            (click)="expandAllNew()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-up"
+            label="Collapse All"
+            (click)="collapseAllNew()"
+          ></button>
+        </div>
+      </h1>
+    </div>
+    <p-treeTable
+      #dt
+      [value]="newProductsTree"
+      selectionMode="single"
+      [scrollable]="true"
+      scrollHeight="calc(100vh - 19.2rem)"
+      cdkDropListGroup
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 30%; padding-left: 40px">Code</th>
+          <th style="width: 20%">Name</th>
+          <th style="width: 7%" class="text-center">Quantity</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
+            [class.is-new]="rowData?.isNew && !rowData?.hasCycle"
+            [class.quantity-changed]="rowData?.hasQuantityChanged && !rowData?.hasNameChanged && !rowData?.isDeleted"
+            [class.name-changed]="rowData?.hasNameChanged && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.is-cycled]="rowData?.hasCycle && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.is-deleted]="rowData?.isDeleted && !rowData?.hasQuantityChanged && !rowData?.hasNameChanged">
+          <td
+            style="width: 30%"
+            [ngStyle]="{'padding-left': rowNode.level * 0.5 + 'rem'}"
+          >
+            <div class="table-toggle">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <span>
+                    {{rowData?.code}}
+                </span>
+            </div>
+          </td>
+          <td style="width: 20%">
+            {{rowData?.name}}</td>
+          <td
+            style="width: 7%"
+            class="text-center"
+          >
+            {{rowData ? rowData?.quantity : rowData | json}}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="7">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>
+<div class="d-flex justify-content-between mt-3">
+  <button
+    pButton
+    type="button"
+    class="p-button-warning mr-2"
+    label="Cancel Changes"
+    (click)="onCancel()"
+  ></button>
+  <button
+    [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct || hasChangedName"
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Accept Changes"
+    (click)="onContinueUpdate()"
+  ></button>
+</div>

@@ -469,7 +469,7 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
 
   onUploadProductStructure() {
     if (this.selectedProduct.data.nomenclature.type === ENomenclatureType.ASSEMBLY) {
-      this.productService.uploadProductStructureModal(this.selectedProduct.data.id).subscribe(response => {
+      this.productService.uploadProductStructureModal(this.selectedProduct.data.id, this.productId).subscribe(response => {
         if (response) {
           this.getProducts();
         }
