@@ -33,7 +33,6 @@ export class CrmSingleEmployeePickerComponent implements OnInit, ControlValueAcc
   }
 
   getAll() {
-    console.log('this.filters', this.filters);
     this.crmEmployeeService
       .get(this.filters)
       .pipe(take(1))

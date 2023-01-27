@@ -44,6 +44,15 @@
       />
     </div>
     <div class="form-group">
+      <label>Country</label>
+      <div class="countries">
+        <pek-crm-tree-company-picker
+          [selectedRegion]="form.get('region').value"
+          (regionSelected)="regionSelected($event)"
+        ></pek-crm-tree-company-picker>
+      </div>
+    </div>
+    <div class="form-group">
       <label for="email"> Email</label>
       <input
         pInputText
@@ -113,6 +122,9 @@
       </p-checkbox>
       <label for="vat">Dont Have VAT</label>
     </div>
+
+
+
 <!--    <div class="form-group">-->
 <!--      <label>Country</label>-->
 <!--      <div class="countries">-->

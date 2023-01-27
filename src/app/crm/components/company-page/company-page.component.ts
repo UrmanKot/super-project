@@ -212,7 +212,10 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
   onEditCompany() {
     this.companyService.createEditCompanyModal('edit', this.company).subscribe(company => {
       if (company) {
-
+        if (company.region) {
+          this.company.region = company.region;
+          this.company.country = company.region.country;
+        }
       }
     });
   }

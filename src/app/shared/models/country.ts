@@ -1,5 +1,5 @@
 export class Country {
-  readonly id: number;
+  readonly id?: number;
   name: string;
-  code2: string;
+  alpha2_code: string;
 }

@@ -1,0 +1,15 @@
+<p-treeSelect
+  [(ngModel)]="selectedNode"
+  [options]="tree"
+  [filter]="true"
+  (ngModelChange)="changed($event)"
+  placeholder="Select Region">
+  <ng-template pTemplate="value" let-options>
+    <ng-template [ngIf]="!selectedNode">
+      Select Company
+    </ng-template>
+    <ng-template [ngIf]="selectedNode">
+      {{options.data.region.country ? options.data.region.country.name : 'Have No Country'}} - {{options.data.region.name}}
+    </ng-template>
+  </ng-template>
+</p-treeSelect>
