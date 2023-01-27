@@ -84,8 +84,19 @@ export class CompanyService {
     }
   }
 
-  getShortsCompanies(): Observable<Partial<Company>[]> {
-    return this.httpClient.get<{ data: Partial<Company>[] }>(this.API_URL + this.url + 'get_short_companies_list/').pipe(
+  getShortsCompanies(query?: QuerySearch[]): Observable<Partial<Company>[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: Partial<Company>[] }>(this.API_URL + this.url + 'get_short_companies_list/' + queryParams).pipe(
       map(response => {
         const shortCompanies = response.data;
         this.shortsCompaniesResult.next(shortCompanies);

@@ -41,7 +41,11 @@ export class MultiTechnologyPickerComponent implements OnInit, OnChanges, OnDest
   }
 
   onSelectTechnologies(technologies: Technology[]) {
-    this.selectTechnologies.emit(technologies);
+    if (technologies) {
+      this.selectTechnologies.emit(technologies);
+    } else {
+      this.selectTechnologies.emit(null);
+    }
   }
 
   findTechnologies() {

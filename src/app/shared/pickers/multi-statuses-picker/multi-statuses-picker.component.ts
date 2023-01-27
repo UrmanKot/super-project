@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
-import {Status} from '../../models/status';
-import {StatusService} from '../../services/status.service';
+import {Status} from '../../../procurement/models/status';
+import {StatusService} from '../../../procurement/services/status.service';
 
 @Component({
-  selector: 'pek-statuses-picker',
-  templateUrl: './statuses-picker.component.html',
-  styleUrls: ['./statuses-picker.component.scss']
+  selector: 'pek-multi-statuses-picker',
+  templateUrl: './multi-statuses-picker.component.html',
+  styleUrls: ['./multi-statuses-picker.component.scss']
 })
-export class StatusesPickerComponent implements OnInit {
+export class MultiStatusesPickerComponent implements OnInit {
   @Output() selectStatuses: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Input() accountingType: number;
 

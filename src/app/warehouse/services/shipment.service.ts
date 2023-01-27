@@ -13,7 +13,7 @@ import {ShipmentProduct} from '../models/shipment-product';
 })
 export class ShipmentService {
   API_URL = environment.base_url + environment.delivery_url;
-  readonly url = 'chains/';
+  readonly url = 'procurement-chains/';
 
   constructor(
     private httpClient: HttpClient,

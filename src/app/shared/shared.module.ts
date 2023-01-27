@@ -72,6 +72,18 @@ import { AreaLocatorPickerComponent } from './pickers/area-locator-picker/area-l
 import { WarehouseSearchComponent } from './modals/warehouse-search/warehouse-search.component';
 import { PasteScreenImageDirective } from './directives/paste-screen-image.directive';
 import { OrderPageComponent } from './components/order-page/order-page.component';
+import { AddFileToOrderComponent } from './modals/add-file-to-order/add-file-to-order.component';
+import { EditOrderComponent } from './modals/edit-order/edit-order.component';
+import {ProcurementModule} from '../procurement/procurement.module';
+import {MultiStatusesPickerComponent} from '@shared/pickers/multi-statuses-picker/multi-statuses-picker.component';
+import { StatusesPickerComponent } from './pickers/statuses-picker/statuses-picker.component';
+import { OrderStatusesComponent } from './components/order-statuses/order-statuses.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { CreateEditStatusComponent } from './modals/create-edit-status/create-edit-status.component';
+import { CreateChainComponent } from './modals/create-chain/create-chain.component';
+import { AddProductsToChainComponent } from './modals/add-products-to-chain/add-products-to-chain.component';
+import { MultiProductCategoriesPickerComponent } from './pickers/multi-product-categories-picker/multi-product-categories-picker.component';
+import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-category-picker/multi-purchase-category-picker.component';
 
 
 @NgModule({
@@ -125,8 +137,19 @@ import { OrderPageComponent } from './components/order-page/order-page.component
     WarehouseSearchComponent,
     PasteScreenImageDirective,
     OrderPageComponent,
+    AddFileToOrderComponent,
+    EditOrderComponent,
+    MultiStatusesPickerComponent,
+    StatusesPickerComponent,
+    OrderStatusesComponent,
+    CreateEditStatusComponent,
+    CreateChainComponent,
+    AddProductsToChainComponent,
+    MultiProductCategoriesPickerComponent,
+    MultiPurchaseCategoryPickerComponent,
   ],
   exports: [
+    MultiStatusesPickerComponent,
     ButtonModule,
     InputTextModule,
     TreeTableModule,
@@ -187,6 +210,9 @@ import { OrderPageComponent } from './components/order-page/order-page.component
     PasteScreenImageDirective,
     MultiSelectModule,
     OrderPageComponent,
+    OrderStatusesComponent,
+    MultiProductCategoriesPickerComponent,
+    MultiPurchaseCategoryPickerComponent,
   ],
   imports: [
     MultiSelectModule,
@@ -211,6 +237,7 @@ import { OrderPageComponent } from './components/order-page/order-page.component
     CalendarModule,
     NgxMaskModule.forRoot(),
     FileUploadModule,
+    DragDropModule,
   ]
 })
 export class SharedModule { }

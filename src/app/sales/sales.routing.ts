@@ -12,9 +12,9 @@ const routes: Routes = [
     path: '',
     component: SalesLayoutComponent,
     children: [
-      {path: '', redirectTo: 'sales-chains', pathMatch: 'full'},
+      {path: '', redirectTo: 'sales-procurement-chains', pathMatch: 'full'},
       // {path: 'lists', title: 'Make Production List', component: SalesListsComponent},
-      {path: 'sales-chains', title: 'Sales Chains', component: SalesChainsComponent},
+      {path: 'sales-procurement-chains', title: 'Sales Chains', component: SalesChainsComponent},
       {path: 'statuses', title: 'Statuses Type', component: SalesStatusesComponent},
       {path: 'regions', title: 'Countries & Regions', component: RegionsComponent},
       {

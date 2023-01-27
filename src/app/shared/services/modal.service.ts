@@ -12,6 +12,7 @@ import {
 import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
 import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
 import {Overlay} from '@angular/cdk/overlay';
+import {AddFileToOrderComponent} from '@shared/modals/add-file-to-order/add-file-to-order.component';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +69,7 @@ export class ModalService {
         width: '100%',
         height: '77%',
         autoFocus: false,
-        disableClose: true,
+        disableClose: false,
         backdropClass: 'guide-modalbox',
       })
       .afterClosed()
@@ -94,7 +95,7 @@ export class ModalService {
       .open<CompleteListComponent>(CompleteListComponent, {
         width: '800px',
         data: { type: 'edit', entity: entity },
-        disableClose: true,
+        disableClose: false,
         panelClass: 'modal-overflow-visible'
       })
       .afterClosed()
@@ -106,8 +107,19 @@ export class ModalService {
       .open<ListProductsComponent>(ListProductsComponent, {
         width: '800px',
         data: { type: 'edit', entity: entity },
-        disableClose: true,
+        disableClose: false,
         panelClass: 'modal-overflow-visible',
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  openAddFileToOrderModal(orderId: number) {
+    return this.dialog
+      .open<AddFileToOrderComponent>(AddFileToOrderComponent, {
+        width: '800px',
+        data: { orderId },
+        disableClose:false,
       })
       .afterClosed()
       .pipe();

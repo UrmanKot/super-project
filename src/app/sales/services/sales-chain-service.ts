@@ -68,7 +68,7 @@ export class SalesChainService {
     return this.httpClient.delete(this.API_URL + 'sales_chains/' + salesChain.id + '/');
   }
 
-  createEditWarehouseModal(): Observable<SalesChain> {
+  createEditSalesChainModal(): Observable<SalesChain> {
     return this.dialog
       .open<CreateSalesChainComponent>(CreateSalesChainComponent, {
         width: '35rem',

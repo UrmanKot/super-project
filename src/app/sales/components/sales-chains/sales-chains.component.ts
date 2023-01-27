@@ -10,7 +10,7 @@ import {ModalService} from '@shared/services/modal.service';
 import {environment} from '@env/environment';
 
 @Component({
-  selector: 'pek-sales-chains',
+  selector: 'pek-sales-procurement-chains',
   templateUrl: './sales-chains.component.html',
   styleUrls: ['./sales-chains.component.scss']
 })
@@ -80,7 +80,7 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
   }
 
   createSaleChain() {
-    this.salesChainService.createEditWarehouseModal().subscribe(salesChain => {
+    this.salesChainService.createEditSalesChainModal().subscribe(salesChain => {
       if (salesChain) {
         this.searchChains();
       }

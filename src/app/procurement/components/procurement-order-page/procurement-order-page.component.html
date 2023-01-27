@@ -9,16 +9,20 @@
         <button
           pButton
           type="button"
-          icon="pi pi-pencil"
+          icon="pi pi-file"
           label="Order Files"
           class="mr-2"
+          (click)="openOrderFiles()"
+          [disabled]="isOrderLoading"
         >
         </button>
         <button
           pButton
           type="button"
           icon="pi pi-pencil"
-          label="Order Files"
+          label="Lead Date & Status"
+          (click)="editOrder()"
+          [disabled]="isOrderLoading"
         >
         </button>
       </div>
@@ -27,6 +31,8 @@
 
   <div class="page__content">
     <pek-order-page
+      [orderType]="'procurement'"
+      (loaded)="loaded()"
       [orderId]="orderId"
     ></pek-order-page>
   </div>

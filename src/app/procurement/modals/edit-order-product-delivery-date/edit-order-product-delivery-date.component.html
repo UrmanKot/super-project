@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Delivery Date for {{orderProduct.nomenclature.name}}
+  </h2>
+  <button
+    [disabled]="!orderProduct.reception_date"
+    icon="pi pi-times"
+    pButton
+    type="button"
+    label="Reset"
+    [loading]="isReset"
+    (click)="onReset()"
+    class="ml-3 p-button-danger p-button-icon"
+  ></button>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Delivery Date*</label>
+      <p-calendar
+        formControlName="reception_date"
+        [showButtonBar]="true"
+        dateFormat="dd/mm/yy"
+        [readonlyInput]="true"
+      >
+      </p-calendar>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Change"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

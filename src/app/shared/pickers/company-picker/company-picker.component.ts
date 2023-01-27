@@ -8,7 +8,7 @@ import {CompanyService} from '../../../crm/services/company.service';
   templateUrl: './company-picker.component.html',
   styleUrls: ['./company-picker.component.scss']
 })
-export class CompanyPickerComponent implements OnInit, OnDestroy {
+export class CompanyPickerComponent implements OnInit {
   @Output() selectCompany: EventEmitter<number> = new EventEmitter<number>();
   @Output() selectCompanyFull: EventEmitter<Partial<Company>> = new EventEmitter<Partial<Company>>();
   @Input() currentCompanyId: any;
@@ -18,15 +18,12 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
   companies: Partial<Company>[] = [];
   selectedCompanyId: number;
 
-  private destroy$ = new Subject();
-
   constructor(
     private readonly companyService: CompanyService,
   ) { }
 
   ngOnInit(): void {
     this.companyService.getShorts().pipe(
-      takeUntil(this.destroy$)
     ).subscribe(companies => {
       this.companies = companies;
 
@@ -42,10 +39,5 @@ export class CompanyPickerComponent implements OnInit, OnDestroy {
     this.currentCompany = this.companies.find(currency => currency.id === this.selectedCompanyId);
     this.selectCompany.emit(this.selectedCompanyId);
     this.selectCompanyFull.emit(this.currentCompany);
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.complete();
   }
 }

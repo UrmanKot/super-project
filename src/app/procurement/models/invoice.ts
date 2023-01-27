@@ -66,3 +66,9 @@ export class SerialNumber {
   traversed?: boolean;
   warehouseproductqcprotocol_set?: any;
 }
+
+export class InvoiceFile {
+  readonly id: number;
+  file: string;
+  invoice_id: number;
+}

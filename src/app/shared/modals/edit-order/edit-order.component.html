@@ -1,0 +1,140 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Change
+    <ng-container [ngSwitch]="data.orderType">
+      <ng-container *ngSwitchCase="'procurement'">Procurement</ng-container>
+      <ng-container *ngSwitchCase="'outsourcing'">Outsourcing</ng-container>
+    </ng-container>
+    Chain
+  </h2>
+</div>
+
+<form [formGroup]="form" class="statuses">
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label>Supplier*</label>
+        <pek-company-picker
+          [isDisabled]="true"
+          [currentCompanyId]="form.get('supplier').value"
+        ></pek-company-picker>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label>Creation Date*</label>
+        <p-calendar
+          [firstDayOfWeek]="1"
+          [showButtonBar]="true"
+          formControlName="created"
+          inputId="basic"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+    </div>
+  </div>
+  <label class="label-status">Statuses</label>
+  <div formArrayName="statuses" class="statuses-list">
+    <div
+      class="row status-row"
+      *ngFor="let status of statuses.controls; let idx = index"
+      [formGroupName]="idx"
+    >
+      <div class="col-5">
+        <div class="form-group">
+          <label>Status*</label>
+          <div class="statuses-picker">
+            <p-dropdown
+              *ngIf="!isLoadingStatuses; else spinner"
+              [options]="dropdownStatuses"
+              placeholder="Select Status"
+              optionLabel="value"
+              optionValue="id"
+              formControlName="id"
+              [showClear]="true"
+            >
+            </p-dropdown>
+          </div>
+
+          <ng-template #spinner>
+            <div class="spinner-input">
+              <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="form-group">
+          <label>Date*</label>
+          <p-calendar
+            [firstDayOfWeek]="1"
+            [showButtonBar]="true"
+            formControlName="estimated_date"
+            inputId="basic"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+          ></p-calendar>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="d-flex">
+          <div class="form-group">
+            <label>Active</label>
+            <p-checkbox
+              formControlName="is_active"
+              [binary]="true"
+              (onChange)="onChangeActiveStatus(idx)"
+            ></p-checkbox>
+          </div>
+          <div class="form-group" *ngIf="statuses.controls.length > 1">
+            <button class="remove-button" (click)="onRemoveStatus(idx)">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-button custom-button">
+      <p-button
+        icon="pi pi-plus"
+        (click)="onAddStatus()"
+        type="button"
+        styleClass="p-button-text"
+      >
+        Add Status
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="comment">Comment*</label>
+        <textarea
+          id="comment"
+          [rows]="3"
+          pInputTextarea
+          [autoResize]="true"
+          formControlName="comment"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <mat-dialog-content>
+
+  </mat-dialog-content>
+</form>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    [label]="'Edit'"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

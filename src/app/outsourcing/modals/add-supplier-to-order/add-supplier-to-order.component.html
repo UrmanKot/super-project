@@ -1,0 +1,41 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">Add Supplier to Order</h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Supplier*</label>
+        <p-dropdown
+          *ngIf="!isLoading else spinner"
+          [filter]="true"
+          [options]="companies"
+          placeholder="Select Company"
+          formControlName="supplier_id"
+          optionLabel="name"
+          optionValue="id"
+          [showClear]="true"
+        >
+        </p-dropdown>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <button
+      pButton
+      type="button"
+      class="p-button-success"
+      [loading]="isSaving"
+      [disabled]="form.invalid"
+      [label]="'Add'"
+      (click)="onAdd()"
+    ></button>
+</mat-dialog-actions>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

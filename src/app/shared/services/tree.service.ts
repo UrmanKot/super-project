@@ -8,10 +8,10 @@ export class TreeService {
 
   constructor() { }
 
-  createTree(categories: any[], expanseMap?: any): TreeNode[] {
+  createTree(items: any[], expanseMap?: any): TreeNode[] {
     const prepareNodes: Partial<TreeNode>[] = [];
 
-    categories.forEach(element => {
+    items.forEach(element => {
       const ins = {data: element, expanded: false, children: []};
 
       if (expanseMap) {

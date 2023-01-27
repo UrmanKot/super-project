@@ -80,9 +80,9 @@ export class InstrumentsAndToolsListComponent implements OnInit, OnDestroy, Afte
     });
   }
 
-  onSelectCategory(node: TreeNode<Category>) {
-    if (node) {
-      this.searchForm.get('category').patchValue(node.data.id);
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('category').patchValue(category.id);
     } else {
       this.searchForm.get('category').patchValue(null);
     }

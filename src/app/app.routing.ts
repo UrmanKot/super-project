@@ -25,6 +25,16 @@ const routes: Routes = [
         loadChildren: () => import('./procurement/procurement.module').then(m => m.ProcurementModule)
       },
       {
+        path: 'outsourcing',
+        title: 'Outsourcing',
+        loadChildren: () => import('./outsourcing/outsourcing.module').then(m => m.OutsourcingModule)
+      },
+      {
+        path: 'purchasing',
+        title: 'Purchasing',
+        loadChildren: () => import('./purchasing/purchasing.module').then(m => m.PurchasingModule)
+      },
+      {
         path: 'confirmation',
         title: 'Confirmation',
         loadChildren: () => import('./confirmation/confirmation.module').then(m => m.ConfirmationModule)
@@ -40,7 +50,7 @@ const routes: Routes = [
         loadChildren: () => import('./sales/sales.module').then(m => m.SalesModule)
       },
       {
-        path: 'delivery-chains',
+        path: 'delivery-procurement-chains',
         title: 'Delivery Chains',
         loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
       },

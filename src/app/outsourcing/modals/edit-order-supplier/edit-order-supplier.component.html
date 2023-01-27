@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">Add Supplier to Order</h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="number" id="price" pInputText formControlName="price">
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Delivery Date</label>
+          <p-calendar
+            [firstDayOfWeek]="1"
+            [showButtonBar]="true"
+            formControlName="delivery_date"
+            inputId="basic"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+          ></p-calendar>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="comment">Comment*</label>
+          <textarea id="comment" [rows]="2" pInputTextarea [autoResize]="true" formControlName="comment"></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    [label]="'Edit'"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -17,9 +17,39 @@
             </p>
           </div>
           <h4><span>Comment:</span> {{order.comment}}</h4>
+          <h4 *ngIf="orderType === 'purchase'"><span>Type:</span> {{order.purchase_category?.is_material ? 'Tangible' : 'Intangible'}}</h4>
+          <div class="purchase-category" *ngIf="orderType === 'purchase'">
+            <h4>
+              <span>Purchase Category:</span>
+            </h4>
+            <div class="purchase-category-dropdown">
+              <p-dropdown
+                *ngIf="!isLoadingPurchasingCategories; else spinner"
+                [showClear]="true"
+                [filter]="true"
+                [options]="purchasingCategories"
+                [(ngModel)]="selectedPurchasingCategoryId"
+                (ngModelChange)="onSelectPurchaseCategory()"
+                optionValue="id"
+                optionLabel="name"
+                placeholder="Choice Purchase Category"
+              >
+              </p-dropdown>
+            </div>
+          </div>
         </div>
         <div class="col-md-5">
-          <h2>Supplier</h2>
+          <div class="supplier">
+            <h2>Supplier</h2>
+            <button
+              *ngIf="order.supplier"
+              pButton
+              type="button"
+              icon="pi pi-angle-double-right"
+              label="Go To Supplier"
+              [routerLink]="'/crm/business-partners/company-page/' + order.supplier.id"
+            ></button>
+          </div>
           <h4><span>Name:</span> {{order.supplier?.name}}</h4>
           <h4>
             <span>Category:</span>
@@ -39,338 +69,642 @@
     </div>
   </div>
 
-  <h2 class="mb-4">Ordered Items</h2>
-
-  <div class="page__card mb-4">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 18.8rem)"
-        [scrollable]="true"
-        [paginator]="products.length > 0"
-        [rows]="10"
-        [(selection)]="selectedProduct"
-        [value]="products"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
-            <p-menubar
-              class="ml-auto"
-              [model]="productMenuItems"
-              [class.disabled]="!selectedProduct"></p-menubar>
-            <button
-              (click)="onAddProduct()"
-              pButton type="button"
-              icon="pi pi-plus"
-              class="ml-2"
-              label="Add Item"
-              [disabled]="isLoadingProducts"
-            >
-            </button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
-            <th style="width: 14%">Code</th>
-            <th style="width: 18%">Name</th>
-            <th style="width: 15%">Description</th>
-            <th style="width: 12%" class="text-center">Ordered Quantity</th>
-            <th style="width: 8%" class="text-center">Date</th>
-            <th style="width: 10%">Delivery Date</th>
-            <th style="width: 10%" class="text-center">Request Type</th>
-            <th style="width: 20%" class="text-center">Root Lists</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr [pSelectableRow]="product">
-            <td style="width: 5%" class="text-center">{{i + 1}}</td>
-            <td style="width: 14%">{{product.nomenclature.code}}</td>
-            <td style="width: 18%">{{product.nomenclature.name}}</td>
-            <td style="width: 15%">{{product.nomenclature.description}} </td>
-            <td style="width: 12%" class="text-center">
-              {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
-            </td>
-            <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
-            <td style="width: 10%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
-            <td style="width: 10%" class="text-center">
-              <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
-              <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
-            </td>
-            <td style="width: 20%">
-              <div
-                class="d-block"
-                *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
-              >
-                {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="9">
-              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoading">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-  </div>
-
-  <h2 class="mb-4">Proforma Invoices</h2>
-
-  <div class="page__card mb-4">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 18.8rem)"
-        [scrollable]="true"
-        [paginator]="proformaInvoices.length > 0"
-        [rows]="10"
-        [(selection)]="selectedProformaInvoice"
-        [value]="proformaInvoices"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedProformaInvoice">Choose the Proforma Invoice to edit</p>
-            <p-menubar
-              class="ml-auto"
-              [model]="proformaInvoiceMenuItems"
-              [class.disabled]="!selectedProformaInvoice"></p-menubar>
-            <button
-              (click)="onAddProduct()"
-              pButton type="button"
-              icon="pi pi-plus"
-              class="ml-2"
-              label="Create Proforma Invoice"
-              [disabled]="isLoadingInvoices"
-            >
-            </button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
-            <th style="width: 15%" class="text-center">Creation Date</th>
-            <th style="width: 28%" class="text-center">Proforma Number</th>
-            <th style="width: 32%" class="text-center">Supplier</th>
-            <th style="width: 20%" class="text-center">Total Price</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-          <tr [pSelectableRow]="invoice">
-            <td class="text-center">{{i + 1}}</td>
-            <td class="text-center">
-              {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
-            </td>
-            <td class="text-center">{{invoice.self_proforma_serial_number}}</td>
-            <td class="text-center">{{invoice.supplier?.name}}</td>
-            <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="5">
-              <i *ngIf="isLoadingInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoadingInvoices">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-  </div>
-
-  <h2 class="mb-4">Invoices</h2>
-
-  <div class="page__card mb-4">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 18.8rem)"
-        [scrollable]="true"
-        [paginator]="invoices.length > 0"
-        [rows]="10"
-        [(selection)]="selectedInvoice"
-        [value]="invoices"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedInvoice">Choose the Invoice to edit</p>
-            <p-menubar
-              class="ml-auto"
-              [model]="invoiceMenuItems"
-              [class.disabled]="!selectedInvoice">
-            </p-menubar>
-            <button
-              (click)="onAddProduct()"
-              pButton type="button"
-              icon="pi pi-plus"
-              class="ml-2"
-              label="Create Invoice"
-              [disabled]="isLoadingInvoices"
-            >
-            </button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
-            <th style="width: 15%" class="text-center">Creation Date</th>
-            <th style="width: 28%" class="text-center">Proforma Number</th>
-            <th style="width: 32%" class="text-center">Supplier</th>
-            <th style="width: 20%" class="text-center">Total Price</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-          <tr [pSelectableRow]="invoice">
-            <td class="text-center">{{i + 1}}</td>
-            <td class="text-center">
-              {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
-            </td>
-            <td class="text-center">{{invoice.self_proforma_serial_number}}</td>
-            <td class="text-center">{{invoice.supplier?.name}}</td>
-            <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="5">
-              <i *ngIf="isLoadingInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoadingInvoices">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-  </div>
-
-  <h2 class="mb-4">Payments</h2>
-
-  <div class="page__card mb-4">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 18.8rem)"
-        [scrollable]="true"
-        [paginator]="payments.length > 0"
-        [rows]="10"
-        [(selection)]="selectedPayment"
-        [value]="payments"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedPayment">Choose the Payment to edit</p>
-            <button
-              pButton type="button"
-              icon="pi pi-pencil"
-              class="ml-auto"
-              label="Edit Payment"
-              [disabled]="isLoadingInvoices || !selectedPayment"
-            >
-            </button>
-            <button
-              (click)="onAddProduct()"
-              pButton type="button"
-              icon="pi pi-plus"
-              class="ml-2"
-              label="Create Payment"
-              [disabled]="isLoadingInvoices"
-            >
-            </button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
-            <th style="width: 15%" class="text-center">Date</th>
-            <th style="width: 28%" class="text-center">Invoice</th>
-            <th style="width: 32%" class="text-center">Supplier</th>
-            <th style="width: 20%" class="text-center">Amount</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-payment let-i="rowIndex">
-          <tr [pSelectableRow]="payment">
-            <td class="text-center">{{i + 1}}</td>
-            <td class="text-center">
-              {{payment.payment_date | date:'dd/MM/yyyy'}}
-            </td>
-            <td class="text-center">
-              <span *ngFor="let inv of payment.invoices; let idx = index">
-                {{inv.self_serial_number}}
-                <span *ngIf="idx !== payment.invoices.length - 1">,</span>
-              </span>
-            </td>
-            <td class="text-center">
-              <span *ngFor="let inv of payment.invoices; let idx = index">
-                {{inv.supplier?.name}}
-                <span *ngIf="idx !== payment.invoices.length - 1">,</span>
-              </span>
-            </td>
-            <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="5">
-              <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoadingPayments">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-  </div>
-
-  <div class="auxiliary-box">
-    <h2 class="mb-4">Auxiliary Proforma Invoices</h2>
+  <ng-container *ngIf="orderType !== 'purchase' || (orderType === 'purchase' && !isPurchaseOrderNonMaterial)">
+    <h2 class="mb-4">Ordered Items</h2>
 
     <div class="page__card mb-4">
       <div class="page__table">
         <p-table
           #dt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="products.length > 0"
+          [rows]="10"
+          [(selection)]="selectedProduct"
+          [value]="products"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="productMenuItems"
+                [class.disabled]="!selectedProduct"></p-menubar>
+              <button
+                (click)="onAddProduct()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Item"
+                [disabled]="isLoadingProducts"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-container *ngIf="orderType !== 'outsourcing'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 5%" class="index-header text-center">#</th>
+                <th style="width: 14%">Code</th>
+                <th style="width: 18%">Name</th>
+                <th style="width: 15%">Description</th>
+                <th style="width: 12%" class="text-center">Ordered Quantity</th>
+                <th style="width: 8%" class="text-center">Date</th>
+                <th style="width: 10%" class="text-center">Delivery Date</th>
+                <th style="width: 10%" class="text-center">Request Type</th>
+                <th style="width: 20%" class="text-center">Root Lists</th>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType === 'outsourcing'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 3%" class="index-header text-center">#</th>
+                <th style="width: 14%">Code</th>
+                <th style="width: 14%">Name</th>
+                <th style="width: 15%">Description</th>
+                <th style="width: 8%" class="text-center">Technology</th>
+                <th style="width: 8%" class="text-center">Ordered Quantity</th>
+                <th style="width: 8%" class="text-center">Date</th>
+                <th style="width: 8%" class="text-center">Delivery Date</th>
+                <th style="width: 8%" class="text-center">Request Type</th>
+                <th style="width: 14%" class="text-center">Root Lists</th>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType !== 'outsourcing'">
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td style="width: 5%" class="text-center">{{i + 1}}</td>
+                <td style="width: 14%">{{product.nomenclature.code}}</td>
+                <td style="width: 18%">{{product.nomenclature.name}}</td>
+                <td style="width: 15%">
+                  <div class="word-break">{{product.nomenclature.description}}</div>
+                </td>
+                <td style="width: 12%" class="text-center">
+                  {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
+                </td>
+                <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 10%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 10%" class="text-center">
+                  <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
+                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                </td>
+                <td style="width: 20%">
+                  <div
+                    class="d-block"
+                    *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
+                  >
+                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="orderType === 'outsourcing'">
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td style="width: 3%" class="text-center">{{i + 1}}</td>
+                <td style="width: 14%">{{product.nomenclature.code}}</td>
+                <td style="width: 14%">{{product.nomenclature.name}}</td>
+                <td style="width: 15%">
+                  <div class="word-break">{{product.nomenclature.description}}</div>
+                </td>
+                <td style="width: 8%" class="text-center">
+                  {{product.current_technology?.name}}
+                </td>
+                <td style="width: 8%" class="text-center">
+                  {{product.quantity}} {{product?.nomenclature?.category?.unit_of_measure?.symbol}}
+                </td>
+                <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 8%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
+                <td style="width: 8%" class="text-center">
+                  <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
+                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                </td>
+                <td style="width: 14%">
+                  <div
+                    class="d-block"
+                    *ngFor="let item of getRootLists(product.root_production_list_products); let idx = index"
+                  >
+                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </ng-container>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="10">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="orderType === 'outsourcing'">
+    <h2 class="mb-4">
+      Parts/Materials List
+    </h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #mt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="orderMaterials.length > 0"
+          [rows]="10"
+          [value]="orderMaterials"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                (click)="onCancelOrderMaterials()"
+                pButton
+                type="button"
+                label="Cancelation"
+                icon="pi pi-times"
+                class="ml-auto p-button-danger"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 30%">Code</th>
+              <th style="width: 25%">Name</th>
+              <th style="width: 10%" class="text-center">Technology</th>
+              <th style="width: 20%" class="text-center">Required Quantity</th>
+              <th style="width: 10%" class="text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-material let-i="rowIndex">
+            <tr>
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 30%">
+                <div *ngIf="material.material_nomenclature">
+                  {{material.material_nomenclature.code}}
+                </div>
+                <div *ngIf="material.order_product_nomenclature">
+                  {{material.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="material.list_product">
+                  {{material.list_product.nomenclature.code}}
+                </div>
+              </td>
+              <td style="width: 25%">
+                <div *ngIf="material.material_nomenclature">
+                  {{material.material_nomenclature.name}}
+                </div>
+                <div *ngIf="material.order_product_nomenclature">
+                  {{material.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="material.list_product">
+                  {{material.list_product.nomenclature.name}}
+                </div>
+              </td>
+
+              <td style="width: 10%" class="text-center">
+                {{material.technology ? material.technology : null}}
+              </td>
+              <td style="width: 20%" class="text-center">{{material?.required_quantity}}</td>
+              <td style="width: 10%" class="text-center">
+                <i *ngIf="material?.required_quantity === 0" class="pi pi-check-circle"></i>
+                <i *ngIf="material?.required_quantity > 0" class="pi pi-times"></i>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="mt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!mt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="mt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">
+      Technical Equipments
+    </h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #et
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="technicalEquipments.length > 0"
+          [rows]="10"
+          [value]="technicalEquipments"
+        >
+          <ng-template pTemplate="caption">
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 25%">Code</th>
+              <th style="width: 25%">Name</th>
+              <th style="width: 15%" class="text-center">Locator</th>
+              <th style="width: 15%" class="text-center">Quantity</th>
+              <th style="width: 15%" class="text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
+            <tr [pSelectableRow]="technicalEquipment" class="table-row">
+              <td class="text-center">{{i + 1}}</td>
+              <td>{{technicalEquipment.nomenclature.code}}</td>
+              <td>{{technicalEquipment.nomenclature.name}}</td>
+              <td class="text-center">
+                <span *ngFor="let locator of technicalEquipment.locators">
+                  {{locator.name}}
+                </span>
+              </td>
+              <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
+              <td class="text-center"
+                  [class.text-danger]="!technicalEquipment.in_use || technicalEquipment.in_use && technicalEquipment.locators.length < 1"
+                  [class.text-success]="technicalEquipment.in_use && technicalEquipment.locators.length > 0"
+              >{{technicalEquipment.in_use && technicalEquipment.locators.length > 0 ? 'Received' : 'Not Received'}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingTechnicalEquipments " class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingTechnicalEquipments ">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="mt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!et.paginator && !isLoadingTechnicalEquipments && technicalEquipments.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="et.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">
+      Suppliers
+      <span *ngIf="orderSupplierConfirmation?.sent_to_confirmation">
+      (On The Confirmation)
+      </span>
+      <span *ngIf="!isLoadingSuppliers && !orderSupplierConfirmation?.sent_to_confirmation && isSuppliersConfirmed">
+        (Confirmed)
+      </span>
+    </h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="orderSuppliers.length > 0"
+          [rows]="10"
+          [(selection)]="selectedOrderSupplier"
+          [value]="orderSuppliers"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedOrderSupplier">Choose the Supplier to edit</p>
+              <p-menubar
+                class="ml-auto mr-2"
+                [model]="orderSupplierMenuItems"
+                [class.disabled]="!selectedOrderSupplier">
+              </p-menubar>
+              <button
+                (click)="openAddSupplier()"
+                [disabled]="isLoadingSuppliers || orderSupplierConfirmation?.sent_to_confirmation || isSuppliersConfirmed"
+                icon="pi pi-plus"
+                label="Add Supplier"
+                class="mr-2"
+                pButton
+                type="button"
+              ></button>
+              <button
+                (click)="onOrderSupplierConfirm()"
+                [disabled]="isLoadingSuppliers || orderSupplierConfirmation?.sent_to_confirmation || isSuppliersConfirmed"
+                icon="pi pi-angle-double-right"
+                label="Send To Confirm"
+                pButton
+                type="button"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 30%" class="text-center">Supplier</th>
+              <th style="width: 10%" class="text-center">Price</th>
+              <th style="width: 10%" class="text-center">Delivery Date</th>
+              <th style="width: 35%" class="text-center">Comment</th>
+              <th style="width: 10%" class="text-center">Confirm Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr
+              [pSelectableRow]="(!isLoadingSuppliers && !orderSupplierConfirmation?.sent_to_confirmation && !isSuppliersConfirmed) ? item : null">
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 30%" class="text-center">{{item.supplier}}</td>
+              <td style="width: 10%" class="text-center">{{item.price | moneyFormat}} €</td>
+              <td style="width: 10%" class="text-center">{{item.delivery_date | date: 'dd/MM/yyyy'}}</td>
+              <td style="width: 35%" class="text-center">{{item.comment}}</td>
+              <td style="width: 10%" class="text-center">{{getConfirmStatus(item.confirm_status)}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingSuppliers" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingSuppliers">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="orderType !== 'purchase' || (orderType === 'purchase' && !isPurchaseOrderNonMaterial)">
+    <h2 class="mb-4">Proforma Invoices</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="proformaInvoices.length > 0"
+          [rows]="10"
+          [(selection)]="selectedProformaInvoice"
+          [value]="proformaInvoices"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedProformaInvoice">Choose the Proforma Invoice to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="proformaInvoiceMenuItems"
+                [class.disabled]="!selectedProformaInvoice"></p-menubar>
+              <button
+                (click)="onCreateProformaInvoice()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Create Proforma Invoice"
+                [disabled]="isLoadingInvoices"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 15%" class="text-center">Creation Date</th>
+              <th style="width: 28%" class="text-center">Proforma Number</th>
+              <th style="width: 32%" class="text-center">Supplier</th>
+              <th style="width: 20%" class="text-center">Total Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+            <tr [pSelectableRow]="invoice">
+              <td class="text-center">{{i + 1}}</td>
+              <td class="text-center">
+                {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                <i *ngIf="invoice.related_files" class="pi pi-paperclip"></i>
+              </td>
+              <td class="text-center">{{invoice.self_proforma_serial_number}}</td>
+              <td class="text-center">{{invoice.supplier?.name}}</td>
+              <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="5">
+                <i *ngIf="isLoadingInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingInvoices">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Invoices</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="invoices.length > 0"
+          [rows]="10"
+          [(selection)]="selectedInvoice"
+          [value]="invoices"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedInvoice">Choose the Invoice to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="invoiceMenuItems"
+                [class.disabled]="!selectedInvoice">
+              </p-menubar>
+              <button
+                (click)="onCreateInvoice()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Create Invoice"
+                [disabled]="isLoadingInvoices"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 15%" class="text-center">Creation Date</th>
+              <th style="width: 28%" class="text-center">Proforma Number</th>
+              <th style="width: 32%" class="text-center">Supplier</th>
+              <th style="width: 20%" class="text-center">Total Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+            <tr [pSelectableRow]="invoice">
+              <td class="text-center">{{i + 1}}</td>
+              <td class="text-center">
+                {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                <i *ngIf="invoice.related_files" class="pi pi-paperclip"></i>
+              </td>
+              <td class="text-center">{{invoice.self_proforma_serial_number}}</td>
+              <td class="text-center">{{invoice.supplier?.name}}</td>
+              <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="5">
+                <i *ngIf="isLoadingInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingInvoices">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Payments</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="payments.length > 0"
+          [rows]="10"
+          [(selection)]="selectedPayment"
+          [value]="payments"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedPayment">Choose the Payment to edit</p>
+              <button
+                pButton type="button"
+                icon="pi pi-pencil"
+                class="ml-auto"
+                label="Edit Payment"
+                [disabled]="isLoadingInvoices || !selectedPayment"
+                (click)="onEditPayment()"
+              >
+              </button>
+              <button
+                (click)="onCreatePayment()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Create Payment"
+                [disabled]="isLoadingInvoices"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 15%" class="text-center">Date</th>
+              <th style="width: 28%" class="text-center">Invoice</th>
+              <th style="width: 32%" class="text-center">Supplier</th>
+              <th style="width: 10%" class="text-center">Amount</th>
+              <th style="width: 10%" class="text-center">Converted Amount</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-payment let-i="rowIndex">
+            <tr [pSelectableRow]="payment">
+              <td class="text-center">{{i + 1}}</td>
+              <td class="text-center">
+                {{payment.payment_date | date:'dd/MM/yyyy'}}
+              </td>
+              <td class="text-center">
+              <span *ngFor="let inv of payment.invoices; let idx = index">
+                {{inv.self_serial_number}}
+                <span *ngIf="idx !== payment.invoices.length - 1">,</span>
+              </span>
+              </td>
+              <td class="text-center">
+              <span *ngFor="let inv of payment.invoices; let idx = index">
+                {{inv.supplier?.name}}
+                <span *ngIf="idx !== payment.invoices.length - 1">,</span>
+              </span>
+              </td>
+              <td class="text-center">{{payment.amount | moneyFormat}} €</td>
+              <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingPayments">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <div [class.auxiliary-box]="orderType !== 'purchase' || (orderType === 'purchase' && !isPurchaseOrderNonMaterial)">
+    <h2 class="mb-4">Auxiliary Proforma Invoices</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
           selectionMode="single"
           scrollHeight="calc(100vh - 18.8rem)"
           [scrollable]="true"
@@ -389,7 +723,7 @@
                 [class.disabled]="!selectedServiceProformaInvoice">
               </p-menubar>
               <button
-                (click)="onAddProduct()"
+                (click)="onCreateProformaServiceInvoice()"
                 pButton type="button"
                 icon="pi pi-plus"
                 class="ml-2"
@@ -411,7 +745,10 @@
           <ng-template pTemplate="body" let-serviceInvoice let-i="rowIndex">
             <tr [pSelectableRow]="serviceInvoice">
               <td class="text-center">{{i + 1}}</td>
-              <td class="text-center">{{serviceInvoice.system_creation_date|date:'dd/MM/yyyy'}}</td>
+              <td class="text-center">
+                {{serviceInvoice.system_creation_date|date:'dd/MM/yyyy'}}
+                <i *ngIf="serviceInvoice.related_files" class="pi pi-paperclip"></i>
+              </td>
               <td class="text-center">{{serviceInvoice.self_proforma_serial_number}}</td>
               <td class="text-center">{{serviceInvoice.supplier?.name}}</td>
               <td class="text-center">{{serviceInvoice.total_price | moneyFormat}} {{serviceInvoice.currency?.symbol}}
@@ -429,15 +766,6 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="paginatorright">
-            <p-button
-              type="button"
-              (click)="dt.paginator=false"
-              styleClass="p-button-text"
-            >
-              All
-            </p-button>
-          </ng-template>
         </p-table>
       </div>
     </div>
@@ -447,7 +775,6 @@
     <div class="page__card mb-4">
       <div class="page__table">
         <p-table
-          #dt
           selectionMode="single"
           scrollHeight="calc(100vh - 18.8rem)"
           [scrollable]="true"
@@ -465,7 +792,7 @@
                 [class.disabled]="!selectedServiceInvoice">
               </p-menubar>
               <button
-                (click)="onAddProduct()"
+                (click)="onCreateServiceInvoice()"
                 pButton type="button"
                 icon="pi pi-plus"
                 class="ml-2"
@@ -489,8 +816,11 @@
               <td class="text-center">{{i + 1}}</td>
               <td class="text-center">
                 {{serviceInvoice.system_creation_date | date:'dd/MM/yyyy'}}
+                <i *ngIf="serviceInvoice.related_files" class="pi pi-paperclip"></i>
               </td>
-              <td class="text-center">{{serviceInvoice.self_serial_number}}</td>
+              <td class="text-center">
+                {{serviceInvoice.self_serial_number}}
+              </td>
               <td class="text-center">{{serviceInvoice.supplier?.name}}</td>
               <td class="text-center">{{serviceInvoice.total_price | moneyFormat}} {{serviceInvoice.currency?.symbol}}
                 <ng-container *ngIf="serviceInvoice.currency.code!=='EUR'">
@@ -507,15 +837,6 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="paginatorright">
-            <p-button
-              type="button"
-              (click)="dt.paginator=false"
-              styleClass="p-button-text"
-            >
-              All
-            </p-button>
-          </ng-template>
         </p-table>
       </div>
     </div>
@@ -525,7 +846,6 @@
     <div class="page__card mb-4">
       <div class="page__table">
         <p-table
-          #dt
           selectionMode="single"
           scrollHeight="calc(100vh - 18.8rem)"
           [scrollable]="true"
@@ -543,10 +863,11 @@
                 class="ml-auto"
                 label="Edit Auxiliary Invoice Payment"
                 [disabled]="isLoadingServicePayments|| !selectedServicePayment"
+                (click)="onEditServicePayment()"
               >
               </button>
               <button
-                (click)="onAddProduct()"
+                (click)="onCreateServicePayment()"
                 pButton type="button"
                 icon="pi pi-plus"
                 class="ml-2"
@@ -562,7 +883,8 @@
               <th style="width: 15%" class="text-center">Date</th>
               <th style="width: 28%" class="text-center">Invoice</th>
               <th style="width: 32%" class="text-center">Supplier</th>
-              <th style="width: 20%" class="text-center">Amount</th>
+              <th style="width: 10%" class="text-center">Amount</th>
+              <th style="width: 10%" class="text-center">Converted Amount</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-payment let-i="rowIndex">
@@ -583,24 +905,16 @@
             </span>
               </td>
               <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
+              <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="5">
+              <td class="text-center p-4" [attr.colspan]="6">
                 <i *ngIf="isLoadingServicePayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingServicePayments">No Records Found</span>
               </td>
             </tr>
-          </ng-template>
-          <ng-template pTemplate="paginatorright">
-            <p-button
-              type="button"
-              (click)="dt.paginator=false"
-              styleClass="p-button-text"
-            >
-              All
-            </p-button>
           </ng-template>
         </p-table>
       </div>
@@ -612,7 +926,6 @@
   <div class="page__card">
     <div class="page__table">
       <p-table
-        #dt
         selectionMode="single"
         scrollHeight="calc(100vh - 18.8rem)"
         [scrollable]="true"
@@ -629,6 +942,7 @@
               class="ml-auto"
               label="Add File"
               [disabled]="isLoadingFiles"
+              (click)="openOrderFilesModal()"
             >
             </button>
           </div>
@@ -644,11 +958,29 @@
           <tr>
             <td class="text-center">{{rowIndex + 1}}</td>
             <td>
-<!--              <a [href]="link + file.file">-->
-<!--                {{getName(file.file)}}-->
-<!--              </a>-->
+              <a [href]="link + file.file">
+                {{getFileName(file.file)}}
+              </a>
             </td>
             <td class="text-center">
+              <div class="d-flex justify-content-center">
+                <button
+                  pButton
+                  (click)="onDownloadFile(file)"
+                  [loading]="addition.has(file.id)"
+                  type="button"
+                  class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                  icon="pi pi-download"
+                ></button>
+                <button
+                  pButton
+                  (click)="onRemoveFile(file.id)"
+                  [loading]="deletion.has(file.id)"
+                  type="button"
+                  class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                  icon="pi pi-trash"
+                ></button>
+              </div>
             </td>
           </tr>
         </ng-template>
@@ -660,15 +992,6 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >
-            All
-          </p-button>
-        </ng-template>
       </p-table>
     </div>
   </div>
@@ -679,3 +1002,10 @@
     </div>
   </ng-template>
 </div>
+
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

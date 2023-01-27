@@ -5,10 +5,6 @@
       <h1>Procurement Chains</h1>
     </div>
     <div class="page__tools">
-      <button
-        class="mr-2 p-button-warning"
-      >
-      </button>
     </div>
   </div>
 </div>
@@ -18,7 +14,7 @@
 
     <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
       <div class="filters-visibility__header">
-        <!--        <ng-container *ngTemplateOutlet="actionButtons"></ng-container>-->
+        <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
       </div>
 
       <button
@@ -39,16 +35,18 @@
                 [filter]="true"
                 [showClear]="true"
                 [options]="nomenclaturesList"
+                formControlName="contains_nomenclature"
                 optionValue="id"
                 optionLabel="name"
                 placeholder="No Nomenclature Selected"
+                (ngModelChange)="search$.next()"
               ></p-dropdown>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Company</label>
-              <pek-company-picker></pek-company-picker>
+              <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
             </div>
           </div>
           <div class="col-3">
@@ -58,7 +56,9 @@
                 [filter]="true"
                 [showClear]="true"
                 [options]="rootLists"
-                optionValue="fullName"
+                formControlName="order_root_list_id"
+                (ngModelChange)="search$.next()"
+                optionValue="list.id"
                 optionLabel="fullName"
                 placeholder="No List Selected"
               ></p-dropdown>
@@ -67,47 +67,67 @@
           <div class="col-3">
             <div class="form-group">
               <label>Status</label>
-              <pek-statuses-picker
+              <pek-multi-statuses-picker
+                (selectStatuses)="onSelectStatuses($event)"
                 [accountingType]="4"
-              ></pek-statuses-picker>
+              ></pek-multi-statuses-picker>
             </div>
           </div>
           <div class="col-3">
-            <div class="form-group">
-              <label>From</label>
-              <p-calendar
-                dataType="date"
-                [showButtonBar]="true"
-                dateFormat="dd/mm/yy"
-                [readonlyInput]="true"
-              >
-              </p-calendar>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-group">
-              <label>To</label>
-              <p-calendar
-                dataType="date"
-                [showButtonBar]="true"
-                dateFormat="dd/mm/yy"
-                [readonlyInput]="true"
-              >
-              </p-calendar>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>From</label>
+                  <p-calendar
+                    formControlName="created_after"
+                    dataType="date"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="search$.next()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>To</label>
+                  <p-calendar
+                    dataType="date"
+                    formControlName="created_before"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="search$.next()"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Product Structure Categories</label>
-              <pek-multi-product-structure-categories-picker></pek-multi-product-structure-categories-picker>
+              <pek-multi-product-structure-categories-picker (choiceCategories)="onSelectRootCategories($event)"></pek-multi-product-structure-categories-picker>
             </div>
           </div>
-<!--          <div class="col-3">-->
-<!--            <div class="form-group">-->
-<!--              <label>Warehouse Category</label>-->
-<!--            </div>-->
-<!--          </div>-->
-          <button [routerLink]="['order', selectedOrder?.id]">Edit</button>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Warehouse Category</label>
+              <pek-multi-product-categories-picker (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
+            </div>
+          </div>
+          <div class="col-3 d-flex">
+            <div class="form-group form-group_checkbox">
+              <label>Declined</label>
+              <p-triStateCheckbox
+                formControlName="contains_declined_payment"
+                (ngModelChange)="search$.next()"
+              >
+              </p-triStateCheckbox>
+            </div>
+            <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+          </div>
         </div>
       </form>
     </div>
@@ -116,14 +136,14 @@
       <p-table
         #dt
         selectionMode="single"
-        [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
         [scrollable]="true"
         dataKey="id"
-        [paginator]="true"
+        [paginator]="orders.length > 0"
         [rows]="10"
-        [(selection)]="selectedOrder"
+        [(first)]="firstPage"
         [value]="orders"
-        styleClass="p-datatable-gridlines"
+        [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
+        [(selection)]="selectedOrder"
       >
         <ng-template pTemplate="header">
           <tr>
@@ -179,5 +199,20 @@
         </ng-template>
       </p-table>
     </div>
+    <div *ngIf="!dt.paginator && !isLoading && orders.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
   </div>
 </div>
+
+<ng-template #actionButtons>
+  <div class="action-buttons">
+    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedOrder"></p-menubar>
+  </div>
+</ng-template>

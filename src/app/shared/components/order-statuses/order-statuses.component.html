@@ -1,0 +1,83 @@
+<div class="order-statuses">
+  <div class="order-statuses-caption">
+    <p class="subtitle" *ngIf="!selectedStatus">Choose the Status to edit</p>
+    <ng-container [ngSwitch]="isAutoStatus">
+      <ng-container *ngSwitchCase="false">
+        <p-menubar
+          [class.disabled]="!selectedStatus"
+          class="ml-auto mr-2"
+          [model]="menuItems"
+        ></p-menubar>
+        <button pButton type="button" icon="pi pi-plus" label="New Status" (click)="create()"></button>
+      </ng-container>
+      <ng-container *ngSwitchCase="true">
+        <button
+          class="ml-auto"
+          [disabled]="!selectedStatus"
+          (click)="edit()"
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Edit Status"
+        ></button>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="order-statuses-header">
+    <div class="table-col-header text-center" style="width: 5%;">#</div>
+    <div class="table-col-header" [style.width.%]="35">Name</div>
+    <div class="table-col-header" style="width: 30%;">
+      Description
+    </div>
+    <div class="table-col-header text-center" [style.width.%]="isAutoStatus? 15 : 30">Chain Finish Step</div>
+    <div class="table-col-header text-center" *ngIf="isAutoStatus" style="width: 15%">Is Active</div>
+  </div>
+  <div class="order-statuses-body" *ngIf="!isLoading; else spinner">
+    <div
+      class="order-statuses-list order-statuses_dragging"
+      cdkDropList
+      [cdkDropListData]="statuses"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div
+        class="order-statuses-line order-statuses-line_dragging"
+        *ngFor="let status of statuses; let idx = index"
+        cdkDrag
+        cdkDragBoundary=".workloads_dragging"
+        [class.active]="selectedStatus && selectedStatus.id === status.id"
+        (click)="toggleLine(status)"
+      >
+        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+        <div class="order-statuses-item">
+          <div class="table-col text-center" style="width: 5%;">{{idx + 1}}</div>
+          <div class=" table-col" [style.width.%]="35">
+            {{status.value}}
+          </div>
+          <div class=" table-col" style="width: 30%;">
+            {{ status.description }}
+          </div>
+          <div class=" table-col text-center" [style.width.%]="isAutoStatus? 15 : 30">
+            <p-checkbox
+              [(ngModel)]="status.is_final"
+              [binary]="true"
+              (onChange)="setFinishStep(status)"
+            ></p-checkbox>
+          </div>
+          <div class=" table-col text-center" *ngIf="isAutoStatus" style="width: 15%;">
+            <p-checkbox
+              [(ngModel)]="status.is_active"
+              [binary]="true"
+              (onChange)="setActiveStatus(status)"
+            ></p-checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <div class="order-statuses-spinner p-4">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>

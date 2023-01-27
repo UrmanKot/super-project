@@ -1,0 +1,110 @@
+<div class="create-edit-purchasing-category">
+  <div class="modal-header">
+    <h2 class="modal-header__title">
+      {{data.type}} Purchasing Category
+    </h2>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label for="name">Name*</label>
+        <input
+          pInputText
+          formControlName="name"
+          class="form-control"
+          type="text"
+          id="name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="name">Type*</label>
+        <p-dropdown
+          [showClear]="true"
+          [options]="types"
+          formControlName="is_material"
+          optionValue="value"
+          optionLabel="name"
+          placeholder="Choice Type">
+        </p-dropdown>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [rows]="2"
+          pInputTextarea
+          [autoResize]="true"
+          formControlName="description"
+        ></textarea>
+      </div>
+
+      <div class="form-group box">
+        <p-checkbox
+          inputId="root"
+          formControlName="is_for_root"
+          (onChange)="onChange()"
+          [binary]="true"
+        ></p-checkbox>
+        <label class="ml-2 mb-0" for="root">Is For Root</label>
+      </div>
+    </form>
+
+    <div class="table mt-2" *ngIf="!form.get('is_for_root')?.value">
+      <p-treeTable
+        [value]="categoriesTree"
+        selectionMode="single"
+        [(selection)]="selectedNode"
+        [scrollable]="true"
+        (selectionChange)="onSelection()"
+        scrollHeight="calc(100vh - 46.25rem)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 50%; padding-left: 48px">Name</th>
+            <th style="width: 50%">Comment</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr
+            [ttRow]="rowNode"
+            [ttSelectableRow]="rowNode"
+          >
+            <td style="width: 50%">
+              <div class="table-toggle">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span>{{rowData.name}}</span>
+              </div>
+            </td>
+            <td style="width: 50%">
+              {{rowData.comment}}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="3">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <button
+      pButton
+      type="button"
+      class="p-button-success"
+      [label]="data.type"
+      [loading]="isSaving"
+      [disabled]="form.invalid || (!this.form.get('is_for_root').value) && !selectedNode"
+      (click)="onSave()"
+    ></button>
+  </mat-dialog-actions>
+</div>

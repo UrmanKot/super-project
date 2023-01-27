@@ -210,6 +210,7 @@
     width: fit-content !important;
     display: flex;
     align-items: center;
+    font-weight: 500;
 
     .p-button-icon {
       order: -1;
@@ -311,8 +312,10 @@
   display: flex;
   position: relative;
   border-bottom: 1px solid #dee2e6;
+  z-index: 1;
 
   &_hide {
+    visibility: hidden;
     display: none;
   }
 }
@@ -364,6 +367,19 @@
     top: 0.5625rem;
     z-index: 3;
     background: transparent;
+  }
+}
+
+.p-tree {
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.625rem;
+    background-color: #d1d2d8;
+  }
+
+  &::-webkit-scrollbar {
+    cursor: auto;
+    width: 0.5rem;
+    background-color: #f8f9fa;
   }
 }
 

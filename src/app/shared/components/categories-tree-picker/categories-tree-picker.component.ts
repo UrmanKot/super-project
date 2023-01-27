@@ -12,7 +12,7 @@ import {CategoriesService} from '../../../product-structure/services/categories.
 export class CategoriesTreePickerComponent implements OnInit, OnDestroy {
   categoriesTree: TreeNode<Category>[] = [];
   isLoadingCategories = true;
-  @Output() categorySelected: EventEmitter<TreeNode<Category>> = new EventEmitter<TreeNode<Category>>();
+  @Output() categorySelected: EventEmitter<Category> = new EventEmitter<Category>();
   categories: Category[];
   @Input() isModal = false;
 
@@ -68,7 +68,11 @@ export class CategoriesTreePickerComponent implements OnInit, OnDestroy {
   }
 
   onSelectCategory(node: TreeNode<Category>) {
-    this.categorySelected.emit(node);
+    if (node) {
+      this.categorySelected.emit(node.data);
+    } else {
+      this.categorySelected.emit(null)
+    }
   }
 
   ngOnDestroy() {

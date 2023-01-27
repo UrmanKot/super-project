@@ -1,0 +1,89 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'manufacturing-procurement'" [isActive]="true"></pek-module-icon>
+      <h1>Procurement Categories</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="New Category"
+        (click)="onCreateCategory()"
+      ></button>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <div class="page__card">
+      <div class="page__table">
+        <p-treeTable
+          #dt
+          [value]="categoriesTree"
+          selectionMode="single"
+          [(selection)]="selectedNode"
+          [scrollable]="true"
+          scrollHeight="calc(100vh - 19.2rem)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedNode">Choose the Category to edit</p>
+              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedNode"></p-menubar>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand All"
+                class="mr-2"
+                (click)="onExpandAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse All"
+                (click)="onCollapseAll()"
+              ></button>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 35%; padding-left: 48px">Name</th>
+              <th style="width: 35%">Description</th>
+              <th style="width: 30%" class="text-center">Material</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+            >
+              <td style="width: 35%">
+                <div class="table-toggle">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span>{{rowData.name}}</span>
+                </div>
+              </td>
+              <td style="width: 35%">
+                {{rowData.description}}
+              </td>
+              <td style="width: 30%" class="text-center">
+                {{rowData.is_material ? 'Tangible' : 'Intangible'}}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="3">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </div>
+    </div>
+  </div>
+</div>

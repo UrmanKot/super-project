@@ -1,0 +1,19 @@
+<div class="statuses-picker">
+  <p-dropdown
+    *ngIf="!isLoading; else spinner"
+    [options]="statuses"
+    placeholder="Select Status"
+    [(ngModel)]="selectedStatusId"
+    (ngModelChange)="onSelectStatus()"
+    optionLabel="value"
+    optionValue="id"
+    [showClear]="true"
+  >
+  </p-dropdown>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

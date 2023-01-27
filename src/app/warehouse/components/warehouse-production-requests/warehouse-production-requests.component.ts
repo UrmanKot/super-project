@@ -92,7 +92,6 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
             }
           }
         });
-        console.log(order.ordered_items_technologies);
       });
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
@@ -107,7 +106,21 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     this.orderService.get(this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(orders => {
+      this.count = orders.length;
       this.orders = orders;
+
+      this.orders.forEach(order => {
+        order.ordered_items_technologies = [];
+        order.order_products.forEach(product => {
+          if (product.current_technology) {
+            const canAddTechnology = order.ordered_items_technologies
+              .findIndex(el => el === product.current_technology.name) < 0;
+            if (canAddTechnology) {
+              order.ordered_items_technologies.push(product.current_technology.name);
+            }
+          }
+        });
+      });
 
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);

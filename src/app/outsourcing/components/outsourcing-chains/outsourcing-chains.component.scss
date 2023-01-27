@@ -1,0 +1,19 @@
+.form {
+  margin-top: -0.25rem;
+}
+
+.form-group {
+  &_checkbox {
+    &::ng-deep {
+      .p-checkbox {
+        width: 2.375rem !important;
+        height: 2.375rem !important;
+
+        .p-checkbox-box {
+          width: 2.375rem !important;
+          height: 2.375rem !important;
+        }
+      }
+    }
+  }
+}
