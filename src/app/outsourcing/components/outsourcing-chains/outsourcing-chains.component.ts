@@ -39,6 +39,9 @@ export class OutsourcingChainsComponent implements OnInit {
     ]
   }];
 
+  finalStatusSelected = false;
+
+
   searchForm: FormGroup = this.fb.group({
     contains_nomenclature: [null],
     supplier: [null],
@@ -170,7 +173,6 @@ export class OutsourcingChainsComponent implements OnInit {
       }
     });
   }
-
   private prepareForSearch() {
     this.isLoading = true;
     this.selectedOrder = null;
@@ -178,7 +180,7 @@ export class OutsourcingChainsComponent implements OnInit {
 
     this.query = [
       {name: 'accounting_type', value: 2},
-      {name: 'exclude_with_active_final_status', value: true}
+      {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
     ];
 
     for (const key in this.searchForm.controls) {

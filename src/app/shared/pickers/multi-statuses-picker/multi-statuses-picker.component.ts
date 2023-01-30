@@ -10,6 +10,7 @@ import {StatusService} from '../../../procurement/services/status.service';
 })
 export class MultiStatusesPickerComponent implements OnInit {
   @Output() selectStatuses: EventEmitter<number[]> = new EventEmitter<number[]>();
+  @Output() isFinalStatusSelected: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() accountingType: number;
 
   isLoading = true;
@@ -30,14 +31,18 @@ export class MultiStatusesPickerComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(statuses => {
       this.statuses = statuses;
+      console.log('statuses', this.statuses);
       this.isLoading = false;
     });
   }
 
   onSelectStatuses(statuses: Status[]) {
     if (statuses) {
+      const isOnStockSelected = statuses.findIndex(status => status.is_final) > -1;
+      this.isFinalStatusSelected.emit(isOnStockSelected);
       this.selectStatuses.emit(statuses.map(s => s.id));
     } else {
+      this.isFinalStatusSelected.emit(false);
       this.selectStatuses.emit(null);
     }
   }

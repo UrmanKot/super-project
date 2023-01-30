@@ -65,6 +65,7 @@ export class PurchasingChainsComponent implements OnInit {
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   firstPage: number = 0;
+  finalStatusSelected = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -169,7 +170,7 @@ export class PurchasingChainsComponent implements OnInit {
     this.query = [
       {name: 'accounting_type', value: 1},
       {name: 'has_purchase_category', value: true},
-      {name: 'exclude_with_active_final_status', value: true}
+      {name: 'exclude_with_active_final_status', value:  !this.finalStatusSelected}
     ];
 
     for (const key in this.searchForm.controls) {

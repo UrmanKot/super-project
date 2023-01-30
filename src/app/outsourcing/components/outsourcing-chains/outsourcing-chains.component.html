@@ -77,6 +77,7 @@
               <label>Status</label>
               <pek-multi-statuses-picker
                 (selectStatuses)="onSelectStatuses($event)"
+                (isFinalStatusSelected)="finalStatusSelected = $event"
                 [accountingType]="2"
               ></pek-multi-statuses-picker>
             </div>
