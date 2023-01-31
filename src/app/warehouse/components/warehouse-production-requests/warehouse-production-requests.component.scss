@@ -13,3 +13,32 @@ a {
     text-decoration: underline;
   }
 }
+
+.root_product {
+
+  a {
+    position: relative;
+    white-space: nowrap;
+    .root_list_products {
+      display: none;
+      position: absolute;
+      min-width: 6.25rem;
+      height: auto;
+      top: 0;
+      left: +100%;
+      background: white;
+      padding: .5rem 1rem;
+      border-radius: 0.625rem;
+      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
+      z-index: 2;
+    }
+  }
+
+  &:hover {
+    a {
+      .root_list_products {
+        display: block;
+      }
+    }
+  }
+}

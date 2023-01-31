@@ -86,6 +86,7 @@ import { MultiProductCategoriesPickerComponent } from './pickers/multi-product-c
 import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-category-picker/multi-purchase-category-picker.component';
 import { CrmCompanyPickerComponent } from './pickers/crm-company-picker/crm-company-picker.component';
 import { CrmTreeCompanyPickerComponent } from './pickers/crm-tree-company-picker/crm-tree-company-picker.component';
+import { SubRegionPickerComponent } from './pickers/sub-region-picker/sub-region-picker.component';
 
 
 @NgModule({
@@ -151,6 +152,7 @@ import { CrmTreeCompanyPickerComponent } from './pickers/crm-tree-company-picker
     MultiPurchaseCategoryPickerComponent,
     CrmCompanyPickerComponent,
     CrmTreeCompanyPickerComponent,
+    SubRegionPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -219,6 +221,7 @@ import { CrmTreeCompanyPickerComponent } from './pickers/crm-tree-company-picker
     MultiPurchaseCategoryPickerComponent,
     CrmCompanyPickerComponent,
     CrmTreeCompanyPickerComponent,
+    SubRegionPickerComponent,
   ],
   imports: [
     MultiSelectModule,

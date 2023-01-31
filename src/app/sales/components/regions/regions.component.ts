@@ -6,6 +6,10 @@ import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {Region} from '@shared/models/region';
 import {Country} from '@shared/models/country';
 import {CountryRegionService} from '../../services/country-region.service';
+import {SubRegionService} from '@shared/services/sub-region.service';
+import {SubRegion} from '@shared/models/sub-region';
+import {take} from 'rxjs/operators';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-regions',
@@ -19,6 +23,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
 
   regions: Region[] = [];
   countries: Country[] = [];
+  subRegions: SubRegion[] = [];
 
   private destroy$ = new Subject();
 
@@ -52,6 +57,11 @@ export class RegionsComponent implements OnInit, OnDestroy {
         command: () => this.editRegion()
       },
       {
+        label: 'Add Sub Region',
+        icon: 'pi pi-plus',
+        command: () => this.addSubRegion()
+      },
+      {
         label: 'Remove Region',
         icon: 'pi pi-trash',
         command: () => this.deleteRegion()
@@ -59,10 +69,28 @@ export class RegionsComponent implements OnInit, OnDestroy {
     ]
   }];
 
+  menuItemsSubRegion: MenuItem[] = [{
+    label: 'Selected Region',
+    items: [
+      {
+        label: 'Edit Sub Region',
+        icon: 'pi pi-pencil',
+        command: () => this.editSubRegion()
+      },
+      {
+        label: 'Remove Sub Region',
+        icon: 'pi pi-trash',
+        command: () => this.deleteSubRegion()
+      }
+    ]
+  }];
+
   constructor(
     private readonly regionService: RegionService,
     private readonly countryService: CountryService,
-    private countryRegionService: CountryRegionService
+    private readonly subRegionService: SubRegionService,
+    private countryRegionService: CountryRegionService,
+    private modalService: ModalService,
   ) {
   }
 
@@ -74,12 +102,14 @@ export class RegionsComponent implements OnInit, OnDestroy {
     this.selected = null;
     forkJoin({
       regions: this.regionService.get(),
-      countries: this.countryService.get()
+      countries: this.countryService.get(),
+      subRegion: this.subRegionService.get(),
     }).pipe(
       takeUntil(this.destroy$)
-    ).subscribe(({regions, countries}) => {
+    ).subscribe(({regions, countries, subRegion}) => {
       this.regions = regions;
       this.countries = countries;
+      this.subRegions = subRegion;
       this.tree = [];
       this.createTree();
     });
@@ -107,7 +137,29 @@ export class RegionsComponent implements OnInit, OnDestroy {
         })
       });
     });
+    this.tree.forEach(node => {
+      node.children.forEach(child => {
+        const regionSubRegions = this.subRegions.filter(el => el.region === child.data.region.id);
 
+        if (regionSubRegions.length > 0) {
+          child.children.push(
+            ...regionSubRegions.map(subRegion => {
+              return {
+                data: {subRegion: subRegion, countryRegionId: child.data.region.country.id},
+                children: [],
+                parent: child
+              };
+            })
+          );
+          console.log('CHILD.children', child.children);
+          console.log('CHILD', child);
+        }
+
+
+        // if (child.data.region.id === this.subRegions
+      });
+    });
+    // console.log('this.tree', this.tree);
     this.tree = this.tree.map(n => n);
   }
 
@@ -133,9 +185,17 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   private deleteCountry() {
-    this.countryService.delete(this.selected.data.country).subscribe(res => {
-        this.loadInfo();
-    });
+    this.modalService
+      .confirm('danger', 'Confirm')
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((confirm) => {
+        if (confirm) {
+          this.countryService.delete(this.selected.data.country).subscribe(res => {
+            this.loadInfo();
+          });
+        }
+      });
+
   }
 
   private editRegion() {
@@ -147,9 +207,17 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   private deleteRegion() {
-    this.regionService.delete(this.selected.data.region).subscribe(res => {
-      this.loadInfo();
-    });
+    this.modalService
+      .confirm('danger', 'Confirm')
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((confirm) => {
+        if (confirm) {
+          this.regionService.delete(this.selected.data.region).subscribe(res => {
+            this.loadInfo();
+          });
+        }
+      });
+
   }
 
   private addRegion() {
@@ -158,5 +226,34 @@ export class RegionsComponent implements OnInit, OnDestroy {
         this.loadInfo();
       }
     });
+  }
+
+  private addSubRegion() {
+    this.countryRegionService.createEditSubRegionModal(this.selected.data.region.country?.id, null, this.selected.data.region.id).subscribe(res => {
+      if (res) {
+        this.loadInfo();
+      }
+    });
+  }
+
+  private editSubRegion() {
+    this.countryRegionService.createEditSubRegionModal(this.selected.data.countryRegionId, this.selected.data.subRegion, this.selected.data.subRegion.region).subscribe(res => {
+      if (res) {
+        this.loadInfo();
+      }
+    });
+  }
+
+  private deleteSubRegion() {
+    this.modalService
+      .confirm('danger', 'Confirm')
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((confirm) => {
+        if (confirm) {
+          this.subRegionService.delete(this.selected.data.subRegion).subscribe(res => {
+            this.loadInfo();
+          });
+        }
+      });
   }
 }

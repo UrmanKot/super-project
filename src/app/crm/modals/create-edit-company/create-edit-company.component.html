@@ -44,15 +44,6 @@
       />
     </div>
     <div class="form-group">
-      <label>Country</label>
-      <div class="countries">
-        <pek-crm-tree-company-picker
-          [selectedRegion]="form.get('region').value"
-          (regionSelected)="regionSelected($event)"
-        ></pek-crm-tree-company-picker>
-      </div>
-    </div>
-    <div class="form-group">
       <label for="email"> Email</label>
       <input
         pInputText
@@ -91,6 +82,35 @@
         type="text"
         id="reg"
       />
+    </div>
+    <div class="form-group">
+      <label>Country</label>
+      <div class="countries">
+        <pek-crm-company-picker
+          [country]="form.get('country').value?.id"
+          (valueChange)="countrySelected($event)"
+        ></pek-crm-company-picker>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Region</label>
+      <div class="countries">
+        <pek-region-picker
+          [countrySelected]="form.get('country').value?.id"
+          [selectedRegionId]="form.get('region').value?.id"
+          (selectRegionFull)="regionSelected($event)"
+        ></pek-region-picker>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Sub Region</label>
+      <div class="countries">
+        <pek-sub-region-picker
+          [regionSelected]="form.get('region').value?.id"
+          [selectedSubRegionId]="form.get('sub_region').value?.id"
+          (selectSubRegionFull)="regionSubSelected($event)"
+        ></pek-sub-region-picker>
+      </div>
     </div>
     <div class="form-group">
       <label for="supplier_nomenclature">Nomenclature</label>

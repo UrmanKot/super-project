@@ -9,6 +9,9 @@ import {EAccountingType} from '@shared/pickers/accounting-type-picker/accounting
 import {Paginator} from 'primeng/paginator';
 import {AdapterService} from '@shared/services/adapter.service';
 import {environment} from '@env/environment';
+import {
+  logExperimentalWarnings
+} from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
 
 class ProductRequestListOrder extends Order {
   ordered_items_technologies?: string[];
@@ -82,6 +85,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
       this.count = orders.count;
       this.orders = orders.results;
       this.orders.forEach(order => {
+        // console.log('order', order);
         order.ordered_items_technologies = [];
         order.order_products.forEach(product => {
           if (product.current_technology) {
@@ -92,7 +96,26 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
             }
           }
         });
+
+        order.root_production_plans.forEach(plan => {
+          if (order.root_production_plans_display) {
+            const index = order.root_production_plans_display.findIndex(el =>
+              el.root_list.list_product.nomenclature.id === plan.list_product.nomenclature.id);
+            if (index >= 0) {
+              order.root_production_plans_display[index].list.push(plan);
+            } else {
+              order.root_production_plans_display.push({root_list: plan, list: [plan]})
+            }
+          } else {
+            order.root_production_plans_display = [
+              {root_list: plan, list: [plan]}
+            ]
+          }
+
+        });
       });
+      console.log('orders', this.orders);
+
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
       }

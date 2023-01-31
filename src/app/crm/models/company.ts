@@ -26,6 +26,7 @@ export class Company {
   company_id?: number;
   country?: any;
   region?: any;
+  sub_region?: any;
   link_weight?: number;
   contact_person?: ContactPerson;
   to_company?: any;

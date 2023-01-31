@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{form.get('id').value ? 'Edit' : 'Create'  }} Region
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="name">Name*</label>
+      <input type="text" id="name" pInputText formControlName="name">
+    </div>
+    <div class="form-group">
+      <label>Region*</label>
+      <pek-region-picker
+        [countrySelected]="form.get('country').value"
+        [selectedRegionId]="form.get('region').value"
+        (selectRegion)="regionSelected($event)"></pek-region-picker>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="form.get('id').value ? 'Edit' : 'Create'"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

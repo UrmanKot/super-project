@@ -1,5 +1,6 @@
 import {Company} from '../../crm/models/company';
 import {PurchaseCategory} from '../../purchasing/models/purchase-category';
+import {Task} from '@shared/models/task';
 
 export class Order {
   readonly id: number;
@@ -37,6 +38,7 @@ export class Order {
   orderStatuses?: any;
   root_production_plans?: any[];
   unique_root_production_plans?: any[];
+  root_production_plans_display?: {root_list: Task, list: Task[]}[];
   activeStatusDate?: any;
   // root_production_list_products?: ListProduct[];
   can_select_supplier?: boolean;

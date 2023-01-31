@@ -9,8 +9,18 @@
 
 <div class="page__content">
   <div class="page__card">
-    <form [formGroup]="searchForm" class="pb-2">
-      <div class="row">
+    <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
+      <div class="filters-visibility__header">
+        <div class="action-buttons"></div>
+      </div>
+      <button
+        class="icon pi"
+        [class.pi-angle-double-up]="!isHideFilters"
+        [class.pi-angle-double-down]="isHideFilters"
+        (click)="toggleFilterVisibility()"
+      ></button>
+      <form [formGroup]="searchForm" class="pb-2">
+      <div class="row mt-4">
         <div class="col-3">
           <div class="form-group">
             <label>Company</label>
@@ -37,7 +47,7 @@
               <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
             </div>
             <div class="form-group mr-3">
-              <label for="auto-events">Hide Status Events</label>
+              <label>Hide Status Events</label>
               <p-checkbox
                 class="checkbox-big"
                 name="group1"
@@ -49,7 +59,7 @@
               </p-checkbox>
             </div>
             <div class="form-group">
-              <label for="group-linked-events">Group Linked Events</label>
+              <label>Group Linked Events</label>
               <p-checkbox
                 class="checkbox-big"
                 name="group2"
@@ -63,6 +73,39 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label>Company Category</label>
+            <pek-company-category-picker (selectCompanyCategory)="onSelectCompanyCategory($event)"></pek-company-category-picker>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Country</label>
+            <pek-crm-company-picker [showClear]="true" (valueChange)="onSelectCountry($event)"></pek-crm-company-picker>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Region</label>
+            <pek-region-picker
+              [isDisabled]="!searchForm.get('country_id').value"
+              [countrySelected]="searchForm.get('country_id').value"
+              (selectRegion)="onSelectRegion($event)"></pek-region-picker>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Sub Region</label>
+            <pek-sub-region-picker
+              [isDisabled]="!searchForm.get('region_id').value"
+              [regionSelected]="searchForm.get('region_id').value"
+              (selectSubRegionFull)="regionSubSelected($event)"
+            ></pek-sub-region-picker>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-3">
           <div class="form-group">
@@ -227,6 +270,7 @@
         </div>
       </div>
     </form>
+    </div>
     <div class="page__table" *ngIf="!searchForm.get('groupView').value else groupedView">
       <div class="table-pagination-preloader">
         <p-table
