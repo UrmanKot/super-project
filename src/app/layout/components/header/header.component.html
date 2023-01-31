@@ -7,7 +7,7 @@
     class="layout-navigation"
     [class.layout-navigation_wh]="module === 'Warehouse'"
   >
-    <div class="ul layout-navigation__list">
+    <ul class="layout-navigation__list">
       <li
         *ngFor="let route of routes"
         class="layout-navigation__item"
@@ -32,7 +32,7 @@
           {{route.label}}
         </a>
       </li>
-    </div>
+    </ul>
   </div>
 
   <button class="show-navigation-button" (click)="openMobileMenu()">

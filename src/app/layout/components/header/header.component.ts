@@ -89,14 +89,6 @@ export class HeaderComponent implements OnInit {
     this.isShowSwitcher = this.settingModules.some(module => routerLink.includes(module));
   }
 
-  onHideMobileNav() {
-    this.isShowMobileNav = false;
-  }
-
-  onShowMobileNav() {
-    this.isShowMobileNav = true;
-  }
-
   toggleVisibleSettingMenu() {
     this.isShowSettings = !this.isShowSettings;
   }
@@ -109,7 +101,6 @@ export class HeaderComponent implements OnInit {
 
   closeMobileMenu() {
     this.isShowMobileNav = false;
-    this.getLinks();
     document.body.style.overflow = '';
   }
 
