@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {WarehouseProduct} from '../../models/warehouse-product';
 import {InvoiceProduct} from '../../../procurement/models/invoice-product';
 import {OrderProduct} from '../../../procurement/models/order-product';
 import {InvoiceProductService} from '../../../procurement/services/invoice-product.service';
@@ -30,9 +29,10 @@ export class QcAcceptToWarehouseComponent implements OnInit {
     private readonly orderProductService: OrderProductService,
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<QcAcceptToWarehouseComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {items: InvoiceProduct[] | OrderProduct[], id: number, type: 'invoice' | 'order'},
+    @Inject(MAT_DIALOG_DATA) public data: { items: InvoiceProduct[] | OrderProduct[], id: number, type: 'invoice' | 'order' },
     private qcListModalService: QcListModalService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.items = this.data.items;
@@ -54,10 +54,10 @@ export class QcAcceptToWarehouseComponent implements OnInit {
 
     const send = this.items.map(item => {
       return {
-          order_product_id: item.id,
-          quantity: item.passed_quantity,
-          locator: this.form.get('locator').value
-      }
+        order_product_id: item.id,
+        quantity: item.quantity - item.accepted_quantity,
+        locator: this.form.get('locator').value
+      };
     });
 
     this.orderProductService.acceptSeveral(send).pipe(
@@ -70,10 +70,10 @@ export class QcAcceptToWarehouseComponent implements OnInit {
 
     const send = this.items.map(item => {
       return {
-          invoice_product_id: item.id,
-          quantity: item.passed_quantity,
-          locator: this.form.get('locator').value
-      }
+        invoice_product_id: item.id,
+        quantity: item.quantity - item.accepted_quantity,
+        locator: this.form.get('locator').value
+      };
     });
 
     this.invoiceProductService.acceptSeveral(send).pipe(
@@ -99,7 +99,7 @@ export class QcAcceptToWarehouseComponent implements OnInit {
     let unsupportedItemsForLocator: InvoiceProduct[] | OrderProduct[] = [];
     this.items.forEach(item => {
 
-      const foundItem = item.exists_on_locators.find(inLocator => inLocator.warehouse.id === locator.warehouse.id && inLocator.id !== locator.id );
+      const foundItem = item.exists_on_locators.find(inLocator => inLocator.warehouse.id === locator.warehouse.id && inLocator.id !== locator.id);
       if (foundItem) {
         unsupportedItemsForLocator.push(item);
       }

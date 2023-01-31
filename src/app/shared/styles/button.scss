@@ -1,3 +1,5 @@
+@import "src/app/shared/styles/screens-variables";
+
 .p-button {
   border-radius: 0.625rem;
   line-height: 1;
@@ -106,5 +108,36 @@ a {
   button, a {
     height: 2.375rem;
     margin-bottom: 0.535rem;
+  }
+}
+
+@media (max-width: $tablet-width) {
+  .action-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    width: 100%;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+
+    button, a {
+      height: 2.375rem;
+      margin: 0 !important;
+    }
+  }
+
+  button, a {
+    .p-button-icon {
+      display: none;
+    }
+  }
+
+  .p-button-loading-icon {
+    display: block !important;
+  }
+
+  .p-button-rounded {
+    .p-button-icon {
+      display: block;
+    }
   }
 }

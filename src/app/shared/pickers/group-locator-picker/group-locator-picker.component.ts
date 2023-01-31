@@ -16,7 +16,7 @@ export class GroupLocatorPickerComponent implements OnInit {
   locators: Locator[];
   @Output() selectLocator: EventEmitter<number> = new EventEmitter<number>();
   @Output() selectLocatorFull: EventEmitter<Locator> = new EventEmitter<Locator>();
-  isLoading = false;
+  isLoading = true;
   groupLocators = [];
   locatorsMap = {};
 
@@ -43,6 +43,7 @@ export class GroupLocatorPickerComponent implements OnInit {
     ).subscribe(locators => {
       this.locators = locators;
       this.prepareLocators();
+      this.isLoading = false;
     });
   }
 

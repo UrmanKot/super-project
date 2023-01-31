@@ -8,6 +8,7 @@ export class InvoiceProduct {
   quantity: number;
   passed_quantity: number;
   not_passed_quantity: number;
+  accepted_quantity?: number;
   invoice: number | Invoice;
   description: string;
   quality_control: string;
