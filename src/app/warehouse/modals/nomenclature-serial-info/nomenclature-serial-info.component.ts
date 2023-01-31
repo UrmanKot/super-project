@@ -21,6 +21,8 @@ export class NomenclatureSerialInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.data);
+    this.data.extraInfo = [...this.data.extraInfo, ...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo,...this.data.extraInfo, ...this.data.extraInfo, ...this.data.extraInfo,]
   }
 
   protocolInfo(protocolId: number, serial: string, warehouseproductqcprotocol: number) {

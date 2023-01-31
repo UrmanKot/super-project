@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Category} from '../../../product-structure/models/category';
 import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {TreeNode} from 'primeng/api';
@@ -9,7 +9,7 @@ import {Subject, takeUntil} from 'rxjs';
   templateUrl: './product-category-picker.component.html',
   styleUrls: ['./product-category-picker.component.scss'],
 })
-export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
+export class ProductCategoryPickerComponent implements OnInit, OnDestroy, OnChanges {
   @Output() choiceCategory: EventEmitter<Category> = new EventEmitter<Category>();
   @Output() choiceCategoryFolAllIds: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Input() isAllIds = false;
@@ -29,6 +29,10 @@ export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
   ) {
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.findCategory();
+  }
+
   ngOnInit(): void {
     this.productCategoriesService.get().pipe(
       takeUntil(this.destroy$)
@@ -46,18 +50,22 @@ export class ProductCategoryPickerComponent implements OnInit, OnDestroy {
   }
 
   findCategory() {
-    const find = (nodes: TreeNode<Category>[]) => {
-      nodes.forEach(node => {
-        if (node.data.id === this.currentCategoryId) {
-          this.selectedCategory = node;
-          return;
-        } else if (node.children.length > 0) {
-          find(node.children);
-        }
-      });
-    };
+    if (this.currentCategoryId) {
+      const find = (nodes: TreeNode<Category>[]) => {
+        nodes.forEach(node => {
+          if (node.data.id === this.currentCategoryId) {
+            this.selectedCategory = node;
+            return;
+          } else if (node.children.length > 0) {
+            find(node.children);
+          }
+        });
+      };
 
-    find(this.categoriesTree);
+      find(this.categoriesTree);
+    } else {
+      this.selectedCategory = null;
+    }
   }
 
   createTree() {

@@ -30,6 +30,10 @@
 }
 
 .layout-navigation {
+  &__list {
+    display: flex;
+  }
+
   &__item {
     &_settings {
       display: none;
@@ -41,11 +45,35 @@
           color: #106d5e;
         }
       }
-
-      &-show {
-        display: block;
-      }
     }
+  }
+}
+
+.show-navigation-button,
+.close-navigation-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+
+  i {
+    font-size: 1.125rem;
+  }
+}
+
+.show-navigation-button,
+.close-navigation-button {
+  display: none;
+}
+
+.close-navigation-button {
+  i {
+    position: relative;
+    top: 0.0625rem;
   }
 }
 

@@ -44,14 +44,26 @@
         </ng-template>
         <ng-template pTemplate="body" let-order let-i="rowIndex">
           <tr [pSelectableRow]="order">
-            <td style="width: 5%" class="text-center">{{i + 1 }}</td>
-            <td style="width: 35%" class="text-center">{{order.area_locator.area.name}}</td>
-            <td style="width: 30%" class="text-center">{{order.area_locator.name}}</td>
-            <td style="width: 30%" class="text-center">{{order.created | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 5%" class="text-center">
+              <h3 class="td-title">#</h3>
+              {{i + 1 }}
+            </td>
+            <td style="width: 35%" class="text-center">
+              <h3 class="td-title">Area</h3>
+              {{order.area_locator.area.name}}
+            </td>
+            <td style="width: 30%" class="text-center">
+              <h3 class="td-title">Locator</h3>
+              {{order.area_locator.name}}
+            </td>
+            <td style="width: 30%" class="text-center">
+              <h3 class="td-title">Creation Date</h3>
+              {{order.created | date:'dd/MM/yyyy'}}
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-4" [attr.colspan]="4">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>

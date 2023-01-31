@@ -1,3 +1,5 @@
+@import "src/app/shared/styles/screens-variables";
+
 .page {
   &__header {
     display: flex;
@@ -54,7 +56,42 @@
 
   &__tabs {
     border-radius: 1rem;
-    //box-shadow: 0 0 0.5rem #00000010;
-    //background: #fff;
+  }
+
+  @media(max-width: $tablet-width) {
+    &__content {
+      padding: 0.75rem;
+    }
+
+    &__header {
+      padding: 0.5rem 0.75rem 0.5rem;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__title {
+    }
+
+    &__card {
+      padding: 0.75rem 1.125rem 1.125rem;
+    }
+
+    &__tools {
+      margin-top: 0.5rem;
+      margin-left: 0;
+      grid-template-columns: repeat( 2, 1fr );
+      display: grid;
+      width: 100%;
+      gap: 0.5rem;
+
+      .ml-2,
+      .mr-2 {
+        margin: 0 !important;
+      }
+
+      button {
+        margin: 0 !important;
+      }
+    }
   }
 }

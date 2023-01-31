@@ -6,7 +6,7 @@ import {ModalService} from '@shared/services/modal.service';
 @Component({
   selector: 'pek-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss', './header.mobile.component.scss']
 })
 export class HeaderComponent implements OnInit {
   @Input() module: string;
@@ -74,7 +74,7 @@ export class HeaderComponent implements OnInit {
   ) {
     router.events.forEach(event => {
       if (event instanceof NavigationStart) {
-        this.isShowMobileNav = false;
+        this.closeMobileMenu();
       }
     });
   }
@@ -99,6 +99,18 @@ export class HeaderComponent implements OnInit {
 
   toggleVisibleSettingMenu() {
     this.isShowSettings = !this.isShowSettings;
+  }
+
+  openMobileMenu() {
+    this.isShowMobileNav = true;
+    this.getLinks();
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeMobileMenu() {
+    this.isShowMobileNav = false;
+    this.getLinks();
+    document.body.style.overflow = '';
   }
 
   onOpenBusinessGuide() {

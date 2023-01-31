@@ -1,0 +1,5 @@
+@mixin adaptive-font($max-size, $min-size, $max-width, $min-width) {
+  $size: $max-size - $min-size;
+  $width: $max-width - $min-width;
+  font-size: calc(#{$min-size + px} + #{$size} * ((100vw - #{$min-width + px}) / #{$width})) !important;
+}

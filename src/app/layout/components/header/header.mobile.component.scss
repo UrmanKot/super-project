@@ -1,0 +1,94 @@
+@import "src/app/shared/styles/screens-variables";
+
+@media (max-width: $tablet-width) {
+  .layout-header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 100000;
+    justify-content: space-between;
+    overflow: auto;
+
+    .layout-navigation {
+      display: none;
+    }
+
+    &_open {
+      position: fixed;
+      background: #fff;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 9999;
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      .layout-navigation {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .show-navigation-button {
+        display: none;
+      }
+
+      .close-navigation-button {
+        display: block;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.665rem;
+      }
+
+      .layout-navigation__item_settings-show {
+        display: block;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+        width: 100%;
+
+        .guide-button {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .show-navigation-button {
+    display: flex;
+  }
+
+  .layout-navigation {
+    margin-left: 0;
+    flex-direction: column;
+
+    &_open {
+      display: block;
+    }
+
+    &__list {
+      flex-direction: column;
+    }
+
+    &__item {
+      margin-right: 0;
+      width: 100%;
+
+      a {
+        width: 100%;
+        padding: 1rem 0.75rem;
+        justify-content: center;
+      }
+    }
+  }
+
+  .actions {
+    display: none;
+  }
+}

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TreeNode} from 'primeng/api';
 import {Category} from '../../../product-structure/models/category';
 import {Subject, takeUntil} from 'rxjs';
@@ -9,18 +9,25 @@ import {CategoriesService} from '../../../product-structure/services/categories.
   templateUrl: './categories-tree-picker.component.html',
   styleUrls: ['./categories-tree-picker.component.scss']
 })
-export class CategoriesTreePickerComponent implements OnInit, OnDestroy {
+export class CategoriesTreePickerComponent implements OnInit, OnDestroy, OnChanges {
   categoriesTree: TreeNode<Category>[] = [];
   isLoadingCategories = true;
   @Output() categorySelected: EventEmitter<Category> = new EventEmitter<Category>();
   categories: Category[];
   @Input() isModal = false;
+  @Input() currentCategoryId: number;
 
   private destroy$ = new Subject();
+  selectedCategory: TreeNode<Category>;
 
   constructor(
     private readonly productCategoriesService: CategoriesService,
-  ) { }
+  ) {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.findCategory()
+  }
 
   ngOnInit(): void {
     this.getCategories();
@@ -32,8 +39,28 @@ export class CategoriesTreePickerComponent implements OnInit, OnDestroy {
     ).subscribe(categories => {
       this.categories = categories;
       this.createTree();
+      this.findCategory();
       this.isLoadingCategories = false;
     });
+  }
+
+  findCategory() {
+    if (this.currentCategoryId) {
+
+      const find = (nodes: TreeNode<Category>[]) => {
+        nodes.forEach(node => {
+          if (node.data.id === this.currentCategoryId) {
+            this.selectedCategory = node;
+            return;
+          } else {
+            find(node.children);
+          }
+        });
+      };
+      find(this.categoriesTree);
+    } else {
+      this.selectedCategory = null
+    }
   }
 
   createTree() {
@@ -71,7 +98,7 @@ export class CategoriesTreePickerComponent implements OnInit, OnDestroy {
     if (node) {
       this.categorySelected.emit(node.data);
     } else {
-      this.categorySelected.emit(null)
+      this.categorySelected.emit(null);
     }
   }
 

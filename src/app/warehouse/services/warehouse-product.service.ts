@@ -99,7 +99,6 @@ export class WarehouseProductService {
       .open<CreateEditWarehouseProductComponent>(CreateEditWarehouseProductComponent, {
         width: 'auto',
         height: 'auto',
-        panelClass: 'modal-overflow-visible',
         data: {type, nomenclatureId},
         autoFocus: false,
         enterAnimationDuration: '250ms'

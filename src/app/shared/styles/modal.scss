@@ -1,3 +1,5 @@
+@import "src/app/shared/styles/screens-variables";
+
 .mat-dialog-actions {
   padding: 1rem 0 !important;
 
@@ -52,5 +54,37 @@
 
   .mat-dialog-container {
     overflow: initial !important;
+  }
+}
+
+.mat-dialog-container {
+  padding: 1.5rem !important;
+}
+
+.mat-dialog-actions {
+  margin-bottom: -1.5rem !important;
+}
+
+.mat-dialog-content {
+  margin: 0 -1.5rem !important;
+  padding: 0 1.5rem !important;
+}
+
+@media (max-width: $tablet-width) {
+  .cdk-overlay-pane {
+    max-width: 95vw !important;
+  }
+
+  .mat-dialog-container {
+    padding: 1rem !important;
+  }
+
+  .mat-dialog-actions {
+    margin-bottom: -1rem !important;
+  }
+
+  .mat-dialog-content {
+    margin: 0 -1rem !important;
+    padding: 0 1rem !important;
   }
 }

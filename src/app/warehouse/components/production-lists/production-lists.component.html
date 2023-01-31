@@ -1,8 +1,10 @@
 <div class="page">
   <div class="page__header">
     <div class="page__title">
-      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>Production Lists</h1>
+      <div class="header-wrapper">
+        <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+        <h1>Production Lists</h1>
+      </div>
 
       <div class="colors">
         <div class="colors__color">
@@ -152,12 +154,28 @@
               [class.deficit]="list.descendants_has_deficit_accepted"
               [class.free-products]="list.descendants_has_free_warehouse_products"
             >
-              <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
-              <td style="width: 15%">({{list.id}}) {{list.nomenclature.code}}</td>
-              <td style="width: 15%">{{list.nomenclature.name}}</td>
-              <td style="width: 10%" class="text-center">{{list.created|date:'dd/MM/yyyy'}}</td>
-              <td style="width: 6%" class="text-center">{{list.sets_number}}</td>
+              <td style="width: 5%" class="text-center">
+                <h3 class="td-title">#</h3>
+                {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
+              </td>
+              <td style="width: 15%">
+                <h3 class="td-title">Code</h3>
+                ({{list.id}}) {{list.nomenclature.code}}
+              </td>
+              <td style="width: 15%">
+                <h3 class="td-title">Name</h3>
+                {{list.nomenclature.name}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Date Of Creation</h3>
+                {{list.created|date:'dd/MM/yyyy'}}
+              </td>
+              <td style="width: 6%" class="text-center">
+                <h3 class="td-title">Sets</h3>
+                {{list.sets_number}}
+              </td>
               <td style="width: 9%">
+                <h3 class="td-title">Locator</h3>
                 <ng-container *ngIf="list.locator">
                   {{list.locator.name + ' '}}<br>
                   R: {{list.locator.row}}
@@ -166,12 +184,30 @@
                   Pl: {{list.locator.place}}
                 </ng-container>
               </td>
-              <td class="text-center" style="width: 6%">{{list.statistics.total_products_count}}</td>
-              <td class="text-center" style="width: 7%">{{list.statistics.not_processed_products_count}}</td>
-              <td class="text-center" style="width: 6%">{{list.statistics.deficit_products_count}}</td>
-              <td class="text-center" style="width: 7%">{{list.statistics.outsource_production_count}}</td>
-              <td class="text-center" style="width: 7%">{{list.statistics.own_production_count}}</td>
-              <td class="text-center" style="width: 7%">{{list.statistics.purchased_ordered_count}}</td>
+              <td class="text-center" style="width: 6%">
+                <h3 class="td-title">Total</h3>
+                {{list.statistics.total_products_count}}
+              </td>
+              <td class="text-center" style="width: 7%">
+                <h3 class="td-title">Not Processed</h3>
+                {{list.statistics.not_processed_products_count}}
+              </td>
+              <td class="text-center" style="width: 6%">
+                <h3 class="td-title">Deficit</h3>
+                {{list.statistics.deficit_products_count}}
+              </td>
+              <td class="text-center" style="width: 7%">
+                <h3 class="td-title">Outsource</h3>
+                {{list.statistics.outsource_production_count}}
+              </td>
+              <td class="text-center" style="width: 7%">
+                <h3 class="td-title">Own Production</h3>
+                {{list.statistics.own_production_count}}
+              </td>
+              <td class="text-center" style="width: 7%">
+                <h3 class="td-title">Purchased</h3>
+                {{list.statistics.purchased_ordered_count}}
+              </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">

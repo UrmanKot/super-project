@@ -2,6 +2,8 @@
 @import "src/assets/styles/reset";
 @import 'app/shared/styles/theme-variables';
 @import "assets/fonts/icomoon/style.css";
+@import "src/app/shared/styles/screens-variables";
+@import "mixins";
 
 html, body {
   padding: 0;
@@ -11,6 +13,10 @@ html, body {
 
 html {
   font-size: 15px;
+
+  @media (max-width: $tablet-width) {
+    @include adaptive-font(15, 14, 768, 360);
+  }
 }
 
 body {
@@ -103,19 +109,6 @@ body {
       }
     }
   }
-}
-
-.mat-dialog-container {
-  padding: 1.5rem !important;
-}
-
-.mat-dialog-actions {
-  margin-bottom: -1.5rem !important;
-}
-
-.mat-dialog-content {
-  margin: 0 -1.5rem !important;
-  padding: 0 1.5rem !important;
 }
 
 .guide-modalbox {
@@ -229,6 +222,12 @@ body {
 @media print {
   p-toast {
     display: none;
+  }
+}
+
+@media (max-width: $tablet-width) {
+  .layout-header {
+    padding: 0 0.75rem 0 0.75rem;
   }
 }
 

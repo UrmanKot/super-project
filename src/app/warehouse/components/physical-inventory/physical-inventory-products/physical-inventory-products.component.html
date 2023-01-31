@@ -200,9 +200,11 @@
               <p-tableCheckbox [value]="inventoryProduct"></p-tableCheckbox>
             </td>
             <td style="width: 5%" class="text-center">
+              <h3 class="td-title">#</h3>
               {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
             </td>
             <td style="width: 14%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <h3 class="td-title">Code</h3>
               <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.code}}
               </ng-container>
@@ -215,10 +217,12 @@
               </ng-container>
             </td>
             <td style="width: 10%" *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <h3 class="td-title">Name</h3>
               <b *ngIf="inventoryProduct.nomenclature.bulk_or_serial === '1'">(S)</b>
               {{inventoryProduct.nomenclature.name}}
             </td>
             <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Technology</h3>
               <ng-container *ngIf="inventoryProduct.product">
                 {{inventoryProduct.product.current_technology?.name}}
               </ng-container>
@@ -228,6 +232,7 @@
               </ng-container>
             </td>
             <td style="width: 9%" class="text-center">
+              <h3 class="td-title">Initial Quantity</h3>
                 <span>
                   <span *ngIf="inventoryProduct.initial_quantity === inventoryProduct.current_available_quantity">
                   {{inventoryProduct.initial_quantity}}
@@ -239,7 +244,7 @@
                 </span>
             </td>
             <td pEditableColumn class="text-center" style="width: 11%">
-
+              <h3 class="td-title">Entered Quantity</h3>
               <p-cellEditor
                 *ngIf="inventoryProduct.nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
                 <ng-template pTemplate="input">
@@ -260,6 +265,7 @@
               <span *ngIf="currentInventory && currentInventory.status === '1'">{{inventoryProduct.new_quantity}}</span>
             </td>
             <td style="width: 11%" class="text-center">
+              <h3 class="td-title">Category</h3>
               <ng-container *ngIf="inventoryProduct.product && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.name}}
               </ng-container>
@@ -269,6 +275,7 @@
               </ng-container>
             </td>
             <td style="width: 6%" class="text-center">
+              <h3 class="td-title">UOM</h3>
               <ng-container *ngIf="inventoryProduct.product  && !inventoryProduct.nomenclature">
                 {{inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol ? inventoryProduct.product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs' }}
               </ng-container>
@@ -278,11 +285,13 @@
               </ng-container>
             </td>
             <td style="width: 11%" class="text-center">
+              <h3 class="td-title">Warehouse</h3>
               <ng-container *ngIf="inventoryProduct.locator; else productWarehouse">
                 {{inventoryProduct.locator.warehouse.name}}
               </ng-container>
             </td>
             <td style="width: 14%">
+              <h3 class="td-title">Locator</h3>
               <div *ngIf="inventoryProduct.locator; else productLocator">
                 {{inventoryProduct.locator.name}}
 

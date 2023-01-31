@@ -14,6 +14,10 @@
     justify-content: center;
   }
 
+  &__categories {
+    display: none;
+  }
+
   &__tree {
     bottom: 0;
     top: 0;

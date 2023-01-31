@@ -44,18 +44,27 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="text-center" style="width: 5%">#</th>
-              <th class="text-center" style="width: 25%">Id</th>
+              <th class="text-center" style="width: 25%">ID</th>
               <th class="text-center" style="width: 35%">Date</th>
               <th class="text-center" style="width: 35%">Status</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-physicalInventory let-i="rowIndex">
             <tr [pSelectableRow]="physicalInventory">
-              <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
-              <td style="width: 25%" class="text-center">{{physicalInventory.id}}</td>
-              <td style="width: 35%"
-                  class="text-center">{{physicalInventory?.system_creation_date | date:'dd/MM/yyyy'}}</td>
+              <td style="width: 5%" class="text-center">
+                <h3 class="td-title">#</h3>
+                {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
+              </td>
+              <td style="width: 25%" class="text-center">
+                <h3 class="td-title">ID</h3>
+                {{physicalInventory.id}}
+              </td>
               <td style="width: 35%" class="text-center">
+                <h3 class="td-title">Date</h3>
+                {{physicalInventory?.system_creation_date | date:'dd/MM/yyyy'}}
+              </td>
+              <td style="width: 35%" class="text-center">
+                <h3 class="td-title">Status</h3>
                 <span *ngIf="physicalInventory.status === '1'">Completed</span>
                 <span *ngIf="physicalInventory.status === '0'">In Progress</span>
               </td>

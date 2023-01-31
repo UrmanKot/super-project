@@ -53,10 +53,22 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th class="text-center" style="width: 5%">#</th>
-            <th style="width: 35%">Code</th>
-            <th style="width: 45%">Name</th>
-            <th class="text-center" style="width: 15%">Requested Quantity</th>
+            <th class="text-center" style="width: 5%">
+              <h3 class="td-title">#</h3>
+              #
+            </th>
+            <th style="width: 35%">
+              <h3 class="td-title">Code</h3>
+              Code
+            </th>
+            <th style="width: 45%">
+              <h3 class="td-title">Name</h3>
+              Name
+            </th>
+            <th class="text-center" style="width: 15%">
+              <h3 class="td-title">Requested Quantity</h3>
+              Requested Quantity
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-request let-i="rowIndex">
@@ -76,7 +88,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-4" [attr.colspan]="4">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>

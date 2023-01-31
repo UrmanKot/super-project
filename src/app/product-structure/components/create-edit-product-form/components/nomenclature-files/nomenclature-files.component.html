@@ -2,12 +2,12 @@
   <div class="">
     <div class="col-12">
       <div class="form-group">
-        <pek-upload-file-picker #filePicker  (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
+        <pek-upload-file-picker #filePicker (fileChanged)="filesChanged($event)"></pek-upload-file-picker>
       </div>
     </div>
   </div>
   <p-table
-    [paginator]="true"
+    [paginator]="files.length > 10"
     [rows]="10"
     [value]="files"
     selectionMode="single"
@@ -15,24 +15,45 @@
     [(selection)]="selectedFile"
   >
     <ng-template pTemplate="caption">
-      <div class="d-flex align-items-center">
-        <p class="subtitle ml-1 mr-2" *ngIf="!selectedFile">Choose the File</p>
-        <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedFile"></p-menubar>
-      </div>
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th class="index-header">#</th>
-        <th>File</th>
+        <th class="index-header text-center" style="width: 5%">#</th>
+        <th style="width: 75%">File Name</th>
+        <th class="text-center" style="width: 20%">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-file let-i="rowIndex">
-      <tr [pSelectableRow]="file">
-        <td>{{ i + 1 }}</td>
-        <td>
-          <a [href]="file.file">
-            {{ getName(file.file) }}
+      <tr>
+        <td class="text-center" style="width: 5%">
+          <h3 class="td-title">#</h3>
+          {{i + 1}}
+        </td>
+        <td style="width: 75%" class="word-break">
+          <h3 class="td-title">File Name</h3>
+          <a>
+            {{getName(file.file)}}
           </a>
+        </td>
+        <td style="width: 20%">
+          <h3 class="td-title">Actions</h3>
+          <div class="btn-actions">
+            <button
+              pButton
+              (click)="deleteFile(file.id)"
+              [loading]="deletion.has(file.id)"
+              type="button"
+              class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+              icon="pi pi-trash"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="4">
+          <span>No Records Found</span>
         </td>
       </tr>
     </ng-template>

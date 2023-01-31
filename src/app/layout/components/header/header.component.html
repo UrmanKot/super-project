@@ -1,49 +1,47 @@
-<div class="layout-header">
+<div
+  class="layout-header"
+  [class.layout-header_open]="isShowMobileNav"
+>
   <pek-logo [module]="module"></pek-logo>
-  <ul class="layout-navigation" [class.layout-navigation_wh]="module === 'Warehouse'">
-    <li
-      *ngFor="let route of routes"
-      class="layout-navigation__item"
-    >
-      <a
-        [routerLink]="route.commands"
-        routerLinkActive="active"
+  <div
+    class="layout-navigation"
+    [class.layout-navigation_wh]="module === 'Warehouse'"
+  >
+    <div class="ul layout-navigation__list">
+      <li
+        *ngFor="let route of routes"
+        class="layout-navigation__item"
       >
-        {{route.label}}
-      </a>
-    </li>
+        <a
+          [routerLink]="route.commands"
+          routerLinkActive="active"
+        >
+          {{route.label}}
+        </a>
+      </li>
 
-    <li
-      *ngFor="let route of settingsRoutes"
-      class="layout-navigation__item layout-navigation__item_settings"
-      [class.layout-navigation__item_settings-show]="isShowSettings"
-    >
-      <a
-        [routerLink]="route.commands"
-        routerLinkActive="active"
+      <li
+        *ngFor="let route of settingsRoutes"
+        class="layout-navigation__item layout-navigation__item_settings"
+        [class.layout-navigation__item_settings-show]="isShowSettings"
       >
-        {{route.label}}
-      </a>
-    </li>
-  </ul>
+        <a
+          [routerLink]="route.commands"
+          routerLinkActive="active"
+        >
+          {{route.label}}
+        </a>
+      </li>
+    </div>
+  </div>
 
-<!--  <ul-->
-<!--    class="layout-navigation layout-navigation_settings"-->
-<!--    [class.layout-navigation_settings-show]="isShowSettings"-->
-<!--    [class.layout-navigation_wh]="module === 'Warehouse'"-->
-<!--  >-->
-<!--    <li-->
-<!--      *ngFor="let route of settingsRoutes"-->
-<!--      class="layout-navigation__item"-->
-<!--    >-->
-<!--      <a-->
-<!--        [routerLink]="route.commands"-->
-<!--        routerLinkActive="active"-->
-<!--      >-->
-<!--        {{route.label}}-->
-<!--      </a>-->
-<!--    </li>-->
-<!--  </ul>-->
+  <button class="show-navigation-button" (click)="openMobileMenu()">
+    <i class="pi pi-bars"></i>
+  </button>
+
+  <button class="close-navigation-button" (click)="closeMobileMenu()">
+    <i class="pi pi-times"></i>
+  </button>
 
   <div class="actions ml-auto">
     <div class="toggle mr-3" *ngIf="isShowSwitcher">
