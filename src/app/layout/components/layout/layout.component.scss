@@ -1,3 +1,11 @@
+@import "src/app/shared/styles/screens-variables";
+
 .layout {
   position: relative;
+
+  @media (max-width: $tablet-width) {
+    &__inner {
+      padding-top: 3.75rem;
+    }
+  }
 }

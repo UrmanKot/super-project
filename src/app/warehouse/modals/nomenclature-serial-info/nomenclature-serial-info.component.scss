@@ -1,0 +1,15 @@
+@import "src/app/shared/styles/screens-variables";
+
+@media (max-width: $tablet-width) {
+  ::ng-deep {
+    .nomenclature-serial-info {
+      p-table {
+        .p-datatable-scrollable {
+          .p-datatable-wrapper {
+            max-height: calc(100vh - 30rem) !important;
+          }
+        }
+      }
+    }
+  }
+}

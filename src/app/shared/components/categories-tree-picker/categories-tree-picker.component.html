@@ -5,6 +5,7 @@
       [metaKeySelection]="false"
       [value]="categoriesTree"
       (selectionChange)="onSelectCategory($event)"
+      [(selection)]="selectedCategory"
       selectionMode="single"
     >
       <ng-template let-node pTemplate="default">

@@ -88,7 +88,9 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
         this.form.removeControl('code');
       }
 
-      this.getTechnicalEquipments();
+      if (this.product.nomenclature.id) {
+        this.getTechnicalEquipments();
+      }
     }
   }
 

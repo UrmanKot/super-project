@@ -1,0 +1,12 @@
+@import "src/app/shared/styles/screens-variables";
+
+.btn-actions {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: $tablet-width) {
+  .btn-actions {
+    justify-content: flex-start;
+  }
+}

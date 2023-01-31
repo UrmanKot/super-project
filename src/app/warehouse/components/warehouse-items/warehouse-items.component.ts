@@ -15,7 +15,7 @@ import {environment} from '@env/environment';
 @Component({
   selector: 'pek-warehouse-items',
   templateUrl: './warehouse-items.component.html',
-  styleUrls: ['./warehouse-items.component.scss']
+  styleUrls: ['./warehouse-items.component.scss', './warehouse-items.mobile.component.scss']
 })
 export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('paginator') paginator: Paginator;

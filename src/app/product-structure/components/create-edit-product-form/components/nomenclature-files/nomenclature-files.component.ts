@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NomenclaturesFileService} from '@shared/services/nomenclatures-file.service';
-import {combineLatest, forkJoin, Subject, takeUntil} from 'rxjs';
+import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {NomenclatureFile} from '@shared/models/nomenclature';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
@@ -15,25 +15,21 @@ export class NomenclatureFilesComponent implements OnInit, OnDestroy {
   @ViewChild('filePicker') filePicker: UploadFilePickerComponent;
   @Input() nomenclatureId: number;
   private destroy$ = new Subject();
-  files: NomenclatureFile[];
+  files: NomenclatureFile[] = [];
   selectedFile: NomenclatureFile;
-  menuItems: MenuItem[] = [{
-    label: 'Selected Files',
-    items: [
-      {
-        label: 'Remove',
-        icon: 'pi pi-trash',
-        command: () => this.deleteFile()
-      }
-    ]
-  }];
+
+  readonly deletion = new Set<number>();
+
   constructor(
     private nomenclatureFileService: NomenclaturesFileService,
     private modalService: ModalService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-    this.loadFiles();
+    if (this.nomenclatureId) {
+      this.loadFiles();
+    }
   }
 
   loadFiles() {
@@ -41,8 +37,7 @@ export class NomenclatureFilesComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$)
       ).subscribe(res => {
-        this.files = res;
-        console.log('this.files', this.files);
+      this.files = res;
     });
   }
 
@@ -71,10 +66,12 @@ export class NomenclatureFilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteFile() {
+  public deleteFile(id: number) {
     this.modalService.confirm('danger', 'Confirm').pipe(takeUntil(this.destroy$)).subscribe(confirm => {
       if (confirm) {
-        this.nomenclatureFileService.delete(this.selectedFile.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
+        this.deletion.add(id);
+        this.nomenclatureFileService.delete(id).pipe(takeUntil(this.destroy$)).subscribe(() => {
+          this.deletion.delete(id);
           this.selectedFile = null;
           this.loadFiles();
         });
@@ -88,7 +85,10 @@ export class NomenclatureFilesComponent implements OnInit, OnDestroy {
   }
 
   printFileAdded(file: File) {
-    this.nomenclatureFileService.create({nomenclature: this.nomenclatureId, file}).pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.nomenclatureFileService.create({
+      nomenclature: this.nomenclatureId,
+      file
+    }).pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.filePicker.clearFiles();
       this.loadFiles();
     });

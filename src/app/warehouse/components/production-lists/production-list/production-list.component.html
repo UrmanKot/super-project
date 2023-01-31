@@ -1,14 +1,16 @@
 <div class="page">
   <div class="page__header">
     <div class="page__title">
-      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>
-        Production List
-        <ng-container *ngIf="list">
-          ({{list.id}}) {{list.nomenclature.code}} ({{list.nomenclature.name}})
-        </ng-container>
-        <ng-container *ngIf="!list">...</ng-container>
-      </h1>
+      <div class="header-wrapper">
+        <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+        <h1>
+          Production List
+          <ng-container *ngIf="list">
+            ({{list.id}}) {{list.nomenclature.code}} ({{list.nomenclature.name}})
+          </ng-container>
+          <ng-container *ngIf="!list">...</ng-container>
+        </h1>
+      </div>
 
       <div class="colors">
         <div class="colors__color">
@@ -26,40 +28,40 @@
         class="production-list-bar ml-auto mr-2"
         [model]="menuItems"
       ></p-menubar>
-<!--      <button-->
-<!--        class="mr-2"-->
-<!--        pButton-->
-<!--        type="button"-->
-<!--        icon="pi pi-print"-->
-<!--        label="Print"-->
-<!--        (click)="printPage()"-->
-<!--      ></button>-->
-<!--      <button-->
-<!--        (click)="setQuantities()"-->
-<!--        class="mr-2"-->
-<!--        pButton-->
-<!--        type="button"-->
-<!--        icon="pi pi-angle-double-right"-->
-<!--        label="Set Actual Quantities"-->
-<!--        [disabled]="(selectedNodeTree && !selectedNodeTree.data.list_url) || list?.completed"-->
-<!--      ></button>-->
-<!--      <button-->
-<!--        class="mr-2"-->
-<!--        pButton-->
-<!--        type="button"-->
-<!--        label="Make Requests"-->
-<!--        (click)="makeDeficit()"-->
-<!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
-<!--      ></button>-->
+      <!--      <button-->
+      <!--        class="mr-2"-->
+      <!--        pButton-->
+      <!--        type="button"-->
+      <!--        icon="pi pi-print"-->
+      <!--        label="Print"-->
+      <!--        (click)="printPage()"-->
+      <!--      ></button>-->
+      <!--      <button-->
+      <!--        (click)="setQuantities()"-->
+      <!--        class="mr-2"-->
+      <!--        pButton-->
+      <!--        type="button"-->
+      <!--        icon="pi pi-angle-double-right"-->
+      <!--        label="Set Actual Quantities"-->
+      <!--        [disabled]="(selectedNodeTree && !selectedNodeTree.data.list_url) || list?.completed"-->
+      <!--      ></button>-->
+      <!--      <button-->
+      <!--        class="mr-2"-->
+      <!--        pButton-->
+      <!--        type="button"-->
+      <!--        label="Make Requests"-->
+      <!--        (click)="makeDeficit()"-->
+      <!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
+      <!--      ></button>-->
 
-<!--      <button-->
-<!--        class="mr-2"-->
-<!--        pButton-->
-<!--        type="button"-->
-<!--        label="Make request for all"-->
-<!--        (click)="makeRequestsForAll()"-->
-<!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
-<!--      ></button>-->
+      <!--      <button-->
+      <!--        class="mr-2"-->
+      <!--        pButton-->
+      <!--        type="button"-->
+      <!--        label="Make request for all"-->
+      <!--        (click)="makeRequestsForAll()"-->
+      <!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
+      <!--      ></button>-->
       <button
         class="mr-2"
         pButton
@@ -94,7 +96,7 @@
         (selectionChange)="onSelectTreeNode()"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
+          <div class="d-flex table-caption">
             <p-menubar
               [class.disabled]="!selectedNode"
               class="production-list-bar ml-auto"
@@ -128,8 +130,12 @@
             [class.deficit]="(product.descendants_has_deficit_accepted || product.is_deficit_accepted) && product.total_required_quantity > product.actual_quantity"
             [class.free-products]="(product.has_free_warehouse_products || product.descendants_has_free_warehouse_products) && product.total_required_quantity > product.actual_quantity"
           >
-            <td style="width: 3%" class="index-header text-center">{{i + 1}}</td>
+            <td style="width: 3%" class="index-header text-center">
+              <h3 class="td-title">#</h3>
+              {{i + 1}}
+            </td>
             <td style="width: 16%" class="code-column">
+              <h3 class="td-title">Code</h3>
               <a
                 *ngIf="product.list_url"
                 class="list-parent"
@@ -144,29 +150,43 @@
               </span>
             </td>
             <td style="width: 16%">
+              <h3 class="td-title">Name</h3>
               <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
               ({{product.id}})
               {{product.nomenclature?.name}}
             </td>
-            <td style="width: 8%" class="text-center">{{product.total_required_quantity}}</td>
-            <td style="width: 10%" class="text-center">{{product.required_quantity_per_one}}</td>
             <td style="width: 8%" class="text-center">
+              <h3 class="td-title">Total Req Qty</h3>
+              {{product.total_required_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Req Qty Per One</h3>
+              {{product.required_quantity_per_one}}
+            </td>
+            <td style="width: 8%" class="text-center">
+              <h3 class="td-title">Free Wh Qty</h3>
               {{product.warehouse_quantity}}
             </td>
             <td style="width: 7%" class="text-center">
+              <h3 class="td-title">Reserved Qty</h3>
               {{product.reserved_quantity ? product.reserved_quantity : 0}}
             </td>
-            <td style="width: 7%" class="text-center">{{product.actual_quantity}}</td>
-            <td style="width: 5%"
-                class="text-center">
+            <td style="width: 7%" class="text-center">
+              <h3 class="td-title">Actual Qty</h3>
+              {{product.actual_quantity}}
+            </td>
+            <td style="width: 5%" class="text-center">
+              <h3 class="td-title">UOM</h3>
               {{product.nomenclature.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
             <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Locator</h3>
               {{product.available_on_locator}}
             </td>
             <td
               style="width: 10%"
               class="d-print-none text-center">
+              <h3 class="td-title">Status</h3>
               <span
                 class="badge"
                 [ngClass]="{
@@ -181,7 +201,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-4" [attr.colspan]="11">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>
@@ -202,7 +222,7 @@
         (selectionChange)="onSelectTreeNode()"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
+          <div class="d-flex table-caption">
             <p-menubar
               [class.disabled]="!selectedNodeTree"
               class="production-list-bar ml-auto mr-2"
@@ -293,8 +313,10 @@
               [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
           >
             <td style="width: 19%">
+              <h3 class="td-title">Code</h3>
               <div class="toggle-row">
-                <p-treeTableToggler [rowNode]="rowNode" [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
+                <p-treeTableToggler [rowNode]="rowNode"
+                                    [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
                 <a
                   [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
                   *ngIf="rowData.list_url"
@@ -307,17 +329,40 @@
               </div>
             </td>
             <td style="width: 16%">
-              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}) {{rowData.nomenclature.name}}
+              <h3 class="td-title">Name</h3>
+              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
+              ) {{rowData.nomenclature.name}}
             </td>
-            <td style="width: 8%" class="text-center">{{rowData.total_required_quantity}}</td>
-            <td style="width: 10%" class="text-center">{{rowData.required_quantity_per_one}}</td>
-            <td style="width: 8%" class="text-center">{{rowData.warehouse_quantity}}</td>
-            <td style="width: 8%" class="text-center">{{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}</td>
-            <td style="width: 7%" class="text-center">{{rowData.actual_quantity}}</td>
-            <td style="width: 5%"
-                class="text-center">{{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}</td>
-            <td style="width: 10%" class="text-center">{{rowData.available_on_locator}}</td>
+            <td style="width: 8%" class="text-center">
+              <h3 class="td-title">Total Req Qty</h3>
+              {{rowData.total_required_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Req Qty Per One</h3>
+              {{rowData.required_quantity_per_one}}
+            </td>
+            <td style="width: 8%" class="text-center">
+              <h3 class="td-title">Free Wh Qty</h3>
+              {{rowData.warehouse_quantity}}
+            </td>
+            <td style="width: 8%" class="text-center">
+              <h3 class="td-title">Reserved Qty</h3>
+              {{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}
+            </td>
+            <td style="width: 7%" class="text-center">
+              <h3 class="td-title">Actual Qty</h3>
+              {{rowData.actual_quantity}}
+            </td>
+            <td style="width: 5%" class="text-center">
+              <h3 class="td-title">UOM</h3>
+              {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Locator</h3>
+              {{rowData.available_on_locator}}
+            </td>
             <td style="width: 10%" class="d-print-none text-center">
+              <h3 class="td-title">Status</h3>
               <span
                 class="badge"
                 [ngClass]="{
@@ -332,7 +377,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage" let-columns>
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-5" [attr.colspan]="10">
               <i *ngIf="isLoadingTree" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoadingTree">No Records Found</span>

@@ -9,8 +9,12 @@
 
 .choice-type {
   &__buttons {
+    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
     button {
-      margin-right: 1rem;
       width: 9rem;
 
       &:nth-child(2) {
@@ -18,10 +22,6 @@
           font-size: 0.875rem;
         }
       }
-    }
-
-    &:last-child {
-      margin-right: 0;
     }
   }
 

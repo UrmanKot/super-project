@@ -128,7 +128,7 @@
           selectionMode="single" [(selection)]="selectedRequest"
         >
           <ng-template pTemplate="caption">
-            <div class="d-flex">
+            <div class="d-flex table-caption">
               <p class="subtitle" *ngIf="!selectedRequest">Choose the Request to edit</p>
               <p-menubar class="ml-auto mr-2" [model]="requestMenuItems" [class.disabled]="!selectedRequest"></p-menubar>
 
@@ -178,11 +178,16 @@
           <ng-template pTemplate="body" let-request let-i="rowIndex">
             <tr class="pagebreak" [pSelectableRow]="request"
                 [class.qr-code-scanned]="request.is_scanned">
-              <td style="width: 5%;" class="text-center">{{i + 1}}</td>
               <td style="width: 5%;" class="text-center">
+                <h3 class="td-title">#</h3>
+                {{i + 1}}
+              </td>
+              <td style="width: 5%;" class="text-center">
+                <h3 class="td-title">ID</h3>
                 {{request.id}}
               </td>
               <td style="width: 18%;">
+                <h3 class="td-title">Code</h3>
                 <div *ngIf="request.material_nomenclature">
                   {{request.material_nomenclature.code}}
                 </div>
@@ -194,6 +199,7 @@
                 </div>
               </td>
               <td style="width: 21%;">
+                <h3 class="td-title">Name</h3>
                 <div *ngIf="request.material_nomenclature">
                   <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
                   {{request.material_nomenclature.name}}
@@ -208,12 +214,15 @@
                 </div>
               </td>
               <td style="width: 12%" class="text-center">
+                <h3 class="td-title">Technology</h3>
                 <span *ngIf="request.technology">{{request.technology}}</span>
               </td>
               <td style="width: 14%;" class="text-center">
+                <h3 class="td-title">Required Quantity</h3>
                 {{request.required_quantity}}
               </td>
               <td style="width: 13%" class="text-center">
+                <h3 class="td-title">Locator</h3>
                 <div *ngIf="request.locators">
                   <div *ngFor="let locator of request.locators">
                     {{locator.name}}
@@ -221,12 +230,13 @@
                 </div>
               </td>
               <td style="width: 12%;" class="text-center">
+                <h3 class="td-title">Available Quantity</h3>
                 {{request.warehouse_quantity}}
               </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="tr-spinner">
               <td class="text-center p-4" [attr.colspan]="8">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
@@ -263,7 +273,7 @@
         scrollHeight="calc(100vh - 16.5rem)"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
+          <div class="d-flex table-caption">
             <p class="subtitle" *ngIf="!selectedRequestNode">Choose the Request to edit</p>
             <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems" [class.disabled]="!selectedRequestNode"></p-menubar>
             <button
@@ -323,8 +333,10 @@
           <tr
             class="pagebreak"
             [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttSelectableRowDisabled]="rowData.level < 4"
+            [class.tr-toggler]="rowNode.node.children.length > 0"
           >
             <td style="width: 16%;" class="text-center">
+              <h3 class="td-title">ID</h3>
               <div class="toggle-row">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 <span [class.bold]="rowData.level < 4">
@@ -336,6 +348,7 @@
               </div>
             </td>
             <td style="width: 18%;">
+              <h3 class="td-title">Code</h3>
               <div *ngIf="rowData.level === 4">
                 <div *ngIf="rowData.request.material_nomenclature">
                   {{rowData.request.material_nomenclature.code}}
@@ -349,6 +362,7 @@
               </div>
             </td>
             <td style="width: 20%;">
+              <h3 class="td-title">Name</h3>
               <div *ngIf="rowData.level === 4">
                 <div *ngIf="rowData.request.material_nomenclature">
                   <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
@@ -365,16 +379,19 @@
               </div>
             </td>
             <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Technology</h3>
               <div *ngIf="rowData.level === 4">
                 <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
               </div>
             </td>
             <td style="width: 14%;" class="text-center">
+              <h3 class="td-title">Required Quantity</h3>
               <div *ngIf="rowData.level === 4">
                 {{rowData.request.required_quantity}}
               </div>
             </td>
             <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Locator</h3>
               <div *ngIf="rowData.level === 4">
                 <div *ngIf="rowData.request.locators">
                   <div *ngFor="let locator of rowData.request.locators">
@@ -384,6 +401,7 @@
               </div>
             </td>
             <td style="width: 12%;" class="text-center">
+              <h3 class="td-title">Available Quantity</h3>
               <div *ngIf="rowData.level === 4">
                 {{rowData.request.warehouse_quantity}}
               </div>
@@ -391,7 +409,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-4" [attr.colspan]="8">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>
@@ -410,7 +428,7 @@
           scrollHeight="calc(100vh - 16.5rem)"
         >
           <ng-template pTemplate="caption">
-            <div class="d-flex">
+            <div class="d-flex table-caption">
               <button
                 pButton
                 type="button"
@@ -470,6 +488,7 @@
               [ttRow]="rowNode"
               [class.in-plan]="rowData.request"
               [class.placeholder]="!rowData.request"
+              [class.tr-toggler]="rowNode.node.children.length > 0"
             >
               <td style="width: 16%;" class="text-center">
                 <div class="toggle-row">
@@ -548,7 +567,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="tr-spinner">
               <td class="text-center p-4" [attr.colspan]="8">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
@@ -612,7 +631,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage" let-columns>
-          <tr>
+          <tr class="tr-spinner">
             <td class="text-center p-5" [attr.colspan]="6">
               <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin fa-3x "></i>
               <span *ngIf="!isLoading">No Records Found</span>

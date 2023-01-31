@@ -1,8 +1,15 @@
 <label *ngIf="showLabel"> Files </label>
-<p-fileUpload (onRemove)="removeFile($event)" (onClear)="clearFiles()" [files]="files" (onSelect)="filesSelected($event)"
-              name="file[]"
-              [customUpload]="true" [multiple]="true"
-              (onUpload)="onBasicUpload($event)" [showUploadButton]="false">
+<p-fileUpload
+  (onRemove)="removeFile($event)"
+  (onClear)="clearFiles()"
+  [files]="files"
+  (onSelect)="filesSelected($event)"
+  name="file[]"
+  [customUpload]="true"
+  [multiple]="true"
+  (onUpload)="onBasicUpload($event)"
+  [showUploadButton]="false"
+>
   <ng-template pTemplate="toolbar">
     <button
       pButton

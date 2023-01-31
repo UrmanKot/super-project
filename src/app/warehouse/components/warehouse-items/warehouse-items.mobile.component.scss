@@ -1,0 +1,19 @@
+@import "src/app/shared/styles/screens-variables";
+
+@media (max-width: $tablet-width) {
+  .warehouse-items {
+    flex-direction: column;
+
+    &__right {
+      margin-left: 0;
+    }
+
+    &__left {
+      display: none;
+    }
+
+    &__categories {
+      display: block;
+    }
+  }
+}

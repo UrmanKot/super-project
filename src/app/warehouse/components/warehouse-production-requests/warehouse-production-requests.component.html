@@ -143,20 +143,26 @@
             </ng-template>
             <ng-template pTemplate="body" let-order let-i="rowIndex">
               <tr [pSelectableRow]="order">
-                <td class="text-center"
-                    style="width: 5%;">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
                 <td class="text-center" style="width: 5%;">
+                  <h3 class="td-title">#</h3>
+                  {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
+                </td>
+                <td class="text-center" style="width: 5%;">
+                  <h3 class="td-title">ID</h3>
                   <a [routerLink]="[order.id]" target="_blank">
                     {{order.id}}
                   </a>
                 </td>
                 <td class="text-center" style="width: 15%;">
+                  <h3 class="td-title">Created Date</h3>
                   {{order.created | date:'dd/MM/yyyy HH:MM'}}
                 </td>
                 <td class="text-center" style="width: 15%;">
+                  <h3 class="td-title">Closing Date</h3>
                   {{order.production_requests_fully_completed | date:'dd/MM/yyyy HH:MM'}}
                 </td>
                 <td style="width: 25%;">
+                  <h3 class="td-title">Root Lists</h3>
                   <div *ngFor="let plan of order.root_production_plans">
                     <a (click)="goProductionList(plan.id)">{{plan.list_product.nomenclature.name}}</a>
                   </div>
@@ -199,6 +205,7 @@
                   <!--                  </div>-->
                 </td>
                 <td style="width: 25%;">
+                  <h3 class="td-title">Technologies</h3>
                   <span *ngFor="let tech of order.ordered_items_technologies; let last=last">
                     {{tech}}<span *ngIf="!last">,</span>
                   </span>
@@ -207,7 +214,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td class="text-center p-4" [attr.colspan]="5">
+                <td class="text-center tr-spinner p-4" [attr.colspan]="5">
                   <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                   <span *ngIf="!isLoading">No Records Found</span>
                 </td>
