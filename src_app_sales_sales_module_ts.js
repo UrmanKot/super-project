@@ -398,15 +398,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RegionsComponent": () => (/* binding */ RegionsComponent)
 /* harmony export */ });
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 80228);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ 91640);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 68951);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ 80228);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 91640);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 68951);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _shared_services_region_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @shared/services/region.service */ 28957);
 /* harmony import */ var _shared_services_country_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shared/services/country.service */ 12334);
-/* harmony import */ var primeng_treetable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primeng/treetable */ 92385);
-/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primeng/api */ 14356);
-/* harmony import */ var _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../shared/icons/module-icon/module-icon.component */ 73237);
+/* harmony import */ var _services_country_region_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/country-region.service */ 50797);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_treetable__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/treetable */ 92385);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! primeng/api */ 14356);
+/* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primeng/menubar */ 80552);
+/* harmony import */ var _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../shared/icons/module-icon/module-icon.component */ 73237);
 
 
 
@@ -414,100 +417,196 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function RegionsComponent_ng_template_11_Template(rf, ctx) { }
+
+
+
 function RegionsComponent_ng_template_12_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr")(1, "th", 12);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2, "Name");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "th", 13);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](4, "Unit of Measure");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "th", 14);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](6, "Description");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelement"](1, "p-menubar", 14);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+} if (rf & 2) {
+    const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵclassProp"]("disabled", !ctx_r0.selected);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("model", ctx_r0.selected && ctx_r0.selected.data.region ? ctx_r0.menuItemsRegion : ctx_r0.menuItemsCountry);
 } }
 function RegionsComponent_ng_template_13_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "tr", 15)(1, "td", 16);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](2, "p-treeTableToggler", 17);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](4, "td", 13);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "td", 14);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementContainerStart"](6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementContainerEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "tr")(1, "th", 15);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](2, "Name");
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](3, "th", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](4, "Code");
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
+} }
+function RegionsComponent_ng_template_14_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "tr", 17)(1, "td", 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelement"](2, "p-treeTableToggler", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](4, "td", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementContainerStart"](5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementContainerEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
 } if (rf & 2) {
     const rowNode_r3 = ctx.$implicit;
     const rowData_r4 = ctx.rowData;
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("ttRow", rowNode_r3)("ttSelectableRow", rowNode_r3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("rowNode", rowNode_r3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate1"](" ", rowData_r4.name, " ");
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate1"](" ", rowData_r4.description, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("ttRow", rowNode_r3)("ttSelectableRow", rowNode_r3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("rowNode", rowNode_r3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate2"](" ", rowData_r4.region == null ? null : rowData_r4.region.name, " ", rowData_r4.country == null ? null : rowData_r4.country.name, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtextInterpolate1"](" ", rowData_r4.country == null ? null : rowData_r4.country.alpha2_code, " ");
 } }
 class RegionsComponent {
-    constructor(regionService, countryService) {
+    constructor(regionService, countryService, countryRegionService) {
         this.regionService = regionService;
         this.countryService = countryService;
+        this.countryRegionService = countryRegionService;
         this.tree = [];
         this.regions = [];
-        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_4__.Subject();
+        this.countries = [];
+        this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_5__.Subject();
+        this.menuItemsCountry = [{
+                label: 'Selected Country',
+                items: [
+                    {
+                        label: 'Edit Country',
+                        icon: 'pi pi-pencil',
+                        command: () => this.editCountry()
+                    },
+                    {
+                        label: 'Add Region',
+                        icon: 'pi pi-plus',
+                        command: () => this.addRegion()
+                    },
+                    {
+                        label: 'Remove Country',
+                        icon: 'pi pi-trash',
+                        command: () => this.deleteCountry()
+                    },
+                ]
+            }];
+        this.menuItemsRegion = [{
+                label: 'Selected Region',
+                items: [
+                    {
+                        label: 'Edit Region',
+                        icon: 'pi pi-pencil',
+                        command: () => this.editRegion()
+                    },
+                    {
+                        label: 'Remove Region',
+                        icon: 'pi pi-trash',
+                        command: () => this.deleteRegion()
+                    }
+                ]
+            }];
     }
     ngOnInit() {
-        (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.forkJoin)({
+        this.loadInfo();
+    }
+    loadInfo() {
+        this.selected = null;
+        (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.forkJoin)({
             regions: this.regionService.get(),
             countries: this.countryService.get()
-        }).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_6__.takeUntil)(this.destroy$)).subscribe(({ regions, countries }) => {
+        }).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_7__.takeUntil)(this.destroy$)).subscribe(({ regions, countries }) => {
             this.regions = regions;
-            console.log(regions);
-            console.log(countries);
+            this.countries = countries;
+            this.tree = [];
             this.createTree();
         });
     }
     createTree() {
         this.tree.push({
-            data: {
-                name: 'Not Country'
-            },
+            data: { country: { name: 'Not Country' } },
             children: this.regions.filter(r => !r.country).map(region => {
                 return {
-                    data: region,
+                    data: { region: region },
                     children: [],
                 };
             })
         });
+        this.countries.forEach(country => {
+            this.tree.push({
+                data: { country: country },
+                children: this.regions.filter(r => r.country).filter(r => r.country.id === country.id).map(region => {
+                    return {
+                        data: { region: region },
+                        children: [],
+                    };
+                })
+            });
+        });
         this.tree = this.tree.map(n => n);
-        console.log(this.tree);
     }
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
     }
+    createCountry() {
+        this.countryRegionService.createEditCountryModal().subscribe(res => {
+            if (res) {
+                this.loadInfo();
+            }
+        });
+    }
+    editCountry() {
+        this.countryRegionService.createEditCountryModal(this.selected.data.country).subscribe(res => {
+            if (res) {
+                this.loadInfo();
+            }
+        });
+    }
+    deleteCountry() {
+        this.countryService.delete(this.selected.data.country).subscribe(res => {
+            this.loadInfo();
+        });
+    }
+    editRegion() {
+        this.countryRegionService.createEditRegionModal(this.selected.data.region).subscribe(res => {
+            if (res) {
+                this.loadInfo();
+            }
+        });
+    }
+    deleteRegion() {
+        this.regionService.delete(this.selected.data.region).subscribe(res => {
+            this.loadInfo();
+        });
+    }
+    addRegion() {
+        this.countryRegionService.createEditRegionModal(null, this.selected.data.country.id).subscribe(res => {
+            if (res) {
+                this.loadInfo();
+            }
+        });
+    }
 }
-RegionsComponent.ɵfac = function RegionsComponent_Factory(t) { return new (t || RegionsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_region_service__WEBPACK_IMPORTED_MODULE_0__.RegionService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_country_service__WEBPACK_IMPORTED_MODULE_1__.CountryService)); };
-RegionsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: RegionsComponent, selectors: [["pek-regions"]], decls: 14, vars: 5, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], [1, "page__content"], [1, "page__card"], [1, "page__table"], ["selectionMode", "single", "scrollHeight", "calc(100vh - 19.2rem)", 3, "value", "selection", "scrollable", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [2, "padding-left", "52px", "width", "40%"], [1, "text-center", 2, "width", "35%"], [2, "width", "35%"], [3, "ttRow", "ttSelectableRow"], [2, "width", "40%"], [3, "rowNode"]], template: function RegionsComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](3, "pek-module-icon", 3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](4, "h1");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](5, "Countries & Regions");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](6, "div", 4);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](7, "div", 5)(8, "div", 6)(9, "div", 7)(10, "p-treeTable", 8);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("selectionChange", function RegionsComponent_Template_p_treeTable_selectionChange_10_listener($event) { return ctx.selected = $event; });
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](11, RegionsComponent_ng_template_11_Template, 0, 0, "ng-template", 9);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](12, RegionsComponent_ng_template_12_Template, 7, 0, "ng-template", 10);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](13, RegionsComponent_ng_template_13_Template, 8, 5, "ng-template", 11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()()();
+RegionsComponent.ɵfac = function RegionsComponent_Factory(t) { return new (t || RegionsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_region_service__WEBPACK_IMPORTED_MODULE_0__.RegionService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_shared_services_country_service__WEBPACK_IMPORTED_MODULE_1__.CountryService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_services_country_region_service__WEBPACK_IMPORTED_MODULE_2__.CountryRegionService)); };
+RegionsComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineComponent"]({ type: RegionsComponent, selectors: [["pek-regions"]], decls: 15, vars: 5, consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Create Country", 3, "click"], [1, "page__content"], [1, "page__card"], [1, "page__table"], ["selectionMode", "single", "scrollHeight", "calc(100vh - 19.2rem)", 3, "value", "selection", "scrollable", "selectionChange"], ["pTemplate", "caption"], ["pTemplate", "header"], ["pTemplate", "body"], [1, "action-buttons"], [1, "ml-auto", 3, "model"], [2, "padding-left", "52px", "width", "60%"], [2, "width", "40%"], [3, "ttRow", "ttSelectableRow"], [2, "width", "60%"], [3, "rowNode"]], template: function RegionsComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelement"](3, "pek-module-icon", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](4, "h1");
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtext"](5, "Countries & Regions");
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](6, "div", 4)(7, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("click", function RegionsComponent_Template_button_click_7_listener() { return ctx.createCountry(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](8, "div", 6)(9, "div", 7)(10, "div", 8)(11, "p-treeTable", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵlistener"]("selectionChange", function RegionsComponent_Template_p_treeTable_selectionChange_11_listener($event) { return ctx.selected = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](12, RegionsComponent_ng_template_12_Template, 2, 3, "ng-template", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](13, RegionsComponent_ng_template_13_Template, 5, 0, "ng-template", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵtemplate"](14, RegionsComponent_ng_template_14_Template, 7, 6, "ng-template", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]()()()();
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("module", "sales")("isActive", true);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("value", ctx.tree)("selection", ctx.selected)("scrollable", true);
-    } }, dependencies: [primeng_treetable__WEBPACK_IMPORTED_MODULE_7__.TreeTable, primeng_api__WEBPACK_IMPORTED_MODULE_8__.PrimeTemplate, primeng_treetable__WEBPACK_IMPORTED_MODULE_7__.TreeTableToggler, primeng_treetable__WEBPACK_IMPORTED_MODULE_7__.TTRow, primeng_treetable__WEBPACK_IMPORTED_MODULE_7__.TTSelectableRow, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_2__.ModuleIconComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJyZWdpb25zLmNvbXBvbmVudC5zY3NzIn0= */"] });
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("module", "sales")("isActive", true);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵadvance"](8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵproperty"]("value", ctx.tree)("selection", ctx.selected)("scrollable", true);
+    } }, dependencies: [primeng_button__WEBPACK_IMPORTED_MODULE_8__.ButtonDirective, primeng_treetable__WEBPACK_IMPORTED_MODULE_9__.TreeTable, primeng_api__WEBPACK_IMPORTED_MODULE_10__.PrimeTemplate, primeng_treetable__WEBPACK_IMPORTED_MODULE_9__.TreeTableToggler, primeng_treetable__WEBPACK_IMPORTED_MODULE_9__.TTRow, primeng_treetable__WEBPACK_IMPORTED_MODULE_9__.TTSelectableRow, primeng_menubar__WEBPACK_IMPORTED_MODULE_11__.Menubar, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_3__.ModuleIconComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJyZWdpb25zLmNvbXBvbmVudC5zY3NzIn0= */"] });
 
 
 /***/ }),
@@ -1593,6 +1692,194 @@ SalesStatusesComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MOD
 
 /***/ }),
 
+/***/ 24910:
+/*!***********************************************************************************!*\
+  !*** ./src/app/sales/modals/create-edit-country/create-edit-country.component.ts ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CreateEditCountryComponent": () => (/* binding */ CreateEditCountryComponent)
+/* harmony export */ });
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _shared_services_country_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @shared/services/country.service */ 12334);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/inputtext */ 69906);
+
+
+
+
+
+
+
+
+class CreateEditCountryComponent {
+    constructor(fb, dialogRef, countryService, data) {
+        this.fb = fb;
+        this.dialogRef = dialogRef;
+        this.countryService = countryService;
+        this.data = data;
+        this.form = this.fb.group({
+            id: [null],
+            name: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_1__.Validators.required]],
+            alpha2_code: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_1__.Validators.required]],
+        });
+    }
+    ngOnInit() {
+        if (this.data.country) {
+            this.form.patchValue(this.data.country);
+        }
+    }
+    onSave() {
+        if (this.form.value.id) {
+            this.countryService.update(this.form.value).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        }
+        else {
+            this.countryService.create(this.form.value).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        }
+    }
+}
+CreateEditCountryComponent.ɵfac = function CreateEditCountryComponent_Factory(t) { return new (t || CreateEditCountryComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_1__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_shared_services_country_service__WEBPACK_IMPORTED_MODULE_0__.CountryService), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MAT_DIALOG_DATA)); };
+CreateEditCountryComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: CreateEditCountryComponent, selectors: [["pek-create-edit-country"]], decls: 16, vars: 6, consts: [[1, "modal-header"], [1, "modal-header__title"], [3, "formGroup"], [1, "form-group"], ["for", "name"], ["type", "text", "id", "name", "pInputText", "", "formControlName", "name"], ["for", "alpha2_code"], ["type", "text", "id", "alpha2_code", "pInputText", "", "formControlName", "alpha2_code", "maxlength", "2"], [1, "justify-content-between"], ["pButton", "", "type", "button", "label", "Cancel", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "loading", "disabled", "click"]], template: function CreateEditCountryComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "mat-dialog-content")(4, "form", 2)(5, "div", 3)(6, "label", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](7, "Name*");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](8, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](9, "div", 3)(10, "label", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](11, "Code*");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](12, "input", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](13, "mat-dialog-actions", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](14, "button", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](15, "button", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function CreateEditCountryComponent_Template_button_click_15_listener() { return ctx.onSave(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate1"](" ", ctx.form.get("id").value ? "Edit" : "Create", " Country ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("formGroup", ctx.form);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("mat-dialog-close", false);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("label", ctx.form.get("id").value ? "Edit" : "Create")("loading", ctx.isSaving)("disabled", ctx.form.invalid);
+    } }, dependencies: [primeng_button__WEBPACK_IMPORTED_MODULE_4__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_5__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_1__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_1__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_1__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_1__.MaxLengthValidator, _angular_forms__WEBPACK_IMPORTED_MODULE_1__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_1__.FormControlName, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialogActions], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjcmVhdGUtZWRpdC1jb3VudHJ5LmNvbXBvbmVudC5zY3NzIn0= */"] });
+
+
+/***/ }),
+
+/***/ 50080:
+/*!*********************************************************************************!*\
+  !*** ./src/app/sales/modals/create-edit-region/create-edit-region.component.ts ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CreateEditRegionComponent": () => (/* binding */ CreateEditRegionComponent)
+/* harmony export */ });
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _shared_services_region_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @shared/services/region.service */ 28957);
+/* harmony import */ var primeng_button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/button */ 73867);
+/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primeng/inputtext */ 69906);
+/* harmony import */ var _shared_pickers_crm_company_picker_crm_company_picker_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../shared/pickers/crm-company-picker/crm-company-picker.component */ 97198);
+
+
+
+
+
+
+
+
+
+class CreateEditRegionComponent {
+    constructor(fb, dialogRef, regionService, data) {
+        this.fb = fb;
+        this.dialogRef = dialogRef;
+        this.regionService = regionService;
+        this.data = data;
+        this.form = this.fb.group({
+            id: [null],
+            name: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_2__.Validators.required]],
+            country: [null],
+        });
+        if (this.data.region) {
+            this.form.get('id').setValue(this.data.region.id);
+            this.form.get('name').setValue(this.data.region.name);
+            if (this.data.region.country) {
+                this.form.get('country').setValue(this.data.region.country.id);
+            }
+        }
+        if (this.data.selectedCountry) {
+            this.form.get('country').setValue(this.data.selectedCountry);
+        }
+    }
+    ngOnInit() {
+    }
+    onSave() {
+        if (this.form.value.id) {
+            this.regionService.update(this.form.value).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        }
+        else {
+            this.regionService.create(this.form.value).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        }
+    }
+}
+CreateEditRegionComponent.ɵfac = function CreateEditRegionComponent_Factory(t) { return new (t || CreateEditRegionComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_2__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialogRef), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_shared_services_region_service__WEBPACK_IMPORTED_MODULE_0__.RegionService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MAT_DIALOG_DATA)); };
+CreateEditRegionComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: CreateEditRegionComponent, selectors: [["pek-create-edit-region"]], decls: 16, vars: 7, consts: [[1, "modal-header"], [1, "modal-header__title"], [3, "formGroup"], [1, "form-group"], ["for", "name"], ["type", "text", "id", "name", "pInputText", "", "formControlName", "name"], [3, "country", "valueChange"], [1, "justify-content-between"], ["pButton", "", "type", "button", "label", "Cancel", 1, "p-button-danger", 3, "mat-dialog-close"], ["pButton", "", "type", "button", 1, "p-button-success", 3, "label", "loading", "disabled", "click"]], template: function CreateEditRegionComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0)(1, "h2", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "mat-dialog-content")(4, "form", 2)(5, "div", 3)(6, "label", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](7, "Name*");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](8, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](9, "div", 3)(10, "label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](11, "Country*");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](12, "pek-crm-company-picker", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("valueChange", function CreateEditRegionComponent_Template_pek_crm_company_picker_valueChange_12_listener($event) { return ctx.form.get("country").setValue($event.id); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](13, "mat-dialog-actions", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](14, "button", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](15, "button", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function CreateEditRegionComponent_Template_button_click_15_listener() { return ctx.onSave(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]()();
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate1"](" ", ctx.form.get("id").value ? "Edit" : "Create", " Region ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("formGroup", ctx.form);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("country", ctx.form.get("country").value);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("mat-dialog-close", false);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("label", ctx.form.get("id").value ? "Edit" : "Create")("loading", ctx.isSaving)("disabled", ctx.form.invalid);
+    } }, dependencies: [primeng_button__WEBPACK_IMPORTED_MODULE_5__.ButtonDirective, primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__.InputText, _angular_forms__WEBPACK_IMPORTED_MODULE_2__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_2__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.FormControlName, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialogClose, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialogContent, _angular_material_dialog__WEBPACK_IMPORTED_MODULE_4__.MatDialogActions, _shared_pickers_crm_company_picker_crm_company_picker_component__WEBPACK_IMPORTED_MODULE_1__.CrmCompanyPickerComponent], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjcmVhdGUtZWRpdC1yZWdpb24uY29tcG9uZW50LnNjc3MifQ== */"] });
+
+
+/***/ }),
+
 /***/ 8823:
 /*!*********************************************************************************!*\
   !*** ./src/app/sales/modals/create-sales-chain/create-sales-chain.component.ts ***!
@@ -1721,7 +2008,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SalesModule": () => (/* binding */ SalesModule)
 /* harmony export */ });
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/common */ 94666);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/common */ 94666);
 /* harmony import */ var _sales_routing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sales.routing */ 6601);
 /* harmony import */ var _components_sales_lists_sales_lists_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sales-lists/sales-lists.component */ 20894);
 /* harmony import */ var _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/sales-layout/sales-layout.component */ 51026);
@@ -1730,12 +2017,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/sales-chains/sales-chains.component */ 61867);
 /* harmony import */ var _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/configs/nomenclature-price/nomenclature-price.component */ 83166);
 /* harmony import */ var _components_sales_statuses_sales_statuses_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/sales-statuses/sales-statuses.component */ 6398);
-/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/cdk/drag-drop */ 47727);
+/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/cdk/drag-drop */ 47727);
 /* harmony import */ var _modals_create_edit_sales_status_create_edit_sales_status_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modals/create-edit-sales-status/create-edit-sales-status.component */ 88986);
 /* harmony import */ var _modals_edit_nomenclature_price_modal_edit_nomenclature_price_modal_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modals/edit-nomenclature-price-modal/edit-nomenclature-price-modal.component */ 9318);
 /* harmony import */ var _modals_create_sales_chain_create_sales_chain_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modals/create-sales-chain/create-sales-chain.component */ 8823);
 /* harmony import */ var _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components/regions/regions.component */ 87571);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _modals_create_edit_country_create_edit_country_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modals/create-edit-country/create-edit-country.component */ 24910);
+/* harmony import */ var _modals_create_edit_region_create_edit_region_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./modals/create-edit-region/create-edit-region.component */ 50080);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/core */ 22560);
+
+
 
 
 
@@ -1754,13 +2045,13 @@ __webpack_require__.r(__webpack_exports__);
 class SalesModule {
 }
 SalesModule.ɵfac = function SalesModule_Factory(t) { return new (t || SalesModule)(); };
-SalesModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵdefineNgModule"]({ type: SalesModule });
-SalesModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵdefineInjector"]({ imports: [_angular_common__WEBPACK_IMPORTED_MODULE_13__.CommonModule,
+SalesModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵdefineNgModule"]({ type: SalesModule });
+SalesModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵdefineInjector"]({ imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__.CommonModule,
         _sales_routing__WEBPACK_IMPORTED_MODULE_0__.SalesRouting,
         _shared_shared_module__WEBPACK_IMPORTED_MODULE_4__.SharedModule,
         _layout_layout_module__WEBPACK_IMPORTED_MODULE_3__.LayoutModule,
-        _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_14__.DragDropModule] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵsetNgModuleScope"](SalesModule, { declarations: [_components_sales_lists_sales_lists_component__WEBPACK_IMPORTED_MODULE_1__.SalesListsComponent,
+        _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_16__.DragDropModule] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵsetNgModuleScope"](SalesModule, { declarations: [_components_sales_lists_sales_lists_component__WEBPACK_IMPORTED_MODULE_1__.SalesListsComponent,
         _components_sales_layout_sales_layout_component__WEBPACK_IMPORTED_MODULE_2__.SalesLayoutComponent,
         _components_sales_chains_sales_chains_component__WEBPACK_IMPORTED_MODULE_5__.SalesChainsComponent,
         _components_configs_nomenclature_price_nomenclature_price_component__WEBPACK_IMPORTED_MODULE_6__.NomenclaturePriceComponent,
@@ -1768,11 +2059,13 @@ SalesModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_12__["�
         _modals_create_edit_sales_status_create_edit_sales_status_component__WEBPACK_IMPORTED_MODULE_8__.CreateEditSalesStatusComponent,
         _modals_edit_nomenclature_price_modal_edit_nomenclature_price_modal_component__WEBPACK_IMPORTED_MODULE_9__.EditNomenclaturePriceModalComponent,
         _modals_create_sales_chain_create_sales_chain_component__WEBPACK_IMPORTED_MODULE_10__.CreateSalesChainComponent,
-        _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_11__.RegionsComponent], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_13__.CommonModule,
+        _components_regions_regions_component__WEBPACK_IMPORTED_MODULE_11__.RegionsComponent,
+        _modals_create_edit_country_create_edit_country_component__WEBPACK_IMPORTED_MODULE_12__.CreateEditCountryComponent,
+        _modals_create_edit_region_create_edit_region_component__WEBPACK_IMPORTED_MODULE_13__.CreateEditRegionComponent], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__.CommonModule,
         _sales_routing__WEBPACK_IMPORTED_MODULE_0__.SalesRouting,
         _shared_shared_module__WEBPACK_IMPORTED_MODULE_4__.SharedModule,
         _layout_layout_module__WEBPACK_IMPORTED_MODULE_3__.LayoutModule,
-        _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_14__.DragDropModule] }); })();
+        _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_16__.DragDropModule] }); })();
 
 
 /***/ }),
@@ -1828,6 +2121,58 @@ SalesRouting.ɵfac = function SalesRouting_Factory(t) { return new (t || SalesRo
 SalesRouting.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineNgModule"]({ type: SalesRouting });
 SalesRouting.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineInjector"]({ imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule.forChild(routes), _angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule] });
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵsetNgModuleScope"](SalesRouting, { imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule], exports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule] }); })();
+
+
+/***/ }),
+
+/***/ 50797:
+/*!**********************************************************!*\
+  !*** ./src/app/sales/services/country-region.service.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CountryRegionService": () => (/* binding */ CountryRegionService)
+/* harmony export */ });
+/* harmony import */ var _modals_create_edit_country_create_edit_country_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../modals/create-edit-country/create-edit-country.component */ 24910);
+/* harmony import */ var _modals_create_edit_region_create_edit_region_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../modals/create-edit-region/create-edit-region.component */ 50080);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/dialog */ 31484);
+
+
+
+
+class CountryRegionService {
+    constructor(dialog) {
+        this.dialog = dialog;
+    }
+    createEditCountryModal(country) {
+        return this.dialog
+            .open(_modals_create_edit_country_create_edit_country_component__WEBPACK_IMPORTED_MODULE_0__.CreateEditCountryComponent, {
+            width: '35rem',
+            height: 'auto',
+            data: { country },
+            autoFocus: false,
+            enterAnimationDuration: '250ms'
+        })
+            .afterClosed();
+    }
+    createEditRegionModal(region, selectedCountry) {
+        return this.dialog
+            .open(_modals_create_edit_region_create_edit_region_component__WEBPACK_IMPORTED_MODULE_1__.CreateEditRegionComponent, {
+            width: '35rem',
+            height: 'auto',
+            data: { region, selectedCountry },
+            panelClass: 'modal-overflow-visible',
+            autoFocus: false,
+            enterAnimationDuration: '250ms'
+        })
+            .afterClosed();
+    }
+}
+CountryRegionService.ɵfac = function CountryRegionService_Factory(t) { return new (t || CountryRegionService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__.MatDialog)); };
+CountryRegionService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: CountryRegionService, factory: CountryRegionService.ɵfac, providedIn: 'root' });
 
 
 /***/ }),
@@ -1909,51 +2254,6 @@ class SalesChainService {
 }
 SalesChainService.ɵfac = function SalesChainService_Factory(t) { return new (t || SalesChainService)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_5__.MatDialog)); };
 SalesChainService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"]({ token: SalesChainService, factory: SalesChainService.ɵfac, providedIn: 'root' });
-
-
-/***/ }),
-
-/***/ 12334:
-/*!****************************************************!*\
-  !*** ./src/app/shared/services/country.service.ts ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CountryService": () => (/* binding */ CountryService)
-/* harmony export */ });
-/* harmony import */ var _env_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @env/environment */ 92340);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 50635);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 22560);
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ 58987);
-
-
-
-
-class CountryService {
-    constructor(httpClient) {
-        this.httpClient = httpClient;
-        this.API_URL = _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.base_url + _env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.business_partners_url;
-        this.url = 'countries/';
-    }
-    get(query) {
-        let queryParams = '';
-        if (query) {
-            query.forEach((element, index) => {
-                if (index > 0) {
-                    queryParams += '&' + element.name + '=' + element.value;
-                }
-                else {
-                    queryParams += '?' + element.name + '=' + element.value;
-                }
-            });
-        }
-        return this.httpClient.get(this.API_URL + this.url + queryParams).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)(response => response.data));
-    }
-}
-CountryService.ɵfac = function CountryService_Factory(t) { return new (t || CountryService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_3__.HttpClient)); };
-CountryService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: CountryService, factory: CountryService.ɵfac, providedIn: 'root' });
 
 
 /***/ })
