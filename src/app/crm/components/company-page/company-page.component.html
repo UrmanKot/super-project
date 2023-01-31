@@ -69,6 +69,11 @@
               Region:
               <span *ngIf="company.region">{{company.region.name}}</span>
             </h4>
+
+            <h4>
+              Sub Region:
+              <span *ngIf="company.sub_region">{{company.sub_region.name}}</span>
+            </h4>
             <h4>Connected Companies:</h4>
             <p *ngFor="let linked_company of company.linked_companies">
               <span>{{ linked_company.name }}</span>

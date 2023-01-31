@@ -30,7 +30,21 @@
       >
         <ng-template pTemplate="caption">
           <div class="action-buttons">
-            <p-menubar class="ml-auto" [model]="selected && selected.data.region ? menuItemsRegion : menuItemsCountry" [class.disabled]="!selected"></p-menubar>
+            <p-menubar
+              *ngIf="selected && selected.data.region"
+              class="ml-auto"
+              [model]="menuItemsRegion"
+              [class.disabled]="!selected"></p-menubar>
+            <p-menubar
+              *ngIf="selected && selected.data.country"
+              class="ml-auto"
+              [model]="menuItemsCountry"
+              [class.disabled]="!selected"></p-menubar>
+            <p-menubar
+              *ngIf="selected && selected.data.subRegion"
+              class="ml-auto"
+              [model]="menuItemsSubRegion"
+              [class.disabled]="!selected"></p-menubar>
           </div>
         </ng-template>
 
@@ -46,6 +60,7 @@
               <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
               {{rowData.region?.name}}
               {{rowData.country?.name}}
+              {{rowData.subRegion?.name}}
             </td>
             <td style="width: 40%">
               <ng-container>

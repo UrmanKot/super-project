@@ -5,6 +5,8 @@ import {ModalActionType} from '@shared/models/modal-action';
 import {CompanyService} from '../../services/company.service';
 import {Company} from '../../models/company';
 import {Region} from '@shared/models/region';
+import {Country} from '@shared/models/country';
+import {SubRegion} from '@shared/models/sub-region';
 
 @Component({
   selector: 'pek-create-edit-company',
@@ -31,6 +33,7 @@ export class CreateEditCompanyComponent implements OnInit {
     has_not_vat: [false],
     country: [null],
     region: [null],
+    sub_region: [null],
   });
 
   constructor(
@@ -50,6 +53,7 @@ export class CreateEditCompanyComponent implements OnInit {
       this.currentCategoriesIds = this.data.company.categories?.map(c => c.id);
 
       this.form.get('contact_persons').patchValue(this.data.company.contact_persons?.map(c => c.id));
+      console.log('this.form. EDIT', this.form.value);
     }
   }
 
@@ -69,9 +73,17 @@ export class CreateEditCompanyComponent implements OnInit {
   }
 
   createCompany() {
-    const region = this.form.get('region').value;
+    let country = this.form.get('country').value;
+    if (country) {
+      this.form.get('country').setValue(country.id);
+    }
+    let region = this.form.get('region').value;
     if (region) {
       this.form.get('region').setValue(region.id);
+    }
+    let subRegion = this.form.get('sub_region').value;
+    if (subRegion) {
+      this.form.get('sub_region').setValue(subRegion.id);
     }
     let send = <Partial<Company>>this.form.value;
     this.companyService.create(send).subscribe({
@@ -81,10 +93,19 @@ export class CreateEditCompanyComponent implements OnInit {
   }
 
   editCompany() {
+    let country = this.form.get('country').value;
+    if (country) {
+      this.form.get('country').setValue(country.id);
+    }
     let region = this.form.get('region').value;
     if (region) {
       this.form.get('region').setValue(region.id);
     }
+    let subRegion = this.form.get('sub_region').value;
+    if (subRegion) {
+      this.form.get('sub_region').setValue(subRegion.id);
+    }
+
     const send = <Partial<Company>>this.form.value;
 
     this.companyService.updatePartial(send).subscribe({
@@ -102,9 +123,22 @@ export class CreateEditCompanyComponent implements OnInit {
     }
   }
 
-  regionSelected(region: Region) {
-    // console.log('this.form.get(\'region\')', this.form.get('region').value);
+  countrySelected(country: Country) {
+    if (country) {
+      this.form.get('country').setValue(country);
+      this.form.get('sub_region').setValue(null);
+      this.form.get('region').setValue(null);
+    }
+  }
+
+  regionSelected(region: Partial<Region>) {
     this.form.get('region').setValue(region);
-    // console.log('this.form.get(\'region\')', this.form.get('region').value);
+    this.form.get('sub_region').setValue(null);
+  }
+
+  regionSubSelected(subRegion: Partial<SubRegion>) {
+    if (subRegion) {
+      this.form.get('sub_region').setValue(subRegion);
+    }
   }
 }

@@ -3,7 +3,7 @@
     *ngIf="!isLoading; else spinner"
     [options]="regions"
     placeholder="Select Region"
-    [(ngModel)]="selectedRegionId"
+    [(ngModel)]="selectedSubRegionId"
     (ngModelChange)="onSelectRegion()"
     optionLabel="name"
     optionValue="id"

@@ -10,6 +10,8 @@ import {debounceTime, map, tap} from 'rxjs/operators';
 import {ModalService} from '@shared/services/modal.service';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Country} from '@shared/models/country';
+import {SubRegion} from '@shared/models/sub-region';
 
 @Component({
   selector: 'pek-companies',
@@ -26,6 +28,8 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     page: [1],
     name: [null],
     region: [null],
+    country_id: [null],
+    sub_region_id: [null],
     category: [null],
     nomenclature: [null],
     selectedNomenclature: [null],
@@ -204,6 +208,19 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
       value: this.searchForm.get('region').value
     });
 
+    if (this.searchForm.get('region').value) this.query.push({
+      name: 'region',
+      value: this.searchForm.get('region').value
+    });
+    if (this.searchForm.get('country_id').value) this.query.push({
+      name: 'country',
+      value: this.searchForm.get('country_id').value
+    });
+    if (this.searchForm.get('sub_region_id').value) this.query.push({
+      name: 'sub_region',
+      value: this.searchForm.get('sub_region_id').value
+    });
+
     if (!this.isShowAll) {
       this.getCompaniesForPagination();
     } else {
@@ -280,6 +297,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSelectRegion(id: number) {
     this.searchForm.get('region').patchValue(id);
+    this.searchForm.get('sub_region_id').patchValue(null);
     this.searchCompanies();
   }
 
@@ -313,4 +331,27 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
   onGoToChainPage() {
     this.router.navigate(['company-page', this.selectedCompany.id], {relativeTo: this.route});
   }
+
+  countrySelected(country: Country) {
+    if (country) {
+      this.searchForm.get('country_id').setValue(country.id);
+    } else {
+      this.searchForm.get('country_id').setValue(null);
+    }
+    this.searchForm.get('region').setValue(null);
+    this.searchForm.get('sub_region_id').setValue(null);
+    this.searchCompanies();
+
+  }
+
+  regionSubSelected(subRegion: Partial<SubRegion>) {
+    if (subRegion) {
+      this.searchForm.get('sub_region_id').setValue(subRegion.id);
+    } else {
+      this.searchForm.get('sub_region_id').setValue(null);
+    }
+    this.searchCompanies();
+
+  }
 }
+

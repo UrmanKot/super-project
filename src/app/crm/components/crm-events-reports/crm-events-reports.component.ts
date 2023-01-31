@@ -8,6 +8,8 @@ import {Table} from 'primeng/table';
 import {EventType} from '../../models/event-type';
 import {Subject, takeUntil} from 'rxjs';
 import {AdapterService} from '@shared/services/adapter.service';
+import {Country} from '@shared/models/country';
+import {SubRegion} from '@shared/models/sub-region';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -59,6 +61,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   isFeatureEventStartFilterOpen = false;
   isFeatureEventEndFilterOpen = false;
+  isHideFilters = false;
+  tableScrollHeight = '29.625rem';
 
 
   public dateRangeLimit: Date;
@@ -214,6 +218,10 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   searchForm: FormGroup = this.fb.group({
     page: [1],
     id: [null],
+    company_category_id: [null],
+    country_id: [null],
+    region_id: [null],
+    sub_region_id: [null],
     categories_ids: [null],
     chain_status_ids: [null],
     employees_ids: [null],
@@ -474,6 +482,26 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     if (this.searchForm.get('is_null_chain_status').value !== null) this.query.push({
       name: 'is_null_chain_status',
       value: this.searchForm.get('is_null_chain_status').value
+    });
+
+    if (this.searchForm.get('company_category_id').value !== null) this.query.push({
+      name: 'company_category_id',
+      value: this.searchForm.get('company_category_id').value
+    });
+
+    if (this.searchForm.get('country_id').value !== null) this.query.push({
+      name: 'country',
+      value: this.searchForm.get('country_id').value
+    });
+
+    if (this.searchForm.get('region_id').value !== null) this.query.push({
+      name: 'region',
+      value: this.searchForm.get('region_id').value
+    });
+
+    if (this.searchForm.get('sub_region_id').value !== null) this.query.push({
+      name: 'sub_region',
+      value: this.searchForm.get('sub_region_id').value
     });
 
     if (this.isShowAll) {
@@ -742,6 +770,70 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
     if (!this.isFeatureEventStartFilterOpen && !this.isFeatureEventEndFilterOpen) {
       this.searchForm.get('intersect_next_event').reset(false);
+    }
+
+    this.search();
+  }
+
+  onSelectCompanyCategory(companyCategoryId: number) {
+    this.searchForm.get('company_category_id').setValue(companyCategoryId);
+    this.search();
+  }
+
+  onSelectCountry(country: Country) {
+    if (country) {
+      this.searchForm.get('country_id').setValue(country.id);
+    } else {
+      this.searchForm.get('country_id').setValue(null);
+    }
+    this.searchForm.get('sub_region_id').setValue(null);
+    this.searchForm.get('region_id').setValue(null);
+    this.search();
+  }
+
+  onSelectRegion(region: number) {
+    if (region) {
+      this.searchForm.get('region_id').setValue(region);
+    } else {
+      this.searchForm.get('region_id').setValue(null);
+    }
+    this.searchForm.get('sub_region_id').setValue(null);
+
+    this.search();
+  }
+
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+    this.setTableScrollHeight();
+  }
+
+  setTableScrollHeight() {
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.875rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.75rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.625rem';
+      return;
+    }
+  }
+
+  regionSubSelected(subRegion: Partial<SubRegion>) {
+    if (subRegion) {
+      this.searchForm.get('sub_region_id').setValue(subRegion.id);
+    } else {
+      this.searchForm.get('sub_region_id').setValue(null);
     }
 
     this.search();

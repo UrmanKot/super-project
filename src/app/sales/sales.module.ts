@@ -15,6 +15,7 @@ import { CreateSalesChainComponent } from './modals/create-sales-chain/create-sa
 import { RegionsComponent } from './components/regions/regions.component';
 import { CreateEditCountryComponent } from './modals/create-edit-country/create-edit-country.component';
 import { CreateEditRegionComponent } from './modals/create-edit-region/create-edit-region.component';
+import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/create-edit-sub-region.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { CreateEditRegionComponent } from './modals/create-edit-region/create-ed
     CreateSalesChainComponent,
     RegionsComponent,
     CreateEditCountryComponent,
-    CreateEditRegionComponent
+    CreateEditRegionComponent,
+    CreateEditSubRegionComponent
   ],
   imports: [
     CommonModule,

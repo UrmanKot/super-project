@@ -346,7 +346,9 @@
                   </td>
 
                   <td style="width: 20%;">
-                    <!--                      {{rowData.plan.list_product.nomenclature.code}}~{{rowData.plan.list_product.nomenclature.name}}-->
+                    <div *ngFor="let root_plan of order.unique_root_production_plans">
+                      {{root_plan.list_product.nomenclature.code}}~{{root_plan.list_product.nomenclature.name}}
+                    </div>
                   </td>
                 </tr>
               </ng-template>

@@ -94,9 +94,9 @@ export class WarehouseQcComponent implements OnInit {
       this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
       this.invoicesList = this.invoices.filter(i => !i.purchase_category)
       this.ordersList = this.orders.map(o => o);
-
+      console.log('this.ordersList', this.ordersList);
       this.isLoading = false;
-    })
+    });
   }
 
   makeUniqueProductionPlansInvoice(items: Invoice[] | Order[]): void {

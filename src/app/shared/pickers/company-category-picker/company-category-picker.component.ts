@@ -1,6 +1,4 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Company} from '../../../crm/models/company';
-import {CompanyService} from '../../../crm/services/company.service';
 import {Subject, takeUntil} from 'rxjs';
 import {CompanyCategory} from '../../../crm/models/company-category';
 import {CompanyCategoryService} from '../../../crm/services/company-category.service';

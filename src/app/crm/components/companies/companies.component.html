@@ -51,30 +51,29 @@
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label>Category</label>
-              <pek-company-category-picker
-                (selectCompanyCategory)="onSelectCompanyCategory($event)"
-              >
-              </pek-company-category-picker>
+              <label>Country</label>
+              <pek-crm-company-picker
+                (valueChange)="countrySelected($event)"
+              ></pek-crm-company-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Region</label>
-              <pek-region-picker (selectRegion)="onSelectRegion($event)"></pek-region-picker>
+              <pek-region-picker
+                [isDisabled]="!searchForm.get('country_id').value"
+                [countrySelected]="searchForm.get('country_id').value"
+                (selectRegion)="onSelectRegion($event)"></pek-region-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label for="person-name">Contact Person Name</label>
-              <input
-                #searchBoxPersonName
-                id="person-name"
-                class="form-control"
-                type="text"
-                pInputText
-                formControlName="contains_contact_person"
-              >
+              <label>Sub Region</label>
+              <pek-sub-region-picker
+                [isDisabled]="!searchForm.get('region').value"
+                [regionSelected]="searchForm.get('region').value"
+                (selectSubRegionFull)="regionSubSelected($event)"
+              ></pek-sub-region-picker>
             </div>
           </div>
           <div class="col-3">
@@ -97,8 +96,26 @@
             </div>
           </div>
           <div class="col-3">
+            <div class="form-group">
+              <label>Category</label>
+              <pek-company-category-picker
+                (selectCompanyCategory)="onSelectCompanyCategory($event)"
+              >
+              </pek-company-category-picker>
+            </div>
           </div>
           <div class="col-3">
+            <div class="form-group">
+              <label for="person-name">Contact Person Name</label>
+              <input
+                #searchBoxPersonName
+                id="person-name"
+                class="form-control"
+                type="text"
+                pInputText
+                formControlName="contains_contact_person"
+              >
+            </div>
           </div>
           <div class="col-3">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>

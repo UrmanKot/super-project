@@ -8,6 +8,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {Country} from '@shared/models/country';
 import {CreateEditRegionComponent} from '../modals/create-edit-region/create-edit-region.component';
 import {Region} from '@shared/models/region';
+import {CreateEditSubRegionComponent} from '../modals/create-edit-sub-region/create-edit-sub-region.component';
+import {SubRegion} from '@shared/models/sub-region';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +38,19 @@ export class CountryRegionService {
         width: '35rem',
         height: 'auto',
         data: {region, selectedCountry},
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  createEditSubRegionModal(countrySelected: number = null, subRegion?: SubRegion, selectedRegion?: number): Observable<boolean> {
+    return this.dialog
+      .open<CreateEditSubRegionComponent>(CreateEditSubRegionComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: {countrySelected, subRegion, selectedRegion},
         panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'
