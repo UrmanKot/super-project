@@ -1,0 +1,61 @@
+.compare {
+  display: flex;
+  justify-content: space-between;
+  min-height: 76vh;
+}
+
+.left-table {
+
+}
+.right-table {
+
+}
+
+tr {
+  font-weight: 500;
+  &.is-new {
+    background: #e1efe2 !important;
+    font-weight: 500;
+  }
+  &.is-deleted {
+    background: #f5dfe1 !important;
+  }
+  &.quantity-changed {
+    background: rgb(215 249 253) !important;
+  }
+  &.name-changed {
+    background: #f59e0b38 !important;
+  }
+  &.is-cycled {
+    background: rgb(199 198 197) !important;
+    color: #953434;
+  }
+}
+
+.color-box {
+  width: 1.5rem;
+  height: 0.75rem;
+  margin-right: 0.5rem;
+}
+
+.name-changed {
+  background: #f59e0b38 !important;
+}
+
+.is-deleted {
+  background: #f5dfe1 !important;
+}
+
+.quantity-changed {
+  background: rgb(215 249 253) !important;
+}
+
+.is-cycled {
+  background: rgb(199 198 197) !important;
+  color: #953434;
+}
+
+.is-new {
+  background: #e1efe2 !important;
+  font-weight: 500;
+}

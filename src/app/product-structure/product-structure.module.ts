@@ -34,6 +34,7 @@ import {AddTechnicalEquipmentComponent} from './modals/add-technical-equipment/a
 import { TechnicalEquipmentsTableComponent } from './components/create-edit-product-form/components/technical-equipments-table/technical-equipments-table.component';
 import { EditTechnicalEquipmentComponent } from './components/create-edit-product-form/components/technical-equipments-table/edit-technical-equipment/edit-technical-equipment.component';
 import { NomenclatureFilesComponent } from './components/create-edit-product-form/components/nomenclature-files/nomenclature-files.component';
+import {CompareStructureComponent} from './modals/compare-structure/compare-structure.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { NomenclatureFilesComponent } from './components/create-edit-product-for
     TechnicalEquipmentsTableComponent,
     EditTechnicalEquipmentComponent,
     NomenclatureFilesComponent,
+    CompareStructureComponent,
   ],
   exports: [
     CreateEditProductFormComponent

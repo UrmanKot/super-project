@@ -13,6 +13,8 @@ import { CreateEditSalesStatusComponent } from './modals/create-edit-sales-statu
 import { EditNomenclaturePriceModalComponent } from './modals/edit-nomenclature-price-modal/edit-nomenclature-price-modal.component';
 import { CreateSalesChainComponent } from './modals/create-sales-chain/create-sales-chain.component';
 import { RegionsComponent } from './components/regions/regions.component';
+import { CreateEditCountryComponent } from './modals/create-edit-country/create-edit-country.component';
+import { CreateEditRegionComponent } from './modals/create-edit-region/create-edit-region.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { RegionsComponent } from './components/regions/regions.component';
     CreateEditSalesStatusComponent,
     EditNomenclaturePriceModalComponent,
     CreateSalesChainComponent,
-    RegionsComponent
+    RegionsComponent,
+    CreateEditCountryComponent,
+    CreateEditRegionComponent
   ],
   imports: [
     CommonModule,

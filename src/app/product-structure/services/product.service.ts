@@ -11,6 +11,8 @@ import {EditProductComponent} from '../modals/edit-product/edit-product.componen
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UploadProductStructureComponent} from '../modals/upload-product-structure/upload-product-structure.component';
 import {ProductFilesComponent} from '../modals/product-files/product-files.component';
+import {CompareStructureComponent} from '../modals/compare-structure/compare-structure.component';
+import {ProductStructureCompareResult} from '../models/product-structure-compare-result';
 
 @Injectable({
   providedIn: 'root'
@@ -113,6 +115,22 @@ export class ProductService {
     );
   }
 
+  compare_structure(
+    data: {
+      file_xls: File,
+      root_product_id: number
+    }): Observable<{ data: ProductStructureCompareResult }> {
+    const formData = new FormData();
+
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    return this.httpClient.post<{ data: ProductStructureCompareResult }>(this.API_URL + 'products/prepare_structure_changes/', formData).pipe(
+      map(response => response)
+    );
+  }
+
   makeRoot(productId: number, send: { category: number }): Observable<any> {
     return this.httpClient.post<{ data: any }>(this.API_URL + `${this.url}${productId}/copy_tree_to_root/`, send).pipe(
       map(response => response.data)
@@ -168,12 +186,12 @@ export class ProductService {
       .afterClosed();
   }
 
-  uploadProductStructureModal(productId: number): Observable<Product[]> {
+  uploadProductStructureModal(productId: number, rootProductId): Observable<Product[]> {
     return this.dialog
       .open<UploadProductStructureComponent>(UploadProductStructureComponent, {
         width: '40rem',
         height: 'auto',
-        data: productId,
+        data: {productId, rootProductId},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
@@ -186,6 +204,21 @@ export class ProductService {
         width: '40rem',
         height: 'auto',
         data: productId,
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+
+
+  openCompareStructureDialog(newResult: any, oldResult: any, hasCyclingProduct: boolean, hasChangedName: boolean): Observable<boolean> {
+    return this.dialog
+      .open<CompareStructureComponent>(CompareStructureComponent, {
+        width: '80rem',
+        height: 'auto',
+        data: {newResult, oldResult, hasCyclingProduct, hasChangedName},
+        panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

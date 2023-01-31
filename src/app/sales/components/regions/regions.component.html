@@ -5,14 +5,14 @@
       <h1>Countries & Regions</h1>
     </div>
     <div class="page__tools">
-<!--      <button-->
-<!--        pButton-->
-<!--        type="button"-->
-<!--        icon="pi pi-plus"-->
-<!--        label="Create Sales Chain"-->
-<!--        (click)="createSaleChain()"-->
-<!--      >-->
-<!--      </button>-->
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="Create Country"
+        (click)="createCountry()"
+      >
+      </button>
     </div>
   </div>
 </div>
@@ -29,26 +29,27 @@
         scrollHeight="calc(100vh - 19.2rem)"
       >
         <ng-template pTemplate="caption">
+          <div class="action-buttons">
+            <p-menubar class="ml-auto" [model]="selected && selected.data.region ? menuItemsRegion : menuItemsCountry" [class.disabled]="!selected"></p-menubar>
+          </div>
         </ng-template>
 
         <ng-template pTemplate="header">
           <tr>
-            <th style="padding-left: 52px; width: 40%">Name</th>
-            <th style="width: 35%" class="text-center">Unit of Measure</th>
-            <th style="width: 35%">Description</th>
+            <th style="padding-left: 52px; width: 60%">Name</th>
+            <th style="width: 40%">Code</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
           <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-            <td style="width: 40%">
+            <td style="width: 60%">
               <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-              {{rowData.name}}
+              {{rowData.region?.name}}
+              {{rowData.country?.name}}
             </td>
-            <td style="width: 35%" class="text-center">
-            </td>
-            <td style="width: 35%">
+            <td style="width: 40%">
               <ng-container>
-                {{rowData.description}}
+                {{rowData.country?.alpha2_code}}
               </ng-container>
             </td>
           </tr>

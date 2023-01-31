@@ -84,6 +84,8 @@ import { CreateChainComponent } from './modals/create-chain/create-chain.compone
 import { AddProductsToChainComponent } from './modals/add-products-to-chain/add-products-to-chain.component';
 import { MultiProductCategoriesPickerComponent } from './pickers/multi-product-categories-picker/multi-product-categories-picker.component';
 import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-category-picker/multi-purchase-category-picker.component';
+import { CrmCompanyPickerComponent } from './pickers/crm-company-picker/crm-company-picker.component';
+import { CrmTreeCompanyPickerComponent } from './pickers/crm-tree-company-picker/crm-tree-company-picker.component';
 
 
 @NgModule({
@@ -147,6 +149,8 @@ import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-c
     AddProductsToChainComponent,
     MultiProductCategoriesPickerComponent,
     MultiPurchaseCategoryPickerComponent,
+    CrmCompanyPickerComponent,
+    CrmTreeCompanyPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -213,6 +217,8 @@ import { MultiPurchaseCategoryPickerComponent } from './pickers/multi-purchase-c
     OrderStatusesComponent,
     MultiProductCategoriesPickerComponent,
     MultiPurchaseCategoryPickerComponent,
+    CrmCompanyPickerComponent,
+    CrmTreeCompanyPickerComponent,
   ],
   imports: [
     MultiSelectModule,

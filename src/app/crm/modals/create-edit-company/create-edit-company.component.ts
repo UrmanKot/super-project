@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {CompanyService} from '../../services/company.service';
 import {Company} from '../../models/company';
+import {Region} from '@shared/models/region';
 
 @Component({
   selector: 'pek-create-edit-company',
@@ -68,7 +69,11 @@ export class CreateEditCompanyComponent implements OnInit {
   }
 
   createCompany() {
-    const send = <Partial<Company>>this.form.value;
+    const region = this.form.get('region').value;
+    if (region) {
+      this.form.get('region').setValue(region.id);
+    }
+    let send = <Partial<Company>>this.form.value;
     this.companyService.create(send).subscribe({
       next: company => this.dialogRef.close(company),
       error: () => this.isSaving = false,
@@ -76,7 +81,12 @@ export class CreateEditCompanyComponent implements OnInit {
   }
 
   editCompany() {
+    let region = this.form.get('region').value;
+    if (region) {
+      this.form.get('region').setValue(region.id);
+    }
     const send = <Partial<Company>>this.form.value;
+
     this.companyService.updatePartial(send).subscribe({
       next: company => this.dialogRef.close(company),
       error: () => this.isSaving = false,
@@ -90,5 +100,11 @@ export class CreateEditCompanyComponent implements OnInit {
     } else {
       this.form.get('categories').patchValue(null);
     }
+  }
+
+  regionSelected(region: Region) {
+    // console.log('this.form.get(\'region\')', this.form.get('region').value);
+    this.form.get('region').setValue(region);
+    // console.log('this.form.get(\'region\')', this.form.get('region').value);
   }
 }
