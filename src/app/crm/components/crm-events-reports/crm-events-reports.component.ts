@@ -490,17 +490,17 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     });
 
     if (this.searchForm.get('country_id').value !== null) this.query.push({
-      name: 'country_id',
+      name: 'country',
       value: this.searchForm.get('country_id').value
     });
 
     if (this.searchForm.get('region_id').value !== null) this.query.push({
-      name: 'region_id',
+      name: 'region',
       value: this.searchForm.get('region_id').value
     });
 
     if (this.searchForm.get('sub_region_id').value !== null) this.query.push({
-      name: 'sub_region_id',
+      name: 'sub_region',
       value: this.searchForm.get('sub_region_id').value
     });
 
