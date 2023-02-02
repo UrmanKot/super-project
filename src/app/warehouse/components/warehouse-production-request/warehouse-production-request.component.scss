@@ -146,3 +146,25 @@ a {
     }
   }
 }
+
+.ids-container {
+  position: relative;
+  .ids {
+    display: none;
+  }
+  &:hover {
+    .ids {
+      position: absolute;
+      display: block;
+      top: 0;
+      right: -86%;
+      width: 6.25rem;
+      height: auto;
+      padding: .5rem 1rem;
+      background-color: white;
+      border-radius: 0.625rem;
+      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
+      z-index: 100;
+    }
+  }
+}

@@ -118,12 +118,12 @@
       <div class="page__table">
         <p-table
           #dt
-          [paginator]="requests.length > 0"
+          [paginator]="listRequests.length > 0"
           scrollHeight="calc(100vh - 18.8rem)"
-          [scrollable]="true"
+          [scrollable]="!dt.paginator"
           class="adaptive-table print-table"
           [rows]="10"
-          [value]="requests"
+          [value]="listRequests"
           [globalFilterFields]="['name']"
           selectionMode="single" [(selection)]="selectedRequest"
         >
@@ -182,9 +182,17 @@
                 <h3 class="td-title">#</h3>
                 {{i + 1}}
               </td>
-              <td style="width: 5%;" class="text-center">
+              <td style="width: 5%;" class="text-center ids-container">
                 <h3 class="td-title">ID</h3>
-                {{request.id}}
+                {{request.id}} <span *ngIf="request.ids.length > 0">L({{request.ids.length + 1}})</span>
+                <span *ngIf="request.ids.length > 0" class="ids">
+                  <div>
+                    {{request.id}}
+                  </div>
+                  <div *ngFor="let id of request.ids">
+                    {{id}}
+                  </div>
+                </span>
               </td>
               <td style="width: 18%;">
                 <h3 class="td-title">Code</h3>
@@ -219,7 +227,7 @@
               </td>
               <td style="width: 14%;" class="text-center">
                 <h3 class="td-title">Required Quantity</h3>
-                {{request.required_quantity}}
+                {{request.total_required_quantity}}
               </td>
               <td style="width: 13%" class="text-center">
                 <h3 class="td-title">Locator</h3>
@@ -253,7 +261,7 @@
           </ng-template>
         </p-table>
       </div>
-      <div *ngIf="!dt.paginator && !isLoading && requests.length > 0" class="paginator-return-pagination">
+      <div *ngIf="!dt.paginator && !isLoading && listRequests.length > 0" class="paginator-return-pagination">
         <p-button
           type="button"
           (click)="dt.paginator=true"
@@ -335,7 +343,7 @@
             [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttSelectableRowDisabled]="rowData.level < 4"
             [class.tr-toggler]="rowNode.node.children.length > 0"
           >
-            <td style="width: 16%;" class="text-center">
+            <td style="width: 16%;" class="text-center ids-container">
               <h3 class="td-title">ID</h3>
               <div class="toggle-row">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -344,6 +352,15 @@
                   </span>
                 <span *ngIf="rowData.level === 4">
                      {{rowData.request.id}}
+                  <span *ngIf="rowData.request.ids.length > 0">L({{rowData.request.ids.length + 1}})</span>
+                <span *ngIf="rowData.request.ids.length > 0" class="ids">
+                  <div>
+                    {{rowData.request.id}}
+                  </div>
+                  <div *ngFor="let id of rowData.request.ids">
+                    {{id}}
+                  </div>
+                </span>
                   </span>
               </div>
             </td>
@@ -387,7 +404,7 @@
             <td style="width: 14%;" class="text-center">
               <h3 class="td-title">Required Quantity</h3>
               <div *ngIf="rowData.level === 4">
-                {{rowData.request.required_quantity}}
+                {{rowData.request.total_required_quantity}}
               </div>
             </td>
             <td style="width: 10%" class="text-center">
@@ -650,7 +667,7 @@
     [orderId]="+orderId"
     [requests]="requests"
     [currentReqDate]="currentReqDate"
-    [technologies]="order.ordered_items_technologies"
+    [technologies]="order?.ordered_items_technologies"
   ></pek-warehouse-production-request-print-page>
   </div>
 </div>

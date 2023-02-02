@@ -13,10 +13,15 @@ import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {environment} from '@env/environment';
-import {Subject, takeUntil} from 'rxjs';
+import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
 import {take} from 'rxjs/operators';
+import {
+  logExperimentalWarnings
+} from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
+import {Nomenclature} from '@shared/models/nomenclature';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 enum ViewMode {
   LIST = 0,
@@ -28,6 +33,13 @@ class ProductRequestListOrder extends Order {
   ordered_items_technologies?: string[];
 }
 
+class GroupedRequest extends Request {
+  ids?: number[];
+  requests?: Request[];
+  total_required_quantity?: number;
+}
+
+@UntilDestroy()
 @Component({
   selector: 'pek-warehouse-production-request',
   templateUrl: './warehouse-production-request.component.html',
@@ -49,7 +61,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       {
         label: 'Show Images',
         icon: 'pi pi-images',
-        command: () => this.showImages(this.selectedRequestNode.data.request.list_product)
+        command: () => this.showImages(this.selectedRequestNode.data.request)
       },
       {
         label: 'Cancel',
@@ -65,7 +77,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       {
         label: 'Show Images',
         icon: 'pi pi-images',
-        command: () => this.showImages(this.selectedRequest.list_product)
+        command: () => this.showImages(this.selectedRequest)
       },
       {
         label: 'Cancel',
@@ -77,11 +89,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   rootList: any = null;
   currentDate: Date = new Date();
-  selectedRequest: Request;
+  selectedRequest: GroupedRequest;
   currentReqDate: Date = null;
 
   isLoading = true;
-  requests: Request[] = [];
+  requests: GroupedRequest[] = [];
+  listRequests: GroupedRequest[] = [];
+  hierarchyRequests: GroupedRequest[] = [];
   order: ProductRequestListOrder;
   orderId = this.route.snapshot.paramMap.get('id');
 
@@ -113,7 +127,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   getOrderTechnicalEquipments() {
     const query = [{name: 'order', value: +this.orderId}, {name: 'in_use', value: false}];
-    this.orderTechnicalEquipmentsService.get(query).pipe(take(1)).subscribe(technicalEquipments => {
+    this.orderTechnicalEquipmentsService.get(query).pipe(take(1), untilDestroyed(this)).subscribe(technicalEquipments => {
       this.technicalEquipments = technicalEquipments;
     });
   }
@@ -189,7 +203,6 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         parent: null
       });
     });
-    console.log('this.detailedRequestTree');
     this.detailedRequestTree.forEach(node => {
       console.log('node', node);
       // this.loadPlanInfo(node);
@@ -213,12 +226,75 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     ).subscribe(requests => {
       this.isLoading = false;
       this.requests = requests;
+      this.listRequests = [...this.requests];
+      this.hierarchyRequests = [...this.requests];
+      this.listRequests.forEach(request => {
+
+        request.requests = this.listRequests.filter(req => {
+          return this.getSameRequests(req, request) && req.id !== request.id;
+        });
+
+        request.ids = request.requests.map(req => req.id);
+
+        request.total_required_quantity = request.requests.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
+        )
+
+        request.ids.forEach(id => {
+          const index = this.listRequests.findIndex(req => req.id === id);
+          this.listRequests.splice(index, 1)
+        });
+      });
+
+      this.hierarchyRequests.forEach(request => {
+        request.requests = this.hierarchyRequests.filter(req => {
+          return this.getSameRequests(req, request) && req.id !== request.id &&
+            (req.for_order_product?.nomenclature.id === request.for_order_product?.nomenclature.id ||
+              req.list_product?.nomenclature.id === request.list_product?.nomenclature.id);
+        });
+
+        request.ids = request.requests.map(req => req.id);
+
+        request.total_required_quantity = request.requests.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
+        )
+
+        request.ids.forEach(id => {
+          const index = this.hierarchyRequests.findIndex(req => req.id === id);
+          this.hierarchyRequests.splice(index, 1)
+        });
+      });
+
       this.prepareTreeCategories();
-      if (this.requests.length > 0) {
-        this.rootList = this.requests[0].root_production_list_products[0];
-        this.currentReqDate = this.requests[0].created;
+      if (this.listRequests.length > 0) {
+        this.rootList = this.listRequests[0].root_production_list_products[0];
+        this.currentReqDate = this.listRequests[0].created;
       }
     });
+  }
+
+  getSameRequests(req: GroupedRequest, request: GroupedRequest): boolean {
+    let codeName = this.getCodeAndName(req)
+
+    let codeNameSecond = this.getCodeAndName(request);
+
+    return codeName.code === codeNameSecond.code && codeName.name === codeNameSecond.name;
+  }
+
+  getCodeAndName(request: GroupedRequest): {name: string, code: string} {
+    let codeSecond = '';
+    let nameSecond = '';
+    if (request.material_nomenclature) {
+      codeSecond = request.material_nomenclature.code;
+      nameSecond = request.material_nomenclature.name;
+    } else if (request.order_product_nomenclature) {
+      codeSecond = request.order_product_nomenclature.code;
+      nameSecond = request.order_product_nomenclature.name;
+    } else if (!request.material_nomenclature && !request.order_product_nomenclature) {
+      codeSecond = request.list_product.nomenclature.code;
+      nameSecond = request.list_product.nomenclature.name;
+    }
+    return {code: codeSecond, name: nameSecond}
   }
 
   expandCollapseAllOrders(isToExpand = true): void {
@@ -241,7 +317,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   prepareTreeCategories(): void {
     const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
 
-    this.requests.forEach(request => {
+    this.hierarchyRequests.forEach(request => {
       if (request.for_order_product) {
         const parentProducts = request.for_order_product.nomenclature;
         const isAdded = categoriesTemp.findIndex(el => el.id === parentProducts.id);
@@ -282,27 +358,25 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.requests.forEach(request => {
-      this.requestTree.forEach(node => {
-        let parentNomenclature;
-        if (request.for_order_product) {
-          parentNomenclature = request.for_order_product.nomenclature;
-        } else if (request.list_product) {
-          // @ts-ignore
-          parentNomenclature = request.list_product.list.nomenclature;
-        }
+    this.hierarchyRequests.forEach(request => {
+        this.requestTree.forEach(node => {
+          let parentNomenclature;
+          if (request.for_order_product) {
+            parentNomenclature = request.for_order_product.nomenclature;
+          } else if (request.list_product) {
+            // @ts-ignore
+            parentNomenclature = request.list_product.list.nomenclature;
+          }
 
-        if (node.data.id === parentNomenclature.id) {
-          node.children.push({
-            data: {request, level: 4},
-            expanded: false,
-            children: []
-          });
-        }
-      });
+          if (node.data.id === parentNomenclature.id) {
+            node.children.push({
+              data: {request, level: 4},
+              expanded: false,
+              children: []
+            });
+          }
+        });
     });
-
-    console.log('this.requestTree Filled', this.requestTree);
   }
 
   onNodeExpand($event: any) {
@@ -374,11 +448,20 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCancelItem(node) {
-    const requestId = node.id;
+  onCancelItem(request: GroupedRequest) {
+    const requestId = request.id;
     this.modalService.confirm('danger', 'Confirm').subscribe(res => {
       if (res) {
-        this.requestsService.cancelRequest(requestId).subscribe(() => {
+        const call = [];
+        const ids = request.ids ? request.ids : [];
+        const requestIds = [request, ...ids ];
+        requestIds.forEach(id => {
+          call.push(this.requestsService.cancelRequest(requestId));
+        });
+
+        forkJoin([
+          ...call
+        ]).pipe(untilDestroyed(this)).subscribe(res => {
           this.selectedRequest = null;
         });
       }
@@ -393,17 +476,25 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.detailedRequestTree = temp;
   }
 
-  showImages(node) {
-    console.log(node);
-    const nomenclatureId = node.nomenclature.id;
-    this.modalService.showImageGallery([], nomenclatureId, 1).subscribe();
+  showImages(request: GroupedRequest) {
+    let nomenclature: Nomenclature;
+
+    if (request.material_nomenclature) {
+      nomenclature = request.material_nomenclature;
+    } else if (request.order_product_nomenclature) {
+      nomenclature = request.order_product_nomenclature;
+    } else if (!request.material_nomenclature && !request.order_product_nomenclature) {
+      nomenclature = request.list_product.nomenclature;
+    }
+    const nomenclatureId = nomenclature.id;
+    this.modalService.showImageGallery([], nomenclatureId, 1).pipe(untilDestroyed(this)).subscribe();
   }
 
   complete() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.isLoading = false;
-        this.requestsService.complete(+this.orderId).subscribe(() => this.router.navigate(['../'], {relativeTo: this.route}));
+        this.requestsService.complete(+this.orderId).pipe(untilDestroyed(this)).subscribe(() => this.router.navigate(['../'], {relativeTo: this.route}));
       }
     });
   }
