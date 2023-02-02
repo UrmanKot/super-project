@@ -37131,10 +37131,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Slider": () => (/* binding */ Slider),
 /* harmony export */   "SliderModule": () => (/* binding */ SliderModule)
 /* harmony export */ });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ 94666);
-/* harmony import */ var primeng_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/dom */ 71420);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 22560);
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ 2508);
+/* harmony import */ var primeng_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/dom */ 71420);
 
 
 
@@ -37147,7 +37147,7 @@ const _c2 = ["sliderHandleEnd"];
 
 const _c3 = function (a0, a1) {
   return {
-    "left": a0,
+    left: a0,
     width: a1
   };
 };
@@ -37165,7 +37165,7 @@ function Slider_span_1_Template(rf, ctx) {
 
 const _c4 = function (a0, a1) {
   return {
-    "bottom": a0,
+    bottom: a0,
     height: a1
   };
 };
@@ -37183,7 +37183,7 @@ function Slider_span_2_Template(rf, ctx) {
 
 const _c5 = function (a0) {
   return {
-    "height": a0
+    height: a0
   };
 };
 
@@ -37200,7 +37200,7 @@ function Slider_span_3_Template(rf, ctx) {
 
 const _c6 = function (a0) {
   return {
-    "width": a0
+    width: a0
   };
 };
 
@@ -37217,8 +37217,8 @@ function Slider_span_4_Template(rf, ctx) {
 
 const _c7 = function (a0, a1) {
   return {
-    "left": a0,
-    "bottom": a1
+    left: a0,
+    bottom: a1
   };
 };
 
@@ -37601,6 +37601,7 @@ class Slider {
   writeValue(value) {
     if (this.range) this.values = value || [0, 0];else this.value = value || 0;
     this.updateHandleValue();
+    this.updateDiffAndOffset();
     this.cd.markForCheck();
   }
 
@@ -37618,7 +37619,8 @@ class Slider {
   }
 
   get rangeStartLeft() {
-    return this.isVertical() ? null : this.handleValues[0] + '%';
+    if (!this.isVertical()) return this.handleValues[0] > 100 ? 100 + '%' : this.handleValues[0] + '%';
+    return null;
   }
 
   get rangeStartBottom() {
@@ -37656,6 +37658,23 @@ class Slider {
     } else {
       if (this.value < this.min) this.handleValue = 0;else if (this.value > this.max) this.handleValue = 100;else this.handleValue = (this.value - this.min) * 100 / (this.max - this.min);
     }
+
+    if (this.step) {
+      this.updateDiffAndOffset();
+    }
+  }
+
+  updateDiffAndOffset() {
+    this.diff = this.getDiff();
+    this.offset = this.getOffset();
+  }
+
+  getDiff() {
+    return Math.abs(this.handleValues[0] - this.handleValues[1]);
+  }
+
+  getOffset() {
+    return Math.min(this.handleValues[0], this.handleValues[1]);
   }
 
   updateValue(val, event) {
@@ -37671,8 +37690,6 @@ class Slider {
             value = this.max;
             this.handleValues[0] = 100;
           }
-
-          this.handleValues[0] = value;
         }
 
         this.sliderHandleStart.nativeElement.focus();
@@ -37683,7 +37700,7 @@ class Slider {
           this.offset = this.handleValues[1];
         } else if (value < this.min) {
           value = this.min;
-          this.handleValues[1] = value;
+          this.handleValues[1] = 0;
         } else if (value < this.values[0]) {
           this.offset = this.handleValues[1];
         }
@@ -37691,8 +37708,12 @@ class Slider {
         this.sliderHandleEnd.nativeElement.focus();
       }
 
-      this.diff = Math.abs(this.handleValues[0] - this.handleValues[1]);
-      this.offset = Math.min(this.handleValues[0], this.handleValues[1]);
+      if (this.step) {
+        this.updateHandleValue();
+      } else {
+        this.updateDiffAndOffset();
+      }
+
       this.values[this.handleIndex] = this.getNormalizedValue(value);
       let newValues = [this.minVal, this.maxVal];
       this.onModelChange(newValues);
@@ -37724,7 +37745,7 @@ class Slider {
   }
 
   getDecimalsCount(value) {
-    if (value && Math.floor(value) !== value) return value.toString().split(".")[1].length || 0;
+    if (value && Math.floor(value) !== value) return value.toString().split('.')[1].length || 0;
     return 0;
   }
 
@@ -37732,7 +37753,7 @@ class Slider {
     let decimalsCount = this.getDecimalsCount(this.step);
 
     if (decimalsCount > 0) {
-      return +val.toFixed(decimalsCount);
+      return +parseFloat(val.toString()).toFixed(decimalsCount);
     } else {
       return Math.floor(val);
     }
@@ -37843,29 +37864,84 @@ Slider.ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵde
     args: [{
       selector: 'p-slider',
       template: `
-        <div [ngStyle]="style" [class]="styleClass" [ngClass]="{'p-slider p-component':true,'p-disabled':disabled,
-            'p-slider-horizontal':orientation == 'horizontal','p-slider-vertical':orientation == 'vertical','p-slider-animate':animate}"
-            (click)="onBarClick($event)">
-            <span *ngIf="range && orientation == 'horizontal'" class="p-slider-range" [ngStyle]="{'left':offset !== null && offset !== undefined ? offset + '%' : handleValues[0] + '%',width: diff ? diff + '%' : handleValues[1] - handleValues[0] + '%'}"></span>
-            <span *ngIf="range && orientation == 'vertical'" class="p-slider-range" [ngStyle]="{'bottom':offset !== null && offset !== undefined ? offset + '%' : handleValues[0] + '%',height: diff ? diff + '%' : handleValues[1] - handleValues[0] + '%'}"></span>
-            <span *ngIf="!range && orientation=='vertical'" class="p-slider-range" [ngStyle]="{'height': handleValue + '%'}"></span>
-            <span *ngIf="!range && orientation=='horizontal'" class="p-slider-range" [ngStyle]="{'width': handleValue + '%'}"></span>
-            <span #sliderHandle *ngIf="!range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event)" class="p-slider-handle" (mousedown)="onMouseDown($event)" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)"
-                [style.transition]="dragging ? 'none': null" [ngStyle]="{'left': orientation == 'horizontal' ? handleValue + '%' : null,'bottom': orientation == 'vertical' ? handleValue + '%' : null}"
-                [attr.aria-valuemin]="min" [attr.aria-valuenow]="value" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
-            <span #sliderHandleStart *ngIf="range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event,0)" (mousedown)="onMouseDown($event,0)" (touchstart)="onTouchStart($event,0)" (touchmove)="onTouchMove($event,0)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle"
-                [ngStyle]="{'left': rangeStartLeft, 'bottom': rangeStartBottom}" [ngClass]="{'p-slider-handle-active':handleIndex==0}"
-                [attr.aria-valuemin]="min" [attr.aria-valuenow]="value ? value[0] : null" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
-            <span #sliderHandleEnd *ngIf="range" [attr.tabindex]="disabled ? null : tabindex" (keydown)="onHandleKeydown($event,1)" (mousedown)="onMouseDown($event,1)" (touchstart)="onTouchStart($event,1)" (touchmove)="onTouchMove($event,1)" (touchend)="onTouchEnd($event)" [style.transition]="dragging ? 'none': null" class="p-slider-handle"
-                [ngStyle]="{'left': rangeEndLeft, 'bottom': rangeEndBottom}" [ngClass]="{'p-slider-handle-active':handleIndex==1}"
-                [attr.aria-valuemin]="min" [attr.aria-valuenow]="value ? value[1] : null" [attr.aria-valuemax]="max" [attr.aria-labelledby]="ariaLabelledBy"></span>
+        <div
+            [ngStyle]="style"
+            [class]="styleClass"
+            [ngClass]="{ 'p-slider p-component': true, 'p-disabled': disabled, 'p-slider-horizontal': orientation == 'horizontal', 'p-slider-vertical': orientation == 'vertical', 'p-slider-animate': animate }"
+            (click)="onBarClick($event)"
+        >
+            <span
+                *ngIf="range && orientation == 'horizontal'"
+                class="p-slider-range"
+                [ngStyle]="{ left: offset !== null && offset !== undefined ? offset + '%' : handleValues[0] + '%', width: diff ? diff + '%' : handleValues[1] - handleValues[0] + '%' }"
+            ></span>
+            <span
+                *ngIf="range && orientation == 'vertical'"
+                class="p-slider-range"
+                [ngStyle]="{ bottom: offset !== null && offset !== undefined ? offset + '%' : handleValues[0] + '%', height: diff ? diff + '%' : handleValues[1] - handleValues[0] + '%' }"
+            ></span>
+            <span *ngIf="!range && orientation == 'vertical'" class="p-slider-range" [ngStyle]="{ height: handleValue + '%' }"></span>
+            <span *ngIf="!range && orientation == 'horizontal'" class="p-slider-range" [ngStyle]="{ width: handleValue + '%' }"></span>
+            <span
+                #sliderHandle
+                *ngIf="!range"
+                [attr.tabindex]="disabled ? null : tabindex"
+                (keydown)="onHandleKeydown($event)"
+                class="p-slider-handle"
+                (mousedown)="onMouseDown($event)"
+                (touchstart)="onTouchStart($event)"
+                (touchmove)="onTouchMove($event)"
+                (touchend)="onTouchEnd($event)"
+                [style.transition]="dragging ? 'none' : null"
+                [ngStyle]="{ left: orientation == 'horizontal' ? handleValue + '%' : null, bottom: orientation == 'vertical' ? handleValue + '%' : null }"
+                [attr.aria-valuemin]="min"
+                [attr.aria-valuenow]="value"
+                [attr.aria-valuemax]="max"
+                [attr.aria-labelledby]="ariaLabelledBy"
+            ></span>
+            <span
+                #sliderHandleStart
+                *ngIf="range"
+                [attr.tabindex]="disabled ? null : tabindex"
+                (keydown)="onHandleKeydown($event, 0)"
+                (mousedown)="onMouseDown($event, 0)"
+                (touchstart)="onTouchStart($event, 0)"
+                (touchmove)="onTouchMove($event, 0)"
+                (touchend)="onTouchEnd($event)"
+                [style.transition]="dragging ? 'none' : null"
+                class="p-slider-handle"
+                [ngStyle]="{ left: rangeStartLeft, bottom: rangeStartBottom }"
+                [ngClass]="{ 'p-slider-handle-active': handleIndex == 0 }"
+                [attr.aria-valuemin]="min"
+                [attr.aria-valuenow]="value ? value[0] : null"
+                [attr.aria-valuemax]="max"
+                [attr.aria-labelledby]="ariaLabelledBy"
+            ></span>
+            <span
+                #sliderHandleEnd
+                *ngIf="range"
+                [attr.tabindex]="disabled ? null : tabindex"
+                (keydown)="onHandleKeydown($event, 1)"
+                (mousedown)="onMouseDown($event, 1)"
+                (touchstart)="onTouchStart($event, 1)"
+                (touchmove)="onTouchMove($event, 1)"
+                (touchend)="onTouchEnd($event)"
+                [style.transition]="dragging ? 'none' : null"
+                class="p-slider-handle"
+                [ngStyle]="{ left: rangeEndLeft, bottom: rangeEndBottom }"
+                [ngClass]="{ 'p-slider-handle-active': handleIndex == 1 }"
+                [attr.aria-valuemin]="min"
+                [attr.aria-valuenow]="value ? value[1] : null"
+                [attr.aria-valuemax]="max"
+                [attr.aria-labelledby]="ariaLabelledBy"
+            ></span>
         </div>
     `,
       providers: [SLIDER_VALUE_ACCESSOR],
       changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
       encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
       host: {
-        'class': 'p-element'
+        class: 'p-element'
       },
       styles: [".p-slider{position:relative}.p-slider .p-slider-handle{position:absolute;cursor:grab;touch-action:none;display:block}.p-slider-range{position:absolute;display:block}.p-slider-horizontal .p-slider-range{top:0;left:0;height:100%}.p-slider-horizontal .p-slider-handle{top:50%}.p-slider-vertical{height:100px}.p-slider-vertical .p-slider-handle{left:50%}.p-slider-vertical .p-slider-range{bottom:0;left:0;width:100%}\n"]
     }]
@@ -37921,15 +37997,15 @@ Slider.ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵde
     }],
     sliderHandle: [{
       type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewChild,
-      args: ["sliderHandle"]
+      args: ['sliderHandle']
     }],
     sliderHandleStart: [{
       type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewChild,
-      args: ["sliderHandleStart"]
+      args: ['sliderHandleStart']
     }],
     sliderHandleEnd: [{
       type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewChild,
-      args: ["sliderHandleEnd"]
+      args: ['sliderHandleEnd']
     }]
   });
 })();
