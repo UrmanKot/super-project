@@ -168,6 +168,8 @@
         dataKey="id"
         groupRowsBy="nomenclature.id"
         rowGroupMode="rowspan"
+        (sortFunction)="customSort($event)"
+        [customSort]="true"
         [rows]="preparedProducts.length"
         [(selection)]="selectedInventoryProducts"
         [value]="preparedProducts"
@@ -178,15 +180,59 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th class="index-header text-center" style="width: 5%">#</th>
-            <th style="width: 14%">Code</th>
-            <th style="width: 10%">Name</th>
+            <th style="width: 14%"
+                class="sort-label"
+                pSortableColumn="nomenclature.code"
+                (click)="sorting(searchForm.get('order_by_code').value, 'order_by_code')">
+              Code
+              <pek-sort-icon [value]="searchForm.get('order_by_code').value"></pek-sort-icon>
+            </th>
+            <th style="width: 10%"
+                pSortableColumn="nomenclature.name"
+                class="sort-label"
+                (click)="sorting(searchForm.get('order_by_name').value, 'order_by_name')">
+              Name
+              <pek-sort-icon [value]="searchForm.get('order_by_name').value"></pek-sort-icon>
+            </th>
             <th style="width: 10%" class="text-center">Technology</th>
-            <th style="width: 9%" class="text-center">Initial Quantity</th>
-            <th style="width: 11%" class="text-center">Entered Quantity</th>
-            <th style="width: 11%" class="text-center">Category</th>
+            <th style="width: 9%" class="text-center sort-label"
+                pSortableColumn="initial_quantity"
+                (click)="sorting(searchForm.get('order_by_initial_quantity').value, 'order_by_initial_quantity')"
+            >
+              Initial Quantity
+              <pek-sort-icon [value]="searchForm.get('order_by_initial_quantity').value"></pek-sort-icon>
+            </th>
+            <th style="width: 11%"
+                class="text-center sort-label"
+                pSortableColumn="new_quantity"
+                (click)="sorting(searchForm.get('order_by_new_quantity').value, 'order_by_new_quantity')"
+            >
+              Entered Quantity
+              <pek-sort-icon [value]="searchForm.get('order_by_new_quantity').value"></pek-sort-icon>
+            </th>
+            <th style="width: 11%" class="text-center sort-label"
+                pSortableColumn="nomenclature.category.name"
+                (click)="sorting(searchForm.get('order_by_category').value, 'order_by_category')"
+            >
+              Category
+              <pek-sort-icon [value]="searchForm.get('order_by_category').value"></pek-sort-icon>
+            </th>
             <th style="width: 6%" class="text-center">UOM</th>
-            <th style="width: 11%" class="text-center">Warehouse</th>
-            <th style="width: 14%">Locator</th>
+            <th style="width: 11%" class="text-center sort-label"
+                pSortableColumn="locator.warehouse.name"
+                (click)="sorting(searchForm.get('order_by_warehouse').value, 'order_by_warehouse')"
+            >
+              Warehouse
+              <pek-sort-icon [value]="searchForm.get('order_by_warehouse').value"></pek-sort-icon>
+            </th>
+            <th style="width: 14%"
+                class="sort-label"
+                pSortableColumn="locator.name"
+                (click)="sorting(searchForm.get('order_by_locator').value, 'order_by_locator')"
+            >
+              Locator
+              <pek-sort-icon [value]="searchForm.get('order_by_locator').value"></pek-sort-icon>
+            </th>
           </tr>
         </ng-template>
 
