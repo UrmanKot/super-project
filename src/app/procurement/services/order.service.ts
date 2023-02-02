@@ -27,6 +27,8 @@ import {
 import {
   CreateEmptyPurchaseChainComponent
 } from '../../purchasing/modals/create-empty-purchase-chain/create-empty-purchase-chain.component';
+import {AdapterService} from '@shared/services/adapter.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,8 @@ export class OrderService {
   constructor(
     private httpClient: HttpClient,
     private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly adapterService: AdapterService,
   ) {
   }
 
@@ -159,6 +163,18 @@ export class OrderService {
     )));
   }
 
+  openOrderStatusesChartWindow(orders: Order[]) {
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    console.log(JSON.parse(localStorage.getItem('orders')));
+
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/order-statuses-chart'])
+    );
+
+    window.open(url, '_blank');
+  }
+
   openAcceptToWarehouseModal(items: OrderProduct[], id: number, type = 'order'): Observable<any> {
     return this.dialog
       .open<QcAcceptToWarehouseComponent>(QcAcceptToWarehouseComponent, {
@@ -209,6 +225,47 @@ export class OrderService {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  modifyOrders(orders: Order[]): Order[] {
+    let modifyOrders = [];
+
+    orders.forEach(order => {
+      order.created = new Date(order.created);
+      order.created_to = order.created;
+      order.status = order.statuses.filter(stat => stat.is_active)[0]?.status;
+      order.activeStatusDate = order.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
+
+      order.root_lists = [];
+      order.order_products.forEach(prod => order.root_lists = order.root_lists.concat(prod.root_production_list_products));
+      order.root_lists = this.adapterService.removeDuplicates(order.root_lists, x => x.id);
+      order.root_search_lists = 'A' + order.root_lists.map(x => x.nomenclature.code + '~' + x.nomenclature.name).join('/');
+
+      order.orderStatuses = order.status ? order.status.value : 'Empty';
+
+      order.statuses.forEach(stat => {
+        stat.estimated_date = new Date(stat.estimated_date);
+      })
+
+      if (order.status) {
+        order.status.filter_value = 'A' + order.status.value;
+      } else {
+        order.status = {value: 'Empty', filter_value: 'A'};
+      }
+
+      order.statuses.sort((a, b) => new Date(a.estimated_date).getTime() - new Date(b.estimated_date).getTime());
+      order.root_lists = this.adapterService.removeDuplicates(order.root_lists, x => x.fullName);
+
+      order.dates = [];
+
+      order.companyId = order.supplier?.id;
+      order.dateFrom = order.created;
+      order.dateTo = new Date(new Date(order.created).setDate(new Date(order.created).getDate() - 1));
+    })
+
+    modifyOrders = [...orders]
+
+    return modifyOrders
   }
 
   openAddProductsToChainModal(products: OrderProduct[], orderType: OrderType): Observable<Order> {

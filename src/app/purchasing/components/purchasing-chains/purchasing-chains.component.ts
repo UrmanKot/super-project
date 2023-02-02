@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Order} from '../../../procurement/models/order';
@@ -12,6 +12,8 @@ import {ListProduct} from '../../../warehouse/models/list-product';
 import {BehaviorSubject, switchMap} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Table} from 'primeng/table';
+import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
 
 @UntilDestroy()
 @Component({
@@ -20,6 +22,11 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   styleUrls: ['./purchasing-chains.component.scss']
 })
 export class PurchasingChainsComponent implements OnInit {
+  @ViewChild('dt') dt: Table;
+  @ViewChild(OrderStatusesTableComponent)
+  orderStatusTableComponent: OrderStatusesTableComponent;
+
+  isShowStatuses = false;
 
   menuItems: MenuItem[] = [{
     label: 'Selected Chain',
@@ -80,15 +87,7 @@ export class PurchasingChainsComponent implements OnInit {
     this.search$.pipe(
       tap(() => this.prepareForSearch()),
       switchMap(() => this.orderService.get(this.query)),
-      map(orders =>
-        orders.map(order => {
-          order.created = new Date(order.created);
-          order.created_to = order.created;
-          order.status = order.statuses.filter(stat => stat.is_active)[0]?.status;
-          order.activeStatusDate = order.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
-          return order;
-        })
-      ),
+      map(orders => this.orderService.modifyOrders(orders)),
       tap(orders => this.orders = orders),
       tap(() => this.generateNomenclaturesListAndRootLists()),
       tap(() => this.isLoading = false),
@@ -157,6 +156,10 @@ export class PurchasingChainsComponent implements OnInit {
         this.orderService.delete(this.selectedOrder.id).subscribe(() => {
           this.orders = this.orders.filter(x => x.id !== this.selectedOrder.id);
           this.selectedOrder = null;
+
+          setTimeout(() => {
+            this.orderStatusTableComponent?.renderDates({first: this.firstPage});
+          });
         });
       }
     });
@@ -191,6 +194,9 @@ export class PurchasingChainsComponent implements OnInit {
     }
 
     this.firstPage = 0;
+
+    this.orderStatusTableComponent?.renderDates({first: 0});
+    this.orders = this.orders.map(o => o);
   }
 
   onSelectCompany(id: number) {
@@ -224,5 +230,29 @@ export class PurchasingChainsComponent implements OnInit {
         this.router.navigate(['/purchasing/chains/order', order.id])
       }
     })
+  }
+
+  onToggleStatuses() {
+    this.isShowStatuses = !this.isShowStatuses;
+  }
+
+  onChangePage(page: number) {
+    this.firstPage = page;
+  }
+
+  onPage(evt: any) {
+    this.orderStatusTableComponent.renderDates(evt);
+  }
+
+  onSelectOrder() {
+    this.orderStatusTableComponent.selectedOrder = this.selectedOrder;
+  }
+
+  onSelectionOrder(order: Order) {
+    this.selectedOrder = order;
+  }
+
+  onShowAll(value: boolean) {
+    this.dt.paginator = value;
   }
 }

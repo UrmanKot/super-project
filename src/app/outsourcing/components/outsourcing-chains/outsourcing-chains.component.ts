@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {MenuItem} from 'primeng/api';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Order} from '../../../procurement/models/order';
 import {Nomenclature} from '@shared/models/nomenclature';
@@ -12,6 +11,9 @@ import {ListProduct} from '../../../warehouse/models/list-product';
 import {map, tap} from 'rxjs/operators';
 import {BehaviorSubject, switchMap} from 'rxjs';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {MenuItem} from 'primeng/api';
+import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
+import {Table} from 'primeng/table';
 
 @UntilDestroy()
 @Component({
@@ -20,8 +22,13 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
   styleUrls: ['./outsourcing-chains.component.scss']
 })
 export class OutsourcingChainsComponent implements OnInit {
+  @ViewChild('dt') dt: Table;
+  @ViewChild(OrderStatusesTableComponent)
+  orderStatusTableComponent: OrderStatusesTableComponent;
   firstPage: number = 0;
   isCreating = false;
+
+  isShowStatuses = false;
 
   menuItems: MenuItem[] = [{
     label: 'Selected Chain',
@@ -61,7 +68,7 @@ export class OutsourcingChainsComponent implements OnInit {
   nomenclaturesList: Nomenclature[] = [];
   rootLists: any[] = [];
 
-  query: QuerySearch[] = []
+  query: QuerySearch[] = [];
 
   tableScrollHeight = '29.625rem';
 
@@ -80,15 +87,7 @@ export class OutsourcingChainsComponent implements OnInit {
     this.search$.pipe(
       tap(() => this.prepareForSearch()),
       switchMap(() => this.orderService.get(this.query)),
-      map(orders =>
-        orders.map(order => {
-          order.created = new Date(order.created);
-          order.created_to = order.created;
-          order.status = order.statuses.filter(stat => stat.is_active)[0]?.status;
-          order.activeStatusDate = order.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
-          return order;
-        })
-      ),
+      map(orders => this.orderService.modifyOrders(orders)),
       tap(orders => this.orders = orders),
       tap(() => this.generateNomenclaturesListAndRootLists()),
       tap(() => this.isLoading = false),
@@ -157,6 +156,10 @@ export class OutsourcingChainsComponent implements OnInit {
         this.orderService.delete(this.selectedOrder.id).subscribe(() => {
           this.orders = this.orders.filter(x => x.id !== this.selectedOrder.id);
           this.selectedOrder = null;
+
+          setTimeout(() => {
+            this.orderStatusTableComponent?.renderDates({first: this.firstPage});
+          });
         });
       }
     });
@@ -173,6 +176,7 @@ export class OutsourcingChainsComponent implements OnInit {
       }
     });
   }
+
   private prepareForSearch() {
     this.isLoading = true;
     this.selectedOrder = null;
@@ -201,6 +205,8 @@ export class OutsourcingChainsComponent implements OnInit {
     }
 
     this.firstPage = 0;
+    this.orderStatusTableComponent?.renderDates({first: 0});
+    this.orders = this.orders.map(o => o);
   }
 
   onSelectCompany(id: number) {
@@ -211,5 +217,29 @@ export class OutsourcingChainsComponent implements OnInit {
   onSelectStatuses(ids: number[]) {
     this.searchForm.get('active_status__in').patchValue(ids?.join(',') || null);
     this.search$.next();
+  }
+
+  onToggleStatuses() {
+    this.isShowStatuses = !this.isShowStatuses;
+  }
+
+  onChangePage(page: number) {
+    this.firstPage = page;
+  }
+
+  onPage(evt: any) {
+    this.orderStatusTableComponent.renderDates(evt);
+  }
+
+  onSelectOrder() {
+    this.orderStatusTableComponent.selectedOrder = this.selectedOrder;
+  }
+
+  onSelectionOrder(order: Order) {
+    this.selectedOrder = order;
+  }
+
+  onShowAll(value: boolean) {
+    this.dt.paginator = value;
   }
 }

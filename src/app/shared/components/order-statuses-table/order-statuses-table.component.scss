@@ -1,0 +1,140 @@
+.hide-text {
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.td-status {
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+
+.order-table-tr {
+  border-bottom: 2px solid #dee2e6 !important;
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.header-status {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  padding: 0.5rem 0;
+}
+
+.header-id {
+  border-right: 1px solid #dee2e6;
+  padding: 0.5rem 0;
+}
+
+.th-status {
+  box-sizing: border-box;
+  padding: 0 !important;
+}
+
+.status-expand {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #dee2e6;
+}
+
+.status {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  height: 2.067rem;
+  line-height: 2.067rem;
+  box-sizing: border-box;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.t-col-2 {
+  left: 50px !important;
+}
+
+.t-col-3 {
+  left: 200px !important;
+
+  &_exp {
+    left: 50px !important;
+  }
+}
+
+.t-col-4 {
+  left: 350px !important;
+}
+
+.t-col-5 {
+  left: 500px !important;
+}
+
+.t-col-6 {
+  left: 650px !important;
+}
+
+.background {
+  background: #28a745 !important;
+}
+
+.status-row {
+  width: 100%;
+  height: 2.067rem;
+  line-height: 2.067rem;
+  border-bottom: 1px solid #dee2e6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.order-statuses-table {
+  &::ng-deep {
+    .p-datatable-scrollable .p-datatable-tbody > tr > td.row-hide,
+    .p-datatable-scrollable .p-datatable-thead > tr > th.row-hide {
+      display: none !important;
+    }
+
+    .p-datatable-scrollable .p-datatable-thead > tr > th.date-title {
+      font-size: 10px !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .actions-text {
+    margin-left: 1.5rem;
+  }
+
+  &__buttons {
+    margin-top: -0.375rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+
+    p {
+      font-weight: 600;
+    }
+
+    &::ng-deep {
+      .p-button {
+        padding: 0.5rem 0.75rem !important;
+      }
+    }
+  }
+}
+
+.hide {
+  display: none !important;
+}
