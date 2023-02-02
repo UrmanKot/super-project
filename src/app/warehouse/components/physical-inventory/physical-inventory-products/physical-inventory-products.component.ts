@@ -12,6 +12,7 @@ import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {ModalService} from '@shared/services/modal.service';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
 import {SortEvent} from 'primeng/api';
+import {Category} from '../../../../product-structure/models/category';
 
 export class PreparedPhysicalInventory {
   nomenclature: Nomenclature;
@@ -218,10 +219,10 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       });
     }
 
-    // this.query.push({
-    //   name: 'ordering',
-    //   value: '-physicalinventoryproduct__nomenclature__code,'
-    // });
+    if (this.searchForm.get('category').value) this.query.push({
+      name: 'category',
+      value: this.searchForm.get('category').value
+    });
 
     const ordering = this.prepareSortingField();
     if (ordering) {
@@ -597,11 +598,6 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       let value1 = data1[event.field];
       let value2 = data2[event.field];
       let result = null;
-      // console.log('value1', value1);
-      // console.log('value2', value2);
-      // console.log('data1', data1);
-      // console.log('data2', data2);
-      // console.log('event', event);
 
       if (value1 == null && value2 != null)
         result = -1;
@@ -616,5 +612,14 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
       return (event.order * result);
     });
+  }
+
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('category').patchValue(category.id);
+    } else {
+      this.searchForm.get('category').patchValue(null);
+    }
+    this.searchProducts();
   }
 }
