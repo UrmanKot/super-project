@@ -24,6 +24,7 @@
     <div class="form-group">
       <label>Contacts</label>
       <pek-crm-multi-contact-persons-picker
+        [selectedCompaniesIds]="this.form.get('company_ids').value"
         (selectContactPersons)="onSelectContactPersons($event)"
       ></pek-crm-multi-contact-persons-picker>
     </div>
