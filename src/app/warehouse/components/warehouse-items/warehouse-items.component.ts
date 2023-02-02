@@ -44,6 +44,12 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     locator: {value: null, disabled: true},
     type: [null],
     acceptedByInvoices: [null],
+    order_by_code: [null],
+    order_by_name: [null],
+    order_by_category: [null],
+    order_by_warehouse: [null],
+    order_by_locator: [null],
+    order_by_quantity: [null],
     page: [1],
   });
 
@@ -227,6 +233,14 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       value: this.searchForm.get('acceptedByInvoices').value
     });
 
+    const ordering = this.prepareSortingField();
+    if (ordering) {
+      this.query.push({
+        name: 'ordering',
+        value: ordering
+      });
+    }
+
     if (!this.isShowAll) {
       this.getProductsForPagination();
     } else {
@@ -358,5 +372,64 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.selectedProduct) {
       this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct.extra_info, this.selectedProduct.nomenclature as Nomenclature).subscribe();
     }
+  }
+
+  prepareSortingField(): string {
+    let sorting = '';
+    if (this.searchForm.get('order_by_code').value !== null) {
+      if (this.searchForm.get('order_by_code').value) {
+        sorting += '-nomenclature__code,';
+      } else {
+        sorting += 'nomenclature__code,';
+      }
+    }
+    if (this.searchForm.get('order_by_name').value !== null) {
+      if (this.searchForm.get('order_by_name').value) {
+        sorting += '-nomenclature__name,';
+      } else {
+        sorting += 'nomenclature__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_category').value !== null) {
+      if (this.searchForm.get('order_by_category').value) {
+        sorting += '-nomenclature__category__name,';
+      } else {
+        sorting += 'nomenclature__category__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_warehouse').value !== null) {
+      if (this.searchForm.get('order_by_warehouse').value) {
+        sorting += '-locator__warehouse__name,';
+      } else {
+        sorting += 'locator__warehouse__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_locator').value !== null) {
+      if (this.searchForm.get('order_by_locator').value) {
+        sorting += '-locator__name,';
+      } else {
+        sorting += 'locator__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_quantity').value !== null) {
+      if (this.searchForm.get('order_by_quantity').value) {
+        sorting += '-total_locator_quantity,';
+      } else {
+        sorting += 'total_locator_quantity,';
+      }
+    }
+
+    return sorting;
+  }
+
+  sorting(value: boolean, field: string) {
+    if (value === null) {
+      this.searchForm.get(field).patchValue(false);
+    } else if (value === false) {
+      this.searchForm.get(field).patchValue(true);
+    } else if (value === true) {
+      this.searchForm.get(field).patchValue(null);
+    }
+    this.searchProducts();
   }
 }

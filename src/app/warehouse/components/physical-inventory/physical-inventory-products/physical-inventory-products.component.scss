@@ -6,3 +6,20 @@
 .warning-quantity-less {
   color: var(--theme-color-danger)
 }
+
+.sort-label {
+  cursor: pointer;
+}
+
+.page__card {
+  display: flex;
+}
+
+.left-side {
+  width: 24rem;
+}
+
+.right-side {
+  width: 100%;
+  margin-left: 1.75rem;
+}

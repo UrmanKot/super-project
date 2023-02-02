@@ -11,6 +11,8 @@ import {InventoryProduct, PhysicalInventory} from '../../../models/physical-inve
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {ModalService} from '@shared/services/modal.service';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
+import {SortEvent} from 'primeng/api';
+import {Category} from '../../../../product-structure/models/category';
 
 export class PreparedPhysicalInventory {
   nomenclature: Nomenclature;
@@ -46,6 +48,13 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     type: [null],
     found_row_id: [null],
     accepted_by_invoices: [null],
+    order_by_code: [null],
+    order_by_name: [null],
+    order_by_initial_quantity: [null],
+    order_by_new_quantity: [null],
+    order_by_category: [null],
+    order_by_warehouse: [null],
+    order_by_locator: [null],
     page: [1],
   });
 
@@ -210,6 +219,19 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       });
     }
 
+    if (this.searchForm.get('category').value) this.query.push({
+      name: 'category',
+      value: this.searchForm.get('category').value
+    });
+
+    const ordering = this.prepareSortingField();
+    if (ordering) {
+      this.query.push({
+        name: 'ordering',
+        value: ordering
+      });
+    }
+
     if (!this.isShowAll) {
       this.getInventoryProductsForPagination();
     } else {
@@ -224,7 +246,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.physicalInventoryService.getInventoryProductsListsForPagination(this.inventoryId, this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(inventoryLists => {
-
+      console.log('inventoryLists', inventoryLists);
       const preparedProducts = [];
       inventoryLists.results.forEach(product => {
         preparedProducts.push(...product.products)
@@ -264,11 +286,14 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       }
 
       this.findItemId = null;
-      // preparedProducts
+
+
+
+
       this.inventoryProducts = [...newInventoryProducts];
       this.countProducts = inventoryLists.count;
 
-
+      console.log('this.inventoryProducts', this.inventoryProducts);
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
       }
@@ -500,4 +525,101 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  prepareSortingField(): string {
+    let sorting = '';
+    if (this.searchForm.get('order_by_code').value !== null) {
+      if (this.searchForm.get('order_by_code').value) {
+        sorting += '-physicalinventoryproduct__nomenclature__code,';
+      } else {
+        sorting += 'physicalinventoryproduct__nomenclature__code,';
+      }
+    }
+
+    if (this.searchForm.get('order_by_name').value !== null) {
+      if (this.searchForm.get('order_by_name').value) {
+        sorting += '-physicalinventoryproduct__nomenclature__name,';
+      } else {
+        sorting += 'physicalinventoryproduct__nomenclature__name,';
+      }
+    }
+
+    if (this.searchForm.get('order_by_initial_quantity').value !== null) {
+      if (this.searchForm.get('order_by_initial_quantity').value) {
+        sorting += '-physicalinventoryproduct__initial_quantity,';
+      } else {
+        sorting += 'physicalinventoryproduct__initial_quantity,';
+      }
+    }
+    if (this.searchForm.get('order_by_new_quantity').value !== null) {
+      if (this.searchForm.get('order_by_new_quantity').value) {
+        sorting += '-physicalinventoryproduct__new_quantity,';
+      } else {
+        sorting += 'physicalinventoryproduct__new_quantity,';
+      }
+    }
+    if (this.searchForm.get('order_by_category').value !== null) {
+      if (this.searchForm.get('order_by_category').value) {
+        sorting += '-physicalinventoryproduct__nomenclature__category__name,';
+      } else {
+        sorting += 'physicalinventoryproduct__nomenclature__category__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_warehouse').value !== null) {
+      if (this.searchForm.get('order_by_warehouse').value) {
+        sorting += '-physicalinventoryproduct__locator__warehouse__name,';
+      } else {
+        sorting += 'physicalinventoryproduct__locator__warehouse__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_locator').value !== null) {
+      if (this.searchForm.get('order_by_locator').value) {
+        sorting += '-physicalinventoryproduct__locator__name,';
+      } else {
+        sorting += 'physicalinventoryproduct__locator__name,';
+      }
+    }
+
+    return sorting;
+  }
+
+  sorting(value: boolean, field: string) {
+    if (value === null) {
+      this.searchForm.get(field).patchValue(false);
+    } else if (value === false) {
+      this.searchForm.get(field).patchValue(true);
+    } else if (value === true) {
+      this.searchForm.get(field).patchValue(null);
+    }
+    this.searchProducts();
+  }
+
+  customSort(event: SortEvent) {
+    event.data.sort((data1, data2) => {
+      let value1 = data1[event.field];
+      let value2 = data2[event.field];
+      let result = null;
+
+      if (value1 == null && value2 != null)
+        result = -1;
+      else if (value1 != null && value2 == null)
+        result = 1;
+      else if (value1 == null && value2 == null)
+        result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string')
+        result = value1.localeCompare(value2);
+      else
+        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+
+      return (event.order * result);
+    });
+  }
+
+  onSelectCategory(category: Category) {
+    if (category) {
+      this.searchForm.get('category').patchValue(category.id);
+    } else {
+      this.searchForm.get('category').patchValue(null);
+    }
+    this.searchProducts();
+  }
 }

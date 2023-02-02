@@ -162,14 +162,47 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th class="index-header text-center" style="width: 5%">#</th>
-                  <th style="width: 15%">Code</th>
-                  <th style="width: 15%">Name</th>
+                  <th style="width: 15%"
+                      class="sort-label"
+                      pSortableColumn="nomenclature.code"
+                      (click)="sorting(searchForm.get('order_by_code').value, 'order_by_code')">
+                    Code
+                    <pek-sort-icon [value]="searchForm.get('order_by_code').value"></pek-sort-icon>
+                  </th>
+                  <th style="width: 15%"
+                      pSortableColumn="nomenclature.name"
+                      class="sort-label"
+                      (click)="sorting(searchForm.get('order_by_name').value, 'order_by_name')">
+                    Name
+                    <pek-sort-icon [value]="searchForm.get('order_by_name').value"></pek-sort-icon>
+                  </th>
                   <th class="text-center" style="width: 10%">Technology</th>
-                  <th class="text-center" style="width: 10%">Quantity</th>
+                  <th class="text-center" style="width: 10%"
+                      pSortableColumn="nomenclature.total_locator_quantity"
+                      (click)="sorting(searchForm.get('order_by_quantity').value, 'order_by_quantity')">
+                    Quantity
+                    <pek-sort-icon [value]="searchForm.get('order_by_quantity').value"></pek-sort-icon>
+                  </th>
+
                   <th class="text-center" style="width: 6%">UOM</th>
-                  <th class="text-center" style="width: 13%">Category</th>
-                  <th class="text-center" style="width: 12%">Warehouse</th>
-                  <th class="text-center" style="width: 14%">Locator</th>
+                  <th class="text-center sort-label" style="width: 13%"
+                      pSortableColumn="nomenclature.category.name"
+                      (click)="sorting(searchForm.get('order_by_category').value, 'order_by_category')">
+                    Category
+                    <pek-sort-icon [value]="searchForm.get('order_by_category').value"></pek-sort-icon>
+                  </th>
+                  <th class="text-center sort-label" style="width: 12%"
+                      pSortableColumn="locator.warehouse.name"
+                      (click)="sorting(searchForm.get('order_by_warehouse').value, 'order_by_warehouse')">
+                    Warehouse
+                    <pek-sort-icon [value]="searchForm.get('order_by_warehouse').value"></pek-sort-icon>
+                  </th>
+                  <th class="text-center" style="width: 14%"
+                      pSortableColumn="locator.name"
+                      (click)="sorting(searchForm.get('order_by_locator').value, 'order_by_locator')">
+                    Locator
+                    <pek-sort-icon [value]="searchForm.get('order_by_locator').value"></pek-sort-icon>
+                  </th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-product let-i="rowIndex">

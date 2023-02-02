@@ -9,12 +9,12 @@
       <p>{{rootList.nomenclature.name}}</p>
     </div>
     <div>
-      <h2>Id</h2>
-      <p>{{rootList.list.id}}</p>
+      <h2>Order ID</h2>
+      <p>{{orderId}}</p>
     </div>
     <div>
-      <h2>Order</h2>
-      <p>{{orderId}}</p>
+      <h2></h2>
+      <p></p>
     </div>
     <div>
       <h2>Production List Creation Date</h2>
@@ -26,6 +26,14 @@
         <ng-container *ngIf="currentReqDate">
           {{currentReqDate | date: 'dd.MM.y' }}
         </ng-container>
+      </p>
+    </div>
+    <div class="col-2">
+      <h2>Technologies</h2>
+      <p>
+        <span *ngFor="let tech of technologies; let last=last">
+          {{tech}} {{last ? '' : ','}}
+        </span>
       </p>
     </div>
   </div>

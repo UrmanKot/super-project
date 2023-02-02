@@ -24,6 +24,10 @@ enum ViewMode {
   DETAILED_HIERARCHY = 2,
 }
 
+class ProductRequestListOrder extends Order {
+  ordered_items_technologies?: string[];
+}
+
 @Component({
   selector: 'pek-warehouse-production-request',
   templateUrl: './warehouse-production-request.component.html',
@@ -78,7 +82,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   isLoading = true;
   requests: Request[] = [];
-  order: Order;
+  order: ProductRequestListOrder;
   orderId = this.route.snapshot.paramMap.get('id');
 
   requestTree: TreeNode[] = [];
@@ -126,7 +130,18 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.ordersService.getById(orderId).pipe(
       takeUntil(this.destroy$)
     ).subscribe(order => {
+
       this.order = order;
+      this.order.ordered_items_technologies = [];
+      this.order.order_products.forEach(product => {
+        if (product.current_technology) {
+          const canAddTechnology = this.order.ordered_items_technologies
+            .findIndex(el => el === product.current_technology.name) < 0;
+          if (canAddTechnology) {
+            this.order.ordered_items_technologies.push(product.current_technology.name);
+          }
+        }
+      });
       this.prepareDetailedCategoryTree();
     });
   }

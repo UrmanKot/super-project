@@ -12,6 +12,7 @@ export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   @Input() requests: Request[] = [];
   @Input() rootList: any;
   @Input() orderId: number;
+  @Input() technologies: string[];
   currentDate = new Date();
   @Input() currentReqDate: Date = null;
 
