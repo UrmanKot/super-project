@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {LayoutComponent} from './layout/components/layout/layout.component';
 import {AuthGuard} from './auth/auth.guard';
 import {ExternalUriGuard} from '@shared/guards/external-uri.guard';
+import {OrderStatusesChartComponent} from '@shared/components/order-statuses-chart/order-statuses-chart.component';
 
 const routes: Routes = [
   {
@@ -74,6 +75,7 @@ const routes: Routes = [
         title: 'Business Trips',
         loadChildren: () => import('./business-trips/business-trips.module').then(m => m.BusinessTripsModule)
       },
+      {path: 'order-statuses-chart', component: OrderStatusesChartComponent},
       {
         path: 'correspondents',
         title: 'Correspondents',
