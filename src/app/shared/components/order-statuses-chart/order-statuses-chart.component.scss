@@ -1,0 +1,7 @@
+.order-statuses-chart {
+  &::ng-deep {
+    .p-datatable-wrapper {
+      max-height: calc(100vh - 11rem) !important;
+    }
+  }
+}

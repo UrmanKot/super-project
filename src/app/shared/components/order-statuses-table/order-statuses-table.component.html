@@ -1,0 +1,270 @@
+<div class="order-statuses-table">
+  <div class="order-statuses-table__buttons">
+    <p class="mr-2">Chart Scale:</p>
+    <button
+      pButton
+      class="mr-2"
+      label="100%"
+      [disabled]="dateWidth === '150px'"
+      (click)="dateWidth = '150px'"
+    >
+    </button>
+    <button
+      class="mr-2"
+      pButton
+      label="75%"
+      [disabled]="dateWidth === '95px'"
+      (click)="dateWidth = '95px'"
+    >
+    </button>
+    <button
+      pButton
+      label="50%"
+      [disabled]="dateWidth === '60px'"
+      (click)="dateWidth = '60px'"
+      class="mr-3"
+    >
+    </button>
+
+    <p class="actions-text mr-2">Actions:</p>
+
+    <button
+      [label]="(!isExpandChart ? 'Expand' : 'Collapse') + ' Chart'"
+      pButton
+      class="mr-2"
+      (click)="isExpandChart = !isExpandChart"
+    ></button>
+
+    <button
+      label="Open in new Window"
+      pButton
+      [disabled]="isLoading"
+      (click)="onOpenChartInWindow()"
+    ></button>
+  </div>
+  <p-table
+    #st
+    [value]="orders"
+    selectionMode="single"
+    rowGroupMode="rowspan"
+    [scrollable]="true"
+    scrollHeight="calc(100vh - 32.25rem)"
+    [paginator]="orders.length > 0"
+    [(selection)]="selectedOrder"
+    (onPage)="renderDates($event)"
+    [rows]="10"
+    [(first)]="first"
+    (selectionChange)="onSelectOrder()"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          style="min-width: 50px"
+          class="index-header text-center t-col-1"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          #
+        </th>
+        <th
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          class="text-center t-col-2"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          Date
+        </th>
+        <th
+          style="min-width: 150px"
+          class="text-center t-col-3"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          [class.t-col-3_exp]="isExpandChart"
+          [class.th-status]="!isLoading && isExpandChart"
+        >
+          <div [class.header-id]="!isLoading && isExpandChart">Order ID</div>
+        </th>
+        <th
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          class="t-col-4"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          Supplier
+        </th>
+        <th
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          class="t-col-5"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          Root Lists
+        </th>
+        <th
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          class="text-center th-status t-col-6"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          <div [class.header-status]="!isLoading">Status</div>
+        </th>
+
+        <th
+          [class.date-title]="dateWidth === '60px'"
+          class="text-center" *ngFor="let date of dates"
+          [style.minWidth]="dateWidth"
+          [style.maxWidth]="dateWidth"
+        >
+          {{date | date: 'dd/MM/yyyy'}}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order let-i="rowIndex">
+      <tr
+        class="order-table-tr"
+        [pSelectableRow]="order"
+      >
+        <td
+          style="min-width: 50px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="text-center t-col-1"
+
+        >
+          {{i + 1}}
+        </td>
+        <td
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="text-center t-col-2"
+        >
+          {{order.created|date:'dd/MM/yyyy'}}
+        </td>
+        <td
+          style="min-width: 150px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="text-center t-col-3"
+          [class.td-status]="isExpandChart"
+          [class.t-col-3_exp]="isExpandChart"
+        >
+          <div class="status-expand">
+            {{order.id}}
+          </div>
+        </td>
+        <td
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="t-col-4"
+        >
+          <div class="hide-text" pTooltip="{{order.supplier?.name}}">
+            {{order.supplier?.name}}</div>
+        </td>
+        <td
+          [class.row-hide]="isExpandChart"
+          style="min-width: 150px"
+          pFrozenColumn
+          alignFrozen="left"
+          class="t-col-5"
+          [frozen]="true"
+        >
+          <div class="root-count-wrapper">
+            <div class="fixed-row-container" pTooltip="{{order.root_search_lists}}">
+              <div class="hide-text">
+                <ng-container
+                  *ngFor="let list of getRootListsFilled(order.root_production_list_products); let idx = index">
+                  {{list.list.nomenclature.name}} ({{list.count}})
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td
+          [class.row-hide]="isExpandChart"
+          class="td-status t-col-6"
+          style="min-width: 150px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          <ng-container *ngIf="order.statuses.length === 0">
+            <div class="hide-text text-center status">New</div>
+          </ng-container>
+
+          <ng-container *ngIf="order.statuses.length > 0">
+            <div
+              class="hide-text text-center status"
+              *ngFor="let event of order.statuses,let i = index;"
+              [ngClass]="{'text-success': event.is_active}" pTooltip="{{event.status.value}}"
+            >
+              {{event.status.value}}
+            </div>
+          </ng-container>
+        </td>
+
+        <td
+          *ngFor="let ev of dates" class="td-status"
+          [style.minWidth]="dateWidth"
+          [style.maxWidth]="dateWidth"
+        >
+          <div
+            class="status-row"
+            *ngFor="let event of order.statuses; let i = index;"
+            [ngClass]="{
+                  'background': (event.estimated_date >= ev && ev > order.statuses[i - 1]?.estimated_date && order.statuses[0].estimated_date < ev) || event?.estimated_date?.getTime() === ev?.getTime()
+                }"
+            pTooltip="{{event.status.value}} : {{ev | date:'dd/MM/yyyy'}}" tooltipPosition="left"
+          >
+          </div>
+        </td>
+      </tr>
+
+    </ng-template>
+
+    <ng-template pTemplate="paginatorright">
+      <p-button
+        type="button"
+        (click)="onShowAll(false)"
+        styleClass="p-button-text"
+      >
+        All
+      </p-button>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="7">
+          <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoading">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <div *ngIf="!st.paginator && !isLoading && orders.length > 0" class="paginator-return-pagination">
+    <p-button
+      type="button"
+      (click)="onShowAll(true)"
+      styleClass="p-button-text"
+    >
+      Return pagination
+    </p-button>
+  </div>
+</div>

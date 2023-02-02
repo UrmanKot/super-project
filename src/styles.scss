@@ -153,6 +153,7 @@ body {
 
 .warehouse-search {
   max-width: unset;
+
   .mat-dialog-container {
     border-radius: 0 !important;
     padding: 0 24px;
@@ -217,6 +218,14 @@ body {
 
 .p-toast-icon-close {
   flex: 0 0 2rem !important;
+}
+
+.p-tooltip {
+  max-width: 15.5rem;
+
+  .p-tooltip-text {
+    padding: 0.5rem 0.75rem !important;
+  }
 }
 
 @media print {

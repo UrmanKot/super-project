@@ -588,7 +588,7 @@
             <tr>
               <th style="width: 5%" class="index-header text-center">#</th>
               <th style="width: 15%" class="text-center">Creation Date</th>
-              <th style="width: 28%" class="text-center">Proforma Number</th>
+              <th style="width: 28%" class="text-center">Invoice Number</th>
               <th style="width: 32%" class="text-center">Supplier</th>
               <th style="width: 20%" class="text-center">Total Price</th>
             </tr>
@@ -600,7 +600,7 @@
                 {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
                 <i *ngIf="invoice.related_files" class="pi pi-paperclip"></i>
               </td>
-              <td class="text-center">{{invoice.self_proforma_serial_number}}</td>
+              <td class="text-center">{{invoice.self_serial_number}}</td>
               <td class="text-center">{{invoice.supplier?.name}}</td>
               <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
             </tr>

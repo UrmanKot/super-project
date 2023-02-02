@@ -2,6 +2,10 @@
   margin-top: -0.25rem;
 }
 
+.hide {
+  display: none;
+}
+
 .form-group {
   &_checkbox {
     &::ng-deep {
