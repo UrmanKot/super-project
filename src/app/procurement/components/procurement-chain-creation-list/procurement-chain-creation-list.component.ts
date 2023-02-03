@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OrderProduct} from '../../models/order-product';
-import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
+import {BehaviorSubject, iif, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
@@ -24,6 +24,8 @@ export class ProcurementChainCreationListComponent implements OnInit {
   isCanOrder = false;
   isCanAddOrder = false;
 
+  isShowAll = false;
+
   statuses = [
     {label: 'ORDERED', value: 'ordered'},
     {label: 'NOT ORDERED', value: 'not_ordered'},
@@ -31,7 +33,7 @@ export class ProcurementChainCreationListComponent implements OnInit {
   ];
 
   searchForm: FormGroup = this.fb.group({
-    nomenclature__name: [''],
+    nomenclature__name: [null],
     categories_ids: [null],
     request_date: [null],
     status: ['not_ordered']
@@ -53,12 +55,25 @@ export class ProcurementChainCreationListComponent implements OnInit {
 
   orderProducts$: Observable<OrderProduct[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
-    switchMap(() => this.orderProductService.getGroupedPurchased(this.query)),
-    tap(response => this.productsCount = response.count),
-    map(response => response.results.map(product => {
-      product.status = this.setProductStatus(product);
-      return product;
-    })),
+    switchMap(() =>
+      iif(() =>
+        !this.isShowAll,
+        this.orderProductService.getGroupedPurchasedForPagination(this.query).pipe(
+          tap(response => this.productsCount = response.count),
+          map(response => response.results.map(product => {
+            product.status = this.setProductStatus(product);
+            return product;
+          })),
+        ),
+        this.orderProductService.getGroupedPurchased(this.query).pipe(
+          tap(products => this.productsCount = products.length),
+          map(products => products.map(product => {
+            product.status = this.setProductStatus(product);
+            return product;
+          }))
+        )
+      ),
+    ),
     tap(() => this.paginateToFistPage()),
     tap(() => this.isLoading = false),
     untilDestroyed(this)
@@ -115,9 +130,12 @@ export class ProcurementChainCreationListComponent implements OnInit {
     }
 
     this.query = [
-      {name: 'paginated', value: true},
       {name: 'page', value: this.currentPage},
     ];
+
+    if (!this.isShowAll) {
+      this.query.push({name: 'paginated', value: true},)
+    }
 
     for (const key in this.searchForm.controls) {
       if (this.searchForm.controls[key].value !== null) {
@@ -234,5 +252,14 @@ export class ProcurementChainCreationListComponent implements OnInit {
   onSelectCategories(ids: number[]) {
     this.searchForm.get('categories_ids').patchValue(ids?.join(',') || null);
     this.search$.next();
+  }
+
+  onShowAll(value: boolean) {
+    this.isShowAll = value;
+    this.search$.next()
+
+    if (!this.isShowAll) {
+      this.currentPage = 1
+    }
   }
 }

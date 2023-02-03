@@ -77,7 +77,8 @@
         <div class="col-3">
           <div class="form-group">
             <label>Technologies</label>
-            <pek-multi-technology-picker (selectTechnologies)="onSelectTechnologies($event)"></pek-multi-technology-picker>
+            <pek-multi-technology-picker
+              (selectTechnologies)="onSelectTechnologies($event)"></pek-multi-technology-picker>
           </div>
         </div>
         <div class="col-3">
@@ -146,11 +147,12 @@
             <td style="width: 5%" class="text-center">{{product.initial_quantity}}</td>
             <td style="width: 5%" class="text-center">{{product.ordered_quantity}}</td>
             <td
-              style="width: 5%" class="text-center">{{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+              style="width: 5%"
+              class="text-center">{{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
             </td>
             <td style="width: 10%">
               <div class="word-break">
-              {{getSmallDescription(product.nomenclature.description)}}
+                {{getSmallDescription(product.nomenclature.description)}}
               </div>
             </td>
             <td style="width: 6%" class="text-center">{{product.request_date|date:'dd/MM/yyyy'}}</td>
@@ -205,6 +207,7 @@
         <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
       </div>
       <div
+        *ngIf="!isShowAll"
         class="paginator-wrapper"
         [class.paginator-wrapper_hide]="productsCount === 0"
       >
@@ -215,7 +218,24 @@
           (onPageChange)="paginate($event)"
         >
         </p-paginator>
+        <p-button
+          (click)="onShowAll(true)"
+          class="paginator-all"
+          type="button"
+          styleClass="p-button-text"
+        >
+          All
+        </p-button>
       </div>
+    </div>
+    <div *ngIf="isShowAll" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="onShowAll(false)"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
     </div>
   </div>
 </div>

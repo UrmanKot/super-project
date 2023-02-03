@@ -200,6 +200,7 @@
         <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
       </div>
       <div
+        *ngIf="!isShowAll"
         class="paginator-wrapper"
         [class.paginator-wrapper_hide]="productsCount === 0"
       >
@@ -210,7 +211,24 @@
           (onPageChange)="paginate($event)"
         >
         </p-paginator>
+        <p-button
+          (click)="onShowAll(true)"
+          class="paginator-all"
+          type="button"
+          styleClass="p-button-text"
+        >
+          All
+        </p-button>
       </div>
+    </div>
+    <div *ngIf="isShowAll" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="onShowAll(false)"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
     </div>
   </div>
 </div>

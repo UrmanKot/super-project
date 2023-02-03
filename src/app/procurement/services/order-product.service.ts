@@ -52,7 +52,7 @@ export class OrderProductService {
     );
   }
 
-  getGroupedPurchased(query?: { name: string, value: any }[]): Observable<OrderProducts> {
+  getGroupedPurchasedForPagination(query?: { name: string, value: any }[]): Observable<OrderProducts> {
     let queryParams = '';
     if (query) {
       query.forEach((element, index) => {
@@ -69,7 +69,24 @@ export class OrderProductService {
     );
   }
 
-  getGroupedOutsource(query?: { name: string, value: any }[]): Observable<OrderProducts> {
+  getGroupedPurchased(query?: { name: string, value: any }[]): Observable<OrderProduct[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'purchased_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getGroupedOutsourceForPagination(query?: { name: string, value: any }[]): Observable<OrderProducts> {
     let queryParams = '';
     if (query) {
       query.forEach((element, index) => {
@@ -82,6 +99,22 @@ export class OrderProductService {
       });
     }
     return this.httpClient.get<{ data: OrderProducts }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getGroupedOutsource(query?: { name: string, value: any }[]): Observable<OrderProduct[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
