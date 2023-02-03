@@ -219,6 +219,7 @@
                     <h3 class="td-title">Name</h3>
                     <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
                     <b *ngIf="product.nomenclature.has_technical_equipment">(T)</b>
+                    <b *ngIf="showIsReserved(product.extra_info)">(R)</b>
                     {{product.nomenclature.name}}
                     <span class="text-danger" *ngIf="product.used_by_order && product.used_by_order.length > 0">
                       <b>In Use</b>

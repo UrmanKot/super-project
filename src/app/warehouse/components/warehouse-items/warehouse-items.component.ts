@@ -422,6 +422,10 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     return sorting;
   }
 
+  showIsReserved(items: any[]) {
+    if (items) return items.some(i => i.reserved_by_opened_production_lists_quantity > 0)
+  }
+
   sorting(value: boolean, field: string) {
     if (value === null) {
       this.searchForm.get(field).patchValue(false);

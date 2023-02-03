@@ -710,20 +710,20 @@
           [scrollable]="true"
           [paginator]="serviceProformaInvoices.length > 0"
           [rows]="10"
-          [(selection)]="selectedServiceProformaInvoice"
+          [(selection)]="selectedServiceInvoice"
           [value]="serviceProformaInvoices"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
-              <p class="subtitle" *ngIf="!selectedServiceProformaInvoice">Choose the Auxiliary Proforma Invoice to
+              <p class="subtitle" *ngIf="!selectedServiceInvoice || !selectedServiceInvoice?.is_proforma">Choose the Auxiliary Proforma Invoice to
                 edit</p>
               <p-menubar
                 class="ml-auto"
-                [model]="serviceProformaInvoiceMenuItems"
-                [class.disabled]="!selectedServiceProformaInvoice">
+                [model]="serviceInvoiceMenuItems"
+                [class.disabled]="!selectedServiceInvoice || !selectedServiceInvoice?.is_proforma">
               </p-menubar>
               <button
-                (click)="onCreateProformaServiceInvoice()"
+                (click)="onCreateServiceInvoice(true)"
                 pButton type="button"
                 icon="pi pi-plus"
                 class="ml-2"
@@ -785,14 +785,14 @@
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
-              <p class="subtitle" *ngIf="!selectedServiceInvoice">Choose the Auxiliary Invoice to edit</p>
+              <p class="subtitle" *ngIf="!selectedServiceInvoice || selectedServiceInvoice?.is_proforma">Choose the Auxiliary Invoice to edit</p>
               <p-menubar
                 class="ml-auto"
                 [model]="serviceInvoiceMenuItems"
-                [class.disabled]="!selectedServiceInvoice">
+                [class.disabled]="!selectedServiceInvoice || selectedServiceInvoice?.is_proforma">
               </p-menubar>
               <button
-                (click)="onCreateServiceInvoice()"
+                (click)="onCreateServiceInvoice(false)"
                 pButton type="button"
                 icon="pi pi-plus"
                 class="ml-2"
@@ -862,7 +862,7 @@
                 icon="pi pi-pencil"
                 class="ml-auto"
                 label="Edit Auxiliary Invoice Payment"
-                [disabled]="isLoadingServicePayments|| !selectedServicePayment"
+                [disabled]="isLoadingServicePayments || !selectedServicePayment"
                 (click)="onEditServicePayment()"
               >
               </button>
@@ -872,7 +872,7 @@
                 icon="pi pi-plus"
                 class="ml-2"
                 label="Create Auxiliary Invoice Payment"
-                [disabled]="isLoadingServicePayments"
+                [disabled]="isLoadingServicePayments || !selectedServiceInvoice"
               >
               </button>
             </div>

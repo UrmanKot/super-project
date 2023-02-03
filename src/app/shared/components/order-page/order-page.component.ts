@@ -108,27 +108,6 @@ export class OrderPageComponent implements OnInit {
     ]
   }];
 
-  serviceProformaInvoiceMenuItems: MenuItem[] = [{
-    label: 'Selected Auxiliary Proforma Invoice',
-    items: [
-      {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => this.onGoToProformaServiceInvoicePage()
-      },
-      {
-        label: 'Files',
-        icon: 'pi pi pi-file',
-        command: () => this.openServiceProformaInvoiceFilesModal()
-      },
-      {
-        label: 'Remove',
-        icon: 'pi pi-trash',
-        command: () => this.onRemoveProformaServiceInvoice()
-      }
-    ]
-  }];
-
   serviceInvoiceMenuItems: MenuItem[] = [{
     label: 'Selected Auxiliary Invoice',
     items: [
@@ -200,7 +179,6 @@ export class OrderPageComponent implements OnInit {
   selectedProduct: OrderProduct;
   selectedProformaInvoice: Invoice;
   selectedPayment: Payment;
-  selectedServiceProformaInvoice: Invoice;
   selectedServiceInvoice: Invoice;
   selectedServicePayment: ServiceInvoicePayment;
   selectedFile: any;
@@ -269,7 +247,7 @@ export class OrderPageComponent implements OnInit {
 
       this.getProducts();
 
-      if (!this.order.purchase_category.is_material) {
+      if (!this.order.purchase_category?.is_material) {
         this.isPurchaseOrderNonMaterial = true;
       }
 
@@ -498,42 +476,16 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  onCreateProformaServiceInvoice() {
+  onCreateServiceInvoice(isProforma: boolean) {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.serviceInvoiceService.create({
           order: this.orderId,
           supplier: this.order.supplier.id,
-          is_proforma: true,
+          is_proforma: isProforma,
         }).subscribe(invoice => {
           this.getServiceInvoices();
           window.open(`${this.link}accounting/invoices/service-invoice/${invoice.id}`);
-        });
-      }
-    });
-  }
-
-  onCreateServiceInvoice() {
-    this.modalService.confirm('success').subscribe(confirm => {
-      if (confirm) {
-        this.serviceInvoiceService.create({
-          order: this.orderId,
-          supplier: this.order.supplier.id,
-          is_proforma: false,
-        }).subscribe(invoice => {
-          this.getServiceInvoices();
-          window.open(`${this.link}accounting/invoices/service-invoice/${invoice.id}`);
-        });
-      }
-    });
-  }
-
-  onRemoveProformaServiceInvoice() {
-    this.modalService.confirm('danger').subscribe(confirm => {
-      if (confirm) {
-        this.serviceInvoiceService.delete(this.selectedServiceProformaInvoice?.id).subscribe(() => {
-          this.getServiceInvoices();
-          this.selectedServiceProformaInvoice = null;
         });
       }
     });
@@ -550,16 +502,8 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  openServiceProformaInvoiceFilesModal() {
-    this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceProformaInvoice).subscribe();
-  }
-
   openServiceInvoiceFilesModal() {
     this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceInvoice).subscribe();
-  }
-
-  onGoToProformaServiceInvoicePage() {
-    window.open(`${this.link}accounting/invoices/service-invoice/${this.selectedServiceProformaInvoice?.id}`);
   }
 
   onGoToServiceInvoicePage() {
@@ -567,7 +511,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   onCreateServicePayment() {
-    this.servicePaymentService.openCreateEditServicePaymentForm('create', null, this.order.supplier.id, this.orderId).subscribe(confirm => {
+    this.servicePaymentService.openCreateEditServicePaymentForm('create', null, this.selectedServiceInvoice.supplier?.id, this.orderId).subscribe(confirm => {
       if (confirm) {
         this.getServicePayments();
       }
