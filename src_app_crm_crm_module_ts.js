@@ -8796,7 +8796,7 @@ function CrmMultiContactPersonsPickerComponent_p_multiSelect_1_Template(rf, ctx)
     _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("options", ctx_r0.contactPersons)("ngModel", ctx_r0.selectedContactPersons)("showClear", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("disabled", ctx_r0.isDisabled || ctx_r0.contactPersons.length === 0)("options", ctx_r0.contactPersons)("ngModel", ctx_r0.selectedContactPersons)("showClear", true);
 } }
 function CrmMultiContactPersonsPickerComponent_ng_template_2_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "div", 4);
@@ -8814,16 +8814,32 @@ class CrmMultiContactPersonsPickerComponent {
         this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__.Subject();
     }
     ngOnInit() {
-        this.contactPersonService.get().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_3__.takeUntil)(this.destroy$)).subscribe(contactPersons => {
-            this.contactPersons = contactPersons;
-            this.findContactPersons();
-            this.isLoading = false;
-        });
+        this.getContact();
     }
     ngOnChanges(changes) {
+        if ('selectedCompaniesIds' in changes) {
+            this.getContact(true);
+        }
         if ('currentContactPersonsIds' in changes) {
             this.selectedContactPersons = [];
             this.findContactPersons();
+        }
+    }
+    getContact(excludeNonCompaniesContacts = false) {
+        let query;
+        if (this.selectedCompaniesIds) {
+            query = [{
+                    name: 'company_ids',
+                    value: this.selectedCompaniesIds
+                }];
+            this.contactPersonService.getForce(query).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_3__.takeUntil)(this.destroy$)).subscribe(contactPersons => {
+                this.contactPersons = contactPersons;
+                this.findContactPersons();
+                if (excludeNonCompaniesContacts) {
+                    this.updateRemainingSelectedPersons();
+                }
+                this.isLoading = false;
+            });
         }
     }
     onSelectEventTypes(contactPersons) {
@@ -8839,7 +8855,10 @@ class CrmMultiContactPersonsPickerComponent {
             this.currentContactPersonsIds.forEach(id => {
                 const findContactPerson = this.contactPersons.find(t => t.id === id);
                 if (findContactPerson) {
-                    this.selectedContactPersons.push(findContactPerson);
+                    const isExists = this.selectedContactPersons.some(person => person.id === findContactPerson.id);
+                    if (!isExists) {
+                        this.selectedContactPersons.push(findContactPerson);
+                    }
                 }
             });
         }
@@ -8848,11 +8867,21 @@ class CrmMultiContactPersonsPickerComponent {
         this.destroy$.next(true);
         this.destroy$.complete();
     }
+    updateRemainingSelectedPersons() {
+        if (this.currentContactPersonsIds.length > 0 && this.selectedCompaniesIds.length > 0) {
+            const remainingPersons = this.currentContactPersonsIds.filter(contactId => this.contactPersons.findIndex(person => person.id === contactId) > -1);
+            this.selectContactPersons.emit(remainingPersons);
+        }
+        else {
+            this.currentContactPersonsIds = [];
+            this.selectContactPersons.emit(null);
+        }
+    }
 }
 CrmMultiContactPersonsPickerComponent.ɵfac = function CrmMultiContactPersonsPickerComponent_Factory(t) { return new (t || CrmMultiContactPersonsPickerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_contact_person_service__WEBPACK_IMPORTED_MODULE_0__.ContactPersonService)); };
-CrmMultiContactPersonsPickerComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({ type: CrmMultiContactPersonsPickerComponent, selectors: [["pek-crm-multi-contact-persons-picker"]], inputs: { currentContactPersonsIds: "currentContactPersonsIds" }, outputs: { selectContactPersons: "selectContactPersons" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵNgOnChangesFeature"]], decls: 4, vars: 2, consts: [[1, "crm-multi-contact-persons-picker"], ["optionLabel", "fullName", "placeholder", "Select Contact Persons", 3, "options", "ngModel", "showClear", "ngModelChange", 4, "ngIf", "ngIfElse"], ["spinner", ""], ["optionLabel", "fullName", "placeholder", "Select Contact Persons", 3, "options", "ngModel", "showClear", "ngModelChange"], [1, "spinner-input"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "1.25rem"]], template: function CrmMultiContactPersonsPickerComponent_Template(rf, ctx) { if (rf & 1) {
+CrmMultiContactPersonsPickerComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({ type: CrmMultiContactPersonsPickerComponent, selectors: [["pek-crm-multi-contact-persons-picker"]], inputs: { currentContactPersonsIds: "currentContactPersonsIds", isDisabled: "isDisabled", selectedCompaniesIds: "selectedCompaniesIds" }, outputs: { selectContactPersons: "selectContactPersons" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵNgOnChangesFeature"]], decls: 4, vars: 2, consts: [[1, "crm-multi-contact-persons-picker"], ["optionLabel", "fullName", "placeholder", "Select Contact Persons", 3, "disabled", "options", "ngModel", "showClear", "ngModelChange", 4, "ngIf", "ngIfElse"], ["spinner", ""], ["optionLabel", "fullName", "placeholder", "Select Contact Persons", 3, "disabled", "options", "ngModel", "showClear", "ngModelChange"], [1, "spinner-input"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "1.25rem"]], template: function CrmMultiContactPersonsPickerComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "div", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplate"](1, CrmMultiContactPersonsPickerComponent_p_multiSelect_1_Template, 1, 3, "p-multiSelect", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplate"](1, CrmMultiContactPersonsPickerComponent_p_multiSelect_1_Template, 1, 4, "p-multiSelect", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplate"](2, CrmMultiContactPersonsPickerComponent_ng_template_2_Template, 2, 0, "ng-template", null, 2, _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplateRefExtractor"]);
         _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
     } if (rf & 2) {
