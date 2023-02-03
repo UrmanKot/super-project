@@ -77,6 +77,13 @@ export class OutsourcingChainCreationListComponent implements OnInit {
         )
       ),
     ),
+    map(products =>
+      products.map(product => {
+        // @ts-ignore
+        product.id = product.request_id;
+        return product;
+      })
+    ),
     tap(() => this.paginateToFistPage()),
     tap(() => this.isLoading = false),
     untilDestroyed(this)
@@ -144,7 +151,7 @@ export class OutsourcingChainCreationListComponent implements OnInit {
     ];
 
     if (!this.isShowAll) {
-      this.query.push({name: 'paginated', value: true},)
+      this.query.push({name: 'paginated', value: true},);
     }
 
     for (const key in this.searchForm.controls) {
@@ -182,7 +189,7 @@ export class OutsourcingChainCreationListComponent implements OnInit {
 
   getSmallDescription(description: string) {
     if (description && description?.length > 40) return description.substring(0, 40) + '...';
-    else return description
+    else return description;
   }
 
   onCheckOrder() {
@@ -267,9 +274,9 @@ export class OutsourcingChainCreationListComponent implements OnInit {
     this.isShowAll = value;
 
     if (!this.isShowAll) {
-      this.currentPage = 1
+      this.currentPage = 1;
     }
 
-    this.search$.next()
+    this.search$.next();
   }
 }

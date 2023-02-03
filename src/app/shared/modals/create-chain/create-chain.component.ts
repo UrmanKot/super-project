@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {OrderProduct} from '../../../procurement/models/order-product';
 import {OrderType} from '@shared/components/order-page/order-page.component';
@@ -7,6 +7,7 @@ import {OrderService} from '../../../procurement/services/order.service';
 import {finalize} from 'rxjs/operators';
 import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
+import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 
 @Component({
   selector: 'pek-create-chain',
@@ -22,6 +23,8 @@ export class CreateChainComponent implements OnInit {
     order_products_id: this.fb.array([]),
   });
 
+  selectedProducts = {};
+
   purchasingCategories: PurchaseCategory[] = [];
   selectedPurchasingCategoryId: number;
 
@@ -36,6 +39,7 @@ export class CreateChainComponent implements OnInit {
     private readonly orderService: OrderService,
     private dialogRef: MatDialogRef<CreateChainComponent>,
     private readonly purchasingCategoryService: PurchasingCategoryService,
+    private readonly  warehouseProductService: WarehouseProductService,
     @Inject(MAT_DIALOG_DATA) public data: { products: OrderProduct[], orderType: OrderType }
   ) {
   }
@@ -85,5 +89,32 @@ export class CreateChainComponent implements OnInit {
 
   onSelectCompany(id: number) {
     this.form.get('supplier').patchValue(id);
+  }
+
+  addControl(evt: { data: FormGroup }) {
+    const formArray = [this.fb.group({id: [null, [Validators.required]], quantity: [1, [Validators.min(1)]]})];
+    evt.data.addControl('warehouse_products', this.fb.array(formArray));
+  }
+
+  removeControl(evt: { data: FormGroup }) {
+    evt.data.removeControl('warehouse_products');
+  }
+
+  addWarehouseControl(group: FormGroup) {
+    console.log(group);
+    const arr = group.get('warehouse_products') as FormArray;
+    arr.push(this.fb.group({id: [null, [Validators.required]], quantity: [1, [Validators.min(1)]]}));
+  }
+
+  removeWarehouseControl(group: FormGroup, i: number) {
+    const arr = group.get('warehouse_products') as FormArray;
+    arr.removeAt(i);
+  }
+
+  onSearchProductsToWarehouse(item: FormControl) {
+    this.warehouseProductService.openSearchInWarehouseModal().subscribe(product => {
+      this.selectedProducts[product.id] = product;
+      item.patchValue(product.id);
+    });
   }
 }

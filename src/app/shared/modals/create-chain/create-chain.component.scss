@@ -4,3 +4,93 @@
     text-align: center;
   }
 }
+
+.create-chain-table {
+  &::ng-deep {
+    p-table {
+      .p-checkbox {
+        width: 2.4rem !important;
+        height: 2.4rem !important;
+
+        .p-checkbox-box {
+          width: 2.4rem !important;
+          height: 2.4rem !important;
+        }
+      }
+    }
+  }
+}
+
+.search-button {
+  flex: 0 0 auto;
+}
+
+.expand-row {
+  .col-8 {
+    width: 60%;
+  }
+
+  .col-2 {
+    width: 20%;
+  }
+
+  &_header {
+    .form-group {
+      padding-top: 0.125rem;
+      padding-bottom: 0;
+
+      label {
+        margin-bottom: 0.375rem;
+      }
+    }
+
+    .col-2 {
+      .form-group {
+        align-items: center;
+        justify-content: center;
+      }
+
+      button {
+        margin-left: 4.235rem;
+      }
+    }
+
+    .col-2,
+    .col-8 {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .remove {
+    top: 0.125rem;
+    margin-left: 4.185rem;
+  }
+
+  &_content {
+    .form-group {
+      padding: 0.25rem 0;
+    }
+
+    .col-8 {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .row-action-button {
+    width: 2.4rem;
+    height: 2.4rem;
+    position: relative;
+  }
+}
+
+.selected-product {
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}

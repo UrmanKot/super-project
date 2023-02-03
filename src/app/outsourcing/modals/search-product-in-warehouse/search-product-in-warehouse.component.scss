@@ -1,0 +1,61 @@
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  h2 {
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+}
+
+:host {
+  mat-dialog-content {
+    max-height: 49vh !important;
+  }
+}
+
+form {
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.col-2 {
+  width: 20%;
+}
+
+.search-product-in-warehouse {
+
+  &__row {
+    display: flex;
+  }
+
+  &__column-left {
+    flex: 0 0 300px;
+    margin-right: 1.5rem;
+
+    &::ng-deep {
+      .p-tree {
+        height: calc(100vh - 24.875rem) !important;
+        overflow: auto;
+      }
+
+      .warehouse-items__tree,
+      .warehouse-items__spinner {
+        height: auto;
+      }
+
+      .warehouse-items__spinner {
+        height: auto;
+        padding: 1.5rem;
+      }
+    }
+  }
+
+  &__column-right {
+    width: 100%;
+  }
+}

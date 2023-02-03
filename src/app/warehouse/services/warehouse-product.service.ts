@@ -14,6 +14,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {MoveWarehouseProductComponent} from '../modals/move-warehouse-product/move-warehouse-product.component';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {NomenclatureSerialInfoComponent} from '../modals/nomenclature-serial-info/nomenclature-serial-info.component';
+import {
+  SearchProductInWarehouseComponent
+} from '../../outsourcing/modals/search-product-in-warehouse/search-product-in-warehouse.component';
 
 @Injectable({
   providedIn: 'root'
@@ -139,7 +142,7 @@ export class WarehouseProductService {
     }));
   }
 
-  openNomenclatureInfoModal(extraInfo: WarehouseProductExtraInfo[], nomenclature: Nomenclature) {
+  openNomenclatureInfoModal(extraInfo: WarehouseProductExtraInfo[], nomenclature: Nomenclature): any {
     return this.dialog
       .open<NomenclatureSerialInfoComponent>(NomenclatureSerialInfoComponent, {
         width: '650px',
@@ -147,6 +150,19 @@ export class WarehouseProductService {
         data: {extraInfo, nomenclature},
         disableClose: true,
         autoFocus: false,
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  openSearchInWarehouseModal(): Observable<WarehouseProduct>{
+    return this.dialog
+      .open<SearchProductInWarehouseComponent>(SearchProductInWarehouseComponent, {
+        width: '80%',
+        maxHeight: '80%',
+        panelClass: 'modal-picker',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
       })
       .afterClosed()
       .pipe();

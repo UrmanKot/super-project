@@ -36,45 +36,147 @@
 
 <mat-dialog-content>
   <div class="mt-3">
-    <form [formGroup]="form">
-      <p-table
-        selectionMode="single"
-        dataKey="id"
-        [value]="products.controls"
-      >
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="text-center">#</th>
-            <th style="width: 20%">Code</th>
-            <th style="width: 20%">Name</th>
-            <th style="width: 15%" class="text-center">Request Quantity</th>
-            <th style="width: 15%" class="text-center">Ordered Quantity</th>
-            <th style="width: 25%" class="text-center">Quantity To Order</th>
-          </tr>
-        </ng-template>
-        <ng-template formArrayName="order_products_id" let-i="rowIndex" pTemplate="body">
-          <tr [formGroupName]="i">
-            <td class="text-center">{{i + 1}}</td>
-            <td>{{orderProducts[i].nomenclature.code}}</td>
-            <td>{{orderProducts[i].nomenclature.name}}</td>
-            <td class="text-center">{{orderProducts[i].initial_quantity}}</td>
-            <td class="text-center">{{orderProducts[i].ordered_quantity}}</td>
-            <td>
-              <div class="quantity">
-                <input pInputText min="1" type="number" formControlName="quantity" class="form-control">
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="12">
-              <span>No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </form>
+    <div class="create-chain-table">
+      <form [formGroup]="form">
+        <p-table
+          selectionMode="single"
+          dataKey="value.id"
+          [value]="products.controls"
+          rowExpandMode="multiple"
+          (onRowExpand)="addControl($event)"
+          (onRowCollapse)="removeControl($event)"
+        >
+          <ng-template pTemplate="header">
+            <ng-container *ngIf="data.orderType !== 'outsourcing'">
+              <tr>
+                <th style="width: 5%" class="text-center">#</th>
+                <th style="width: 20%">Code</th>
+                <th style="width: 20%">Name</th>
+                <th style="width: 15%" class="text-center">Request Quantity</th>
+                <th style="width: 15%" class="text-center">Ordered Quantity</th>
+                <th style="width: 25%" class="text-center">Quantity To Order</th>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="data.orderType === 'outsourcing'">
+              <tr>
+                <th style="width: 5%" class="text-center">#</th>
+                <th style="width: 15%">Code</th>
+                <th style="width: 15%">Name</th>
+                <th style="width: 10%" class="text-center">Request Quantity</th>
+                <th style="width: 15%" class="text-center">Ordered Quantity</th>
+                <th style="width: 20%" class="text-center">Quantity To Order</th>
+                <th style="width: 20%" class="text-center">Our Material</th>
+              </tr>
+            </ng-container>
+          </ng-template>
+          <ng-template formArrayName="order_products_id" let-product let-i="rowIndex" pTemplate="body">
+            <tr [formGroupName]="i">
+              <td class="text-center">{{i + 1}}</td>
+              <td>
+                <div class="word-break">{{orderProducts[i].nomenclature.code}}</div>
+              </td>
+              <td>
+                <div class="word-break">{{orderProducts[i].nomenclature.name}}</div>
+              </td>
+              <td class="text-center">{{orderProducts[i].initial_quantity}}</td>
+              <td class="text-center">{{orderProducts[i].ordered_quantity}}</td>
+              <td>
+                <div class="quantity">
+                  <input pInputText min="1" type="number" formControlName="quantity" class="form-control">
+                </div>
+              </td>
+              <td *ngIf="data.orderType === 'outsourcing'">
+                <div class="d-flex justify-content-center">
+                  <p-checkbox
+                    [pRowToggler]="product"
+                    [binary]="true"
+                  ></p-checkbox>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="rowexpansion" let-array>
+            <tr [formGroup]="array">
+              <td colspan="7" formArrayName="warehouse_products">
+                <div class="expand-row expand-row_header row">
+                  <div class="col-8">
+                    <div class="form-group">
+                      <label>Warehouse Product</label>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <label>Quantity</label>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <button
+                      class="row-action-button"
+                      type="button"
+                      pButton
+                      icon="pi pi-plus"
+                      (click)="addWarehouseControl(array)"
+                    ></button>
+                  </div>
+                </div>
+                <div
+                  class="expand-row expand-row_content row"
+                  *ngFor="let item of array.get('warehouse_products')['controls']; let i=index"
+                  [formGroupName]="i"
+                >
+                  <div class="col-8">
+                    <button
+                      class="search-button"
+                      type="button"
+                      label="Search In Warehouse"
+                      pButton
+                      icon="pi pi-plus"
+                      (click)="onSearchProductsToWarehouse(item.controls['id'])"
+                    ></button>
+
+                    <p class="selected-product" *ngIf="item.get('id').value">
+                      ({{selectedProducts[item.controls['id'].value].nomenclature.code}})
+                      {{selectedProducts[item.controls['id'].value].nomenclature.name}}
+                    </p>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <input
+                        [class.disabled]="!item.get('id').value"
+                        pInputText
+                        formControlName="quantity"
+                        min="1"
+                        type="number"
+                        class="form-control"
+                        style="text-align: center"
+                      >
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <button
+                      *ngIf="i > 0"
+                      class="row-action-button remove p-button-danger"
+                      type="button"
+                      pButton
+                      icon="pi pi-times"
+                      (click)="removeWarehouseControl(array, i)"
+                    ></button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="12">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </form>
+    </div>
   </div>
 </mat-dialog-content>
 
