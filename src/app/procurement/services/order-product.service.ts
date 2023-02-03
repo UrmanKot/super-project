@@ -19,6 +19,9 @@ import {Order} from '../models/order';
 import {
   CreateOutsourcingRequestComponent
 } from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
+import {
+  AddMaterialToOrderComponent
+} from '../../outsourcing/modals/add-material-to-order/add-material-to-order.component';
 
 @Injectable({
   providedIn: 'root'
@@ -197,6 +200,19 @@ export class OrderProductService {
         width: '80%',
         maxHeight: '80%',
         data: {isPurchased, orderId},
+        panelClass: 'modal-picker',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openAddPMaterialToOrder(productId: number): Observable<OrderProduct> {
+    return this.dialog
+      .open<AddMaterialToOrderComponent>(AddMaterialToOrderComponent, {
+        width: '80%',
+        maxHeight: '80%',
+        data: {productId},
         panelClass: 'modal-picker',
         autoFocus: false,
         enterAnimationDuration: '250ms'

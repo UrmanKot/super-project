@@ -15,6 +15,7 @@ import { OutsourcingRequestsComponent } from './components/outsourcing-requests/
 import { CreateOutsourcingRequestComponent } from './modals/create-outsourcing-request/create-outsourcing-request.component';
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import { SearchProductInWarehouseComponent } from './modals/search-product-in-warehouse/search-product-in-warehouse.component';
+import { AddMaterialToOrderComponent } from './modals/add-material-to-order/add-material-to-order.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { SearchProductInWarehouseComponent } from './modals/search-product-in-wa
     OutsourcingChainCreationListComponent,
     OutsourcingRequestsComponent,
     CreateOutsourcingRequestComponent,
-    SearchProductInWarehouseComponent
+    SearchProductInWarehouseComponent,
+    AddMaterialToOrderComponent
   ],
   imports: [
     CommonModule,

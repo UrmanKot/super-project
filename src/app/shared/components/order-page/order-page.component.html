@@ -100,6 +100,14 @@
                 [disabled]="isLoadingProducts"
               >
               </button>
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Material"
+                (click)="onAddMaterial()"
+                [disabled]="!selectedProduct"
+              ></button>
             </div>
           </ng-template>
           <ng-container *ngIf="orderType !== 'outsourcing'">
@@ -244,6 +252,7 @@
           <ng-template pTemplate="caption">
             <div class="d-flex">
               <button
+                *ngIf="orderMaterials.length > 0"
                 (click)="onCancelOrderMaterials()"
                 pButton
                 type="button"
@@ -319,7 +328,7 @@
           </ng-template>
         </p-table>
       </div>
-      <div *ngIf="!mt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
+      <div *ngIf="!mt.paginator && !isLoadingProducts && orderMaterials.length > 0" class="paginator-return-pagination">
         <p-button
           type="button"
           (click)="mt.paginator=true"

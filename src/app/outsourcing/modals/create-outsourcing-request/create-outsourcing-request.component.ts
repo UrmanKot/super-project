@@ -106,6 +106,9 @@ export class CreateOutsourcingRequestComponent implements OnInit {
     this.isLoading = true;
     this.selectedProduct = null;
 
+    this.createForm.get('quantity').patchValue(null);
+    this.createForm.get('current_technology').patchValue(null);
+
     const newQueryKey = this.adapterService.generateQueryKey(this.searchForm);
 
     if (newQueryKey !== this.queryKey) {
@@ -117,7 +120,6 @@ export class CreateOutsourcingRequestComponent implements OnInit {
     this.query = [
       {name: 'paginated', value: true},
       {name: 'page', value: this.currentPage},
-      {name: 'type', value: 0}
     ];
 
     for (const key in this.searchForm.controls) {

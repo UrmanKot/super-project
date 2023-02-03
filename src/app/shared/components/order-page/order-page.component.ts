@@ -293,8 +293,8 @@ export class OrderPageComponent implements OnInit {
         const materials = [];
 
         products.forEach(product => {
-          if (product.details.task_materials.length > 0) {
-            product.details.task_materials.forEach(m => {
+          if (product.details?.task_materials.length > 0) {
+            product.details?.task_materials.forEach(m => {
               materials.push(m);
             });
           }
@@ -651,7 +651,14 @@ export class OrderPageComponent implements OnInit {
      id: this.order.id
    }
 
-    // this.order.purchase_category = purchasedCategory;
     this.orderService.updatePartly(send).subscribe();
+  }
+
+  onAddMaterial() {
+    this.orderProductService.openAddPMaterialToOrder(this.selectedProduct.id).subscribe(request => {
+      if (request) {
+        this.getOrder();
+      }
+    })
   }
 }

@@ -37,6 +37,12 @@ export class RequestService {
     );
   }
 
+  create(data: any): Observable<any> {
+    return this.http.post<{ data: Request[] }>(this.API_URL + this.url, data).pipe(
+      map(response => response.data)
+    );
+  }
+
   complete(id: number): Observable<any> {
     return this.http.post(this.API_URL_PROCUREMENT + 'orders/' + id + '/' + 'complete/', id);
   }
