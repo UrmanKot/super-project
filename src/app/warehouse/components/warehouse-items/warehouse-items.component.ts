@@ -11,6 +11,7 @@ import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {environment} from '@env/environment';
+import {QrCodeService} from '../../../qr-code/qr-code.service';
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -30,7 +31,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   isLoading = false;
   isStartOnePage = false;
 
-  selectedProduct: WarehouseProduct;
+  selectedProduct: WarehouseProduct[] = [];
   products: WarehouseProduct[] = [];
   countProducts: number = 0;
 
@@ -64,11 +65,13 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   private destroy$ = new Subject();
 
   link = environment.link_url + 'dash/';
+  isGenerating = false;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly productCategoriesService: CategoriesService,
-    private readonly warehouseProductService: WarehouseProductService
+    private readonly warehouseProductService: WarehouseProductService,
+    private readonly qrCodeService: QrCodeService,
   ) {
   }
 
@@ -173,7 +176,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   searchProducts() {
     this.isLoading = true;
     this.destroy$.next(true);
-    this.selectedProduct = null;
+    this.selectedProduct = [];
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
@@ -272,7 +275,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onEditItem() {
-    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct.nomenclature.id).subscribe(response => {
+    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct[0].nomenclature.id).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -280,7 +283,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onMoveProduct() {
-    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProduct).subscribe(response => {
+    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProduct[0]).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -370,7 +373,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   showSerialsInfo() {
     if (this.selectedProduct) {
-      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct.extra_info, this.selectedProduct.nomenclature as Nomenclature).subscribe();
+      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct[0].extra_info, this.selectedProduct[0].nomenclature as Nomenclature).subscribe();
     }
   }
 
@@ -435,5 +438,34 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       this.searchForm.get(field).patchValue(null);
     }
     this.searchProducts();
+  }
+
+  onGenerateQrCodes() {
+    // this.isGenerating = true;
+
+    const send = {
+      by_nomenclatures_list: [],
+    };
+
+    this.selectedProduct.forEach(p => {
+      console.log('product', p);
+      if (p.nomenclature.bulk_or_serial !== '1') {
+        send.by_nomenclatures_list.push({
+          nomenclature_id: p.nomenclature.id,
+          serial_number_ids: [],
+          order_product_ids: [],
+          invoice_product_ids: [],
+        });
+      } else {
+        send.by_nomenclatures_list.push({
+          nomenclature_id: p.nomenclature.id,
+          serial_number_ids: p.extra_info && p.extra_info.length > 0 ? p.extra_info.map(product => +product.serial_number_id) : [],
+          order_product_ids: [],
+          invoice_product_ids: [],
+        });
+      }
+    });
+
+    this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
   }
 }

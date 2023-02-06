@@ -151,6 +151,7 @@ a {
   position: relative;
   .ids {
     display: none;
+    color: #495057 !important;
   }
   &:hover {
     .ids {
@@ -162,9 +163,36 @@ a {
       height: auto;
       padding: .5rem 1rem;
       background-color: white;
+      color: #495057 !important;
       border-radius: 0.625rem;
       box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
       z-index: 100;
     }
   }
 }
+
+.serial-numbers-container {
+  color: #495057 !important;
+  position: relative;
+  .serial-numbers {
+    display: none;
+    color: #495057 !important;
+  }
+  &:hover {
+    .serial-numbers {
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      width: auto;
+      height: auto;
+      padding: .5rem 1rem;
+      color: #495057 !important;
+      background-color: white;
+      border-radius: 0.625rem;
+      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
+      z-index: 100;
+    }
+  }
+}
+

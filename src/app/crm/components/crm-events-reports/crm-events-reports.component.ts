@@ -26,7 +26,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   isStartOnePage = false;
   reportsCount = 0;
 
-  dateFilters: {name: string, value: string}[] = [
+  dateFilters: { name: string, value: string }[] = [
     {
       name: 'Last Events Date Start',
       value: 'last_events_date_start'
@@ -211,8 +211,100 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.isStartOnePage = false;
       this.breakForGroupedEvents();
 
+      this.sortEvents();
+
       this.isLoading = false;
     });
+  }
+
+  sortEvents() {
+    if (this.searchForm.get('order_by_date').value !== null) {
+      if (this.searchForm.get('order_by_date').value) {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+          });
+        });
+      }
+    }
+
+    if (this.searchForm.get('order_by_date_end').value !== null) {
+      if (this.searchForm.get('order_by_date_end').value) {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+          });
+        });
+      }
+    }
+
+    if (this.searchForm.get('order_by_next_event_date').value !== null) {
+      if (this.searchForm.get('order_by_next_event_date').value) {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+          });
+        });
+      }
+    }
+
+    if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
+      if (this.searchForm.get('order_by_next_event_date_end').value) {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+          });
+        });
+      }
+    }
   }
 
   searchForm: FormGroup = this.fb.group({
@@ -226,7 +318,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     chain_status_ids: [null],
     employees_ids: [null],
     is_null_chain_status: [null],
-    order_by_name: [null],
+    order_by_name: [false],
     order_by_date: [true],
     order_by_date_end: [null],
     order_by_next_event_date: [null],
@@ -288,7 +380,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly eventsReportService: EventsReportService,
-    private  adapterService: AdapterService,
+    private adapterService: AdapterService,
   ) {
   }
 
@@ -343,7 +435,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     let isCustomFilterByLastEndValues = false;
 
 
-
     if (this.isLastEventStartFilterOpen) {
       const selectedDate = this.adapterService.dateAdapter(new Date(this.searchForm.get('last_events_date_start_before').value));
       let hourBefore = 23;
@@ -359,7 +450,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
         '00',
         '00',
         this.padTo2Digits(hourBefore),
-          this.padTo2Digits(minuteBefore));
+        this.padTo2Digits(minuteBefore));
     }
 
     if (this.isLastEventEndFilterOpen) {
@@ -503,7 +594,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       name: 'sub_region',
       value: this.searchForm.get('sub_region_id').value
     });
-
     if (this.isShowAll) {
       this.searchForm.get('page').patchValue(1);
       this.get();
@@ -524,7 +614,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       });
       this.query.push({
         name: fieldBefore,
-        value:  lastStartBefore
+        value: lastStartBefore
       });
       return true;
     }
@@ -549,50 +639,60 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.searchForm.get('order_by_date').value !== null) {
-      if (this.searchForm.get('order_by_date').value) {
-        sorting += '-last_event_start,';
-      } else {
-        sorting += 'last_event_start,';
-      }
-    }
-
-    if (this.searchForm.get('order_by_next_event_date').value !== null) {
-      if (this.searchForm.get('order_by_next_event_date').value) {
-        sorting += '-next_event_start,';
-      } else {
-        sorting += 'next_event_start,';
-      }
-    }
-
-    if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
-      if (this.searchForm.get('order_by_next_event_date_end').value) {
-        sorting += '-next_event_end,';
-      } else {
-        sorting += 'next_event_end,';
-      }
-    }
-
-    if (this.searchForm.get('order_by_date_end').value !== null) {
-      if (this.searchForm.get('order_by_date_end').value) {
-        sorting += '-last_event_end,';
-      } else {
-        sorting += 'last_event_end,';
-      }
-    }
+    // if (this.searchForm.get('order_by_date').value !== null) {
+    //   if (this.searchForm.get('order_by_date').value) {
+    //     sorting += '-last_event_start,';
+    //   } else {
+    //     sorting += 'last_event_start,';
+    //   }
+    // }
+    //
+    // if (this.searchForm.get('order_by_next_event_date').value !== null) {
+    //   if (this.searchForm.get('order_by_next_event_date').value) {
+    //     sorting += '-next_event_start,';
+    //   } else {
+    //     sorting += 'next_event_start,';
+    //   }
+    // }
+    //
+    // if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
+    //   if (this.searchForm.get('order_by_next_event_date_end').value) {
+    //     sorting += '-next_event_end,';
+    //   } else {
+    //     sorting += 'next_event_end,';
+    //   }
+    // }
+    //
+    // if (this.searchForm.get('order_by_date_end').value !== null) {
+    //   if (this.searchForm.get('order_by_date_end').value) {
+    //     sorting += '-last_event_end,';
+    //   } else {
+    //     sorting += 'last_event_end,';
+    //   }
+    // }
 
     return sorting;
   }
 
-  sorting(value: boolean, field: string) {
+  sorting(value: boolean, field: string, updateFromDB = true) {
     if (value === null) {
       this.searchForm.get(field).patchValue(false);
     } else if (value === false) {
       this.searchForm.get(field).patchValue(true);
     } else if (value === true) {
-      this.searchForm.get(field).patchValue(null);
+      this.searchForm.get(field).patchValue(false);
     }
-    this.search();
+
+    if (updateFromDB) {
+      this.search();
+    } else {
+      this.sortEvents();
+    }
+  }
+
+  removeSoring(field: string) {
+    this.searchForm.get(field).patchValue(null);
+    this.sortEvents();
   }
 
 
@@ -740,9 +840,9 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   updated($event: any) {
     this.isLastEventStartFilterOpen = this.selectedFilters.findIndex(el => el === 'last_events_date_start') > -1;
-    this.isLastEventEndFilterOpen  = this.selectedFilters.findIndex(el => el === 'last_events_date_end') > -1;
-    this.isFeatureEventStartFilterOpen  = this.selectedFilters.findIndex(el => el === 'future_events_date_start') > -1;
-    this.isFeatureEventEndFilterOpen  = this.selectedFilters.findIndex(el => el === 'future_events_date_end') > -1;
+    this.isLastEventEndFilterOpen = this.selectedFilters.findIndex(el => el === 'last_events_date_end') > -1;
+    this.isFeatureEventStartFilterOpen = this.selectedFilters.findIndex(el => el === 'future_events_date_start') > -1;
+    this.isFeatureEventEndFilterOpen = this.selectedFilters.findIndex(el => el === 'future_events_date_end') > -1;
 
     if (!this.isLastEventStartFilterOpen) {
       this.searchForm.get('last_events_date_start_after').reset(null);

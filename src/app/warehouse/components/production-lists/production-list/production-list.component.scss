@@ -11,6 +11,12 @@
       filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.27));
     }
   }
+
+  .p-treetable-scrollable-body, .p-datatable-wrapper {
+    table {
+        margin-bottom: 3rem;
+    }
+  }
 }
 
 .colors {
@@ -159,4 +165,28 @@
       }
     }
   }
+}
+
+.serial-number-cont {
+  position: relative;
+
+  .serial-numbers {
+    display: none;
+  }
+  &:hover {
+    .serial-numbers {
+      display: block;
+      padding: .5rem 1rem;
+      position: absolute;
+      top: 0;
+      right: 100%;
+      color: #495057;
+      width: 13rem;
+      background-color: white;
+      border-radius: 0.625rem;
+      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
+      z-index: 100;
+    }
+  }
+
 }

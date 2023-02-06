@@ -130,7 +130,8 @@
           <ng-template pTemplate="caption">
             <div class="d-flex table-caption">
               <p class="subtitle" *ngIf="!selectedRequest">Choose the Request to edit</p>
-              <p-menubar class="ml-auto mr-2" [model]="requestMenuItems" [class.disabled]="!selectedRequest"></p-menubar>
+              <p-menubar class="ml-auto mr-2" [model]="requestMenuItems"
+                         [class.disabled]="!selectedRequest"></p-menubar>
 
               <button
                 [disabled]="viewMode === viewModes.LIST"
@@ -206,7 +207,7 @@
                   {{request.list_product.nomenclature.code}}
                 </div>
               </td>
-              <td style="width: 21%;">
+              <td style="width: 21%;" class="serial-numbers-container">
                 <h3 class="td-title">Name</h3>
                 <div *ngIf="request.material_nomenclature">
                   <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
@@ -220,6 +221,13 @@
                   <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
                   {{request.list_product.nomenclature.name}}
                 </div>
+
+
+                <span *ngIf="request.ids.length > 0" class="serial-numbers">
+                  <div *ngFor="let serialNumber of request.all_reserved_serial_products">
+                    {{serialNumber.type_with_number}}
+                  </div>
+                </span>
               </td>
               <td style="width: 12%" class="text-center">
                 <h3 class="td-title">Technology</h3>
@@ -283,7 +291,8 @@
         <ng-template pTemplate="caption">
           <div class="d-flex table-caption">
             <p class="subtitle" *ngIf="!selectedRequestNode">Choose the Request to edit</p>
-            <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems" [class.disabled]="!selectedRequestNode"></p-menubar>
+            <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems"
+                       [class.disabled]="!selectedRequestNode"></p-menubar>
             <button
               pButton
               type="button"
@@ -376,9 +385,13 @@
                 <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
                   {{rowData.request.list_product.nomenclature.code}}
                 </div>
+
+                <span *ngIf="rowData.request.ids.length > 0">L({{rowData.request.ids.length + 1}})</span>
+
               </div>
+
             </td>
-            <td style="width: 20%;">
+            <td style="width: 20%;" class="ids-container">
               <h3 class="td-title">Name</h3>
               <div *ngIf="rowData.level === 4">
                 <div *ngIf="rowData.request.material_nomenclature">
@@ -393,6 +406,15 @@
                   <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
                   {{rowData.request.list_product.nomenclature.name}}
                 </div>
+
+                <span *ngIf="rowData.request.ids.length > 0" class="ids">
+                  <div>
+                    {{rowData.request.id}}
+                  </div>
+                  <div *ngFor="let id of rowData.request.ids">
+                    {{id}}
+                  </div>
+                </span>
               </div>
             </td>
             <td style="width: 10%" class="text-center">
@@ -635,7 +657,7 @@
                   {{locator.name}}<span *ngIf="!last">, </span>
                 </span>
               </div>
-<!--              {{technicalEquipment.warehouse_product ? technicalEquipment.warehouse_product.locator.name : ''}}-->
+              <!--              {{technicalEquipment.warehouse_product ? technicalEquipment.warehouse_product.locator.name : ''}}-->
             </td>
             <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
           </tr>
@@ -662,12 +684,12 @@
 
 <div class="print-page" *ngIf="isShowPrint">
   <div>
-  <pek-warehouse-production-request-print-page
-    [rootList]="rootList"
-    [orderId]="+orderId"
-    [requests]="requests"
-    [currentReqDate]="currentReqDate"
-    [technologies]="order?.ordered_items_technologies"
-  ></pek-warehouse-production-request-print-page>
+    <pek-warehouse-production-request-print-page
+      [rootList]="rootList"
+      [orderId]="+orderId"
+      [requests]="requests"
+      [currentReqDate]="currentReqDate"
+      [technologies]="order?.ordered_items_technologies"
+    ></pek-warehouse-production-request-print-page>
   </div>
 </div>

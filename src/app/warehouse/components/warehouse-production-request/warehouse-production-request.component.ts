@@ -22,6 +22,7 @@ import {
 } from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {SerialNumber} from '../../../procurement/models/invoice';
 
 enum ViewMode {
   LIST = 0,
@@ -36,6 +37,7 @@ class ProductRequestListOrder extends Order {
 class GroupedRequest extends Request {
   ids?: number[];
   requests?: Request[];
+  all_reserved_serial_products?: SerialNumber[];
   total_required_quantity?: number;
 }
 
@@ -235,7 +237,19 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         });
 
         request.ids = request.requests.map(req => req.id);
-
+        request.all_reserved_serial_products = [];
+        if (request.reserved_serial_products) {
+          request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
+        }
+        request.requests.forEach(req => {
+          console.log('request', req);
+          if (req.reserved_serial_products.length > 0) {
+            request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number))
+          }
+        });
+        // request.reserved_serial_products = [...request.requests.map(req => [...req.reserved_serial_products.map(serial_number => serial_number.serial_number)])];
+        console.log('reserved_serial_products', request.all_reserved_serial_products);
+        console.log('reserved_serial_products', request);
         request.total_required_quantity = request.requests.reduce(
           (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
         )
