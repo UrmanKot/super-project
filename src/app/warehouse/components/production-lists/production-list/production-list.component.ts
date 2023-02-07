@@ -9,10 +9,7 @@ import * as cloneDeep from 'lodash/cloneDeep';
 import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
-import {ENomenclatureType} from '@shared/models/nomenclature';
-import {ViewMode} from '../production-lists.component';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
-import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
 
 export class TreePrint {
   data: ListProduct;
@@ -552,7 +549,6 @@ export class ProductionListComponent implements OnInit {
   onScanned(data: any) {
     this.scanningEnd = true;
     this.isScanned = false;
-    console.log('data found on qr code', data);
     this.scanForListProduct(data)
   }
 

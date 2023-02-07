@@ -133,6 +133,16 @@
               <p-menubar class="ml-auto mr-2" [model]="requestMenuItems"
                          [class.disabled]="!selectedRequest"></p-menubar>
 
+<!--      [disabled]="isLoadingTree"        -->
+              <button
+                class="mr-2 p-button-icon"
+                pButton
+                type="button"
+                icon="pi pi-camera"
+                label="Scan QR Codes"
+                (click)="onStartScanning()"
+              >
+              </button>
               <button
                 [disabled]="viewMode === viewModes.LIST"
                 pButton
@@ -693,3 +703,9 @@
     ></pek-warehouse-production-request-print-page>
   </div>
 </div>
+
+<pek-qr-code-scanner
+  *ngIf="isScanned"
+  (scanned)="onScanned($event)"
+  (cancel)="onCancelScanned()"
+></pek-qr-code-scanner>

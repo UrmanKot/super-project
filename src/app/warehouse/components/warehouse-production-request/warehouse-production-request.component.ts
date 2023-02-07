@@ -23,6 +23,7 @@ import {
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {SerialNumber} from '../../../procurement/models/invoice';
+import {ScanResult} from '../../../qr-code/models/scan-result';
 
 enum ViewMode {
   LIST = 0,
@@ -108,6 +109,12 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   selectedDetailedRequestNode: TreeNode;
 
   technicalEquipments: OrderTechnicalEquipment[] = [];
+  isLoadingTree = true;
+  elementsRowsIds: any[] = [];
+  isScanned = false;
+  scanningEnd: boolean;
+  currentDisplayRowId: null;
+  foundRowsIds: any[] = [];
 
   constructor(
     private requestsService: RequestService,
@@ -563,5 +570,69 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  onStartScanning() {
+    this.clearQrResults();
+    this.expandCollapseAllOrders();
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+    this.isScanned = true;
+    this.scanningEnd = false;
+  }
+
+  clearQrResults() {
+    this.currentDisplayRowId = null;
+    this.foundRowsIds = [];
+  }
+
+  onScanned(data: any) {
+    this.scanningEnd = true;
+    this.isScanned = false;
+    this.scanForListProduct(data)
+  }
+
+  onCancelScanned() {
+    this.scanningEnd = true;
+    this.isScanned = false;
+  }
+
+  scanForListProduct(data: ScanResult = null) {
+    this.expandCollapseAllOrders();
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+
+    // this.requestsService.sendImageProductionRequests(this.orderId, data).subscribe(res => {
+    //   console.log('RESPONSE FROM CALL', res);
+    // });
+    // this.listService.getScanned(this.listId, data).subscribe(res => {
+    //   if (res.ids_found.length > 0) {
+    //     this.elementsRowsIds.forEach(elementId => {
+    //       const idArray = elementId.split('-');
+    //       const foundId = res.ids_found.find(el => el.toString() === idArray[1]);
+    //       if (foundId) {
+    //         this.foundRowsIds.push(foundId);
+    //       }
+    //     });
+    //     if (this.foundRowsIds.length > 0) {
+    //       this.currentDisplayRowId = this.foundRowsIds[0];
+    //       this.scrollToElement('row-' + this.currentDisplayRowId);
+    //     }
+    //   } else {
+    //     this.messageService.add({severity: 'error', summary: 'No matching found.', detail: `No product lists was found with scanned QR code!`});
+    //   }
+    // });
   }
 }
