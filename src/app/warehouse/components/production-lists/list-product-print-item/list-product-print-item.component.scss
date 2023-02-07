@@ -1,9 +1,10 @@
 .list-product-print-item {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   h2 {
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 12px;
+    //margin-top: 24px;
   }
 
   &__row {
@@ -22,9 +23,14 @@
     padding: 5px 10px;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+
+    &_body {
+      word-break: break-all;
+    }
 
     &:nth-child(1) {
-      width: 5%;
+      width: 7%;
     }
 
     &:nth-child(2) {
@@ -32,15 +38,17 @@
     }
 
     &:nth-child(3) {
-      width: 25%;
+      width: 20%;
     }
 
     &:nth-child(4) {
-      width: 5%;
+      width: 7%;
+      text-align: center;
     }
 
     &:nth-child(5) {
-      width: 15%;
+      width: 18%;
+      text-align: center;
     }
 
     &:nth-child(6) {
@@ -48,8 +56,20 @@
     }
 
     &:nth-child(7) {
-      width: 15%;
+      width: 13%;
     }
   }
 
+}
+
+@media print {
+  .list-product-print-item {
+    page-break-before: auto;
+    page-break-after: auto;
+
+    &_row {
+      page-break-before: auto;
+      page-break-after: auto;
+    }
+  } /* page-break-after works, as well */
 }

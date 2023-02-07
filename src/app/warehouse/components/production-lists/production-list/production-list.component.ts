@@ -280,7 +280,7 @@ export class ProductionListComponent implements OnInit {
   printPage() {
     this.productsForPrint = [];
     this.isLoadingListsForPrint = true;
-    // const ids = this.products.filter(p => p.list_url).map(p => p.list) as number[];
+    // const ids = this.products.filter(p => p.list_url).map(p => p.list) as number[Ск];
 
     this.productsForPrint = this.products.map(p => {
       return {
@@ -299,7 +299,7 @@ export class ProductionListComponent implements OnInit {
     console.log(this.productsForPrint);
 
     const getProducts = (products) => {
-      const ids = products.filter(p => p.list_url).map(p => p.list) as number[];
+      const ids = products.filter(p => p.has_children).map(p => p.list) as number[];
 
       if (ids.length > 0) {
         this.listProductService.getPartly(ids).subscribe(response => {
