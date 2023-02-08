@@ -16,10 +16,11 @@ import { WarehouseInstructionComponent } from './guide-instructions/warehouse-in
 import { GuideConfirmationComponent } from './guide-schemes/guide-confirmation/guide-confirmation.component';
 import { ConfirmationInstructionComponent } from './guide-instructions/confirmation-instruction/confirmation-instruction.component';
 import { ProductStructureInstructionComponent } from './guide-instructions/product-structure-instruction/product-structure-instruction.component';
+import { GuideGlossaryComponent } from './guide-glossary/guide-glossary.component';
 
 
 @NgModule({
-  declarations: [GuideComponent, GuideButtonComponent, GuideSalesComponent, GuideOutsourcingComponent, GuideProcurementComponent, GuideProductionComponent, SalesInstructionComponent, MainInstructionComponent, GuideWarehouseComponent, WarehouseInstructionComponent, GuideConfirmationComponent, ConfirmationInstructionComponent, ProductStructureInstructionComponent],
+  declarations: [GuideComponent, GuideButtonComponent, GuideSalesComponent, GuideOutsourcingComponent, GuideProcurementComponent, GuideProductionComponent, SalesInstructionComponent, MainInstructionComponent, GuideWarehouseComponent, WarehouseInstructionComponent, GuideConfirmationComponent, ConfirmationInstructionComponent, ProductStructureInstructionComponent, GuideGlossaryComponent],
   exports: [
     GuideComponent
   ],

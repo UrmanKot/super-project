@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialogRef} from '@angular/material/dialog';
 import {environment} from '@env/environment';
 
-export type GuideType =
+export type GuideFlowType =
   'all'
   | 'qc'
   | 'sales'
@@ -15,19 +15,22 @@ export type GuideType =
   | 'confirmation'
   | 'product-structure';
 
+export type GuideType = 'flow' | 'map' | 'glossary'
+
 @Component({
   selector: 'app-guide',
   templateUrl: './guide.component.html',
   styleUrls: ['./guide.component.scss']
 })
 export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
+  guideType: GuideType = 'flow';
+
   routerSub: Subscription;
   @ViewChild('guidePanel') guidePanel: ElementRef;
-  envir = environment;
 
   guideTitle = 'Select a module or process to get more information';
 
-  guideType: GuideType = 'all';
+  guideFlowType: GuideFlowType = 'all';
 
   showLorem = false;
 
@@ -81,6 +84,10 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.drag();
+  }
+
+  drag() {
     const panel = this.guidePanel.nativeElement;
     let isDown = false;
     let startX;
@@ -122,22 +129,22 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   choiceType(url: string) {
     if (url.includes('quality-control')) {
-      this.guideType = 'qc';
+      this.guideFlowType = 'qc';
       this.showLorem = true;
     } else if (url.includes('sales')) {
-      this.guideType = 'sales';
+      this.guideFlowType = 'sales';
     } else if (url.includes('outsource')) {
-      this.guideType = 'outsource';
+      this.guideFlowType = 'outsource';
     } else if (url.includes('procurement')) {
-      this.guideType = 'procurement';
+      this.guideFlowType = 'procurement';
     } else if (url.includes('production')) {
-      this.guideType = 'production';
+      this.guideFlowType = 'production';
     } else if (url.includes('confirmation')) {
-      this.guideType = 'confirmation';
+      this.guideFlowType = 'confirmation';
     } else if (url.includes('warehouse')) {
-      this.guideType = 'warehouse';
+      this.guideFlowType = 'warehouse';
     } else if (url.includes('product-structure')) {
-      this.guideType = 'product-structure';
+      this.guideFlowType = 'product-structure';
     } else {
       this.showLorem = false;
     }
@@ -155,7 +162,7 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
     this.hideGuide();
 
     setTimeout(() => {
-      this.guideType = 'all';
+      this.guideFlowType = 'all';
       this.router.navigate(['/dash']);
     }, 600);
 
@@ -184,4 +191,13 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
     const imageBlock = document.querySelector('.guide__image-box');
     imageBlock.classList.remove('guide__image-box_open');
   }
+
+  onChoiceGuideType(type: GuideType) {
+    this.guideType = type;
+
+    if (type === 'flow') {
+      setTimeout(() => this.drag());
+    }
+  }
+
 }

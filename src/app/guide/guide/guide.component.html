@@ -1,273 +1,349 @@
 <div class="guide">
-  <div
-    #guidePanel
-    class="guide__panel"
-    [style.paddingTop]="guideType === 'all' || guideType === 'product-structure' ? zoom * 24 + 'rem' : 0"
-    [ngSwitch]="guideType"
-    [style.zoom]="zoom"
-  >
+  <ng-container *ngIf="guideType === 'flow'">
+    <div
+      #guidePanel
+      class="guide__panel"
+      [style.paddingTop]="guideFlowType === 'all' || guideFlowType === 'product-structure' ? zoom * 24 + 'rem' : 0"
+      [ngSwitch]="guideFlowType"
+      [style.zoom]="zoom"
+    >
 
-    <div class="guide__box" *ngSwitchCase="'all'">
-      <ng-container *ngTemplateOutlet="main"></ng-container>
-    </div>
+      <div class="guide__box" *ngSwitchCase="'all'">
+        <ng-container *ngTemplateOutlet="main"></ng-container>
+      </div>
 
-    <div class="guide__box" *ngSwitchCase="'product-structure'">
-      <ng-container *ngTemplateOutlet="main"></ng-container>
-    </div>
+      <div class="guide__box" *ngSwitchCase="'product-structure'">
+        <ng-container *ngTemplateOutlet="main"></ng-container>
+      </div>
 
-    <div class="guide__box guide__qc" *ngSwitchCase="'qc'">
-      <div class="guide__qc-box guide__qc-box_1">
+      <div class="guide__box guide__qc" *ngSwitchCase="'qc'">
+        <div class="guide__qc-box guide__qc-box_1">
 
-        <div class="guide__qc-col guide__qc-col_1">
-          <div class="guide__button guide__button_disabled">
+          <div class="guide__qc-col guide__qc-col_1">
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Manufacturing Procurement"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Outsourcing"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_2">
+            <div class="guide__button guide__button_disabled guide__button_arrow-right">
+              <pek-guide-button
+                btnStyle="secondary"
+                [disabled]="true"
+                title="Completed Procurement Invoice"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_3">
+            <div class="guide__button guide__button_qc-main">
+              <pek-guide-button
+                [hideButtons]="true"
+                title="QC procurement invoices"
+              ></pek-guide-button>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_4">
+            <div class="guide__button guide__button_1">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="Cancellation"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+
+            <div class="guide__button guide__button_2">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="QC passed"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+
+            <div class="guide__button guide__button_3">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="Isolator"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_5">
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Outsourcing"
+              ></pek-guide-button>
+              <div>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Warehouse"
+              ></pek-guide-button>
+              <div>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_6">
             <pek-guide-button
               [disabled]="true"
               title="Manufacturing Procurement"
             ></pek-guide-button>
-            <span></span>
-          </div>
-
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Outsourcing"
-            ></pek-guide-button>
-            <span></span>
           </div>
         </div>
 
-        <div class="guide__qc-col guide__qc-col_2">
-          <div class="guide__button guide__button_disabled guide__button_arrow-right">
-            <pek-guide-button
-              btnStyle="secondary"
-              [disabled]="true"
-              title="Completed Procurement Invoice"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-        </div>
+        <div class="guide__qc-box">
 
-        <div class="guide__qc-col guide__qc-col_3">
-          <div class="guide__button guide__button_qc-main">
-            <pek-guide-button
-              [hideButtons]="true"
-              title="QC procurement invoices"
-            ></pek-guide-button>
-          </div>
-        </div>
-
-        <div class="guide__qc-col guide__qc-col_4">
-          <div class="guide__button guide__button_1">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="Cancellation"
-            ></pek-guide-button>
-            <span></span>
+          <div class="guide__qc-col guide__qc-col_7">
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Production"
+              ></pek-guide-button>
+            </div>
           </div>
 
-          <div class="guide__button guide__button_2">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="QC passed"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-
-          <div class="guide__button guide__button_3">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="Isolator"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-        </div>
-
-        <div class="guide__qc-col guide__qc-col_5">
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Outsourcing"
-            ></pek-guide-button>
-            <div>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+          <div class="guide__qc-col guide__qc-col_8">
+            <div class="guide__button guide__button_disabled guide__button_arrow-right">
+              <pek-guide-button
+                btnStyle="secondary"
+                [disabled]="true"
+                title="Completed production order"
+              ></pek-guide-button>
               <span></span>
             </div>
           </div>
 
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Warehouse"
-            ></pek-guide-button>
-            <div>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        </div>
 
-        <div class="guide__qc-col guide__qc-col_6">
-          <pek-guide-button
-            [disabled]="true"
-            title="Manufacturing Procurement"
-          ></pek-guide-button>
-        </div>
-      </div>
-
-      <div class="guide__qc-box">
-
-        <div class="guide__qc-col guide__qc-col_7">
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Production"
-            ></pek-guide-button>
-          </div>
-        </div>
-
-        <div class="guide__qc-col guide__qc-col_8">
-          <div class="guide__button guide__button_disabled guide__button_arrow-right">
-            <pek-guide-button
-              btnStyle="secondary"
-              [disabled]="true"
-              title="Completed production order"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-        </div>
-
-
-        <div class="guide__qc-col guide__qc-col_9">
-          <div class="guide__button guide__button_qc-main">
-            <pek-guide-button
-              [hideButtons]="true"
-              title="QC our manufacturing"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-        </div>
-
-        <div class="guide__qc-col guide__qc-col_10">
-
-          <div class="guide__button guide__button_1">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="Rework All"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-
-          <div class="guide__button guide__button_2">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="Rework Item"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-
-          <div class="guide__button guide__button_3">
-            <pek-guide-button
-              [hideButtons]="true"
-              btnStyle="secondary"
-              title="QC passed"
-            ></pek-guide-button>
-            <span></span>
-          </div>
-        </div>
-
-        <div class="guide__qc-col guide__qc-col_11">
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Production"
-            ></pek-guide-button>
-            <div>
-              <span></span>
-              <span></span>
+          <div class="guide__qc-col guide__qc-col_9">
+            <div class="guide__button guide__button_qc-main">
+              <pek-guide-button
+                [hideButtons]="true"
+                title="QC our manufacturing"
+              ></pek-guide-button>
               <span></span>
             </div>
           </div>
 
-          <div class="guide__button guide__button_disabled">
-            <pek-guide-button
-              [disabled]="true"
-              title="Warehouse"
-            ></pek-guide-button>
-            <div>
+          <div class="guide__qc-col guide__qc-col_10">
+
+            <div class="guide__button guide__button_1">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="Rework All"
+              ></pek-guide-button>
               <span></span>
+            </div>
+
+            <div class="guide__button guide__button_2">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="Rework Item"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+
+            <div class="guide__button guide__button_3">
+              <pek-guide-button
+                [hideButtons]="true"
+                btnStyle="secondary"
+                title="QC passed"
+              ></pek-guide-button>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="guide__qc-col guide__qc-col_11">
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Production"
+              ></pek-guide-button>
+              <div>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="guide__button guide__button_disabled">
+              <pek-guide-button
+                [disabled]="true"
+                title="Warehouse"
+              ></pek-guide-button>
+              <div>
+                <span></span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
 
-    <div *ngSwitchCase="'sales'">
-      <app-guide-sales></app-guide-sales>
-    </div>
+      <div *ngSwitchCase="'sales'">
+        <app-guide-sales></app-guide-sales>
+      </div>
 
-    <div *ngSwitchCase="'outsource'">
-      <app-guide-outsourcing></app-guide-outsourcing>
-    </div>
+      <div *ngSwitchCase="'outsource'">
+        <app-guide-outsourcing></app-guide-outsourcing>
+      </div>
 
-    <div *ngSwitchCase="'procurement'">
-      <app-guide-procurement></app-guide-procurement>
-    </div>
+      <div *ngSwitchCase="'procurement'">
+        <app-guide-procurement></app-guide-procurement>
+      </div>
 
-    <div *ngSwitchCase="'production'">
-      <app-guide-production></app-guide-production>
-    </div>
-
-    <ng-container *ngSwitchCase="'warehouse'">
-      <pek-guide-warehouse></pek-guide-warehouse>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'confirmation'">
-      <pek-guide-confirmation></pek-guide-confirmation>
-    </ng-container>
-  </div>
-
-  <div class="guide__instruction">
-    <ng-container [ngSwitch]="guideType">
-      <ng-container *ngSwitchCase="'all'">
-        <pek-main-instruction></pek-main-instruction>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'sales'">
-        <pek-sales-instruction></pek-sales-instruction>
-      </ng-container>
+      <div *ngSwitchCase="'production'">
+        <app-guide-production></app-guide-production>
+      </div>
 
       <ng-container *ngSwitchCase="'warehouse'">
-        <pek-warehouse-instruction></pek-warehouse-instruction>
+        <pek-guide-warehouse></pek-guide-warehouse>
       </ng-container>
 
       <ng-container *ngSwitchCase="'confirmation'">
-        <pek-confirmation-instruction></pek-confirmation-instruction>
+        <pek-guide-confirmation></pek-guide-confirmation>
       </ng-container>
+    </div>
 
-      <ng-container *ngSwitchCase="'product-structure'">
-        <pek-product-structure-instruction></pek-product-structure-instruction>
+    <div class="guide__instruction">
+      <ng-container [ngSwitch]="guideFlowType">
+        <ng-container *ngSwitchCase="'all'">
+          <pek-main-instruction></pek-main-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'sales'">
+          <pek-sales-instruction></pek-sales-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'warehouse'">
+          <pek-warehouse-instruction></pek-warehouse-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'confirmation'">
+          <pek-confirmation-instruction></pek-confirmation-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'product-structure'">
+          <pek-product-structure-instruction></pek-product-structure-instruction>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
 
-  <button class="btn btn-primary guide__close" (click)="onClose()">Close Business guide</button>
-  <button class="btn btn-primary guide__back" *ngIf="guideType !== 'all'" (click)="onBack()">Back</button>
-  <div class="guide__header">
-    <button class="btn btn-primary mr-2" (click)="plusScale()" [disabled]="zoom >= 1.3">+</button>
-    <button class="btn btn-primary" (click)="minusScale()" [disabled]="zoom <= 0.8">-</button>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="guideType === 'map'">
+    <div class="guide__map">
+      <h2>Under Construction</h2>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="guideType === 'glossary'">
+    <pek-guide-glossary></pek-guide-glossary>
+  </ng-container>
 
   <div class="guide__image-box" (click)="closeImageModal()"></div>
+  <!--  <button-->
+  <!--    pButton-->
+  <!--    *ngIf="data.type=='writeOff'"-->
+  <!--    type="button"-->
+  <!--    class="p-button-success"-->
+  <!--    [label]="'Write Off'"-->
+  <!--    (click)="writeOff()"-->
+  <!--  ></button>-->
+
+  <button
+    pButton
+    type="button"
+    class="p-button-danger guide__close"
+    label="Close Business guide"
+    icon="pi pi-times"
+    (click)="onClose()"
+  >
+  </button>
+
+  <button
+    pButton
+    label="Back"
+    class="guide__back mr-2"
+    *ngIf="guideFlowType !== 'all' && guideType === 'flow'"
+    (click)="onBack()"
+    icon="pi pi-arrow-left"
+  ></button>
+
+  <div class="guide__header">
+    <ng-container *ngIf="guideType === 'flow'">
+      <button
+        class="mr-2"
+        (click)="plusScale()"
+        pButton
+        label="+"
+        [disabled]="zoom >= 1.3">
+      </button>
+      <button
+        pButton
+        label="-"
+        class="mr-3"
+        (click)="minusScale()"
+        [disabled]="zoom <= 0.8"
+      ></button>
+    </ng-container>
+
+    <button
+      pButton
+      [disabled]="guideType === 'flow'"
+      (click)="onChoiceGuideType('flow')"
+      label="Business Flow"
+      icon="pi pi-box"
+    ></button>
+    <button
+      pButton
+      [disabled]="guideType === 'map'"
+      class="ml-2"
+      (click)="onChoiceGuideType('map')"
+      icon="pi pi-map"
+      label="Business Processes Maps"
+    ></button>
+    <button
+      [disabled]="guideType === 'glossary'"
+      pButton
+      class="ml-2"
+      icon="pi pi-book"
+      (click)="onChoiceGuideType('glossary')"
+      label="Glossary"
+    ></button>
+  </div>
 </div>
 
 
@@ -939,6 +1015,21 @@
 
   <div class="guide__col guide__col_10">
 
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Declined Payment"
+        buttonsPosition="top"
+      >
+      </pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
     <div class="guide__button guide__button_arrow-right">
       <pek-guide-button
         btnStyle="secondary"
@@ -974,6 +1065,88 @@
       ></pek-guide-button>
 
       <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Return to outsourcer"
+        routeUrl="/dash/quality-control/invoices"
+        buttonsPosition="bottom"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Manufacturing procurement"
+        (navigate)="goToLinkWindow($event)"
+        routeUrl="/dash/procurement/orders"
+      ></pek-guide-button>
+
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Delivered Items"
+        routeUrl="/dash/quality-control/invoices"
+        buttonsPosition="bottom"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="outline"
+        title="Outsourcer"
+        routeUrl="/dash/quality-control/invoices"
+        buttonsPosition="bottom"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+
+      <div class="rma">
+        RMA
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="QC not passed"
+        routeUrl="/dash/quality-control/invoices"
+        buttonsPosition="bottom"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
         <span></span>
         <span></span>
         <span></span>
@@ -1056,11 +1229,16 @@
 
     <div class="guide__button">
       <pek-guide-button
-        btnStyle="secondary"
-        title="QC not Passed"
+        btnStyle="outline"
+        title="Supplier"
         routeUrl="test"
         buttonsPosition="right"
       ></pek-guide-button>
+
+      <div class="rma">
+        RMA
+        <span></span>
+      </div>
 
       <div>
         <span></span>
@@ -1246,7 +1424,7 @@
       <pek-guide-button
         buttonsPosition="right"
         btnStyle="primary"
-        title="Manufacturing procurement"
+        title="Manufacturing / General procurement"
         (navigate)="goToLinkWindow($event)"
         routeUrl="/dash/procurement/orders"
       ></pek-guide-button>
