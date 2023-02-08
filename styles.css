@@ -12886,6 +12886,18 @@ body::-webkit-scrollbar {
   p-toast {
     display: none;
   }
+  .layout-header {
+    display: none;
+  }
+  .page__header {
+    display: none !important;
+  }
+  .layout__inner {
+    padding-top: 0 !important;
+  }
+  .p-treetable-header {
+    display: none !important;
+  }
 }
 @media (max-width: 768px) {
   .layout-header {

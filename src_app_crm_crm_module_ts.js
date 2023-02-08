@@ -3842,12 +3842,12 @@ function CrmEventsReportsComponent_div_86_ng_template_4_Template(rf, ctx) { if (
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](13, "Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](14, "th", 61);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r43 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r43.sorting(ctx_r43.searchForm.get("order_by_date").value, "order_by_date")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r43 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r43.sorting(ctx_r43.searchForm.get("order_by_date").value, "order_by_date", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r43.removeSoring("order_by_date_end")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](15, " Start Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](16, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](17, "th", 61);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_17_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r44 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r44.sorting(ctx_r44.searchForm.get("order_by_date_end").value, "order_by_date_end")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_17_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r44 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r44.sorting(ctx_r44.searchForm.get("order_by_date_end").value, "order_by_date_end", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r44.removeSoring("order_by_date")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](18, " End Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](19, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
@@ -3861,12 +3861,12 @@ function CrmEventsReportsComponent_div_86_ng_template_4_Template(rf, ctx) { if (
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](25, "Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](26, "th", 64);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_26_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r45 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r45.sorting(ctx_r45.searchForm.get("order_by_next_event_date").value, "order_by_next_event_date")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_26_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r45 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r45.sorting(ctx_r45.searchForm.get("order_by_next_event_date").value, "order_by_next_event_date", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r45.removeSoring("order_by_next_event_date_end")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](27, " Start Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](28, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](29, "th", 65);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r46 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r46.sorting(ctx_r46.searchForm.get("order_by_next_event_date_end").value, "order_by_next_event_date_end")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_div_86_ng_template_4_Template_th_click_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r42); const ctx_r46 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r46.sorting(ctx_r46.searchForm.get("order_by_next_event_date_end").value, "order_by_next_event_date_end", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r46.removeSoring("order_by_next_event_date")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](30, " End Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](31, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]()();
@@ -4312,12 +4312,12 @@ function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template(rf, ctx
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](13, "Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](14, "th", 61);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r104 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r104.sorting(ctx_r104.searchForm.get("order_by_date").value, "order_by_date")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r104 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r104.sorting(ctx_r104.searchForm.get("order_by_date").value, "order_by_date", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r104.removeSoring("order_by_date_end")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](15, " Start Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](16, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](17, "th", 61);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_17_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r105 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r105.sorting(ctx_r105.searchForm.get("order_by_date_end").value, "order_by_date_end")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_17_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r105 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r105.sorting(ctx_r105.searchForm.get("order_by_date_end").value, "order_by_date_end", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r105.removeSoring("order_by_date")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](18, " End Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](19, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
@@ -4331,12 +4331,12 @@ function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template(rf, ctx
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](25, "Name");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](26, "th", 64);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_26_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r106 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r106.sorting(ctx_r106.searchForm.get("order_by_next_event_date").value, "order_by_next_event_date")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_26_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r106 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r106.sorting(ctx_r106.searchForm.get("order_by_next_event_date").value, "order_by_next_event_date", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r106.removeSoring("order_by_next_event_date_end")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](27, " Start Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](28, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementStart"](29, "th", 65);
-    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r107 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r107.sorting(ctx_r107.searchForm.get("order_by_next_event_date_end").value, "order_by_next_event_date_end")); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵlistener"]("click", function CrmEventsReportsComponent_ng_template_87_ng_template_4_Template_th_click_29_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵrestoreView"](_r103); const ctx_r107 = _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵnextContext"](2); ctx_r107.sorting(ctx_r107.searchForm.get("order_by_next_event_date_end").value, "order_by_next_event_date_end", false); return _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵresetView"](ctx_r107.removeSoring("order_by_next_event_date")); });
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵtext"](30, " End Date ");
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelement"](31, "pek-sort-icon", 57);
     _angular_core__WEBPACK_IMPORTED_MODULE_12__["ɵɵelementEnd"]()();
@@ -4950,7 +4950,7 @@ class CrmEventsReportsComponent {
             chain_status_ids: [null],
             employees_ids: [null],
             is_null_chain_status: [null],
-            order_by_name: [null],
+            order_by_name: [false],
             order_by_date: [true],
             order_by_date_end: [null],
             order_by_next_event_date: [null],
@@ -5120,8 +5120,99 @@ class CrmEventsReportsComponent {
             }
             this.isStartOnePage = false;
             this.breakForGroupedEvents();
+            this.sortEvents();
             this.isLoading = false;
         });
+    }
+    sortEvents() {
+        if (this.searchForm.get('order_by_date').value !== null) {
+            if (this.searchForm.get('order_by_date').value) {
+                this.eventsReports.forEach(company => {
+                    company.last_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedLastEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+                    });
+                });
+            }
+            else {
+                this.eventsReports.forEach(company => {
+                    company.last_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedLastEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+                    });
+                });
+            }
+        }
+        if (this.searchForm.get('order_by_date_end').value !== null) {
+            if (this.searchForm.get('order_by_date_end').value) {
+                this.eventsReports.forEach(company => {
+                    company.last_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedLastEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+                    });
+                });
+            }
+            else {
+                this.eventsReports.forEach(company => {
+                    company.last_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedLastEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+                    });
+                });
+            }
+        }
+        if (this.searchForm.get('order_by_next_event_date').value !== null) {
+            if (this.searchForm.get('order_by_next_event_date').value) {
+                this.eventsReports.forEach(company => {
+                    company.next_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedNextEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+                    });
+                });
+            }
+            else {
+                this.eventsReports.forEach(company => {
+                    company.next_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedNextEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+                    });
+                });
+            }
+        }
+        if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
+            if (this.searchForm.get('order_by_next_event_date_end').value) {
+                this.eventsReports.forEach(company => {
+                    company.next_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedNextEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+                    });
+                });
+            }
+            else {
+                this.eventsReports.forEach(company => {
+                    company.next_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+                });
+                this.eventsReports.forEach(company => {
+                    company.groupedNextEvents.forEach(group => {
+                        group.events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+                    });
+                });
+            }
+        }
     }
     ngOnInit() {
         this.dateRangeLimit = new Date();
@@ -5329,41 +5420,40 @@ class CrmEventsReportsComponent {
                 sorting += 'name,';
             }
         }
-        if (this.searchForm.get('order_by_date').value !== null) {
-            if (this.searchForm.get('order_by_date').value) {
-                sorting += '-last_event_start,';
-            }
-            else {
-                sorting += 'last_event_start,';
-            }
-        }
-        if (this.searchForm.get('order_by_next_event_date').value !== null) {
-            if (this.searchForm.get('order_by_next_event_date').value) {
-                sorting += '-next_event_start,';
-            }
-            else {
-                sorting += 'next_event_start,';
-            }
-        }
-        if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
-            if (this.searchForm.get('order_by_next_event_date_end').value) {
-                sorting += '-next_event_end,';
-            }
-            else {
-                sorting += 'next_event_end,';
-            }
-        }
-        if (this.searchForm.get('order_by_date_end').value !== null) {
-            if (this.searchForm.get('order_by_date_end').value) {
-                sorting += '-last_event_end,';
-            }
-            else {
-                sorting += 'last_event_end,';
-            }
-        }
+        // if (this.searchForm.get('order_by_date').value !== null) {
+        //   if (this.searchForm.get('order_by_date').value) {
+        //     sorting += '-last_event_start,';
+        //   } else {
+        //     sorting += 'last_event_start,';
+        //   }
+        // }
+        //
+        // if (this.searchForm.get('order_by_next_event_date').value !== null) {
+        //   if (this.searchForm.get('order_by_next_event_date').value) {
+        //     sorting += '-next_event_start,';
+        //   } else {
+        //     sorting += 'next_event_start,';
+        //   }
+        // }
+        //
+        // if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
+        //   if (this.searchForm.get('order_by_next_event_date_end').value) {
+        //     sorting += '-next_event_end,';
+        //   } else {
+        //     sorting += 'next_event_end,';
+        //   }
+        // }
+        //
+        // if (this.searchForm.get('order_by_date_end').value !== null) {
+        //   if (this.searchForm.get('order_by_date_end').value) {
+        //     sorting += '-last_event_end,';
+        //   } else {
+        //     sorting += 'last_event_end,';
+        //   }
+        // }
         return sorting;
     }
-    sorting(value, field) {
+    sorting(value, field, updateFromDB = true) {
         if (value === null) {
             this.searchForm.get(field).patchValue(false);
         }
@@ -5371,9 +5461,18 @@ class CrmEventsReportsComponent {
             this.searchForm.get(field).patchValue(true);
         }
         else if (value === true) {
-            this.searchForm.get(field).patchValue(null);
+            this.searchForm.get(field).patchValue(false);
         }
-        this.search();
+        if (updateFromDB) {
+            this.search();
+        }
+        else {
+            this.sortEvents();
+        }
+    }
+    removeSoring(field) {
+        this.searchForm.get(field).patchValue(null);
+        this.sortEvents();
     }
     searchByLastDate() {
         const startDateValue = this.searchForm.get('last_events_date_start').value;
