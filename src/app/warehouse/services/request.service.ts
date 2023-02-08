@@ -47,7 +47,7 @@ export class RequestService {
     return this.http.post(this.API_URL_PROCUREMENT + 'orders/' + id + '/' + 'complete/', id);
   }
 
-  sendImageProductionRequests(id: string, data: any) {
+  sendDataProductionRequests(id: string, data: any) {
     return this.http.post<{ data: any }>(this.API_URL + `production_requests/${id}/scan_product_request_item/`, data)
       .pipe(
         map(response => {
