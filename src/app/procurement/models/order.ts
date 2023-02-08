@@ -1,6 +1,7 @@
 import {Company} from '../../crm/models/company';
 import {PurchaseCategory} from '../../purchasing/models/purchase-category';
 import {Task} from '@shared/models/task';
+import {Technology} from '../../product-structure/models/technology';
 
 export class Order {
   readonly id: number;
@@ -44,6 +45,7 @@ export class Order {
   can_select_supplier?: boolean;
   is_hand_added?: boolean;
   accounting_type?: number;
+  ordered_products_unique_technologies?: Technology[]
 }
 
 export class Orders {

@@ -90,6 +90,7 @@ export class OutsourcingChainsComponent implements OnInit {
       map(orders => this.orderService.modifyOrders(orders)),
       tap(orders => this.orders = orders),
       tap(() => this.generateNomenclaturesListAndRootLists()),
+      tap(() => this.collectOrderedProductsTechnologies()),
       tap(() => this.isLoading = false),
       untilDestroyed(this)
     ).subscribe();
@@ -130,6 +131,18 @@ export class OutsourcingChainsComponent implements OnInit {
       if (a.fullName < b.fullName) return -1;
       if (a.fullName > b.fullName) return 1;
       return 0;
+    });
+  }
+
+  collectOrderedProductsTechnologies() {
+    this.orders.forEach(order => {
+      order.ordered_products_unique_technologies = [];
+      order.order_products?.forEach(product => {
+        const needToAdd = order.ordered_products_unique_technologies.findIndex(tech => tech.id === product?.current_technology.id) < 0;
+        if (needToAdd) {
+          order.ordered_products_unique_technologies.push(product?.current_technology);
+        }
+      })
     });
   }
 

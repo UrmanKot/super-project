@@ -157,7 +157,7 @@
                 <th class="text-center" style="width: 10%;">Date</th>
                 <th class="text-center" style="width: 7%;">Order ID</th>
                 <th class="text-center" style="width: 15%;">Supplier</th>
-                <th class="text-center" style="width: 15%;">Supplier Nomenclature</th>
+                <th class="text-center" style="width: 15%;">Technologies</th>
                 <th style="width: 15%;">Comment</th>
                 <th style="width: 15%;">Root Lists</th>
                 <th class="text-center" style="width: 10%;">Status</th>
@@ -170,7 +170,12 @@
                 <td class="text-center" style="width: 10%;">{{order.created | date:'dd/MM/yyyy'}}</td>
                 <td class="text-center" style="width: 7%;">{{order.id}}</td>
                 <td class="text-center" style="width: 15%;">{{order.supplier?.name}}</td>
-                <td class="text-center" style="width: 15%;">{{order.supplier?.supplier_nomenclature}}</td>
+                <td class="text-center" style="width: 15%;">
+                  <span *ngFor="let tech of order.ordered_products_unique_technologies; let last=last">
+                    {{tech.name}}<span *ngIf="!last">,</span>
+                  </span>
+<!--                  {{order.supplier?.supplier_nomenclature}}-->
+                </td>
                 <td style="width: 15%;">
                   <div class="word-break">
                     {{order.comment}}

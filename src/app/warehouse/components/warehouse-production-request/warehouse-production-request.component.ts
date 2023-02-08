@@ -17,11 +17,11 @@ import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
 import {take} from 'rxjs/operators';
-import {
-  logExperimentalWarnings
-} from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {SerialNumber} from '../../../procurement/models/invoice';
+import {ScanResult} from '../../../qr-code/models/scan-result';
+
 
 enum ViewMode {
   LIST = 0,
@@ -36,6 +36,7 @@ class ProductRequestListOrder extends Order {
 class GroupedRequest extends Request {
   ids?: number[];
   requests?: Request[];
+  all_reserved_serial_products?: SerialNumber[];
   total_required_quantity?: number;
 }
 
@@ -54,6 +55,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   isShowPrint = true;
 
   destroy$ = new Subject();
+  lastScannedId: number;
 
   requestNodeMenuItems: MenuItem[] = [{
     label: 'Selected Request',
@@ -106,6 +108,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   selectedDetailedRequestNode: TreeNode;
 
   technicalEquipments: OrderTechnicalEquipment[] = [];
+  isLoadingTree = true;
+  elementsRowsIds: any[] = [];
+  isScanned = false;
+  scanningEnd: boolean;
+  currentDisplayRowId: null;
+  foundRowsIds: any[] = [];
+  firstPage = 0;
 
   constructor(
     private requestsService: RequestService,
@@ -135,7 +144,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   onCancel() {
     this.modalService.confirm('danger', 'Confirm').subscribe(res => {
       if (res) {
-        this.requestsService.cancel(+this.orderId).subscribe();
+        this.requestsService.cancel(+this.orderId).pipe(untilDestroyed(this)).subscribe();
       }
     });
   }
@@ -143,7 +152,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   getOrderInfo(orderId: number): void {
     this.ordersService.getById(orderId).pipe(
       takeUntil(this.destroy$)
-    ).subscribe(order => {
+    ).pipe(untilDestroyed(this)).subscribe(order => {
 
       this.order = order;
       this.order.ordered_items_technologies = [];
@@ -235,7 +244,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         });
 
         request.ids = request.requests.map(req => req.id);
-
+        request.all_reserved_serial_products = [];
+        if (request.reserved_serial_products) {
+          request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
+        }
+        request.requests.forEach(req => {
+          if (req.reserved_serial_products.length > 0) {
+            request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number))
+          }
+        });
         request.total_required_quantity = request.requests.reduce(
           (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
         )
@@ -549,5 +566,131 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  onStartScanning() {
+    this.clearQrResults();
+    this.expandCollapseAllOrders();
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+    this.isScanned = true;
+    this.scanningEnd = false;
+  }
+
+  clearQrResults() {
+    this.currentDisplayRowId = null;
+    this.foundRowsIds = [];
+  }
+
+  onScanned(data: any) {
+    this.scanningEnd = true;
+    this.isScanned = false;
+    this.scanForListProduct(data)
+  }
+
+  onCancelScanned() {
+    this.scanningEnd = true;
+    this.isScanned = false;
+  }
+
+  scanForListProduct(data: ScanResult = null) {
+    this.expandCollapseAllOrders();
+    this.lastScannedId = null;
+
+    requestAnimationFrame(() => {
+      this.elementsRowsIds = [];
+      const elements = document.querySelectorAll(`[id^=row-]`);
+      elements.forEach((element) => {
+        this.elementsRowsIds.push(element.id)
+      });
+    });
+
+    if (this.viewMode === ViewMode.HIERARCHY) {
+      this.expandCollapseAllOrders();
+    }
+
+    this.requestsService.sendDataProductionRequests(this.orderId, data).pipe(untilDestroyed(this)).subscribe(res => {
+      this.testFoundIdsOnScan(res)
+    });
+  }
+
+  testFoundIdsOnScan(res) {
+    const ids = res.map(el => el.item_id_changed);
+
+    let elementIndex;
+    this.listRequests.forEach((request, index) => {
+      const isMainIdChecked = ids.findIndex(id => id === request.id) > -1;
+      if (isMainIdChecked) {
+        request.is_scanned = true;
+        elementIndex = index;
+        this.lastScannedId = request.id;
+      }
+      request.requests.forEach(req => {
+        if (ids.findIndex(id => id === req.id) > -1 ) {
+          req.is_scanned = true;
+          elementIndex = index;
+          this.lastScannedId = request.id;
+        }
+      });
+    });
+
+    if (this.viewMode === ViewMode.LIST) {
+
+      if (elementIndex) {
+        this.firstPage = Math.floor(elementIndex / 10) * 10;
+      }
+    }
+
+    this.requestTree.forEach(node => {
+      node.children.forEach(child => {
+        const request = child.data.request;
+        const isMainIdChecked = ids.findIndex(id => id === request.id) > -1;
+        if (isMainIdChecked) {
+          request.is_scanned = true;
+          this.lastScannedId = request.id;
+        }
+        request.requests?.forEach(req => {
+          if (ids.findIndex(id => id === req.id) > -1 ) {
+            req.is_scanned = true;
+            this.lastScannedId = request.id;
+          }
+        });
+      });
+    });
+    if (this.viewMode === ViewMode.HIERARCHY) {
+
+      if (this.lastScannedId) {
+        this.scrollToElement('row-' + this.lastScannedId);
+      }
+    }
+  }
+
+  scrollToElement(rowId: string): void {
+    const element = document.getElementById(rowId);
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  isFullyScanned(request: any) {
+    if (request.requests.length === 0) {
+      return request.is_scanned;
+    }
+    const mainScanned = request.is_scanned;
+    const allInnerScanned = !(request.requests.findIndex(req => !req.is_scanned) > -1);
+    return mainScanned && allInnerScanned;
+  }
+
+  isPartlyScanned(request: any) {
+    if (request.requests.length === 0) {
+      return false;
+    }
+    const mainScanned = request.is_scanned;
+    const innerNeedScan = request.requests.findIndex(req => !req.is_scanned) > -1;
+    return !this.isFullyScanned(request) && (mainScanned || !innerNeedScan);
   }
 }

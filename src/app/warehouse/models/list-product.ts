@@ -1,5 +1,6 @@
 import {List} from './list';
 import {Nomenclature} from '@shared/models/nomenclature';
+import {SerialNumber} from '../../procurement/models/invoice';
 
 export class ListProduct {
   readonly id: number;
@@ -11,6 +12,8 @@ export class ListProduct {
   list: number | List;
   nomenclature: Nomenclature;
   available_on_locator?: any
+  future_serial_numbers?: SerialNumber[];
+  reserved_serial_numbers?: SerialNumber[];
   has_children?: any;
   parent?: number;
   status?: string;

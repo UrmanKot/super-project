@@ -6,12 +6,24 @@
     </div>
     <div class="page__tools">
       <button
+        class="mr-2 p-button-icon"
+        pButton
+        type="button"
+        icon="pi pi-qrcode"
+        label="Generate QR Codes"
+        [loading]="isGenerating"
+        (click)="onGenerateQrCodes()"
+        [disabled]="!selectedProduct || selectedProduct?.length === 0"
+      >
+      </button>
+      <button
         class="mr-2"
         pButton
         type="button"
         icon="pi pi-info-circle"
         label="Serial Info"
-        [disabled]="selectedProduct?.nomenclature.bulk_or_serial !== '1'"
+        [disabled]="!selectedProduct || (selectedProduct?.length === 0 || selectedProduct?.length > 1) ||
+         selectedProduct[0]?.nomenclature?.bulk_or_serial !== '1'"
         (click)="showSerialsInfo()"
       >
       </button>
@@ -21,7 +33,9 @@
         type="button"
         icon="pi pi-angle-double-right"
         label="Move"
-        [disabled]="!selectedProduct || (!selectedProduct?.total_locator_quantity && !selectedProduct?.total_area_locator_quantity)"
+        [disabled]="!selectedProduct || (selectedProduct?.length === 0 || selectedProduct?.length > 1) ||
+         (selectedProduct?.length === 1 && (!selectedProduct[0]?.total_locator_quantity &&
+          !selectedProduct[0]?.total_area_locator_quantity))"
         (click)="onMoveProduct()"
       >
       </button>
@@ -32,7 +46,7 @@
         class="mr-2"
         label="Edit Item"
         (click)="onEditItem()"
-        [disabled]="!selectedProduct"
+        [disabled]="!selectedProduct || (selectedProduct?.length === 0 || selectedProduct?.length > 1)"
       ></button>
       <button pButton type="button" icon="pi pi-plus" label="New Item" (click)="onAddItem()"></button>
     </div>
@@ -151,7 +165,7 @@
           <div class="table-pagination-preloader">
             <p-table
               #dt
-              selectionMode="single"
+              selectionMode="multiple"
               [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
               dataKey="uid"
               [scrollable]="true"
@@ -161,6 +175,9 @@
             >
               <ng-template pTemplate="header">
                 <tr>
+                  <th style="width: 3%">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
                   <th class="index-header text-center" style="width: 5%">#</th>
                   <th style="width: 15%"
                       class="sort-label"
@@ -207,6 +224,9 @@
               </ng-template>
               <ng-template pTemplate="body" let-product let-i="rowIndex">
                 <tr [pSelectableRow]="product" [pRowToggler]="product">
+                  <td style="width: 3%">
+                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                  </td>
                   <td style="width: 5%" class="text-center">
                     <h3 class="td-title">#</h3>
                     {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}

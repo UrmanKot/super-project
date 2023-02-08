@@ -92,9 +92,10 @@ export class WarehouseQcComponent implements OnInit {
       this.fillOwnProductionWithData();
 
       this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
-      this.invoicesList = this.invoices.filter(i => !i.purchase_category)
+      this.invoicesList = this.invoices.filter(i => !i.purchase_category);
+      // console.log('this.invoicesList', this.invoicesList);
       this.ordersList = this.orders.map(o => o);
-      console.log('this.ordersList', this.ordersList);
+      // console.log('this.ordersList', this.ordersList);
       this.isLoading = false;
     });
   }

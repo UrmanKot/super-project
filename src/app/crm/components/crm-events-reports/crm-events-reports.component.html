@@ -302,13 +302,13 @@
               <th
                 class="text-center dark-two sort-label"
                 style="width: 10%"
-                (click)="sorting(searchForm.get('order_by_date').value, 'order_by_date')"
+                (click)="sorting(searchForm.get('order_by_date').value, 'order_by_date', false); removeSoring('order_by_date_end')"
               >
                 Start Date
                 <pek-sort-icon [value]="searchForm.get('order_by_date').value"></pek-sort-icon>
               </th>
               <th
-                (click)="sorting(searchForm.get('order_by_date_end').value, 'order_by_date_end')"
+                (click)="sorting(searchForm.get('order_by_date_end').value, 'order_by_date_end', false); removeSoring('order_by_date')"
                 class="text-center dark-two sort-label"
                 style="width: 10%"
               >
@@ -321,7 +321,7 @@
               <th
                 class="text-center dark sort-label"
                 style="width: 10%"
-                (click)="sorting(searchForm.get('order_by_next_event_date').value, 'order_by_next_event_date')"
+                (click)="sorting(searchForm.get('order_by_next_event_date').value, 'order_by_next_event_date', false); removeSoring('order_by_next_event_date_end')"
               >
                 Start Date
                 <pek-sort-icon [value]="searchForm.get('order_by_next_event_date').value"></pek-sort-icon>
@@ -329,7 +329,7 @@
               <th
                 class="text-center dark border-right  sort-label"
                 style="width: 10%"
-                (click)="sorting(searchForm.get('order_by_next_event_date_end').value, 'order_by_next_event_date_end')"
+                (click)="sorting(searchForm.get('order_by_next_event_date_end').value, 'order_by_next_event_date_end', false); removeSoring('order_by_next_event_date')"
               >
                 End Date
                 <pek-sort-icon [value]="searchForm.get('order_by_next_event_date_end').value"></pek-sort-icon>
@@ -566,13 +566,13 @@
             <th
               class="text-center dark-two sort-label"
               style="width: 10%"
-              (click)="sorting(searchForm.get('order_by_date').value, 'order_by_date')"
+              (click)="sorting(searchForm.get('order_by_date').value, 'order_by_date', false); removeSoring('order_by_date_end')"
             >
               Start Date
               <pek-sort-icon [value]="searchForm.get('order_by_date').value"></pek-sort-icon>
             </th>
             <th
-              (click)="sorting(searchForm.get('order_by_date_end').value, 'order_by_date_end')"
+              (click)="sorting(searchForm.get('order_by_date_end').value, 'order_by_date_end', false); removeSoring('order_by_date')"
               class="text-center dark-two sort-label"
               style="width: 10%"
             >
@@ -585,7 +585,7 @@
             <th
               class="text-center dark sort-label"
               style="width: 10%"
-              (click)="sorting(searchForm.get('order_by_next_event_date').value, 'order_by_next_event_date')"
+              (click)="sorting(searchForm.get('order_by_next_event_date').value, 'order_by_next_event_date', false); removeSoring('order_by_next_event_date_end')"
             >
               Start Date
               <pek-sort-icon [value]="searchForm.get('order_by_next_event_date').value"></pek-sort-icon>
@@ -593,7 +593,7 @@
             <th
               class="text-center dark border-right  sort-label"
               style="width: 10%"
-              (click)="sorting(searchForm.get('order_by_next_event_date_end').value, 'order_by_next_event_date_end')"
+              (click)="sorting(searchForm.get('order_by_next_event_date_end').value, 'order_by_next_event_date_end', false); removeSoring('order_by_next_event_date')"
             >
               End Date
               <pek-sort-icon [value]="searchForm.get('order_by_next_event_date_end').value"></pek-sort-icon>

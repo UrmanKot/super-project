@@ -149,11 +149,20 @@
                 {{product.nomenclature?.code}}
               </span>
             </td>
-            <td style="width: 16%">
+            <td style="width: 16%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
               <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
               ({{product.id}})
               {{product.nomenclature?.name}}
+
+              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0" class="serial-numbers">
+                <div *ngFor="let serialNumber of product.reserved_serial_numbers">
+                  {{serialNumber.type_with_number}} (R)
+                </div>
+                <div *ngFor="let serialNumber of product.future_serial_numbers">
+                  {{serialNumber.type_with_number}} (F)
+                </div>
+              </div>
             </td>
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
@@ -328,10 +337,19 @@
                 <span *ngIf="!rowData.list_url">{{rowData.nomenclature.code}}</span>
               </div>
             </td>
-            <td style="width: 16%">
+            <td style="width: 16%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
               ) {{rowData.nomenclature.name}}
+
+              <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0" class="serial-numbers">
+                <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
+                  {{serialNumber.type_with_number}} (R)
+                </div>
+                <div *ngFor="let serialNumber of rowData.future_serial_numbers">
+                  {{serialNumber.type_with_number}} (F)
+                </div>
+              </div>
             </td>
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
