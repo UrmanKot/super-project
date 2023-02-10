@@ -1,8 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {WarehouseProductService} from '../../services/warehouse-product.service';
-import {WarehouseProduct, WarehouseProducts} from '../../models/warehouse-product';
+import {WarehouseProduct} from '../../models/warehouse-product';
 import {finalize} from 'rxjs';
 
 @Component({
@@ -13,12 +13,7 @@ import {finalize} from 'rxjs';
 export class MoveWarehouseProductComponent implements OnInit {
   isSaving = false;
 
-  form = this.fb.group({
-    quantity: [0, [Validators.max(this.product.quantity ? this.product.quantity : this.product.total_locator_quantity), Validators.min(1), Validators.required]],
-    nomenclature: [this.product.nomenclature.id, Validators.required],
-    to_locator: [null, Validators.required],
-    from_locator: [this.product.locator.id, Validators.required],
-  });
+  form: FormGroup;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -29,6 +24,20 @@ export class MoveWarehouseProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.product.serial_numbers) {
+      this.form = this.fb.group({
+        quantity: [0, [Validators.max(this.product.quantity ? this.product.quantity : this.product.total_locator_quantity), Validators.min(1), Validators.required]],
+        nomenclature: [this.product.nomenclature.id, Validators.required],
+        to_locator: [null, Validators.required],
+        from_locator: [this.product.locator.id, Validators.required],
+      });
+    } else {
+      this.form = this.fb.group({
+        quantity: [0, [Validators.max(this.product.quantity ? this.product.quantity : this.product.total_locator_quantity), Validators.min(1), Validators.required]],
+        id: [this.product.id, Validators.required],
+        to_locator: [null, Validators.required],
+      });
+    }
   }
 
   selectLocator(id: number) {
@@ -45,7 +54,7 @@ export class MoveWarehouseProductComponent implements OnInit {
         ).subscribe(() => this.dialogRef.close(true));
       }
       if (!this.product.serial_numbers) {
-        this.warehouseProductService.moveBulk(<Partial<WarehouseProduct>>this.form.value).pipe(
+        this.warehouseProductService.moveWarehouseItemsBulk(<Partial<WarehouseProduct>[]>[this.form.value]).pipe(
           finalize(() => this.isSaving = false)
         ).subscribe(() => this.dialogRef.close(true));
       }
