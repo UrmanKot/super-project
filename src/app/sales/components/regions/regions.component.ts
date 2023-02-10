@@ -244,6 +244,10 @@ export class RegionsComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateInfo(type: 'country' | 'region' | 'subRegion') {
+    console.log('TREE', this.tree);
+  }
+
   private deleteSubRegion() {
     this.modalService
       .confirm('danger', 'Confirm')

@@ -110,7 +110,13 @@
               ></p-calendar>
             </div>
           </div>
-          <div class="col-3"></div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Is Prepared</label>
+              <p-checkbox class="mt-1" formControlName="is_closed" [binary]="true" (ngModelChange)="searchProducts()"></p-checkbox>
+            </div>
+          </div>
           <div class="col-3">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>

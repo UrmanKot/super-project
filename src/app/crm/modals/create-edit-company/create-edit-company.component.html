@@ -96,6 +96,7 @@
       <label>Region</label>
       <div class="countries">
         <pek-region-picker
+          [isDisabled]="!form.get('country').value"
           [countrySelected]="form.get('country').value?.id"
           [selectedRegionId]="form.get('region').value?.id"
           (selectRegionFull)="regionSelected($event)"
@@ -106,6 +107,7 @@
       <label>Sub Region</label>
       <div class="countries">
         <pek-sub-region-picker
+          [isDisabled]="!form.get('region').value"
           [regionSelected]="form.get('region').value?.id"
           [selectedSubRegionId]="form.get('sub_region').value?.id"
           (selectSubRegionFull)="regionSubSelected($event)"
