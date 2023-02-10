@@ -31,7 +31,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   isLoading = false;
   isStartOnePage = false;
 
-  selectedProduct: WarehouseProduct[] = [];
+  selectedProducts: WarehouseProduct[] = [];
   products: WarehouseProduct[] = [];
   countProducts: number = 0;
 
@@ -78,7 +78,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     fromEvent(this.searchBoxName.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProduct = null),
+        tap(() => this.selectedProducts = []),
         map(() => this.searchBoxName.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -87,7 +87,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxCode.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProduct = null),
+        tap(() => this.selectedProducts = []),
         map(() => this.searchBoxCode.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -96,7 +96,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxDescription.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProduct = null),
+        tap(() => this.selectedProducts = []),
         map(() => this.searchBoxDescription.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -176,7 +176,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   searchProducts() {
     this.isLoading = true;
     this.destroy$.next(true);
-    this.selectedProduct = [];
+    this.selectedProducts = [];
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
@@ -275,7 +275,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onEditItem() {
-    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct[0].nomenclature.id).subscribe(response => {
+    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProducts[0].nomenclature.id).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -283,7 +283,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onMoveProduct() {
-    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProduct[0]).subscribe(response => {
+    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProducts[0]).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -372,8 +372,8 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   showSerialsInfo() {
-    if (this.selectedProduct) {
-      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct[0].extra_info, this.selectedProduct[0].nomenclature as Nomenclature).subscribe();
+    if (this.selectedProducts) {
+      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProducts[0].extra_info, this.selectedProducts[0].nomenclature as Nomenclature).subscribe();
     }
   }
 
@@ -447,7 +447,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       by_nomenclatures_list: [],
     };
 
-    this.selectedProduct.forEach(p => {
+    this.selectedProducts.forEach(p => {
       console.log('product', p);
       if (p.nomenclature.bulk_or_serial !== '1') {
         send.by_nomenclatures_list.push({
@@ -467,5 +467,9 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     });
 
     this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
+  }
+
+  isReservedDisable(): boolean {
+    return Boolean(this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.quantity, 0) === this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.reserved_by_opened_production_lists_quantity, 0));
   }
 }

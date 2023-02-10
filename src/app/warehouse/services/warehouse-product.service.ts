@@ -126,7 +126,7 @@ export class WarehouseProductService {
     return this.httpClient.post(this.API_URL + 'bulk_move_bulk_products/', product);
   }
 
-  moveWarehouseItemsBulk(product: Partial<WarehouseProduct>[]): Observable<any> {
+  moveWarehouseSeveralBulk(product: Partial<WarehouseProduct>[]): Observable<any> {
     return this.httpClient.post(this.API_URL + this.url + 'bulk_product_bulk_move_by_ids/', product);
   }
 
