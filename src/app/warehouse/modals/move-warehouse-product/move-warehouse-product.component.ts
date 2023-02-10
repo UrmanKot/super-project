@@ -74,7 +74,7 @@ export class MoveWarehouseProductComponent implements OnInit {
           });
         });
 
-        this.warehouseProductService.moveWarehouseSeveralBulk(<Partial<WarehouseProduct>[]>(send)).pipe(
+        this.warehouseProductService.moveWarehouseSeveralBulk(<Partial<WarehouseProduct>[]>send).pipe(
           finalize(() => this.isSaving = false)
         ).subscribe(() => this.dialogRef.close(true));
       }
