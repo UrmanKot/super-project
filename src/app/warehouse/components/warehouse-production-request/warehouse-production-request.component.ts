@@ -13,7 +13,7 @@ import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {environment} from '@env/environment';
-import {forkJoin, Subject, takeUntil} from 'rxjs';
+import {find, forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
 import {take} from 'rxjs/operators';
@@ -21,6 +21,7 @@ import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {SerialNumber} from '../../../procurement/models/invoice';
 import {ScanResult} from '../../../qr-code/models/scan-result';
+import {GroupedRequest} from '../../models/grouped-request';
 
 
 enum ViewMode {
@@ -31,13 +32,6 @@ enum ViewMode {
 
 class ProductRequestListOrder extends Order {
   ordered_items_technologies?: string[];
-}
-
-class GroupedRequest extends Request {
-  ids?: number[];
-  requests?: Request[];
-  all_reserved_serial_products?: SerialNumber[];
-  total_required_quantity?: number;
 }
 
 @UntilDestroy()
@@ -245,6 +239,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
         request.ids = request.requests.map(req => req.id);
         request.all_reserved_serial_products = [];
+        request.unique_locators = [...request.locators]
         if (request.reserved_serial_products) {
           request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
         }
@@ -252,10 +247,12 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           if (req.reserved_serial_products.length > 0) {
             request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number))
           }
+          request.unique_locators.push(...req.locators);
         });
         request.total_required_quantity = request.requests.reduce(
           (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
         )
+        request.unique_locators = request.unique_locators.filter((locator, index, self) => self.findIndex(innerLocator => innerLocator.id === locator.id) === index)
 
         request.ids.forEach(id => {
           const index = this.listRequests.findIndex(req => req.id === id);

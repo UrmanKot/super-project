@@ -48,6 +48,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     category__in: [null],
     root_categories: [null],
     accounting_type: [null],
+    is_closed: [false],
     is_production_requests_fully_completed: [null],
   });
 
@@ -180,6 +181,10 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
 
     if (this.searchForm.get('accounting_type').value !== null) {
       this.query.push({name: 'accounting_type', value: this.searchForm.get('accounting_type').value});
+    }
+
+    if (this.searchForm.get('is_closed').value !== null) {
+      this.query.push({name: 'is_prepared', value: this.searchForm.get('is_closed').value});
     }
 
     if (this.searchForm.get('category__in').value) {

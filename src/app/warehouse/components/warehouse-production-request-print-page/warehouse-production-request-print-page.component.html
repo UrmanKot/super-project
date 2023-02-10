@@ -47,7 +47,7 @@
       <div class="warehouse-production-request-print-page__box">
         <div class="warehouse-production-request-print-page__col">
           <h3>ID</h3>
-          <p>{{request.id}}</p>
+          <p>{{request.id}} <span *ngIf="request.ids.length > 0">L({{request.ids.length + 1}})</span></p>
         </div>
         <div class="warehouse-production-request-print-page__col">
           <h3>Code</h3>
@@ -82,13 +82,13 @@
         </div>
         <div class="warehouse-production-request-print-page__col">
           <h3>Required Quantity</h3>
-          {{request.required_quantity}}
+          {{request.total_required_quantity}}
         </div>
         <div class="warehouse-production-request-print-page__col">
           <h3>Locator</h3>
           <div *ngIf="request.locators">
-            <div *ngFor="let locator of request.locators">
-              {{locator.name}}
+            <div *ngFor="let locator of request.unique_locators; let last=last">
+              {{locator.name}}<span *ngIf="!last">,</span>
             </div>
           </div>
         </div>

@@ -430,6 +430,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   sorting(value: boolean, field: string) {
+    this.resetAllSorting();
     if (value === null) {
       this.searchForm.get(field).patchValue(false);
     } else if (value === false) {
@@ -438,6 +439,15 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       this.searchForm.get(field).patchValue(null);
     }
     this.searchProducts();
+  }
+
+  resetAllSorting() {
+    this.searchForm.get('order_by_code').setValue(null);
+    this.searchForm.get('order_by_name').setValue(null);
+    this.searchForm.get('order_by_category').setValue(null);
+    this.searchForm.get('order_by_warehouse').setValue(null);
+    this.searchForm.get('order_by_locator').setValue(null);
+    this.searchForm.get('order_by_quantity').setValue(null);
   }
 
   onGenerateQrCodes() {

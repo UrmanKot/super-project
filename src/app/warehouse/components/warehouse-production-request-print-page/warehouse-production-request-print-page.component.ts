@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Request} from '../../models/request';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 import {AuthService} from '../../../auth/auth.service';
+import {SerialNumber} from '../../../procurement/models/invoice';
+import {GroupedRequest} from '../../models/grouped-request';
 
 @Component({
   selector: 'pek-warehouse-production-request-print-page',
@@ -9,7 +11,7 @@ import {AuthService} from '../../../auth/auth.service';
   styleUrls: ['./warehouse-production-request-print-page.component.scss']
 })
 export class WarehouseProductionRequestPrintPageComponent implements OnInit {
-  @Input() requests: Request[] = [];
+  @Input() requests: GroupedRequest[] = [];
   @Input() rootList: any;
   @Input() orderId: number;
   @Input() technologies: string[];

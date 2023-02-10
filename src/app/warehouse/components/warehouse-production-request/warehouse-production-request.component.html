@@ -261,8 +261,8 @@
               <td style="width: 13%" class="text-center">
                 <h3 class="td-title">Locator</h3>
                 <div *ngIf="request.locators">
-                  <div *ngFor="let locator of request.locators">
-                    {{locator.name}}
+                  <div *ngFor="let locator of request.unique_locators; let last=last">
+                    {{locator.name}} <span *ngIf="!last">,</span>
                   </div>
                 </div>
               </td>
@@ -464,8 +464,8 @@
               <h3 class="td-title">Locator</h3>
               <div *ngIf="rowData.level === 4">
                 <div *ngIf="rowData.request.locators">
-                  <div *ngFor="let locator of rowData.request.locators">
-                    {{locator.name}}
+                  <div *ngFor="let locator of rowData.request.unique_locators; let last=last">
+                    {{locator.name}}<span *ngIf="!last">,</span>
                   </div>
                 </div>
               </div>
@@ -718,7 +718,7 @@
     <pek-warehouse-production-request-print-page
       [rootList]="rootList"
       [orderId]="+orderId"
-      [requests]="requests"
+      [requests]="listRequests"
       [currentReqDate]="currentReqDate"
       [technologies]="order?.ordered_items_technologies"
     ></pek-warehouse-production-request-print-page>
