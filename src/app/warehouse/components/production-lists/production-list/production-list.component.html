@@ -89,7 +89,7 @@
       <p-table
         #dt
         [scrollable]="true"
-        scrollHeight="calc(100vh - 16.625rem)"
+        scrollHeight="calc(100vh - 21.5rem)"
         [value]="products"
         selectionMode="single"
         [(selection)]="selectedNode"
@@ -113,7 +113,8 @@
               </button>
               Code
             </th>
-            <th style="width: 16%">Name</th>
+            <th style="width: 8%">Name</th>
+            <th style="width: 8%">Technology</th>
             <th style="width: 8%" class="text-center">Total Req Qty</th>
             <th style="width: 10%" class="text-center">Req Qty Per One</th>
             <th style="width: 8%" class="text-center">Free Wh Qty</th>
@@ -164,6 +165,9 @@
                 </div>
               </div>
             </td>
+            <td>
+              {{product.technology?.id}}
+            </td>
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
               {{product.total_required_quantity}}
@@ -178,7 +182,7 @@
             </td>
             <td style="width: 7%" class="text-center">
               <h3 class="td-title">Reserved Qty</h3>
-              {{product.reserved_quantity ? product.reserved_quantity : 0}}
+              {{product.reserved_quantity}}
             </td>
             <td style="width: 7%" class="text-center">
               <h3 class="td-title">Actual Qty</h3>
@@ -302,7 +306,8 @@
               </button>
               Code
             </th>
-            <th style="width: 16%">Name</th>
+            <th style="width: 10%">Name</th>
+            <th style="width: 6%">Technology</th>
             <th style="width: 8%" class="text-center">Total Req Qty</th>
             <th style="width: 10%" class="text-center">Req Qty Per One</th>
             <th style="width: 8%" class="text-center">Free Wh Qty</th>
@@ -328,21 +333,23 @@
                                     [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
                 <a
                   [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
-                  *ngIf="rowData.list_url"
+                  *ngIf="rowData.has_children"
                   class="list-parent"
                   [routerLink]="['/warehouse/production-lists/', rowData.list]"
                 >
                   {{rowData.nomenclature.code}}
                 </a>
-                <span *ngIf="!rowData.list_url">{{rowData.nomenclature.code}}</span>
+                <span *ngIf="!rowData.has_children">{{rowData.nomenclature.code}}</span>
+
+<!--                <b>({{rowData.id}})</b>-->
               </div>
             </td>
-            <td style="width: 16%" class="serial-number-cont">
+            <td style="width: 10%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
               ) {{rowData.nomenclature.name}}
 
-              <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0" class="serial-numbers">
+              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0" class="serial-numbers">
                 <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
                   {{serialNumber.type_with_number}} (R)
                 </div>
@@ -351,7 +358,8 @@
                 </div>
               </div>
             </td>
-            <td style="width: 8%" class="text-center">
+            <td>{{rowData.technology?.name}}</td>
+            <td style="width: 6%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
               {{rowData.total_required_quantity}}
             </td>

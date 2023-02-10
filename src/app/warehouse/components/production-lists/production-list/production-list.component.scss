@@ -1,5 +1,14 @@
 @import "src/app/shared/styles/screens-variables";
 
+.header-wrapper {
+  display: flex;
+  align-items: center;
+
+  h1 {
+    max-width: 30rem;
+  }
+}
+
 ::ng-deep {
   tr.is-found-row {
     td {
@@ -12,11 +21,11 @@
     }
   }
 
-  .p-treetable-scrollable-body, .p-datatable-wrapper {
-    table {
-        margin-bottom: 3rem;
-    }
-  }
+  //.p-treetable-scrollable-body, .p-datatable-wrapper {
+  //  table {
+  //      margin-bottom: 3rem;
+  //  }
+  //}
 }
 
 .colors {
