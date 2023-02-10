@@ -89,6 +89,7 @@ import { CrmTreeCompanyPickerComponent } from './pickers/crm-tree-company-picker
 import { SubRegionPickerComponent } from './pickers/sub-region-picker/sub-region-picker.component';
 import { OrderStatusesTableComponent } from './components/order-statuses-table/order-statuses-table.component';
 import { OrderStatusesChartComponent } from './components/order-statuses-chart/order-statuses-chart.component';
+import { SearchPipe } from './pipes/search.pipe';
 
 
 @NgModule({
@@ -157,6 +158,7 @@ import { OrderStatusesChartComponent } from './components/order-statuses-chart/o
     SubRegionPickerComponent,
     OrderStatusesTableComponent,
     OrderStatusesChartComponent,
+    SearchPipe,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -227,6 +229,7 @@ import { OrderStatusesChartComponent } from './components/order-statuses-chart/o
     CrmTreeCompanyPickerComponent,
     SubRegionPickerComponent,
     OrderStatusesTableComponent,
+    SearchPipe,
   ],
   imports: [
     MultiSelectModule,

@@ -1,0 +1,37 @@
+<div class="guide-glossary">
+  <div class="guide-glossary__row">
+    <div class="guide-glossary__column-left">
+      <input
+        [(ngModel)]="searchTitle"
+        pInputText
+        class="form-control"
+        type="text"
+        placeholder="Search..."
+      />
+      <ul class="guide-glossary__list">
+        <li
+          class="guide-glossary__item"
+          [class.active]="selectedItem?.title === item.title"
+          *ngFor="let item of glossary | glossarySearch: searchTitle"
+          (click)="onSelectItem(item)"
+        >
+          {{item.title}}
+        </li>
+      </ul>
+    </div>
+    <div class="guide-glossary__column-right">
+      <div class="guide-glossary__box">
+        <h2>{{selectedItem?.title || 'Choice Item'}}</h2>
+        <div class="guide-glossary__description">
+          <ng-container *ngIf="selectedItem">
+            <p>
+              {{selectedItem.description}}
+            </p>
+
+            <img *ngFor="let img of selectedItem.images" [src]="'assets/images/glossary/' + img">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
