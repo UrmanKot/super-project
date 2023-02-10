@@ -41,12 +41,16 @@
         <div>
           Current Structure
         </div>
-        <div>
+        <div class="d-flex align-item-center">
+          <p-menubar
+            class="product-structure-bar ml-auto mr-2"
+            [model]="currentMenuItems"
+            [class.disabled]="!currentSelectedItem || currentSelectedItem && (hasNoMultipleNames(currentSelectedItem.data) || codeHasMoreThanOne(currentSelectedItem.data))"
+          ></p-menubar>
           <button
             pButton
             type="button"
             icon="pi pi-angle-down"
-            label="Expand All"
             class="mr-2"
             (click)="expandAllCurrent()"
           ></button>
@@ -54,7 +58,6 @@
             pButton
             type="button"
             icon="pi pi-angle-up"
-            label="Collapse All"
             (click)="collapseAllCurrent()"
           ></button>
         </div>
@@ -63,6 +66,7 @@
     <p-treeTable
       #dt
       [value]="currentProductsTree"
+      [(selection)]="currentSelectedItem"
       selectionMode="single"
       [scrollable]="true"
       scrollHeight="calc(100vh - 19.2rem)"
@@ -78,7 +82,7 @@
         <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
             [class.is-new]="rowData?.isNew"
             [class.quantity-changed]="rowData?.hasQuantityChanged && !rowData?.hasNameChanged && !rowData?.isDeleted"
-            [class.name-changed]="rowData?.hasNameChanged && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.name-changed]="hasNameChanged(rowData) && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
             [class.is-deleted]="rowData?.isDeleted && !rowData?.hasQuantityChanged && !rowData?.hasNameChanged">
           <td
             style="width: 30%"
@@ -91,8 +95,21 @@
                 </span>
             </div>
           </td>
-          <td style="width: 20%">
-            {{rowData?.name}}</td>
+          <td style="width: 20%" class="name">
+            {{rowData?.name}}
+            <span *ngIf="rowData ? codeHasMoreThanOne(rowData) : false">
+              <p class="badge_warning">Has Multiple Names In Import</p>
+            </span>
+            <span *ngIf="getPossibleName(rowData?.code) &&
+             getPossibleName(rowData?.code) !== rowData?.name && !codeHasMoreThanOne(rowData)">
+              <b>
+                <br>
+                New Name:
+                <br>
+                {{getPossibleName(rowData?.code)}}
+              </b>
+            </span>
+          </td>
           <td
             style="width: 7%"
             class="text-center"
@@ -118,12 +135,16 @@
         <div>
           New Structure
         </div>
-        <div>
+        <div class="d-flex align-item-center">
+          <p-menubar
+            class="product-structure-bar ml-auto mr-2"
+            [model]="newMenuItems"
+            [class.disabled]="!newSelectedItem || newSelectedItem && (hasNoMultipleNames(newSelectedItem.data) || codeHasMoreThanOne(newSelectedItem.data))"
+          ></p-menubar>
           <button
             pButton
             type="button"
             icon="pi pi-angle-down"
-            label="Expand All"
             class="mr-2"
             (click)="expandAllNew()"
           ></button>
@@ -131,7 +152,6 @@
             pButton
             type="button"
             icon="pi pi-angle-up"
-            label="Collapse All"
             (click)="collapseAllNew()"
           ></button>
         </div>
@@ -143,6 +163,7 @@
       selectionMode="single"
       [scrollable]="true"
       scrollHeight="calc(100vh - 19.2rem)"
+      [(selection)]="newSelectedItem"
       cdkDropListGroup
     >
       <ng-template pTemplate="header">
@@ -156,7 +177,7 @@
         <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
             [class.is-new]="rowData?.isNew && !rowData?.hasCycle"
             [class.quantity-changed]="rowData?.hasQuantityChanged && !rowData?.hasNameChanged && !rowData?.isDeleted"
-            [class.name-changed]="rowData?.hasNameChanged && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.name-changed]="hasNameChanged(rowData) && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
             [class.is-cycled]="rowData?.hasCycle && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
             [class.is-deleted]="rowData?.isDeleted && !rowData?.hasQuantityChanged && !rowData?.hasNameChanged">
           <td
@@ -170,8 +191,22 @@
                 </span>
             </div>
           </td>
-          <td style="width: 20%">
-            {{rowData?.name}}</td>
+          <td class="name" style="width: 20%">
+            {{rowData?.name}}
+            <span *ngIf="rowData ? codeHasMoreThanOne(rowData) : false">
+              <p class="badge_warning">Has Multiple Names In Import</p>
+            </span>
+            <span *ngIf="getPossibleName(rowData?.code, true) &&
+             getPossibleName(rowData?.code, true) !== rowData?.name && !codeHasMoreThanOne(rowData)">
+              <b>
+                <br>
+                Current Name:
+                <br>
+                {{getPossibleName(rowData?.code, true)}}
+              </b>
+
+            </span>
+          </td>
           <td
             style="width: 7%"
             class="text-center"
@@ -199,12 +234,34 @@
     label="Cancel Changes"
     (click)="onCancel()"
   ></button>
-  <button
-    [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct || hasChangedName"
-    pButton
-    type="button"
-    class="p-button-success"
-    label="Accept Changes"
-    (click)="onContinueUpdate()"
-  ></button>
+  <div class="d-flex align-items-center">
+    <button
+      *ngIf="hasNameChangeDepend() && !moreThanOne()"
+      pButton
+      type="button"
+      class="p-button-warning mr-2"
+      label="Accept Current Names For All"
+      [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct"
+      (click)="acceptCurrentForAll()"
+    ></button>
+    <button
+      *ngIf="hasNameChangeDepend() && !moreThanOne()"
+      pButton
+      type="button"
+      class="p-button-danger  mr-2"
+      label="Accept New Names For All"
+      [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct"
+      (click)="acceptNewForAll()"
+    ></button>
+    <p style="display: inline-block" class="mr-2 text-danger" *ngIf="moreThanOne()"><b>Some Codes Has More Than One Different Name</b></p>
+    <button
+      [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct || hasNameChangeDepend()"
+      pButton
+      type="button"
+      class="p-button-success"
+      label="Accept Changes"
+      (click)="onContinueUpdate()"
+    ></button>
+  </div>
+
 </div>

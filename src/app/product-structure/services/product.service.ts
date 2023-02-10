@@ -13,6 +13,7 @@ import {UploadProductStructureComponent} from '../modals/upload-product-structur
 import {ProductFilesComponent} from '../modals/product-files/product-files.component';
 import {CompareStructureComponent} from '../modals/compare-structure/compare-structure.component';
 import {ProductStructureCompareResult} from '../models/product-structure-compare-result';
+import {CompareChangedCodeName} from '../models/compare-changed-code-name';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,8 @@ export class ProductService {
   API_URL = environment.base_url + environment.product_structure_url;
   private readonly url = 'products/';
   private readonly;
+  formData = new FormData();
+
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -65,7 +68,7 @@ export class ProductService {
   }
 
   move(move: any, productId: number): Observable<Product> {
-    return this.httpClient.post<{data: Product}>(this.API_URL + this.url + `${productId}/move/`, move).pipe(
+    return this.httpClient.post<{ data: Product }>(this.API_URL + this.url + `${productId}/move/`, move).pipe(
       map(response => response.data)
     );
   }
@@ -102,17 +105,35 @@ export class ProductService {
     data: {
       file_xls: File,
       root_product_id: number,
-      passed_codes: string[]
+      passed_codes?: string,
+      changed_names: { code: string, selected_name: string }[],
     }): Observable<any> {
-    const formData = new FormData();
+    this.formData = new FormData();
 
-    for (const key in data) {
-      formData.append(key, data[key]);
-    }
+    this.createFormData(data);
 
-    return this.httpClient.post(this.API_URL + 'products/import_products/', formData).pipe(
+    return this.httpClient.post(this.API_URL + 'products/import_products/', this.formData).pipe(
       map(response => response)
     );
+  }
+
+  createFormData(obj, subKeyStr = '') {
+    for (const i in obj) {
+      const value = obj[i];
+      const subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
+
+      if (typeof (value) === 'string' || typeof (value) === 'number' || typeof (value) === 'boolean') {
+        // @ts-ignore
+        this.formData.append(subKeyStrTrans, value);
+
+      } else if (typeof (value) === 'object') {
+        if (value instanceof File) {
+          this.formData.append(subKeyStrTrans, value);
+        } else {
+          this.createFormData(value, subKeyStrTrans);
+        }
+      }
+    }
   }
 
   compare_structure(
@@ -211,13 +232,16 @@ export class ProductService {
   }
 
 
-
-  openCompareStructureDialog(newResult: any, oldResult: any, hasCyclingProduct: boolean, hasChangedName: boolean): Observable<boolean> {
+  openCompareStructureDialog(newResult: any,
+                             oldResult: any,
+                             hasCyclingProduct: boolean,
+                             hasChangedName: boolean,
+                             changedNamesList: CompareChangedCodeName[]): Observable<boolean | { code: string, selected_name: string }[]> {
     return this.dialog
       .open<CompareStructureComponent>(CompareStructureComponent, {
         width: '80rem',
         height: 'auto',
-        data: {newResult, oldResult, hasCyclingProduct, hasChangedName},
+        data: {newResult, oldResult, hasCyclingProduct, hasChangedName, changedNamesList},
         panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'

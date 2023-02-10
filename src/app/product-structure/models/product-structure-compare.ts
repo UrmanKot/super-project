@@ -2,6 +2,7 @@ export class ProductStructureCompare {
   id?: number;
   code?: string;
   name: string;
+  current_name?: string;
   parent_id?: number;
   quantity: number;
   children?: ProductStructureCompare[];
@@ -10,5 +11,8 @@ export class ProductStructureCompare {
   isDeleted?: boolean;
   hasNameChanged?: boolean;
   hasQuantityChanged?: boolean;
+  hasCheckedForDeletion?: boolean;
+  hasCheckedForQuantity?: boolean = false;
+  hasCheckedForNew?: boolean;
   hasCycle?: boolean;
 }

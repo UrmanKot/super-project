@@ -5,6 +5,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {TreeNode} from 'primeng/api';
 import {ProductStructureCompare} from '../../models/product-structure-compare';
 import {AncestorProductStructureCompare} from '../../models/product-structure-compare-result';
+import {CompareChangedCodeName} from '../../models/compare-changed-code-name';
 
 @Component({
   selector: 'pek-upload-product-structure',
@@ -29,11 +30,13 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
   newStructure: ProductStructureCompare;
   currentStructure: ProductStructureCompare;
   ancestorsProducts: AncestorProductStructureCompare[];
+  changedNames: { code: string, selected_name: string }[];
+  changedCodeNamesList: CompareChangedCodeName[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<UploadProductStructureComponent>,
     private productService: ProductService,
-    @Inject(MAT_DIALOG_DATA) public data: {productId: number, rootProductId: number},
+    @Inject(MAT_DIALOG_DATA) public data: { productId: number, rootProductId: number },
   ) {
   }
 
@@ -61,10 +64,17 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
         this.newStructure = res.data.new_structure;
         this.currentStructure = res.data.current_structure;
         this.ancestorsProducts = res.data.ancestors_products;
+
         this.checkForDifferences();
-        if (this.hasCyclingProduct || this.hasChangedName || this.hasChanges) {
-          this.productService.openCompareStructureDialog(this.newProductsTree, this.currentProductsTree, this.hasCyclingProduct, this.hasChangedName).subscribe(res => {
+        this.newProductsTree.forEach(node => {
+          node.children.forEach(child => {
+            this.collectChangedNames(child);
+          });
+        });
+        if (this.hasCyclingProduct || this.changedCodeNamesList.length > 0 || this.hasChanges) {
+          this.productService.openCompareStructureDialog(this.newProductsTree, this.currentProductsTree, this.hasCyclingProduct, this.hasChangedName, this.changedCodeNamesList).subscribe(res => {
             if (res) {
+              this.changedNames = res as { code: string, selected_name: string }[];
               this.onUpload();
             } else {
               this.dialogRef.close(false);
@@ -83,14 +93,36 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUpload(codes: string[] = []) {
+
+  collectChangedNames(node: TreeNode<ProductStructureCompare>) {
+    if (node.data.current_name && node.data.current_name.trim() !== node.data.name.trim()) {
+      const isNotExists = this.changedCodeNamesList.findIndex(change => change.code === node.data.code && change.newName === node.data.name.trim()) < 0;
+      if (isNotExists) {
+        this.changedCodeNamesList.push({
+          currentName: node.data.current_name.trim(),
+          newName: node.data.name.trim(),
+          selectedName: '',
+          code: node.data.code
+        });
+      }
+    }
+    node.children.forEach(child => {
+      this.collectChangedNames(child);
+    });
+  }
+
+  onUpload(codes: string[] = null) {
     this.isLoading = true;
 
     const data = {
       file_xls: this.fileToUpload,
       root_product_id: this.data.productId,
-      passed_codes: codes
+      changed_names: this.changedNames
     };
+
+    if (codes) {
+      data['passed_codes'] = codes.join(',');
+    }
 
     this.productService.uploadProductStructure(data)
       .pipe(
@@ -271,7 +303,7 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
   private compareOldVersion() {
     // if (this.currentStructure.children)
     this.currentStructure.children?.forEach((oldVersionProduct, index) => {
-      const newVersionProduct = this.newStructure.children.find(el => el.code === oldVersionProduct.code);
+      const newVersionProduct = this.newStructure.children.find(el => el.code === oldVersionProduct.code && !el.hasCheckedForQuantity);
       if (!newVersionProduct) {
         oldVersionProduct.isDeleted = true;
         this.hasChanges = true;
@@ -279,15 +311,14 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
           this.markAsDeleted(oldVersionProduct);
         }
       }
+
       if (newVersionProduct) {
-        if (newVersionProduct.quantity !== oldVersionProduct.quantity) {
+        if (newVersionProduct.quantity !== oldVersionProduct.quantity && !newVersionProduct.hasCheckedForQuantity) {
           oldVersionProduct.hasQuantityChanged = true;
           this.hasChanges = true;
         }
-        if (newVersionProduct.name !== oldVersionProduct.name) {
-          oldVersionProduct.hasNameChanged = true;
-          this.hasChanges = true;
-        }
+        newVersionProduct.hasCheckedForQuantity = true;
+
         if (oldVersionProduct.children && newVersionProduct.children) {
           this.recursiveFindChangesOld(oldVersionProduct, newVersionProduct);
         }
@@ -295,9 +326,14 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Смотреть если уже находили этот элемент (чтою не смотреть первый попавшийся) Для этого эти поля сделал (низ)
+  // hasCheckedForDeletion
+  // hasCheckedForQuantity
+  // hasCheckedForNew
+
   private recursiveFindChangesOld(oldProductStructure: ProductStructureCompare, newProductStructure: ProductStructureCompare) {
     oldProductStructure.children.forEach((oldVersionProduct, index) => {
-      const newVersionProduct = newProductStructure.children.find(el => el.code === oldVersionProduct.code);
+      const newVersionProduct = newProductStructure.children.find(el => el.code === oldVersionProduct.code && !el.hasCheckedForQuantity);
       if (!newVersionProduct) {
         oldVersionProduct.isDeleted = true;
         this.hasChanges = true;
@@ -310,10 +346,8 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
           oldVersionProduct.hasQuantityChanged = true;
           this.hasChanges = true;
         }
-        if (newVersionProduct.name !== oldVersionProduct.name) {
-          oldVersionProduct.hasNameChanged = true;
-          this.hasChanges = true;
-        }
+        newVersionProduct.hasCheckedForQuantity = true;
+
         if (oldVersionProduct.children && newVersionProduct.children) {
           this.recursiveFindChangesOld(oldVersionProduct, newVersionProduct);
         }
@@ -333,12 +367,12 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
 
   private compareNewVersion() {
     this.newStructure.children.forEach((newVersionProduct, index) => {
-      const oldVersionProduct = this.currentStructure.children?.find(el => el.code === newVersionProduct.code);
+      const oldVersionProduct = this.currentStructure.children?.find(el => el.code === newVersionProduct.code && !el.hasCheckedForQuantity);
       newVersionProduct.parent = {
         code: this.newStructure.code,
         name: this.newStructure.name,
         quantity: null
-      }
+      };
       if (!oldVersionProduct) {
         newVersionProduct.isNew = true;
         this.hasChanges = true;
@@ -351,14 +385,7 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
           newVersionProduct.hasQuantityChanged = true;
           this.hasChanges = true;
         }
-        if (newVersionProduct.name !== oldVersionProduct.name) {
-          newVersionProduct.hasNameChanged = true;
-          this.hasChanges = true;
-        }
-        if (newVersionProduct.hasNameChanged) {
-          this.hasChangedName = true;
-          this.hasChanges = true;
-        }
+        oldVersionProduct.hasCheckedForQuantity = true;
         if (oldVersionProduct.children && newVersionProduct.children) {
           this.recursiveFindChangesNew(newVersionProduct, oldVersionProduct);
         }
@@ -373,8 +400,8 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
         name: newVersionProductParent.name,
         parent: newVersionProductParent.parent,
         quantity: null
-      }
-      const oldVersionProduct = oldProductStructure.children.find(el => el.code === newVersionProduct.code);
+      };
+      const oldVersionProduct = oldProductStructure.children.find(el => el.code === newVersionProduct.code && !el.hasCheckedForQuantity);
 
       if (!oldVersionProduct) {
         newVersionProduct.isNew = true;
@@ -389,14 +416,7 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
           newVersionProduct.hasQuantityChanged = true;
           this.hasChanges = true;
         }
-        if (newVersionProduct.name !== oldVersionProduct.name) {
-          newVersionProduct.hasNameChanged = true;
-          this.hasChanges = true;
-        }
-        if (newVersionProduct.hasNameChanged) {
-          this.hasChangedName = true;
-          this.hasChanges = true;
-        }
+        oldVersionProduct.hasCheckedForQuantity = true;
         if (newVersionProduct.children && oldVersionProduct.children) {
           this.recursiveFindChangesNew(newVersionProduct, oldVersionProduct);
         }
@@ -417,7 +437,7 @@ export class UploadProductStructureComponent implements OnInit, OnDestroy {
         return false;
       }
       const nextParent = this.ancestorsProducts.find(el => el.id === ancestorProduct.parent_id);
-      return this.isCycleOnStructure(nextParent, code)
+      return this.isCycleOnStructure(nextParent, code);
     }
   }
 
