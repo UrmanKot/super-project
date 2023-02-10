@@ -13,6 +13,13 @@
 
 tr {
   font-weight: 500;
+  td.name {
+    position: relative;
+
+    .select-name {
+      display: none;
+    }
+  }
   &.is-new {
     background: #e1efe2 !important;
     font-weight: 500;
@@ -25,6 +32,22 @@ tr {
   }
   &.name-changed {
     background: #f59e0b38 !important;
+
+    &:hover {
+      td.name {
+        position: relative;
+
+        .select-name {
+          display: flex;
+          position: absolute;
+          width: 18rem;
+          top: -3rem;
+          left: -0.75rem;
+          background: white;
+          padding: 0.5rem;
+        }
+      }
+    }
   }
   &.is-cycled {
     background: rgb(199 198 197) !important;
