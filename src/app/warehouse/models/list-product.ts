@@ -1,13 +1,10 @@
 import {List} from './list';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {SerialNumber} from '../../procurement/models/invoice';
-import {Technology} from '../../product-structure/models/technology';
 
 export class ListProduct {
   readonly id: number;
-  total_required_quantity: number;
-  required_quantity_per_one: number;
-  reserved_quantity: number;
+  total_required_quantity: string;
   warehouse_quantity: string;
   required_quantity: number;
   actual_quantity: number;
@@ -21,7 +18,4 @@ export class ListProduct {
   parent?: number;
   status?: string;
   list_url?: string;
-  products?: ListProduct[];
-  technology: Technology;
-  groupedProductIds?: number[]
 }
