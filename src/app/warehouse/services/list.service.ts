@@ -43,12 +43,6 @@ export class ListService {
     );
   }
 
-  getFullList(id: number): Observable<ListProduct[]> {
-    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + `${id}/with_descendant_list_products/`).pipe(
-      map(response => response.data)
-    );
-  }
-
   setQuantities(id: number): Observable<any> {
     return this.httpClient.post(this.API_URL + this.url + id + '/set_actual_quantities/', null);
   }
