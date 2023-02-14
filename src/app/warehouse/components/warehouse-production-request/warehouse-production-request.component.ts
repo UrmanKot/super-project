@@ -244,7 +244,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
         }
         request.requests.forEach(req => {
-          if (req.reserved_serial_products.length > 0) {
+          if (req.reserved_serial_products?.length > 0) {
             request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number))
           }
           request.unique_locators.push(...req.locators);
@@ -433,10 +433,10 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   addToParentTree(node: TreeNode, level: number, task: Task): void {
     if (node.data.level === level && node.data.id === task.list_product.parent) {
-      const existingIndex = node.children.findIndex(el => el.data.id === task.list_product.id);
+      const existingIndex = node.children.findIndex(el => el.data.id === task.list_product?.id);
       if (existingIndex < 0) {
         // const foundInRequest = this.requests.find(el => el.task === task.id);
-        const foundInRequest = this.requests.find(el => el.list_product.id === task.list_product.id);
+        const foundInRequest = this.requests.find(el => el.list_product?.id === task.list_product?.id);
         // if (task.list_product.nomenclature.name .includes('Washer 6 DIN 125 Zn')) {
         //   console.log('foundInRequest', foundInRequest);
         //   console.log('task', task);
@@ -674,20 +674,20 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   isFullyScanned(request: any) {
-    if (request.requests.length === 0) {
+    if (request.requests?.length === 0) {
       return request.is_scanned;
     }
     const mainScanned = request.is_scanned;
-    const allInnerScanned = !(request.requests.findIndex(req => !req.is_scanned) > -1);
+    const allInnerScanned = !(request.requests?.findIndex(req => !req.is_scanned) > -1);
     return mainScanned && allInnerScanned;
   }
 
   isPartlyScanned(request: any) {
-    if (request.requests.length === 0) {
-      return false;
-    }
-    const mainScanned = request.is_scanned;
-    const innerNeedScan = request.requests.findIndex(req => !req.is_scanned) > -1;
-    return !this.isFullyScanned(request) && (mainScanned || !innerNeedScan);
+      if (request?.requests?.length === 0) {
+        return false;
+      }
+      const mainScanned = request.is_scanned;
+      const innerNeedScan = request.requests?.findIndex(req => !req.is_scanned) > -1;
+      return !this.isFullyScanned(request) && (mainScanned || !innerNeedScan);
   }
 }

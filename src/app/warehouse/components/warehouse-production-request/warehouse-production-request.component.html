@@ -206,8 +206,8 @@
               </td>
               <td style="width: 5%;" class="text-center ids-container">
                 <h3 class="td-title">ID</h3>
-                {{request.id}} <span *ngIf="request.ids.length > 0">L({{request.ids.length + 1}})</span>
-                <span *ngIf="request.ids.length > 0" class="ids">
+                {{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span>
+                <span *ngIf="request.ids?.length > 0" class="ids">
                   <div>
                     {{request.id}}
                   </div>
@@ -244,7 +244,7 @@
                 </div>
 
 
-                <span *ngIf="request.all_reserved_serial_products.length > 0" class="serial-numbers">
+                <span *ngIf="request.all_reserved_serial_products?.length > 0" class="serial-numbers">
                   <div *ngFor="let serialNumber of request.all_reserved_serial_products">
                     {{serialNumber.type_with_number}}
                   </div>
@@ -558,7 +558,7 @@
               [ttRow]="rowNode"
               [class.in-plan]="rowData.request"
               [class.placeholder]="!rowData.request"
-              [class.tr-toggler]="rowNode.node.children.length > 0"
+              [class.tr-toggler]="rowNode.node.children?.length > 0"
             >
               <td style="width: 16%;" class="text-center">
                 <div class="toggle-row">
