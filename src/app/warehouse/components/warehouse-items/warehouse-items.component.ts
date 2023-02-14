@@ -51,6 +51,8 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     order_by_warehouse: [null],
     order_by_locator: [null],
     order_by_quantity: [null],
+    exclude_zero: [null],
+    exclude_empty: [null],
     page: [1],
   });
 
@@ -234,6 +236,16 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.searchForm.get('acceptedByInvoices').value !== null) this.query.push({
       name: 'accepted_by_invoices',
       value: this.searchForm.get('acceptedByInvoices').value
+    });
+
+    if (this.searchForm.get('exclude_zero').value !== null) this.query.push({
+      name: 'exclude_zero',
+      value: this.searchForm.get('exclude_zero').value
+    });
+
+    if (this.searchForm.get('exclude_empty').value !== null) this.query.push({
+      name: 'exclude_empty',
+      value: this.searchForm.get('exclude_empty').value
     });
 
     const ordering = this.prepareSortingField();
