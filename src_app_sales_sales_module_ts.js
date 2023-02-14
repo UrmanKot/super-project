@@ -689,6 +689,9 @@ class RegionsComponent {
             }
         });
     }
+    updateInfo(type) {
+        console.log('TREE', this.tree);
+    }
     deleteSubRegion() {
         this.modalService
             .confirm('danger', 'Confirm')
