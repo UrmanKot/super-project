@@ -201,7 +201,7 @@ export class ProductionListComponent implements OnInit {
       })
 
       newListProducts.forEach(list => {
-        list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
+        // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
         list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0)
         list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
         list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
