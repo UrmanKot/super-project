@@ -29,6 +29,13 @@ export class InstrumentsAndToolsListComponent implements OnInit, OnDestroy, Afte
     area: [null],
     category: [null],
     root_categories: [null],
+    order_by_code: [null],
+    order_by_name: [null],
+    order_by_quantity: [null],
+    order_by_category: [null],
+    order_by_area: [null],
+    order_by_locator: [null],
+    exclude_zero: [null],
     area_locator: {value: null, disabled: true},
     type: [null],
     acceptedByInvoices: [null],
@@ -153,6 +160,18 @@ export class InstrumentsAndToolsListComponent implements OnInit, OnDestroy, Afte
       value: this.searchForm.get('acceptedByInvoices').value
     });
 
+    if (this.searchForm.get('exclude_zero').value !== null) this.query.push({
+      name: 'exclude_zero',
+      value: this.searchForm.get('exclude_zero').value
+    });
+
+    const ordering = this.prepareSortingField();
+    if (ordering) {
+      this.query.push({
+        name: 'ordering',
+        value: ordering
+      });
+    }
     if (!this.isShowAll) {
       this.getProductsForPagination();
     } else {
@@ -192,6 +211,54 @@ export class InstrumentsAndToolsListComponent implements OnInit, OnDestroy, Afte
 
       this.isLoading = false;
     });
+  }
+
+  prepareSortingField(): string {
+    let sorting = '';
+    if (this.searchForm.get('order_by_code').value !== null) {
+      if (this.searchForm.get('order_by_code').value) {
+        sorting += '-nomenclature__code,';
+      } else {
+        sorting += 'nomenclature__code,';
+      }
+    }
+    if (this.searchForm.get('order_by_name').value !== null) {
+      if (this.searchForm.get('order_by_name').value) {
+        sorting += '-nomenclature__name,';
+      } else {
+        sorting += 'nomenclature__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_category').value !== null) {
+      if (this.searchForm.get('order_by_category').value) {
+        sorting += '-nomenclature__category__name,';
+      } else {
+        sorting += 'nomenclature__category__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_area').value !== null) {
+      if (this.searchForm.get('order_by_area').value) {
+        sorting += '-area_locator__area__name,';
+      } else {
+        sorting += 'area_locator__area__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_locator').value !== null) {
+      if (this.searchForm.get('order_by_locator').value) {
+        sorting += '-area_locator__name,';
+      } else {
+        sorting += 'area_locator__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_quantity').value !== null) {
+      if (this.searchForm.get('order_by_quantity').value) {
+        sorting += '-total_area_locator_quantity,';
+      } else {
+        sorting += 'total_area_locator_quantity,';
+      }
+    }
+
+    return sorting;
   }
 
   toggleFilterVisibility() {
@@ -320,5 +387,26 @@ export class InstrumentsAndToolsListComponent implements OnInit, OnDestroy, Afte
         this.searchProducts();
       }
     });
+  }
+
+  sorting(value: boolean, field: string) {
+    this.resetAllSorting();
+    if (value === null) {
+      this.searchForm.get(field).patchValue(false);
+    } else if (value === false) {
+      this.searchForm.get(field).patchValue(true);
+    } else if (value === true) {
+      this.searchForm.get(field).patchValue(null);
+    }
+    this.searchProducts();
+  }
+
+  resetAllSorting() {
+    this.searchForm.get('order_by_code').setValue(null);
+    this.searchForm.get('order_by_name').setValue(null);
+    this.searchForm.get('order_by_quantity').setValue(null);
+    this.searchForm.get('order_by_category').setValue(null);
+    this.searchForm.get('order_by_area').setValue(null);
+    this.searchForm.get('order_by_locator').setValue(null);
   }
 }

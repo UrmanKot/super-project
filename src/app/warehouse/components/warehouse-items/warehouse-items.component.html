@@ -92,22 +92,34 @@
                     ></pek-product-category-picker>
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   <div class="form-group">
                     <label>Code</label>
                     <input class="form-control" formControlName="code" pInputText #searchBoxCode>
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   <div class="form-group">
                     <label>Name</label>
                     <input class="form-control" formControlName="name" pInputText #searchBoxName>
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   <div class="form-group">
                     <label>Description</label>
                     <input class="form-control" formControlName="description" pInputText #searchBoxDescription>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="form-group">
+                      <label>Exclude Zero's</label>
+                      <p-checkbox class="mt-1" formControlName="exclude_zero" [binary]="true" (ngModelChange)="searchProducts()"></p-checkbox>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="form-group">
+                    <label>Exclude Empty</label>
+                    <p-checkbox class="mt-1" formControlName="exclude_empty" [binary]="true" (ngModelChange)="searchProducts()"></p-checkbox>
                   </div>
                 </div>
                 <div class="col-4">
