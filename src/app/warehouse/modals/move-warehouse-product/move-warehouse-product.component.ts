@@ -34,7 +34,6 @@ export class MoveWarehouseProductComponent implements OnInit {
     } else {
       this.form = this.fb.group({
         quantity: [0, [Validators.max(this.product.quantity ? this.product.quantity : this.product.total_locator_quantity), Validators.min(1), Validators.required]],
-        id: [this.product.id, Validators.required],
         to_locator: [null, Validators.required],
       });
     }
@@ -54,7 +53,28 @@ export class MoveWarehouseProductComponent implements OnInit {
         ).subscribe(() => this.dialogRef.close(true));
       }
       if (!this.product.serial_numbers) {
-        this.warehouseProductService.moveWarehouseItemsBulk(<Partial<WarehouseProduct>[]>[this.form.value]).pipe(
+        const send = [];
+        let totalQuantity = this.form.get('quantity').value;
+
+        this.product.extra_info.forEach(item => {
+          let actualQuantity = 0;
+
+          if (totalQuantity <= item.quantity && totalQuantity > 0) {
+            actualQuantity = item.quantity - (item.quantity - totalQuantity);
+            totalQuantity -= actualQuantity;
+          } else if (totalQuantity > 0) {
+            actualQuantity = item.quantity;
+            totalQuantity -= item.quantity;
+          }
+
+          send.push({
+            id: item.id,
+            to_locator: this.form.get('to_locator').value,
+            quantity: actualQuantity,
+          });
+        });
+
+        this.warehouseProductService.moveWarehouseSeveralBulk(<Partial<WarehouseProduct>[]>send).pipe(
           finalize(() => this.isSaving = false)
         ).subscribe(() => this.dialogRef.close(true));
       }
