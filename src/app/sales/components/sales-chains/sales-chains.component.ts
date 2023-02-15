@@ -255,7 +255,7 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
   }
 
   onGoToChainPage(salesChain: SalesChain) {
-    window.open(`${this.link}sales/sales-chains/chain-page/` + salesChain.id, '_blank');
-    // this.router.navigate(['chain-page', salesChain.id], {relativeTo: this.route})
+    // window.open(`${this.link}sales/sales-chains/chain-page/` + salesChain.id, '_blank');
+    this.router.navigate(['chain-page', salesChain.id], {relativeTo: this.route})
   }
 }
