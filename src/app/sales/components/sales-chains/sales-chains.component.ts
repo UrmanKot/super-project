@@ -8,7 +8,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {environment} from '@env/environment';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'pek-sales-procurement-chains',
@@ -74,6 +74,7 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
     private salesChainService: SalesChainService,
     private readonly modalService: ModalService,
     private router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -255,6 +256,6 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
 
   onGoToChainPage(salesChain: SalesChain) {
     // window.open(`${this.link}sales/sales-chains/chain-page/` + salesChain.id, '_blank');
-    this.router.navigate(['/sales-chains', 'chain-page', 'id'])
+    this.router.navigate(['chain-page', salesChain.id], {relativeTo: this.route})
   }
 }
