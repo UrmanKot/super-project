@@ -21,7 +21,7 @@ export class CreateEditSalesStatusComponent implements OnInit {
     private readonly fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateEditSalesStatusComponent>,
     private readonly salesStatusService: SalesStatusService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, status: SalesStatus }
+      @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, status: SalesStatus }
   ) {
   }
 

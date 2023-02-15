@@ -40,7 +40,7 @@ export class CreateEditCompanyComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly companyService: CompanyService,
     private dialogRef: MatDialogRef<CreateEditCompanyComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, company: Company }
+    @Inject(MAT_DIALOG_DATA) public data:  { type: ModalActionType, company: Company}
   ) {
   }
 
