@@ -327,8 +327,8 @@ export class WarehouseQcComponent implements OnInit {
     invoices.forEach(order => {
       order.unique_root_production_plans.forEach(plan => {
         if (plan.root_nomenclature) {
-          const rootCatId = plan.root_nomenclature.root_category.id;
-          const rootCatName = plan.root_nomenclature.root_category.name;
+          const rootCatId = plan.root_nomenclature.root_category?.id;
+          const rootCatName = plan.root_nomenclature.root_category?.name;
           const rootLevel = 1;
 
           const catId = plan.root_nomenclature.id;
