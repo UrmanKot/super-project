@@ -18,6 +18,7 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Shipment Requests', commands: [`${environment.link_url}dash/warehouse/shipping-requests`], isExternal: true},
     {label: 'Where Used', commands: ['where-used']},
     {label: 'Physical Inventory', commands: ['physical-inventory']},
+    {label: 'Isolator', commands: ['isolator']},
   ]
 
   settingsRoutes: NavigationLink[] = [
@@ -25,7 +26,6 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Categories', commands: ['categories']},
     {label: 'Units of Measure', commands: ['measure']},
     {label: 'Serial Number Types', commands: ['serial-types']},
-    {label: 'Isolator', commands: ['isolator']},
   ]
 
   constructor() { }

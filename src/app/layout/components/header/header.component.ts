@@ -21,7 +21,6 @@ export class HeaderComponent implements OnInit {
     '/warehouse/measure',
     '/warehouse/warehouses',
     '/warehouse/serial-types',
-    '/warehouse/isolator',
     '/warehouse/categories',
     '/procurement/services',
     '/procurement/statuses',
