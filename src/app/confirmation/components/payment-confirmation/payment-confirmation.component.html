@@ -31,6 +31,7 @@
             [(selection)]="selectedPayments"
             scrollHeight="calc(100vh - 21.8rem)"
             [scrollable]="true"
+            (selectionChange)="onCountSelectedPaymentsTotal()"
           >
             <ng-template pTemplate="caption">
               <div class="d-flex align-items-center">
@@ -38,6 +39,10 @@
                   <ng-container *ngIf="!isLoadingPayments; else paymentsEmpty">
                     Total Price: {{paymentTotals.totalPricePayments | moneyFormat}} €,
                     Total Amount: {{paymentTotals.totalAmountPayments | moneyFormat}} €
+                    <div class="selected-payments-price">
+                      Selected Payments Total Price: {{selectedPaymentsTotals.totalPricePayments | moneyFormat}} €,
+                      Selected Payments Total Amount: {{selectedPaymentsTotals.totalAmountPayments | moneyFormat}} €
+                    </div>
                   </ng-container>
                 </div>
                 <button
@@ -105,12 +110,12 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.invoice">
-<!--                    <a-->
-<!--                      [routerLink]="['/external', link + 'accounting/invoices/products/' + payment.invoice.id]"-->
-<!--                      target="_blank"-->
-<!--                    >-->
-<!--                      {{payment.invoice.self_serial_number}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      [routerLink]="['/external', link + 'accounting/invoices/products/' + payment.invoice.id]"-->
+                    <!--                      target="_blank"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.self_serial_number}}-->
+                    <!--                    </a>-->
 
                     <a
                       (click)="onGoToPaymentInvoice(payment)"
@@ -128,7 +133,8 @@
                   <ng-container>
                     <div *ngIf="payment.invoice">
                       <ng-container *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
-                        {{rootList.list_product.nomenclature.name}}<span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
+                        {{rootList.list_product.nomenclature.name}}<span
+                        *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
                       </ng-container>
                     </div>
                   </ng-container>
@@ -145,22 +151,22 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.invoice">
-<!--                    <a-->
-<!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.invoice.order.id}}-->
-<!--                    </a>-->
-<!--                    <a-->
-<!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.invoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.invoice.order.id}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.order.id}}-->
+                    <!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.invoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.order.id}}-->
+                    <!--                    </a>-->
 
                     <a
                       (click)="onGoToPaymentOrder(payment)"
@@ -192,6 +198,7 @@
             [(selection)]="selectedServiceInvoicePayments"
             scrollHeight="calc(100vh - 21.8rem)"
             [scrollable]="true"
+            (selectionChange)="countSelectedServiceInvoicePaymentsTotal()"
           >
             <ng-template pTemplate="caption">
               <div class="d-flex align-items-center">
@@ -199,6 +206,11 @@
                   <ng-container *ngIf="!isLoadingServiceInvoicePayments; else paymentsEmpty">
                     Total Price: {{paymentTotals.totalPriceServiceInvoicePayments | moneyFormat}} €,
                     Total Amount: {{paymentTotals.totalAmountServiceInvoicePayments | moneyFormat}} €
+
+                    <div class="selected-payments-price">
+                      Selected Payments Total Price: {{selectedPaymentsTotals.totalPriceServiceInvoicePayments | moneyFormat}} €,
+                      Selected Payments Total Amount: {{selectedPaymentsTotals.totalAmountServiceInvoicePayments | moneyFormat}} €
+                    </div>
                   </ng-container>
                 </div>
                 <button
@@ -270,21 +282,21 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.serviceinvoice || payment.invoice">
-<!--                    <a-->
-<!--                      *ngIf="payment.serviceinvoice"-->
-<!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.serviceinvoice.id]"-->
-<!--                      target="_blank"-->
-<!--                    >-->
-<!--                      {{payment.serviceinvoice.self_serial_number}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.serviceinvoice"-->
+                    <!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.serviceinvoice.id]"-->
+                    <!--                      target="_blank"-->
+                    <!--                    >-->
+                    <!--                      {{payment.serviceinvoice.self_serial_number}}-->
+                    <!--                    </a>-->
 
-<!--                    <a-->
-<!--                      *ngIf="payment.invoice"-->
-<!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.invoice.id]"-->
-<!--                      target="_blank"-->
-<!--                    >-->
-<!--                      {{payment.invoice.self_serial_number}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.invoice"-->
+                    <!--                      [routerLink]="['/external', link + 'accounting/invoices/service-invoice/' + payment.invoice.id]"-->
+                    <!--                      target="_blank"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.self_serial_number}}-->
+                    <!--                    </a>-->
 
                     <a
                       *ngIf="payment.serviceinvoice"
@@ -320,7 +332,8 @@
 
                   <ng-container *ngIf="payment.invoice">
                     <ng-container *ngFor="let rootList of payment.invoice.root_production_plans; let idx = index">
-                      {{rootList.list_product.nomenclature.name}}<span *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
+                      {{rootList.list_product.nomenclature.name}}<span
+                      *ngIf="idx !== payment.invoice.root_production_plans.length - 1">,</span>
                     </ng-container>
                   </ng-container>
                 </td>
@@ -344,22 +357,22 @@
                 </td>
                 <td style="width: 10%" class="text-center">
                   <ng-container *ngIf="payment.serviceinvoice">
-<!--                    <a-->
-<!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 1"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.serviceinvoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.serviceinvoice.order.id}}-->
-<!--                    </a>-->
-<!--                    <a-->
-<!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 2"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.serviceinvoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.serviceinvoice.order.id}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 1"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.serviceinvoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.serviceinvoice.order.id}}-->
+                    <!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.serviceinvoice.order.accounting_type == 2"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' + payment.serviceinvoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.serviceinvoice.order.id}}-->
+                    <!--                    </a>-->
 
                     <a
                       (click)="onGoToServiceOrder(payment)"
@@ -369,22 +382,22 @@
                   </ng-container>
 
                   <ng-container *ngIf="payment.invoice">
-<!--                    <a-->
-<!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.invoice.order.id}}-->
-<!--                    </a>-->
-<!--                    <a-->
-<!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
-<!--                      rel="noopener noreferrer"-->
-<!--                      target="_blank"-->
-<!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' +  payment.invoice.order.id]"-->
-<!--                    >-->
-<!--                      {{payment.invoice.order.id}}-->
-<!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.invoice.order.accounting_type == 1"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'procurement/orders/products/' + payment.invoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.order.id}}-->
+                    <!--                    </a>-->
+                    <!--                    <a-->
+                    <!--                      *ngIf="payment.invoice.order.accounting_type == 2"-->
+                    <!--                      rel="noopener noreferrer"-->
+                    <!--                      target="_blank"-->
+                    <!--                      [routerLink]="['/external', link + 'outsource/outsource-chain/products/' +  payment.invoice.order.id]"-->
+                    <!--                    >-->
+                    <!--                      {{payment.invoice.order.id}}-->
+                    <!--                    </a>-->
 
                     <a
                       (click)="onGoToPaymentOrder(payment)"
@@ -418,5 +431,10 @@
 <ng-template #paymentsEmpty>
   <ng-container>
     Total Price: ... €, Total Amount: ... €
+
+    <div class="selected-payments-price">
+      Selected Payments Total Price: {{0 | moneyFormat}} €,
+      Selected Payments Total Amount: {{0 | moneyFormat}} €
+    </div>
   </ng-container>
 </ng-template>
