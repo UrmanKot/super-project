@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {NavigationLink} from '../../../layout/navigation-route';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-warehouse-layout',
@@ -14,7 +15,7 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Production Lists', commands: ['production-lists']},
     {label: 'Production Requests', commands: ['production-requests']},
     {label: 'Tool Requests', commands: ['tool-requests']},
-    {label: 'Shipment Requests', commands: ['shipments-requests']},
+    {label: 'Shipment Requests', commands: [`${environment.link_url}dash/warehouse/shipping-requests`], isExternal: true},
     {label: 'Where Used', commands: ['where-used']},
     {label: 'Physical Inventory', commands: ['physical-inventory']},
   ]
