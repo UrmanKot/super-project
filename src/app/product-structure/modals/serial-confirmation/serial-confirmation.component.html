@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Confirmation
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <p>
+    Are you going to assign ({{data.product.nomenclature.code}}) {{data.product.nomenclature.name}}
+    <b>({{data.warehouseQuantity && data.warehouseQuantity >= 0 ? data.warehouseQuantity : 'Out of warehouse'}})</b> Serial Numbers
+  </p>
+
+  <p class="mt-3">Confirm your action</p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    pButton
+    type="button"
+    label="Confirm"
+    class="p-button-success"
+    [mat-dialog-close]="true"
+  ></button>
+</mat-dialog-actions>

@@ -8,6 +8,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Subject, takeUntil} from 'rxjs';
 import {TechnicalEquipmentService} from '../../services/technical-equipment.service';
 import {TechnicalEquipment} from '../../models/technical-equipment';
+import {NomenclatureService} from '@shared/services/nomenclature.service';
 
 @Component({
   selector: 'pek-create-edit-form',
@@ -27,6 +28,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
   nomenclatureType = ENomenclatureType;
 
   selectedTechnologiesIds: number[] = [];
+  warehouseQuantity: number;
 
   bulkOrSerial = [
     {label: 'Bulk', value: ENomenclatureBulk.BULK},
@@ -53,7 +55,8 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
-    private technicalEquipmentService: TechnicalEquipmentService
+    private technicalEquipmentService: TechnicalEquipmentService,
+    private readonly nomenclatureService: NomenclatureService,
   ) {
   }
 
@@ -92,6 +95,14 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
         this.getTechnicalEquipments();
       }
     }
+
+    if (this.type === 'edit') {
+      this.getNomenclatureWarehouseQuantity();
+    }
+  }
+
+  getNomenclatureWarehouseQuantity() {
+    this.nomenclatureService.getWarehouseQuantity(this.product.nomenclature.id).subscribe(response => this.warehouseQuantity = response.total_warehouse_quantity)
   }
 
   getTechnicalEquipments(): void {
@@ -191,6 +202,18 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
       }
       this.technicalEquipments.splice(index, 1);
       (this.form.controls['technical_equipments'] as FormArray).removeAt(index);
+    }
+  }
+
+  showWarehouseQuantityConfirm() {
+    if (this.type === 'edit') {
+      if (this.form.get('bulk_or_serial').value === ENomenclatureBulk.SERIAL) {
+        this.nomenclatureService.showSerialConfirmationModal(this.product, this.warehouseQuantity).subscribe(confirm => {
+          if (!confirm) {
+            this.form.get('bulk_or_serial').patchValue(ENomenclatureBulk.BULK)
+          }
+        })
+      }
     }
   }
 }

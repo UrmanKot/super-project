@@ -6,6 +6,12 @@ import {map} from 'rxjs/operators';
 import {forkJoin, Observable} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
 import {TechnicalEquipment} from '../../product-structure/models/technical-equipment';
+import {Product} from '../../product-structure/models/product';
+import {CompareStructureComponent} from '../../product-structure/modals/compare-structure/compare-structure.component';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  SerialConfirmationComponent
+} from '../../product-structure/modals/serial-confirmation/serial-confirmation.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +21,8 @@ export class NomenclatureService {
   readonly url = 'nomenclatures/';
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
   }
 
@@ -200,9 +207,29 @@ export class NomenclatureService {
     return this.httpClient.delete(this.API_URL + `nomenclature_images/${id}/`);
   }
 
-  bulkCreateUpdateTechnicalEquipments(nomenclatureId: number, data): Observable<any> {
-    return this.httpClient.post<{ data: TechnicalEquipment }>(this.API_URL  + this.url + nomenclatureId + '/bulk_update_technical_equipments/', data).pipe(
+  getWarehouseQuantity(id: number): Observable<any> {
+    return this.httpClient.get<{ data: Nomenclature[] }>(this.API_URL + this.url + `${id}/total_warehouse_quantity/`).pipe(
       map(response => response.data)
     );
+  }
+
+  bulkCreateUpdateTechnicalEquipments(nomenclatureId: number, data): Observable<any> {
+    return this.httpClient.post<{ data: TechnicalEquipment }>(this.API_URL + this.url + nomenclatureId + '/bulk_update_technical_equipments/', data).pipe(
+      map(response => response.data)
+    );
+  }
+
+  showSerialConfirmationModal(product: Partial<Product>, warehouseQuantity: number) {
+    return this.dialog
+      .open<SerialConfirmationComponent>(SerialConfirmationComponent, {
+        width: '30rem',
+        height: 'auto',
+        disableClose: true,
+        data: {product, warehouseQuantity},
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }
