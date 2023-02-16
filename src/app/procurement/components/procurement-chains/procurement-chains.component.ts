@@ -32,7 +32,7 @@ export class ProcurementChainsComponent implements OnInit {
     label: 'Selected Chain',
     items: [
       {
-        label: 'Edit',
+        label: 'Open Chain',
         icon: 'pi pi-pencil',
         command: () => this.onGoToOderPage()
       },
