@@ -1,0 +1,64 @@
+<div class="modal-header-container d-flex justify-content-between">
+  <h2 class="modal-heading" mat-dialog-title>
+    <span>Edit Statuses </span>
+  </h2>
+</div>
+
+<mat-dialog-content class="overflow-visible">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Status</label>
+          <p-dropdown
+            formControlName="status"
+            placeholder="Choose Status"
+            [options]="statuses"
+            optionLabel="name"
+            optionValue="id"
+          ></p-dropdown>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Date</label>
+          <p-calendar
+            placeholder="Choose Date"
+            [showButtonBar]="true"
+            formControlName="date"
+            dataType="date"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+          ></p-calendar>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="comment" class="label">Comment</label>
+          <input formControlName="comment" id="comment" type="text" pInputText>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  >
+  </button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="saveStatus()"
+  ></button>
+</mat-dialog-actions>
+

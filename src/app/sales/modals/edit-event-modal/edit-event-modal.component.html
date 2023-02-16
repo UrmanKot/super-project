@@ -1,14 +1,14 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    Create Sales Chain
+    Edit Event
   </h2>
 </div>
 
 <mat-dialog-content>
   <form [formGroup]="form">
     <div class="form-group">
-      <label>Company</label>
-      <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+      <label for="name">Comment*</label>
+      <input type="text" id="name" pInputText formControlName="comment">
     </div>
   </form>
 </mat-dialog-content>
@@ -19,7 +19,7 @@
     pButton
     type="button"
     class="p-button-success"
-    label="Create Sale Chain"
+    label="Edit"
     [loading]="isSaving"
     [disabled]="form.invalid"
     (click)="onSave()"

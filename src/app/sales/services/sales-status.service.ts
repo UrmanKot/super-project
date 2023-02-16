@@ -6,10 +6,6 @@ import {Observable, of} from 'rxjs';
 import {SalesStatus} from '../models/sales-chain';
 import {map} from 'rxjs/operators';
 import {ModalActionType} from '@shared/models/modal-action';
-import {Warehouse} from '../../warehouse/models/warehouse';
-import {
-  CreateEditWarehouseComponent
-} from '../../warehouse/modals/create-edit-warehouse/create-edit-warehouse.component';
 import {MatDialog} from '@angular/material/dialog';
 import {CreateEditSalesStatusComponent} from '../modals/create-edit-sales-status/create-edit-sales-status.component';
 
@@ -58,7 +54,6 @@ export class SalesStatusService {
       map(response => response.data)
     );
   }
-
 
   update(status: Partial<SalesStatus>): Observable<SalesStatus> {
     return this.httpClient.put<{ data: SalesStatus }>(this.API_URL + this.url + status.id + '/', status).pipe(

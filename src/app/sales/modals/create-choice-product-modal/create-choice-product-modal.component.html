@@ -1,0 +1,90 @@
+<div class="modal-header-container d-flex justify-content-between">
+  <h2 class="modal-heading" mat-dialog-title>
+    <span>Choice Product</span>
+  </h2>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input formControlName="name" id="name" class="form-control" type="text" pInputText>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input formControlName="code" id='code' class="form-control" type="text" #searchBoxCode pInputText>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input formControlName="description" id="description" class="form-control" type="text" #searchBoxDescription
+                 pInputText>
+        </div>
+      </div>
+    </div>
+  </form>
+
+<!--  <div class="pt-2 pb-2" *ngFor="let category of categoriesNew">-->
+<!--    <ng-container-->
+<!--      [ngTemplateOutlet]="categoryRow"-->
+<!--      [ngTemplateOutletContext]="{category: category}">-->
+<!--    </ng-container>-->
+<!--  </div>-->
+
+<!--  <ng-template #categoryRow let-category='category'>-->
+<!--    <div *ngIf="category.data.is_for_sales_chain">-->
+<!--      <button type="button" [ngStyle]="{'padding-left': 1 * category.data.level + 'rem'}"-->
+<!--              class="p-treetable-toggler p-link" (click)="openCategorisedProducts(category)">-->
+<!--        <i class="pi pi-fw" [class.pi-chevron-right]="!category.data.isExpanded"-->
+<!--           [class.pi-chevron-down]="category.data.isExpanded"></i>-->
+<!--      </button>-->
+<!--      {{category.data.name}}-->
+<!--      <ng-template [ngIf]="category.data.isExpanded">-->
+<!--        <ng-container-->
+<!--          [ngTemplateOutlet]="tableTemplate"-->
+<!--          [ngTemplateOutletContext]="{category: category}">-->
+<!--        </ng-container>-->
+<!--        <div class="pt-2 pb-2" *ngFor="let categoryInner of category.children">-->
+<!--          <ng-container-->
+<!--            [ngTemplateOutlet]="categoryRow"-->
+<!--            [ngTemplateOutletContext]="{category: categoryInner}">-->
+<!--          </ng-container>-->
+<!--        </div>-->
+<!--      </ng-template>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+
+<!--  <ng-template #tableTemplate let-category='category'>-->
+<!--    <p-table #dt rowExpandMode="single" class="table-full-loading adaptive-table adaptive-table_filters mt-2"-->
+<!--             dataKey="uid" [value]="category.data.products"-->
+<!--             [scrollable]="false"-->
+<!--             (selectionChange)="selectionChange()"-->
+<!--             [rows]="10" selectionMode="single" [(selection)]="selectedNode" (onRowSelect)="updateSerials()">-->
+<!--    </p-table>-->
+<!--  </ng-template>-->
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  >
+
+  </button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+  ></button>
+</mat-dialog-actions>

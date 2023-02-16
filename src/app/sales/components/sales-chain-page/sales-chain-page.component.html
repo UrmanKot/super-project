@@ -1,0 +1,517 @@
+<div class="company-page">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'sales'" [isActive]="true"></pek-module-icon>
+        <h1>Chain Card</h1>
+      </div>
+      <div class="page__tools">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Company card"
+          class="mr-2"
+          [disabled]="isLoading"
+        >
+        </button>
+        <button
+          pButton
+          type="button"
+          class="p-button-icon"
+          icon="pi pi-pencil"
+          label="Open Statuses"
+          [disabled]="isLoading"
+          (click)="editChainStatus()"
+        >
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Chain Information</h2>
+
+    <div class="page__card company-information-card mb-4">
+      <div class="company-information" *ngIf="!isLoading else infoLoading">
+        <div class="row">
+          <div class="col-md-5">
+
+            <h4>Company Name: <span>{{saleChain.company.name }}</span></h4>
+            <h4>Address: <span>{{ saleChain.company.address }}</span></h4>
+            <h4>Email: <span>{{ saleChain.company.email }}</span></h4>
+            <h4>Phone Number: <span>{{saleChain.company.phone_number }}</span></h4>
+            <h4>Website:
+              <span>
+                <a [href]="saleChain.company.website" target="_blank">{{saleChain.company.website}}</a>
+                </span>
+            </h4>
+            <h4>Tax Number: <span>{{saleChain.company.tax_number }}</span></h4>
+            <h4>Register Number: <span>{{saleChain.company.registration_number }}</span></h4>
+          </div>
+          <div class="col-md-7">
+            <h4>Nomenclature: <span>{{ saleChain.company.supplier_nomenclature }}</span></h4>
+            <h4>Description <span>{{ saleChain.company.comment }}</span></h4>
+            <h4>
+              Country:
+              <span *ngIf="saleChain.company?.country">{{saleChain.company?.country?.name}}</span>
+            </h4>
+            <h4>
+              Region:
+              <span *ngIf="saleChain.company?.region">{{saleChain.company?.region?.name}}</span>
+            </h4>
+            <h4>
+              Status:
+              <span>{{saleChain.chain_status?.status.name}}: {{saleChain.chain_status?.date | date:'dd.MM.yyyy'}} </span>
+            </h4>
+            <h4>Comment: <span>{{saleChain.company.comment }}</span></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Events</h2>
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <div class="table-pagination-preloader">
+          <p-table
+            #dt
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="salesActivities.length > 0"
+            [rows]="10"
+            [value]="salesActivities"
+            selectionMode="single"
+            [(selection)]="selectedEvent"
+            (selectionChange)="onSelectedEvent()"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <p class="subtitle" *ngIf="!selectedEvent">Choose the Contact Person to edit</p>
+                <p-menubar
+                  class="ml-auto"
+                  [model]="salesChainEvents"
+                  [class.disabled]="!selectedEvent">
+
+                </p-menubar>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="index-header text-center" style="width: 5%">#</th>
+                <th style="width: 15%">Event Name</th>
+                <th pSortableColumn="event.start" style="width: 12%">
+                  Event Start
+                  <p-sortIcon field="event.start">
+                  </p-sortIcon>
+                </th>
+                <th pSortableColumn="event.end" style="width: 12%">
+                  Event End
+                  <p-sortIcon field="event.end">
+                  </p-sortIcon>
+                </th>
+                <th style="width: 20%">Event Description</th>
+                <th style="width: 11%">Employee</th>
+                <th style="width: 15%">Event Comment</th>
+                <th style="width: 10%" class="text-center">Is Done</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-activity let-i="rowIndex">
+              <tr [pSelectableRow]="activity">
+                <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
+                <td style="width: 15%">
+                  {{ activity.event.event_type.name }}
+                </td>
+
+                <td
+                  style="width: 12%"
+                  [routerLink]="[
+                    '/dash/crm/events-list/event-card/',
+                    activity.event.id
+                  ]"
+                >
+                  {{ activity.event.start | date: "dd/MM/yyyy, HH:mm" }}
+                </td>
+                <td style="width: 12%">
+                  {{ activity.event.end | date: "dd/MM/yyyy, HH:mm" }}
+                </td>
+                <td style="width: 20%">
+                  {{ activity.event.description }}
+                </td>
+
+                <td style="width: 11%">
+                  <ng-container *ngIf="activity.event.employee.length === 0"
+                  >Not Related
+                  </ng-container>
+
+                  <ng-container *ngIf="activity.event.employee.length > 0">
+                    <span *ngFor="let employee of activity.event.employee">
+                      {{ employee.first_name + " " + employee.last_name }} <br>
+                    </span>
+                  </ng-container>
+                </td>
+
+                <td style="width: 15%">
+                  {{ activity.comment }}
+                </td>
+
+                <td class="text-center" style="width: 10%">
+                  <div class="icons">
+                    <i class="pi pi-check text-success" *ngIf="activity.is_done; else notGrouped"></i>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="8">
+                  <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoading">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="dt.paginator = false; dt.scrollable = true"
+                pTooltip="Remove Pagination"
+                styleClass="p-button-text"
+              >All
+              </p-button
+              >
+            </ng-template>
+          </p-table>
+          <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoading && saleChain.company?.contact_persons.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <div class="header d-flex align-items-center justify-content-between mb-4">
+      <h2>Products</h2>
+      <div class="page__tools">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Generate Offer"
+          class="mr-2"
+          [disabled]="isLoadingReservation"
+        >
+        </button>
+        <button
+          pButton
+          type="button"
+          class="p-button-icon"
+          icon="pi pi-plus"
+          label="Add Product"
+          [disabled]="isLoadingReservation"
+          (click)="onAddProduct()"
+        >
+        </button>
+      </div>
+    </div>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <div class="table-pagination-preloader">
+          <p-table
+            #st
+            [scrollable]="true"
+            [value]="salesReservation"
+            [(selection)]="selectedSalesReservation"
+            selectionMode="single"
+            [rows]="10"
+            [paginator]="!isLoadingReservation && salesReservation.length > 0"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <p class="subtitle" *ngIf="!selectedSalesReservation">Choose the Contact Person to edit</p>
+                <p-menubar
+                  class="ml-auto"
+                  [model]="products"
+                  [class.disabled]="!selectedSalesReservation">
+                </p-menubar>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 5%" class="text-center">#</th>
+                <th style="width: 10%" class="text-center">Created</th>
+                <th style="width: 20%">Name</th>
+                <th style="width: 15%">Code</th>
+                <th style="width: 15%">Serial number</th>
+                <th style="width: 10%" class="text-center">Delivery Date</th>
+                <th style="width: 10%" class="text-center">Status</th>
+                <th style="width: 10%" class="text-center">Price</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-reservation let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="reservation">
+                <td style="width: 5%" class="text-center">{{rowIndex + 1}}</td>
+                <td style="width: 10%" class="text-center">
+                  {{reservation.created_at | date: 'dd/MM/yyyy'}}
+                </td>
+                <td style="width: 20%">
+                  <ng-container *ngIf="reservation.nomenclature">
+                    {{reservation.nomenclature.name}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.warehouse_product">
+                    {{reservation.warehouse_product.nomenclature.name}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.list_product">
+                    {{reservation.list_product.nomenclature.name}}
+                  </ng-container>
+                </td>
+                <td style="width: 15%">
+                  <ng-container *ngIf="reservation.nomenclature">
+                    {{reservation.nomenclature.code}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.warehouse_product">
+                    {{reservation.warehouse_product.nomenclature.code}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.list_product">
+                    {{reservation.list_product.nomenclature.code}}
+                  </ng-container>
+                </td>
+                <td style="width: 15%" class="">
+                  <h4 class="title-hidden">Serial Number</h4>
+                  <ng-container *ngIf="reservation.warehouse_product">
+                    {{reservation.warehouse_product.serial_number?.type_with_number ?
+                    reservation.warehouse_product.serial_number?.type_with_number :
+                    reservation.warehouse_product.serial_number?.id}}
+                  </ng-container>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <h4 class="title-hidden">Delivery date</h4>
+                  <div *ngIf="reservation.warehouse_product; then availableNow else availableLater"></div>
+                  <ng-template #availableNow>
+                    Available now
+                  </ng-template>
+                  <ng-template #availableLater>
+                    {{reservation.list_product?.delivery_date | date: 'dd/MM/yyyy'}}
+                  </ng-template>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <h4 class="title-hidden">Status</h4>
+                  <ng-container *ngIf="reservation.warehouse_product">
+                    Ready
+                  </ng-container>
+                  <ng-container *ngIf="reservation.list_product">
+                    {{statuses[reservation.list_product.status]}}
+                  </ng-container>
+                  <ng-container *ngIf="!reservation.list_product && !reservation.warehouse_product">
+                    N/A
+                  </ng-container>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <h4 class="title-hidden">Price</h4>
+                  <ng-container *ngIf="reservation.nomenclature">
+                    {{reservation.nomenclature.price | number:'1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.warehouse_product">
+                    {{reservation.warehouse_product.nomenclature.price | number:'1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngIf="reservation.list_product">
+                    {{reservation.list_product.nomenclature.price | number:'1.2-2'}}
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="8">
+                  <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoading">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header d-flex align-items-center justify-content-between mb-4">
+      <h2>Offers</h2>
+      <div class="page__tools">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="Generate Offer"
+          class="mr-2"
+          (click)="onGenerateOffer()"
+        >
+        </button>
+      </div>
+    </div>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <div class="table-pagination-preloader">
+          <p-table
+            class="adaptive-table"
+            [value]="offers"
+            [(selection)]="selectedOffer"
+            selectionMode="single"
+            [rows]="10"
+            [paginator]="!isLoadingOffers && offers.length > 0"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <p class="subtitle" *ngIf="!selectedOffer">Choose the Contact Person to edit</p>
+                <p-menubar
+                  class="ml-auto"
+                  [model]="offersMenu"
+                  [class.disabled]="!selectedOffer">
+                </p-menubar>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 5%" class="index-header text-center">#</th>
+                <th style="width: 20%" class="text-center">Date</th>
+                <th style="width: 20%" class="text-center">OfferID</th>
+                <th style="width: 30%" class="text-center">Customer Name</th>
+                <th style="width: 25%" class="text-center">Sum</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-offer let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="offer">
+                <td style="width: 5%" class="text-center">{{rowIndex + 1}}</td>
+                <td style="width: 20%" class="text-center">
+                  {{ offer.date | date: 'dd/MM/yyyy' }}
+                </td>
+                <td style="width: 20%" class="text-center">
+                  {{ offer.id }}
+                </td>
+                <td style="width: 30%" class="text-center">
+                  {{ offer.customer.name }}
+                </td>
+                <td style="width: 25%" class="text-center">
+                  {{ offer.sum }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="8">
+                  <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoading">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <h2 class="mb-4">Files</h2>
+
+    <div class="page__card">
+      <div class="page__table">
+          <p-table
+            #mt
+            selectionMode="single"
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="files.length > 0"
+            [rows]="10"
+            [value]="files"
+            [(selection)]="selectedFile"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <button
+                  (click)="onAddFile()"
+                  pButton type="button"
+                  icon="pi pi-plus"
+                  class="ml-auto"
+                  label="Add File"
+                >
+                </button>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 5%" class="text-center">#</th>
+                <th style="width: 85%">Name</th>
+                <th style="width: 10%" class="text-center">Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="file">
+                <td>{{ rowIndex + 1 }}</td>
+                <td>
+                  <h4 class="title-hidden">Name</h4>
+                  {{ getName(file.file) }}
+                </td>
+                <td style="width: 10%" class="text-center">
+                  <div class="d-flex justify-content-center">
+                    <button
+                      pButton
+                      (click)="onDownloadFile(file)"
+                      [loading]="addition.has(file.id)"
+                      type="button"
+                      class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                      icon="pi pi-download"
+                    ></button>
+                    <button
+                      pButton
+                      (click)="onRemoveFile(file.id)"
+                      [loading]="deletion.has(file.id)"
+                      type="button"
+                      class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                      icon="pi pi-trash"
+                    ></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-2" [attr.colspan]="3">
+                  <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoading">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>
+
+<ng-template #notGrouped>
+  <i class="pi pi-times text-danger"></i>
+</ng-template>
+
