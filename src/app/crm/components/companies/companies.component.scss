@@ -21,3 +21,17 @@
     top: 0.275rem;
   }
 }
+
+.bord-right {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    content: '';
+    width: 1px;
+    height: 100%;
+    background: #dee2e6;
+    right: 0;
+    top: 0;
+  }
+}
