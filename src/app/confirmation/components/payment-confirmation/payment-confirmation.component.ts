@@ -72,9 +72,9 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     }).pipe(
       takeUntil(this.destroy$)
     ).subscribe(({payments, serviceInvoicePayments}) => {
-      this.payments = payments.filter(payment => !payment.invoice.order.purchase_category);
+      this.payments = payments.filter(payment => payment.invoice.order).filter(payment => !payment.invoice.order.purchase_category);
       // @ts-ignore
-      this.serviceInvoicePayments.push(...payments.filter(payment => payment.invoice.order.purchase_category));
+      this.serviceInvoicePayments.push(...payments.filter(payment => payment.invoice.order).filter(payment => payment.invoice.order.purchase_category));
       this.serviceInvoicePayments.push(...serviceInvoicePayments);
 
       this.countPaymentsTotals();
