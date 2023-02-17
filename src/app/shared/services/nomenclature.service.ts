@@ -7,7 +7,6 @@ import {forkJoin, Observable} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
 import {TechnicalEquipment} from '../../product-structure/models/technical-equipment';
 import {Product} from '../../product-structure/models/product';
-import {CompareStructureComponent} from '../../product-structure/modals/compare-structure/compare-structure.component';
 import {MatDialog} from '@angular/material/dialog';
 import {
   SerialConfirmationComponent
@@ -181,6 +180,12 @@ export class NomenclatureService {
     return this.httpClient.get<{ data: NomenclatureImage[] }>(this.API_URL + `nomenclature_images/?nomenclature=${id}`).pipe(
       map(response => response.data)
     );
+  }
+
+  getNomenclaturesImages(ids: number[]): Observable<NomenclatureImage[][]> {
+    return forkJoin(ids.map(id => this.httpClient.get<{ data: NomenclatureImage[] }>(this.API_URL + `nomenclature_images/?nomenclature=${id}`).pipe(
+      map(response => response.data)
+    )));
   }
 
   uploadImagesSeveral(send: any[]): Observable<NomenclatureImage[]> {
