@@ -8,6 +8,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {environment} from '@env/environment';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'pek-sales-procurement-chains',
@@ -72,6 +73,8 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private salesChainService: SalesChainService,
     private readonly modalService: ModalService,
+    private router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -252,6 +255,8 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
   }
 
   onGoToChainPage(salesChain: SalesChain) {
+    // Add product is missing in new version
     window.open(`${this.link}sales/sales-chains/chain-page/` + salesChain.id, '_blank');
+    // this.router.navigate(['chain-page', salesChain.id], {relativeTo: this.route})
   }
 }

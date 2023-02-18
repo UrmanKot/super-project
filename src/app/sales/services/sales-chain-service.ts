@@ -2,11 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {QuerySearch} from '@shared/models/other';
 import {Observable} from 'rxjs';
-import {SalesChain, SalesChains} from '../models/sales-chain';
+import {SalesChain, SalesChains, SalesFile, SalesReservation} from '../models/sales-chain';
 import {map} from 'rxjs/operators';
 import {environment} from '@env/environment';
 import {CreateSalesChainComponent} from '../modals/create-sales-chain/create-sales-chain.component';
 import {MatDialog} from '@angular/material/dialog';
+import {EditStatusesModalComponent} from "../modals/edit-statuses-modal/edit-statuses-modal.component";
+import {
+  CreateChoiceProductModalComponent
+} from "../modals/create-choice-product-modal/create-choice-product-modal.component";
+import {CreateSalesFileModalComponent} from "../modals/create-sales-file-modal/create-sales-file-modal.component";
+import {CompanyFile} from "../../crm/models/company-file";
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +74,49 @@ export class SalesChainService {
     return this.httpClient.delete(this.API_URL + 'sales_chains/' + salesChain.id + '/');
   }
 
+  deleteProduct(id) {
+    return this.httpClient.delete(this.API_URL + `sales_chain_reservation/${id}`)
+  }
+
+  getById(id: number): Observable<SalesChain> {
+    return this.httpClient.get<{ data: SalesChain }>(this.API_URL + `sales_chains/${id}/`).pipe(
+      map(response => response.data)
+    )
+  }
+
+  getReservation(id: number): Observable<SalesReservation> {
+    return this.httpClient.get<{ data: SalesReservation }>(this.API_URL + `sales_chain_reservation/?sales_chain=${id}`).pipe(
+      map(response => response.data)
+    )
+  }
+
+  updateStatus(id: number, salesChain):Observable<SalesChain> {
+    return this.httpClient.patch<{data: SalesChain}>(this.API_URL + '' + `sales_chains/${id}/`, salesChain).pipe(
+      map(response => response.data)
+    )
+  }
+
+  getFile(): Observable<SalesFile[]> {
+    return this.httpClient.get<{data: SalesFile[]}>(this.API_URL + `sales_chain_files/`).pipe(
+      map(response => response.data)
+    )
+  }
+
+  downloadFile(file: SalesFile): Observable<any> {
+    return this.httpClient.get(this.API_URL+ `sales_chain_files/${file.id}/`, {responseType: 'blob'})
+  }
+
+  getGenerateOffer(id: number):Observable<any> {
+    return this.httpClient.get(this.API_URL + `sales_chains/${id}/generate_offer/`, {observe: 'response', responseType: 'blob'})
+  }
+  removeGenerateOffer(id: number):Observable<any> {
+    return this.httpClient.delete(this.API_URL + `sales_chains/${id}/generate_offer/`)
+  }
+  // generateOffer(id) {
+  //   return this.httpClient.get(this.API_URL + 'sales_chains/' + id + '/generate_offer/', {observe: 'response', responseType: 'blob'});
+  // }
+
+
   createEditSalesChainModal(): Observable<SalesChain> {
     return this.dialog
       .open<CreateSalesChainComponent>(CreateSalesChainComponent, {
@@ -79,4 +128,38 @@ export class SalesChainService {
       })
       .afterClosed();
   }
+
+  editSalesChainStatus(salesChain: SalesChain): Observable<any> {
+    return this.dialog
+      .open<EditStatusesModalComponent>(EditStatusesModalComponent, {
+        width: '800px',
+        data: {type: 'edit', salesChain},
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  createChoiseProduct(selectedSalesReservation: SalesReservation): Observable<any> {
+    return this.dialog
+      .open<CreateChoiceProductModalComponent>(CreateChoiceProductModalComponent, {
+        width: '800px',
+        data: {type: 'edit', selectedSalesReservation},
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe();
+  }
+  createSalesFileModal(saleChainId: number): Observable<any> {
+    return this.dialog
+      .open<CreateSalesFileModalComponent>(CreateSalesFileModalComponent, {
+        width: '800px',
+        data: {type: 'edit', saleChainId},
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+
 }

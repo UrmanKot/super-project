@@ -248,11 +248,11 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
         code: this.createFormValue.code,
         description: this.createFormValue.description,
         type: this.createFormValue.type,
+        bulk_or_serial: this.createFormValue.bulk_or_serial
       };
 
       if (this.createFormValue.type === ENomenclatureType.PURCHASED) {
         send.category = this.createFormValue.category;
-        send.bulk_or_serial = this.createFormValue.bulk_or_serial;
         delete send.code;
       } else {
         send.technologies = [...this.createFormValue.technologies];

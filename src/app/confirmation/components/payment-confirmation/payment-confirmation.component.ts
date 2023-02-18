@@ -20,6 +20,13 @@ import {PaymentService} from '../../../payments/services/payment.service';
 export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   link = environment.link_url + 'dash/';
 
+  selectedPaymentsTotals = {
+    totalPricePayments: 0,
+    totalPriceServiceInvoicePayments: 0,
+    totalAmountPayments: 0,
+    totalAmountServiceInvoicePayments: 0
+  };
+
   paymentTotals = {
     totalPricePayments: 0,
     totalPriceServiceInvoicePayments: 0,
@@ -65,9 +72,9 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     }).pipe(
       takeUntil(this.destroy$)
     ).subscribe(({payments, serviceInvoicePayments}) => {
-      this.payments = payments.filter(payment => !payment.invoice.order.purchase_category);
+      this.payments = payments.filter(payment => payment.invoice.order).filter(payment => !payment.invoice.order.purchase_category);
       // @ts-ignore
-      this.serviceInvoicePayments.push(...payments.filter(payment => payment.invoice.order.purchase_category));
+      this.serviceInvoicePayments.push(...payments.filter(payment => payment.invoice.order).filter(payment => payment.invoice.order.purchase_category));
       this.serviceInvoicePayments.push(...serviceInvoicePayments);
 
       this.countPaymentsTotals();
@@ -226,9 +233,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.paymentTotals.totalAmountServiceInvoicePayments = 0;
 
     this.serviceInvoicePayments.forEach(payment => {
-      // @ts-ignore
       this.paymentTotals.totalPriceServiceInvoicePayments += payment.service_invoice_total_price ? payment.service_invoice_total_price : payment.invoice_total_price;
-      // @ts-ignore
       this.paymentTotals.totalAmountServiceInvoicePayments += payment.service_invoice_payment_amount ? parseFloat(payment.service_invoice_payment_amount) : parseFloat(payment.payment_amount);
     });
   }
@@ -380,7 +385,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   }
 
   onGoToServicePaymentInvoice(servicePayment: ServiceInvoicePayment) {
-    window.open(`${this.link}accounting/invoices/service-invoice/` +  servicePayment.serviceinvoice.id);
+    window.open(`${this.link}accounting/invoices/service-invoice/` + servicePayment.serviceinvoice.id);
   }
 
   onGoToPaymentOrder(payment: Payment) {
@@ -410,5 +415,25 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  onCountSelectedPaymentsTotal() {
+    this.selectedPaymentsTotals.totalPricePayments = 0;
+    this.selectedPaymentsTotals.totalAmountPayments = 0;
+
+    this.selectedPayments.forEach(node => {
+      this.selectedPaymentsTotals.totalPricePayments += node.data.invoice_total_price;
+      this.selectedPaymentsTotals.totalAmountPayments += parseFloat(node.data.payment_amount);
+    });
+  }
+
+  countSelectedServiceInvoicePaymentsTotal() {
+    this.selectedPaymentsTotals.totalPriceServiceInvoicePayments = 0;
+    this.selectedPaymentsTotals.totalAmountServiceInvoicePayments = 0;
+
+    this.selectedServiceInvoicePayments.forEach(node => {
+      this.selectedPaymentsTotals.totalPriceServiceInvoicePayments += node.data.service_invoice_total_price ? node.data.service_invoice_total_price : node.data.invoice_total_price;
+      this.selectedPaymentsTotals.totalAmountServiceInvoicePayments += node.data.service_invoice_payment_amount ? parseFloat(node.data.service_invoice_payment_amount) : parseFloat(node.data.payment_amount);
+    });
   }
 }

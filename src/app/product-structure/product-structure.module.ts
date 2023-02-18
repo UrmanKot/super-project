@@ -35,6 +35,7 @@ import { TechnicalEquipmentsTableComponent } from './components/create-edit-prod
 import { EditTechnicalEquipmentComponent } from './components/create-edit-product-form/components/technical-equipments-table/edit-technical-equipment/edit-technical-equipment.component';
 import { NomenclatureFilesComponent } from './components/create-edit-product-form/components/nomenclature-files/nomenclature-files.component';
 import {CompareStructureComponent} from './modals/compare-structure/compare-structure.component';
+import { SerialConfirmationComponent } from './modals/serial-confirmation/serial-confirmation.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {CompareStructureComponent} from './modals/compare-structure/compare-stru
     EditTechnicalEquipmentComponent,
     NomenclatureFilesComponent,
     CompareStructureComponent,
+    SerialConfirmationComponent,
   ],
   exports: [
     CreateEditProductFormComponent

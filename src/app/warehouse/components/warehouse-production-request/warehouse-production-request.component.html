@@ -58,6 +58,27 @@
       >
       </button>
       <button
+        [loading]="albumService.loading$ | async"
+        pButton
+        *ngIf="isAlbumPrint"
+        icon="pi pi-print"
+        class="mr-2"
+        type="button"
+        label="Print Album"
+        (click)="printAlbum()"
+      >
+      </button>
+      <button
+        pButton
+        icon="pi pi-images"
+        class="mr-2"
+        type="button"
+        [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
+        (click)="togglePrintAlbumMode()"
+        [disabled]="isLoading"
+      >
+      </button>
+      <button
         pButton
         type="button"
         icon="pi pi-check"
@@ -79,7 +100,7 @@
         class="ml-2"
         type="button"
         icon="pi pi-angle-double-right"
-        [class.disabled]="!order"
+        [class.disabled]="!order || isAlbumPrint"
         label="Go to Order"
         (click)="goToOrder()"
       >
@@ -134,15 +155,19 @@
           [value]="listRequests"
           [(first)]="firstPage"
           [globalFilterFields]="['name']"
-          selectionMode="single" [(selection)]="selectedRequest"
+          dataKey="id"
+          [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
+          [(selection)]="selectedRequest"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex table-caption">
               <p class="subtitle" *ngIf="!selectedRequest">Choose the Request to edit</p>
-              <p-menubar class="ml-auto mr-2" [model]="requestMenuItems"
-                         [class.disabled]="!selectedRequest"></p-menubar>
+              <p-menubar
+                class="ml-auto mr-2"
+                [model]="requestMenuItems"
+                [class.disabled]="!selectedRequest || isAlbumPrint">
+              </p-menubar>
 
-              <!--      [disabled]="isLoadingTree"        -->
               <button
                 class="mr-2 p-button-icon"
                 pButton
@@ -185,10 +210,17 @@
           </ng-template>
           <ng-template pTemplate="header">
             <tr>
-              <th class="text-center" style="width: 5%;">#</th>
+              <th class="text-center" style="width: 6%;">
+                <div class="row-toggler">
+                  <div class="toggle">
+                    <p-tableHeaderCheckbox *ngIf="isAlbumPrint"></p-tableHeaderCheckbox>
+                  </div>
+                  #
+                </div>
+              </th>
               <th class="text-center" style="width: 5%;">ID</th>
               <th style="width: 18%;">Code</th>
-              <th style="width: 21%;">Name</th>
+              <th style="width: 20%;">Name</th>
               <th style="width: 12%;" class="text-center">Technology</th>
               <th class="text-center" style="width: 14%;">Required Quantity</th>
               <th class="text-center" style="width: 13%;">Locator</th>
@@ -200,14 +232,19 @@
                 [class.last-scanned]="request.id === lastScannedId"
                 [class.partly-scanned]="isPartlyScanned(request)"
                 [class.qr-code-scanned]="isFullyScanned(request)">
-              <td style="width: 5%;" class="text-center">
-                <h3 class="td-title">#</h3>
-                {{i + 1}}
+              <td style="width: 6%;" class="text-center">
+                <div class="row-toggler">
+                  <h3 class="td-title">#</h3>
+                  <div class="toggle">
+                    <p-tableCheckbox *ngIf="isAlbumPrint" [value]="request"></p-tableCheckbox>
+                  </div>
+                  {{i + 1}}
+                </div>
               </td>
               <td style="width: 5%;" class="text-center ids-container">
                 <h3 class="td-title">ID</h3>
-                {{request.id}} <span *ngIf="request.ids.length > 0">L({{request.ids.length + 1}})</span>
-                <span *ngIf="request.ids.length > 0" class="ids">
+                {{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span>
+                <span *ngIf="request.ids?.length > 0" class="ids">
                   <div>
                     {{request.id}}
                   </div>
@@ -228,7 +265,7 @@
                   {{request.list_product.nomenclature.code}}
                 </div>
               </td>
-              <td style="width: 21%;" class="serial-numbers-container">
+              <td style="width: 20%;" class="serial-numbers-container">
                 <h3 class="td-title">Name</h3>
                 <div *ngIf="request.material_nomenclature">
                   <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
@@ -244,7 +281,7 @@
                 </div>
 
 
-                <span *ngIf="request.all_reserved_serial_products.length > 0" class="serial-numbers">
+                <span *ngIf="request.all_reserved_serial_products?.length > 0" class="serial-numbers">
                   <div *ngFor="let serialNumber of request.all_reserved_serial_products">
                     {{serialNumber.type_with_number}}
                   </div>
@@ -558,7 +595,7 @@
               [ttRow]="rowNode"
               [class.in-plan]="rowData.request"
               [class.placeholder]="!rowData.request"
-              [class.tr-toggler]="rowNode.node.children.length > 0"
+              [class.tr-toggler]="rowNode.node.children?.length > 0"
             >
               <td style="width: 16%;" class="text-center">
                 <div class="toggle-row">

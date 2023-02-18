@@ -71,11 +71,11 @@ export class EditProductComponent implements OnInit {
         code: this.formValue.code,
         description: this.formValue.description,
         type: this.formValue.type,
+        bulk_or_serial: this.formValue.bulk_or_serial
       };
 
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         send.category = this.formValue.category;
-        send.bulk_or_serial = this.formValue.bulk_or_serial;
         delete send.code;
       } else {
         send.technologies = [...this.formValue.technologies];

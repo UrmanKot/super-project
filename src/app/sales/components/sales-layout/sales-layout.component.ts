@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavigationLink} from '../../../layout/navigation-route';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-sales-layout',
@@ -9,19 +10,21 @@ import {NavigationLink} from '../../../layout/navigation-route';
 export class SalesLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
-    // {label: 'Make Production List', commands: ['lists']},
     {label: 'Sales Chains', commands: ['sales-procurement-chains']},
-    // {label: 'Configs', commands: ['configs/nomenclature-price']},
-    // {label: 'Statuses', commands: ['statuses']},
-    // {label: 'Countries & Regions', commands: ['regions']},
-  ]
+    {
+      label: 'Prices',
+      commands: [`${environment.link_url}dash/sales/sales-configs/nomenclature-price`],
+      isExternal: true
+    },
+  ];
 
   settingsRoutes: NavigationLink[] = [
     {label: 'Statuses', commands: ['statuses']},
     {label: 'Countries & Regions', commands: ['regions']},
-  ]
+  ];
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

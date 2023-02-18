@@ -68,7 +68,7 @@
           </div>
         </div>
         <div class="product-add__box">
-          <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
+          <div class="form-group">
             <label for="bulk">Bulk / With Serial Numbers*</label>
             <p-dropdown
               id="bulk"
@@ -76,6 +76,7 @@
               formControlName="bulk_or_serial"
               optionLabel="label"
               optionValue="value"
+              (ngModelChange)="showWarehouseQuantityConfirm()"
             ></p-dropdown>
           </div>
           <div class="form-group" *ngIf="type === 'edit'">

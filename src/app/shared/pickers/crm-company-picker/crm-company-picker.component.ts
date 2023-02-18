@@ -16,7 +16,7 @@ export class CrmCompanyPickerComponent implements OnInit, ControlValueAccessor {
   @Input() country: number;
   @Input() selectedCountry: Country;
   @Input() placeholder = 'Choose Country';
-  @Input() showClear: boolean;
+  @Input() showClear: boolean = true;
 
   countries: Country[];
   isLoading = true;

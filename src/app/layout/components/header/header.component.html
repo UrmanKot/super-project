@@ -13,7 +13,16 @@
         class="layout-navigation__item"
       >
         <a
+          *ngIf="!route.isExternal"
           [routerLink]="route.commands"
+          routerLinkActive="active"
+        >
+          {{route.label}}
+        </a>
+        <a
+          *ngIf="route.isExternal"
+          [href]="route.commands[0]"
+          target="_self"
           routerLinkActive="active"
         >
           {{route.label}}

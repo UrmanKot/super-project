@@ -13,6 +13,12 @@ import { CreateEditSalesStatusComponent } from './modals/create-edit-sales-statu
 import { EditNomenclaturePriceModalComponent } from './modals/edit-nomenclature-price-modal/edit-nomenclature-price-modal.component';
 import { CreateSalesChainComponent } from './modals/create-sales-chain/create-sales-chain.component';
 import { RegionsComponent } from './components/regions/regions.component';
+import { SalesChainPageComponent } from './components/sales-chain-page/sales-chain-page.component';
+import { EditEventModalComponent } from './modals/edit-event-modal/edit-event-modal.component';
+import { EditStatusesModalComponent } from './modals/edit-statuses-modal/edit-statuses-modal.component';
+import { CreateChoiceProductModalComponent } from './modals/create-choice-product-modal/create-choice-product-modal.component';
+import { CreateSalesFileModalComponent } from './modals/create-sales-file-modal/create-sales-file-modal.component';
+import {MultiSelectModule} from "primeng/multiselect";
 import { CreateEditCountryComponent } from './modals/create-edit-country/create-edit-country.component';
 import { CreateEditRegionComponent } from './modals/create-edit-region/create-edit-region.component';
 import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/create-edit-sub-region.component';
@@ -29,16 +35,22 @@ import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/cr
     EditNomenclaturePriceModalComponent,
     CreateSalesChainComponent,
     RegionsComponent,
+    SalesChainPageComponent,
+    EditEventModalComponent,
+    EditStatusesModalComponent,
+    CreateChoiceProductModalComponent,
+    CreateSalesFileModalComponent,
     CreateEditCountryComponent,
     CreateEditRegionComponent,
     CreateEditSubRegionComponent
   ],
-  imports: [
-    CommonModule,
-    SalesRouting,
-    SharedModule,
-    LayoutModule,
-    DragDropModule
-  ]
+    imports: [
+        CommonModule,
+        SalesRouting,
+        SharedModule,
+        LayoutModule,
+        DragDropModule,
+        MultiSelectModule
+    ]
 })
 export class SalesModule { }

@@ -12,7 +12,14 @@ import {
 import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
 import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
 import {Overlay} from '@angular/cdk/overlay';
-import {AddFileToOrderComponent} from '@shared/modals/add-file-to-order/add-file-to-order.component';
+import {
+  CreateEditSalesStatusComponent
+} from "../../sales/modals/create-edit-sales-status/create-edit-sales-status.component";
+import {EditEventModalComponent} from "../../sales/modals/edit-event-modal/edit-event-modal.component";
+import {EditStatusesModalComponent} from "../../sales/modals/edit-statuses-modal/edit-statuses-modal.component";
+import {EventCompany} from "../../crm/models/event-company";
+import {SalesChain} from "../../sales/models/sales-chain";
+import {AddFileToOrderComponent} from "@shared/modals/add-file-to-order/add-file-to-order.component";
 
 @Injectable({
   providedIn: 'root'

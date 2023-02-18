@@ -15,6 +15,7 @@ export class NavigationLink {
   commands: any[];
   /** An options object that determines how the URL should be constructed or interpreted. */
   extras?: NavigationExtras;
+  isExternal?: boolean;
   /** Needed permissions */
   /** Недоступно */
   disabled?: boolean;
