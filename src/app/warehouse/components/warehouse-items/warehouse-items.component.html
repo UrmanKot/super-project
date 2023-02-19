@@ -163,13 +163,21 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-2">
                   <div class="form-group">
                     <label>Product Structure Category</label>
                     <pek-product-structure-category-picker
                       [isAllIds]="true"
                       (choiceCategoryFolAllIds)="onSelectProductStructureCategory($event)"
                     ></pek-product-structure-category-picker>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label>Technologies</label>
+                    <pek-multi-technology-picker
+                      (selectTechnologies)="onSelectedTechnologies($event)"
+                    ></pek-multi-technology-picker>
                   </div>
                 </div>
               </div>

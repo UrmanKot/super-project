@@ -91,7 +91,7 @@
             <td class="text-center" style="width: 5%">{{ i + 1 }}</td>
 
             <td style="width: 30%">
-              <a (click)="onGoToCompany(chain)">{{ chain.company}}</a>
+              <a [href]="'/crm/business-partners/company-page/' + chain.company_id">{{ chain.company}}</a>
             </td>
             <td style="width: 15%" class="text-center">
               {{ chain.created_at | date: 'dd/MM/y'}}

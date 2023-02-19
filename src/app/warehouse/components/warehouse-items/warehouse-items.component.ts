@@ -12,6 +12,7 @@ import {debounceTime, map, tap} from 'rxjs/operators';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../qr-code/qr-code.service';
+import {Technology} from '../../../product-structure/models/technology';
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -53,6 +54,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     order_by_quantity: [null],
     exclude_zero: [null],
     exclude_empty: [null],
+    technologies: [null],
     page: [1],
   });
 
@@ -246,6 +248,11 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.searchForm.get('exclude_empty').value !== null) this.query.push({
       name: 'exclude_empty',
       value: this.searchForm.get('exclude_empty').value
+    });
+
+    if (this.searchForm.get('technologies').value !== null) this.query.push({
+      name: 'current_technologies',
+      value: this.searchForm.get('technologies').value
     });
 
     const ordering = this.prepareSortingField();
@@ -493,5 +500,14 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   isReservedDisable(): boolean {
     return Boolean(this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.quantity, 0) === this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.reserved_by_opened_production_lists_quantity, 0));
+  }
+
+  onSelectedTechnologies(technologies: Technology[]) {
+    if (technologies) {
+      this.searchForm.get('technologies').patchValue(technologies.map(technology => technology.id));
+    } else {
+      this.searchForm.get('technologies').patchValue('');
+    }
+    this.searchProducts();
   }
 }
