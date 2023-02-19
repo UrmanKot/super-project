@@ -138,19 +138,49 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th class="text-center" style="width: 5%">#</th>
-            <th style="width: 45%">Name</th>
-            <th style="width: 50%">Description</th>
+            <th rowspan="3" class="text-center" style="width: 5%">#</th>
+            <th rowspan="3" style="width: 25%">Name</th>
+            <th rowspan="3" style="width: 20%" class="bord-right">Description</th>
+          </tr>
+          <tr>
+            <th colspan="6" class="bord text-center dark-two bord-top" style="width: 50%">Last Event</th>
+          </tr>
+          <tr>
+            <th class="bord text-center dark-two" style="width: 10%">Name</th>
+            <th class="text-center dark-two sort-label" style="width: 10%">Start Date</th>
+            <th class="text-center" style="width: 10%">End Date</th>
+            <th class="text-center dark-two" style="width: 10%">Comment</th>
+            <th class="text-center dark-two" style="width: 10%">Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-supplier let-i="rowIndex">
           <tr [pSelectableRow]="supplier">
-            <td style="width: 5%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
-            <td style="width: 45%">
+            <td class="text-center" style="width: 5%">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
+            <td style="width: 25%">
               {{ supplier.name }}
             </td>
-            <td style="width: 50%">
+            <td style="width: 20%">
               {{ supplier.comment }}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{supplier.last_event?.event?.event_name}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{supplier.last_event?.event?.start | date: "dd/MM/yyyy, HH:mm" }}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{supplier.last_event?.event?.end | date: "dd/MM/yyyy, HH:mm" }}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <div class="word-break">
+                {{supplier.last_event?.comment}}
+              </div>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <span [ngSwitch]="supplier.last_event?.is_done">
+                <ng-container *ngSwitchCase="true">Done</ng-container>
+                <ng-container *ngSwitchCase="false">Not Done</ng-container>
+              </span>
             </td>
           </tr>
         </ng-template>

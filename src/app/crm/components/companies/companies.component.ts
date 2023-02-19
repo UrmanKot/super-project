@@ -329,7 +329,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onGoToChainPage() {
-    this.router.navigate(['company-page', this.selectedCompany.id], {relativeTo: this.route});
+    window.open(`/crm/business-partners/company-page/${this.selectedCompany.id}`, '_blank')
   }
 
   countrySelected(country: Country) {

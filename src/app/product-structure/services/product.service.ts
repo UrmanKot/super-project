@@ -184,7 +184,7 @@ export class ProductService {
   editProductModal(product: Product): Observable<{ nomenclature: Nomenclature, product: Product }> {
     return this.dialog
       .open<EditProductComponent>(EditProductComponent, {
-        width: '50rem',
+        width: '60rem',
         height: 'auto',
         panelClass: 'modal-overflow-visible',
         data: product,
@@ -232,11 +232,13 @@ export class ProductService {
   }
 
 
-  openCompareStructureDialog(newResult: any,
-                             oldResult: any,
-                             hasCyclingProduct: boolean,
-                             hasChangedName: boolean,
-                             changedNamesList: CompareChangedCodeName[]): Observable<boolean | { code: string, selected_name: string }[]> {
+  openCompareStructureDialog(
+    newResult: any,
+    oldResult: any,
+    hasCyclingProduct: boolean,
+    hasChangedName: boolean,
+    changedNamesList: CompareChangedCodeName[]
+  ): Observable<boolean | { code: string, selected_name: string }[]> {
     return this.dialog
       .open<CompareStructureComponent>(CompareStructureComponent, {
         width: '80rem',

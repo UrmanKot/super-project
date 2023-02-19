@@ -1,6 +1,11 @@
 .payment-price {
   font-size: 1.1875rem;
   font-weight: 600;
+  display: flex;
+}
+
+.selected-payments-price {
+  margin-left: 3rem;
 }
 
 .payment-header {

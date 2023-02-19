@@ -13,6 +13,8 @@ export class ServiceInvoicePayment {
   self_proforma_serial_number?: string;
   total_price_converted: number;
   is_proforma: boolean;
+  invoice_total_price?: number;
+  payment_amount?: string;
   label?:string;
   payment_date_to?;
   supplier?: Company;

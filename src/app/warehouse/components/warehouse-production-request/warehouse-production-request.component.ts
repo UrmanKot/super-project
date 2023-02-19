@@ -7,21 +7,20 @@ import {ModalService} from '@shared/services/modal.service';
 import {RequestService} from '../../services/request.service';
 import {Table} from 'primeng/table';
 import {MenuItem, TreeNode} from 'primeng/api';
-import {Request} from '../../models/request';
 import {List} from '../../models/list';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {environment} from '@env/environment';
-import {find, forkJoin, Subject, takeUntil} from 'rxjs';
+import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
 import {take} from 'rxjs/operators';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {SerialNumber} from '../../../procurement/models/invoice';
 import {ScanResult} from '../../../qr-code/models/scan-result';
 import {GroupedRequest} from '../../models/grouped-request';
+import {AlbumService} from '@shared/services/album.service';
 
 
 enum ViewMode {
@@ -51,6 +50,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   destroy$ = new Subject();
   lastScannedId: number;
 
+  isAlbumPrint = false;
+
   requestNodeMenuItems: MenuItem[] = [{
     label: 'Selected Request',
     items: [
@@ -73,19 +74,19 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       {
         label: 'Show Images',
         icon: 'pi pi-images',
-        command: () => this.showImages(this.selectedRequest)
+        command: () => this.showImages(this.selectedRequest as GroupedRequest)
       },
       {
         label: 'Cancel',
         icon: 'pi pi-times',
-        command: () => this.onCancelItem(this.selectedRequest)
+        command: () => this.onCancelItem(this.selectedRequest as GroupedRequest)
       }
     ]
   }];
 
   rootList: any = null;
   currentDate: Date = new Date();
-  selectedRequest: GroupedRequest;
+  selectedRequest: GroupedRequest | GroupedRequest[];
   currentReqDate: Date = null;
 
   isLoading = true;
@@ -119,6 +120,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     private readonly modalService: ModalService,
     private readonly tasksService: TaskService,
     private orderTechnicalEquipmentsService: OrderTechnicalEquipmentsService,
+    public readonly albumService: AlbumService,
   ) {
   }
 
@@ -239,24 +241,24 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
         request.ids = request.requests.map(req => req.id);
         request.all_reserved_serial_products = [];
-        request.unique_locators = [...request.locators]
+        request.unique_locators = [...request.locators];
         if (request.reserved_serial_products) {
           request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
         }
         request.requests.forEach(req => {
           if (req.reserved_serial_products?.length > 0) {
-            request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number))
+            request.all_reserved_serial_products.push(...req.reserved_serial_products.map(serial_number => serial_number.serial_number));
           }
           request.unique_locators.push(...req.locators);
         });
         request.total_required_quantity = request.requests.reduce(
           (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
-        )
-        request.unique_locators = request.unique_locators.filter((locator, index, self) => self.findIndex(innerLocator => innerLocator.id === locator.id) === index)
+        );
+        request.unique_locators = request.unique_locators.filter((locator, index, self) => self.findIndex(innerLocator => innerLocator.id === locator.id) === index);
 
         request.ids.forEach(id => {
           const index = this.listRequests.findIndex(req => req.id === id);
-          this.listRequests.splice(index, 1)
+          this.listRequests.splice(index, 1);
         });
       });
 
@@ -271,11 +273,11 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
         request.total_required_quantity = request.requests.reduce(
           (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
-        )
+        );
 
         request.ids.forEach(id => {
           const index = this.hierarchyRequests.findIndex(req => req.id === id);
-          this.hierarchyRequests.splice(index, 1)
+          this.hierarchyRequests.splice(index, 1);
         });
       });
 
@@ -288,14 +290,14 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   getSameRequests(req: GroupedRequest, request: GroupedRequest): boolean {
-    let codeName = this.getCodeAndName(req)
+    let codeName = this.getCodeAndName(req);
 
     let codeNameSecond = this.getCodeAndName(request);
 
     return codeName.code === codeNameSecond.code && codeName.name === codeNameSecond.name;
   }
 
-  getCodeAndName(request: GroupedRequest): {name: string, code: string} {
+  getCodeAndName(request: GroupedRequest): { name: string, code: string } {
     let codeSecond = '';
     let nameSecond = '';
     if (request.material_nomenclature) {
@@ -308,7 +310,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       codeSecond = request.list_product.nomenclature.code;
       nameSecond = request.list_product.nomenclature.name;
     }
-    return {code: codeSecond, name: nameSecond}
+    return {code: codeSecond, name: nameSecond};
   }
 
   expandCollapseAllOrders(isToExpand = true): void {
@@ -373,23 +375,23 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     });
 
     this.hierarchyRequests.forEach(request => {
-        this.requestTree.forEach(node => {
-          let parentNomenclature;
-          if (request.for_order_product) {
-            parentNomenclature = request.for_order_product.nomenclature;
-          } else if (request.list_product) {
-            // @ts-ignore
-            parentNomenclature = request.list_product.list.nomenclature;
-          }
+      this.requestTree.forEach(node => {
+        let parentNomenclature;
+        if (request.for_order_product) {
+          parentNomenclature = request.for_order_product.nomenclature;
+        } else if (request.list_product) {
+          // @ts-ignore
+          parentNomenclature = request.list_product.list.nomenclature;
+        }
 
-          if (node.data.id === parentNomenclature.id) {
-            node.children.push({
-              data: {request, level: 4},
-              expanded: false,
-              children: []
-            });
-          }
-        });
+        if (node.data.id === parentNomenclature.id) {
+          node.children.push({
+            data: {request, level: 4},
+            expanded: false,
+            children: []
+          });
+        }
+      });
     });
   }
 
@@ -468,7 +470,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       if (res) {
         const call = [];
         const ids = request.ids ? request.ids : [];
-        const requestIds = [request, ...ids ];
+        const requestIds = [request, ...ids];
         requestIds.forEach(id => {
           call.push(this.requestsService.cancelRequest(requestId));
         });
@@ -560,6 +562,20 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     });
   }
 
+  printAlbum() {
+    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => r.list_product.nomenclature));
+  }
+
+  togglePrintAlbumMode() {
+    if (!this.isAlbumPrint) {
+      this.selectedRequest = [];
+      this.isAlbumPrint = true;
+    } else {
+      this.isAlbumPrint = false;
+      this.selectedRequest = [];
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
@@ -573,7 +589,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.elementsRowsIds = [];
       const elements = document.querySelectorAll(`[id^=row-]`);
       elements.forEach((element) => {
-        this.elementsRowsIds.push(element.id)
+        this.elementsRowsIds.push(element.id);
       });
     });
     this.isScanned = true;
@@ -588,7 +604,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   onScanned(data: any) {
     this.scanningEnd = true;
     this.isScanned = false;
-    this.scanForListProduct(data)
+    this.scanForListProduct(data);
   }
 
   onCancelScanned() {
@@ -604,7 +620,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.elementsRowsIds = [];
       const elements = document.querySelectorAll(`[id^=row-]`);
       elements.forEach((element) => {
-        this.elementsRowsIds.push(element.id)
+        this.elementsRowsIds.push(element.id);
       });
     });
 
@@ -613,7 +629,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     }
 
     this.requestsService.sendDataProductionRequests(this.orderId, data).pipe(untilDestroyed(this)).subscribe(res => {
-      this.testFoundIdsOnScan(res)
+      this.testFoundIdsOnScan(res);
     });
   }
 
@@ -629,7 +645,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         this.lastScannedId = request.id;
       }
       request.requests.forEach(req => {
-        if (ids.findIndex(id => id === req.id) > -1 ) {
+        if (ids.findIndex(id => id === req.id) > -1) {
           req.is_scanned = true;
           elementIndex = index;
           this.lastScannedId = request.id;
@@ -653,7 +669,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           this.lastScannedId = request.id;
         }
         request.requests?.forEach(req => {
-          if (ids.findIndex(id => id === req.id) > -1 ) {
+          if (ids.findIndex(id => id === req.id) > -1) {
             req.is_scanned = true;
             this.lastScannedId = request.id;
           }
@@ -670,7 +686,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   scrollToElement(rowId: string): void {
     const element = document.getElementById(rowId);
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 
   isFullyScanned(request: any) {
@@ -683,11 +699,11 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   isPartlyScanned(request: any) {
-      if (request?.requests?.length === 0) {
-        return false;
-      }
-      const mainScanned = request.is_scanned;
-      const innerNeedScan = request.requests?.findIndex(req => !req.is_scanned) > -1;
-      return !this.isFullyScanned(request) && (mainScanned || !innerNeedScan);
+    if (request?.requests?.length === 0) {
+      return false;
+    }
+    const mainScanned = request.is_scanned;
+    const innerNeedScan = request.requests?.findIndex(req => !req.is_scanned) > -1;
+    return !this.isFullyScanned(request) && (mainScanned || !innerNeedScan);
   }
 }

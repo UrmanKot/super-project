@@ -90,6 +90,7 @@ import { SubRegionPickerComponent } from './pickers/sub-region-picker/sub-region
 import { OrderStatusesTableComponent } from './components/order-statuses-table/order-statuses-table.component';
 import { OrderStatusesChartComponent } from './components/order-statuses-chart/order-statuses-chart.component';
 import { SearchPipe } from './pipes/search.pipe';
+import { AlbumComponent } from './modals/album/album.component';
 
 
 @NgModule({
@@ -159,6 +160,7 @@ import { SearchPipe } from './pipes/search.pipe';
     OrderStatusesTableComponent,
     OrderStatusesChartComponent,
     SearchPipe,
+    AlbumComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,

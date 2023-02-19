@@ -9,6 +9,16 @@
   }
 }
 
+.row-toggler {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .toggle {
+    margin-right: 1.5rem;
+  }
+}
+
 a {
   cursor: pointer;
 
@@ -117,11 +127,13 @@ a {
       overflow: auto;
     }
   }
+
   table {
     tbody {
       tr.qr-code-scanned {
         background: #e1efe2 !important;
       }
+
       tr.partly-scanned {
         background: #f5dfe1 !important;
       }
@@ -193,10 +205,12 @@ a {
 
 .ids-container {
   position: relative;
+
   .ids {
     display: none;
     color: #495057 !important;
   }
+
   &:hover {
     .ids {
       position: absolute;
@@ -211,6 +225,7 @@ a {
       box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
       z-index: 100;
       right: -86%;
+
       &.hierarchy {
         right: unset;
         left: 10.25rem;
@@ -222,10 +237,12 @@ a {
 .serial-numbers-container {
   color: #495057 !important;
   position: relative;
+
   .serial-numbers {
     display: none;
     color: #495057 !important;
   }
+
   &:hover {
     .serial-numbers {
       position: absolute;
