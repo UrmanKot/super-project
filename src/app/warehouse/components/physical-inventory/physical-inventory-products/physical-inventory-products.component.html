@@ -252,7 +252,7 @@
               [class.qr-code-item-scanned]="inventoryProduct.is_scanned"
               [class.qr-code-item-found]="inventoryProduct.id === findItemId"
             >
-              <td style="width: 3%">
+              <td [id]="'product_row' + inventoryProduct.id" style="width: 3%">
                 <p-tableCheckbox [value]="inventoryProduct"></p-tableCheckbox>
               </td>
               <td style="width: 5%" class="text-center">
@@ -378,7 +378,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr >
               <td class="text-center p-4" [attr.colspan]="11">
                 <i *ngIf="isLoadingInventoryList" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingInventoryList">No Records Found</span>

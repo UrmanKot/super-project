@@ -246,7 +246,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.physicalInventoryService.getInventoryProductsListsForPagination(this.inventoryId, this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(inventoryLists => {
-      console.log('inventoryLists', inventoryLists);
+
       const preparedProducts = [];
       inventoryLists.results.forEach(product => {
         preparedProducts.push(...product.products)
@@ -287,13 +287,9 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
       this.findItemId = null;
 
-
-
-
       this.inventoryProducts = [...newInventoryProducts];
       this.countProducts = inventoryLists.count;
 
-      console.log('this.inventoryProducts', this.inventoryProducts);
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
       }
@@ -309,6 +305,11 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     this.physicalInventoryService.getInventoryProducts(this.inventoryId, this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(inventoryLists => {
+      const preparedProducts = [];
+      inventoryLists.forEach(product => {
+        preparedProducts.push(...product.products)
+      });
+      this.preparedProducts = [...preparedProducts];
       inventoryLists.forEach(list => {
         list.products[0].countProducts = list.products.length;
         list.products[0].products = [...list.products];
@@ -492,12 +493,15 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       const findEl = this.inventoryProducts.find(p => p.root_id === this.findItemId);
 
       if (findEl) {
-        if (findEl.product.nomenclature.bulk_or_serial === '1') {
+        if (findEl.nomenclature.bulk_or_serial === '1') {
+          findEl.is_scanned = true;
+          findEl.is_scanned_root = true;
         } else {
           findEl.is_scanned = true;
           findEl.is_scanned_root = true;
-          this.inventoryProducts.sort((a, b) => a.root_id === this.findItemId ? -1 : 1);
         }
+        const element = document.getElementById('product_row' + findEl.id);
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
       } else {
         this.searchForm.get('found_row_id').patchValue(listId);
         this.searchProducts();

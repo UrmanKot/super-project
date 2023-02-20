@@ -17,4 +17,5 @@ export class Request {
   task?: number;
   locators?: any;
   warehouse_quantity?: any;
+  is_reserved_warehouse_quantity?: boolean;
 }

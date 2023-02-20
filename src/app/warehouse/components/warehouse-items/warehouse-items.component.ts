@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Category} from '../../../product-structure/models/category';
 import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {CategoriesService} from '../../../product-structure/services/categories.service';
-import {TreeNode} from 'primeng/api';
 import {WarehouseProductService} from '../../services/warehouse-product.service';
 import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
@@ -12,6 +11,7 @@ import {debounceTime, map, tap} from 'rxjs/operators';
 import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../qr-code/qr-code.service';
+import {Technology} from '../../../product-structure/models/technology';
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -31,7 +31,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   isLoading = false;
   isStartOnePage = false;
 
-  selectedProducts: WarehouseProduct[] = [];
+  selectedProducts: WarehouseProduct;
   products: WarehouseProduct[] = [];
   countProducts: number = 0;
 
@@ -53,6 +53,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     order_by_quantity: [null],
     exclude_zero: [null],
     exclude_empty: [null],
+    technologies: [null],
     page: [1],
   });
 
@@ -80,7 +81,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     fromEvent(this.searchBoxName.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = []),
+        tap(() => this.selectedProducts = null),
         map(() => this.searchBoxName.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -89,7 +90,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxCode.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = []),
+        tap(() => this.selectedProducts = null),
         map(() => this.searchBoxCode.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -98,7 +99,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxDescription.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = []),
+        tap(() => this.selectedProducts = null),
         map(() => this.searchBoxDescription.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -178,7 +179,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   searchProducts() {
     this.isLoading = true;
     this.destroy$.next(true);
-    this.selectedProducts = [];
+    this.selectedProducts = null;
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
@@ -246,6 +247,11 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.searchForm.get('exclude_empty').value !== null) this.query.push({
       name: 'exclude_empty',
       value: this.searchForm.get('exclude_empty').value
+    });
+
+    if (this.searchForm.get('technologies').value !== null) this.query.push({
+      name: 'current_technologies',
+      value: this.searchForm.get('technologies').value
     });
 
     const ordering = this.prepareSortingField();
@@ -385,7 +391,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   showSerialsInfo() {
     if (this.selectedProducts) {
-      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProducts[0].extra_info, this.selectedProducts[0].nomenclature as Nomenclature).subscribe();
+      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProducts.extra_info, this.selectedProducts.nomenclature as Nomenclature).subscribe();
     }
   }
 
@@ -469,29 +475,35 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       by_nomenclatures_list: [],
     };
 
-    this.selectedProducts.forEach(p => {
-      console.log('product', p);
-      if (p.nomenclature.bulk_or_serial !== '1') {
-        send.by_nomenclatures_list.push({
-          nomenclature_id: p.nomenclature.id,
-          serial_number_ids: [],
-          order_product_ids: [],
-          invoice_product_ids: [],
-        });
-      } else {
-        send.by_nomenclatures_list.push({
-          nomenclature_id: p.nomenclature.id,
-          serial_number_ids: p.extra_info && p.extra_info.length > 0 ? p.extra_info.map(product => +product.serial_number_id) : [],
-          order_product_ids: [],
-          invoice_product_ids: [],
-        });
-      }
-    });
+    if (this.selectedProducts.nomenclature.bulk_or_serial !== '1') {
+      send.by_nomenclatures_list.push({
+        nomenclature_id: this.selectedProducts.nomenclature.id,
+        serial_number_ids: [],
+        order_product_ids: [],
+        invoice_product_ids: [],
+      });
+    } else {
+      send.by_nomenclatures_list.push({
+        nomenclature_id: this.selectedProducts.nomenclature.id,
+        serial_number_ids: this.selectedProducts.extra_info && this.selectedProducts.extra_info.length > 0 ? this.selectedProducts.extra_info.map(product => +product.serial_number_id) : [],
+        order_product_ids: [],
+        invoice_product_ids: [],
+      });
+    }
 
     this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
   }
 
   isReservedDisable(): boolean {
     return Boolean(this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.quantity, 0) === this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.reserved_by_opened_production_lists_quantity, 0));
+  }
+
+  onSelectedTechnologies(technologies: Technology[]) {
+    if (technologies) {
+      this.searchForm.get('technologies').patchValue(technologies.map(technology => technology.id));
+    } else {
+      this.searchForm.get('technologies').patchValue('');
+    }
+    this.searchProducts();
   }
 }

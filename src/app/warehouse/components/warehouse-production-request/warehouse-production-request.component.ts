@@ -243,6 +243,23 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         request.ids = request.requests.map(req => req.id);
         request.all_reserved_serial_products = [];
         request.unique_locators = [...request.locators];
+        if (request.is_reserved_warehouse_quantity && request.requests
+          .every(req => req.is_reserved_warehouse_quantity)) {
+          request.available_quantity_sum = request.requests.map(req => req.warehouse_quantity)
+            .reduce((sum, quantity) => sum + quantity, request.warehouse_quantity);
+        } else {
+          if (request.ids.length === 0) {
+            request.available_quantity_sum = request.warehouse_quantity;
+          } else {
+            if (!request.is_reserved_warehouse_quantity) {
+              request.available_quantity_sum = request.warehouse_quantity;
+            } else {
+              request.available_quantity_sum = request.requests
+                .find(req => !req.is_reserved_warehouse_quantity).warehouse_quantity;
+            }
+          }
+        }
+
         if (request.reserved_serial_products) {
           request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
         }

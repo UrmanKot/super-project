@@ -164,10 +164,10 @@
             <td style="width: 5%" class="text-center">
               <ng-container *ngFor="let order of product.orders; let idx = index;">
                 <a target="blank" *ngIf="order.accounting_type == 1"
-                   [routerLink]="['/dash/procurement/orders/products',order.id]">
+                   [routerLink]="['/procurement/chains/order/',order.id]">
                   {{order.id}}</a>
                 <a target="blank" *ngIf="order.accounting_type == 2"
-                   [routerLink]="['/dash/outsource/outsource-chain/products', order.id]">
+                   [routerLink]="['/outsourcing/chains/order/', order.id]">
                   {{order.id}}<span *ngIf="idx !== product.orders.length - 1">,</span>
                 </a>
               </ng-container>

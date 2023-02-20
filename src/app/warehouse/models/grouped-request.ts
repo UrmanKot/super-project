@@ -8,4 +8,5 @@ export class GroupedRequest extends Request {
   all_reserved_serial_products?: SerialNumber[];
   total_required_quantity?: number;
   unique_locators?: Locator[];
+  available_quantity_sum?: number;
 }

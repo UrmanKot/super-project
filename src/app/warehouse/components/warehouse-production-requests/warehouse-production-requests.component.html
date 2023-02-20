@@ -67,12 +67,11 @@
               <label>Requests State</label>
               <p-dropdown
                 [options]="requestsTypes"
-                formControlName="is_production_requests_fully_completed"
+                formControlName="is_closed"
                 optionValue="value"
                 optionLabel="name"
                 placeholder="Select state"
                 (ngModelChange)="searchProducts()"
-                [showClear]="true"
               ></p-dropdown>
             </div>
           </div>
@@ -112,10 +111,6 @@
           </div>
 
           <div class="col-3">
-            <div class="form-group">
-              <label>Is Prepared</label>
-              <p-checkbox class="mt-1" formControlName="is_closed" [binary]="true" (ngModelChange)="searchProducts()"></p-checkbox>
-            </div>
           </div>
           <div class="col-3">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
