@@ -183,19 +183,14 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
       this.query.push({name: 'accounting_type', value: this.searchForm.get('accounting_type').value});
     }
 
-    if (this.searchForm.get('is_closed').value !== null) {
-      this.query.push({name: 'is_prepared', value: this.searchForm.get('is_closed').value});
+    if (this.searchForm.get('is_closed').value === false) {
+      this.query.push({name: 'is_prepared', value: false});
+    } else {
+      this.query.push({name: 'is_prepared', value: true});
     }
 
     if (this.searchForm.get('category__in').value) {
       this.query.push({name: 'category__in', value: this.searchForm.get('category__in').value});
-    }
-
-    if (this.searchForm.get('is_production_requests_fully_completed').value !== null) {
-      this.query.push({
-        name: 'is_production_requests_fully_completed',
-        value: this.searchForm.get('is_production_requests_fully_completed').value
-      });
     }
 
     if (this.searchForm.get('root_categories').value) {

@@ -305,7 +305,7 @@
               </td>
               <td style="width: 12%;" class="text-center">
                 <h3 class="td-title">Available Quantity</h3>
-                {{request.warehouse_quantity}}
+                {{request.available_quantity_sum}}
               </td>
             </tr>
           </ng-template>
@@ -510,7 +510,7 @@
             <td style="width: 12%;" class="text-center">
               <h3 class="td-title">Available Quantity</h3>
               <div *ngIf="rowData.level === 4">
-                {{rowData.request.warehouse_quantity}}
+                {{rowData.request.available_quantity_sum}}
               </div>
             </td>
           </tr>
@@ -668,7 +668,7 @@
               </td>
               <td style="width: 12%;" class="text-center">
                 <div *ngIf="rowData.request">
-                  {{rowData.request.warehouse_quantity}}
+                  {{rowData.request.available_quantity_sum}}
                 </div>
               </td>
             </tr>
