@@ -1,3 +1,13 @@
+.row-toggler {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .toggle {
+    margin-right: 1.5rem;
+  }
+}
+
 .order-page {
   h2 {
     font-size: 1.1875rem;

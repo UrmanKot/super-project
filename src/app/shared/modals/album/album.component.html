@@ -9,7 +9,7 @@
     <ul class="album__list">
       <li
         *ngFor="let item of album; let idx = index"
-        class="album__item"
+        class="album__item pagebreak"
       >
         <img
           *ngIf="item.image; else imagePlug"
@@ -43,7 +43,7 @@
     class="p-button-danger"
   ></button>
   <button
-    [disabled]="true"
+    (click)="print()"
     pButton
     type="button"
     label="Print Album"

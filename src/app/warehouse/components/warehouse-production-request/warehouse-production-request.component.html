@@ -61,16 +61,16 @@
         [loading]="albumService.loading$ | async"
         pButton
         *ngIf="isAlbumPrint"
-        icon="pi pi-print"
-        class="mr-2"
+        class="p-button-success mr-2"
         type="button"
         label="Print Album"
         (click)="printAlbum()"
+        [disabled]="selectedRequest?.length === 0 || viewMode !== viewModes.LIST"
       >
       </button>
       <button
         pButton
-        icon="pi pi-images"
+        [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
         class="mr-2"
         type="button"
         [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
@@ -161,7 +161,7 @@
         >
           <ng-template pTemplate="caption">
             <div class="d-flex table-caption">
-              <p class="subtitle" *ngIf="!selectedRequest">Choose the Request to edit</p>
+              <p class="subtitle" *ngIf="!selectedRequest && !isAlbumPrint">Choose the Request to edit</p>
               <p-menubar
                 class="ml-auto mr-2"
                 [model]="requestMenuItems"

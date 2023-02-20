@@ -24,6 +24,28 @@
       </div>
     </div>
     <div class="page__tools">
+      <button
+        [loading]="albumService.loading$ | async"
+        pButton
+        *ngIf="isAlbumPrint"
+        class="p-button-success mr-2"
+        type="button"
+        label="Print Album"
+        (click)="printAlbum()"
+        [disabled]="selectedNodeTree?.length === 0"
+      >
+      </button>
+      <button
+        pButton
+        [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
+        class="mr-2"
+        type="button"
+        [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
+        (click)="togglePrintAlbumMode()"
+        [disabled]="isLoading"
+      >
+      </button>
+
       <p-menubar
         class="production-list-bar ml-auto mr-2"
         [model]="menuItems"
@@ -83,7 +105,7 @@
   </div>
 </div>
 
-<div class="page__content locators">
+<div class="page__content" [class.locators]="!isAlbumPrint">
   <div class="page__card">
     <ng-container *ngIf="mode === 'list'">
       <p-table
@@ -155,7 +177,8 @@
               ({{product.id}})
               {{product.nomenclature?.name}}
 
-              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0" class="serial-numbers">
+              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
+                   class="serial-numbers">
                 <div *ngFor="let serialNumber of product.reserved_serial_numbers">
                   {{serialNumber.type_with_number}} (R)
                 </div>
@@ -224,8 +247,8 @@
       <p-treeTable
         class="categories-tree"
         [value]="tree"
-        selectionMode="single"
         [(selection)]="selectedNodeTree"
+        [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
         scrollHeight="calc(100vh - 19.125rem)"
         [scrollable]="true"
         (selectionChange)="onSelectTreeNode()"
@@ -297,10 +320,15 @@
         <ng-template pTemplate="header">
           <tr>
             <th style="padding-left: 16px; width: 19%">
-              <button class="back" (click)="_location.back()">
-                <i class="pi pi-arrow-left"></i>
-              </button>
-              Code
+              <div class="row-checkbox">
+                <div class="toggle" style="left: -4px">
+                  <p-treeTableHeaderCheckbox *ngIf="isAlbumPrint"></p-treeTableHeaderCheckbox>
+                </div>
+                <button class="back" (click)="_location.back()">
+                  <i class="pi pi-arrow-left"></i>
+                </button>
+                Code
+              </div>
             </th>
             <th style="width: 16%">Name</th>
             <th style="width: 8%" class="text-center">Total Req Qty</th>
@@ -322,19 +350,24 @@
               [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
           >
             <td style="width: 19%">
-              <h3 class="td-title">Code</h3>
-              <div class="toggle-row">
-                <p-treeTableToggler [rowNode]="rowNode"
-                                    [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
-                <a
-                  [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
-                  *ngIf="rowData.list_url"
-                  class="list-parent"
-                  [routerLink]="['/warehouse/production-lists/', rowData.list]"
-                >
-                  {{rowData.nomenclature.code}}
-                </a>
-                <span *ngIf="!rowData.list_url">{{rowData.nomenclature.code}}</span>
+              <div class="row-checkbox">
+                <h3 class="td-title">Code</h3>
+                <div class="toggle">
+                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [value]="rowNode"></p-treeTableCheckbox>
+                </div>
+                <div class="toggle-row">
+                  <p-treeTableToggler [rowNode]="rowNode"
+                                      [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
+                  <a
+                    [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
+                    *ngIf="rowData.list_url"
+                    class="list-parent"
+                    [routerLink]="['/warehouse/production-lists/', rowData.list]"
+                  >
+                    {{rowData.nomenclature.code}}
+                  </a>
+                  <span *ngIf="!rowData.list_url">{{rowData.nomenclature.code}}</span>
+                </div>
               </div>
             </td>
             <td style="width: 16%" class="serial-number-cont">
@@ -342,7 +375,8 @@
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
               ) {{rowData.nomenclature.name}}
 
-              <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0" class="serial-numbers">
+              <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0"
+                   class="serial-numbers">
                 <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
                   {{serialNumber.type_with_number}} (R)
                 </div>

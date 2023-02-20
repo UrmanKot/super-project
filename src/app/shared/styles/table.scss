@@ -607,15 +607,15 @@
     }
 
     .p-submenu-list {
-        li {
-          a {
-            padding: 0.875rem 0.75rem !important;
+      li {
+        a {
+          padding: 0.875rem 0.75rem !important;
 
-            .p-menuitem-text {
-              line-height: 1.3;
-            }
+          .p-menuitem-text {
+            line-height: 1.3;
           }
         }
+      }
     }
 
     .p-menubar-root-list {

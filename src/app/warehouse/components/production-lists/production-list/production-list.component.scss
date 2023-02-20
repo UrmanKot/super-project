@@ -14,9 +14,13 @@
 
   .p-treetable-scrollable-body, .p-datatable-wrapper {
     table {
-        margin-bottom: 3rem;
     }
   }
+}
+
+.row-checkbox {
+  display: flex;
+  align-items: center;
 }
 
 .colors {
@@ -132,6 +136,11 @@
   }
 }
 
+.header-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: $tablet-width) {
   .page__title {
     flex-direction: column;
@@ -173,6 +182,7 @@
   .serial-numbers {
     display: none;
   }
+
   &:hover {
     .serial-numbers {
       display: block;
@@ -188,5 +198,12 @@
       z-index: 100;
     }
   }
+}
 
+.row-checkbox {
+  .toggle {
+    position: relative;
+    top: -1px;
+    margin-right: 0.25rem;
+  }
 }
