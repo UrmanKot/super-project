@@ -24,6 +24,8 @@ import {OrderTechnicalEquipment} from '../../../warehouse/models/order-technical
 import {OrderTechnicalEquipmentsService} from '../../../warehouse/services/order-technical-equipments.service';
 import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
+import {AlbumService} from '@shared/services/album.service';
+import {GroupedRequest} from '../../../warehouse/models/grouped-request';
 
 export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
 
@@ -174,9 +176,8 @@ export class OrderPageComponent implements OnInit {
   serviceInvoices: Invoice[] = [];
   servicePayments: ServiceInvoicePayment[] = [];
 
-
   selectedInvoice: Invoice;
-  selectedProduct: OrderProduct;
+  selectedProduct: any;
   selectedProformaInvoice: Invoice;
   selectedPayment: Payment;
   selectedServiceInvoice: Invoice;
@@ -186,6 +187,8 @@ export class OrderPageComponent implements OnInit {
   order: Order;
   orderSupplierConfirmation: OrderSupplierConfirmation;
   selectedPurchasingCategoryId: number;
+
+  isAlbumPrint = false;
 
   constructor(
     private readonly orderService: OrderService,
@@ -200,6 +203,7 @@ export class OrderPageComponent implements OnInit {
     private readonly requestService: RequestService,
     private readonly orderTechnicalEquipmentService: OrderTechnicalEquipmentsService,
     private readonly purchasingCategoryService: PurchasingCategoryService,
+    public readonly albumService: AlbumService,
   ) {
   }
 
@@ -223,6 +227,16 @@ export class OrderPageComponent implements OnInit {
     this.orderService.editOrderModal$.pipe(
       untilDestroyed(this),
     ).subscribe(() => this.openEditOrderModal());
+  }
+
+  printAlbum() {
+    console.log(this.selectedProduct);
+    this.albumService.getNomenclaturesImages((<OrderProduct[]>this.selectedProduct).map(p => p.nomenclature));
+  }
+
+  togglePrintAlbumMode() {
+    this.selectedProduct = [];
+    this.isAlbumPrint = !this.isAlbumPrint;
   }
 
   getOrderSuppliers() {
@@ -364,7 +378,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   onEditOrderProductQuantity() {
-    this.orderProductService.editOrderProductQuantity(this.selectedProduct).subscribe(orderProduct => {
+    this.orderProductService.editOrderProductQuantity(<OrderProduct>this.selectedProduct).subscribe(orderProduct => {
       if (orderProduct) {
         this.selectedProduct.quantity = orderProduct.quantity;
       }

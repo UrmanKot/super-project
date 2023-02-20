@@ -75,7 +75,7 @@ export class AlbumService {
           this.album.push({
             nomenclature: item.nomenclature,
             image: <string>img.image,
-            numeric: idx + 1
+            numeric: item.images.length >= 2 ? idx + 1 : null
           });
         });
       }

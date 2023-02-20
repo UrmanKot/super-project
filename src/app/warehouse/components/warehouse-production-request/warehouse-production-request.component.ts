@@ -86,7 +86,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   rootList: any = null;
   currentDate: Date = new Date();
-  selectedRequest: GroupedRequest | GroupedRequest[];
+  selectedRequest: GroupedRequest | GroupedRequest[] | any;
   currentReqDate: Date = null;
 
   isLoading = true;
@@ -216,7 +216,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   changeView(view: ViewMode) {
-    this.selectedRequest = null;
+    this.selectedRequest = [];
+
     this.selectedRequestNode = null;
     this.viewMode = view;
   }
@@ -563,17 +564,12 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   printAlbum() {
-    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => r.list_product.nomenclature));
+    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => r.list_product?.nomenclature));
   }
 
   togglePrintAlbumMode() {
-    if (!this.isAlbumPrint) {
-      this.selectedRequest = [];
-      this.isAlbumPrint = true;
-    } else {
-      this.isAlbumPrint = false;
-      this.selectedRequest = [];
-    }
+    this.selectedRequest = [];
+    this.isAlbumPrint = !this.isAlbumPrint;
   }
 
   ngOnDestroy() {

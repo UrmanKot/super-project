@@ -10,6 +10,8 @@ import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
+import {GroupedRequest} from '../../../models/grouped-request';
+import {AlbumService} from '@shared/services/album.service';
 
 export class TreePrint {
   data: ListProduct;
@@ -83,6 +85,7 @@ export class ProductionListComponent implements OnInit {
   mode: 'hierarchy' | 'list' = 'hierarchy';
 
   addedTree = [];
+  isAlbumPrint = false;
 
   isSetAllActualQuantities = false;
   products: ListProduct[];
@@ -147,6 +150,7 @@ export class ProductionListComponent implements OnInit {
     private router: Router,
     public _location: Location,
     private messageService: MessageService,
+    public readonly albumService: AlbumService,
   ) {
     this.routerHandler$ = router.events.subscribe(res => {
       if (res instanceof NavigationEnd) {
@@ -161,6 +165,16 @@ export class ProductionListComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.routerHandler$.unsubscribe();
+  }
+
+  togglePrintAlbumMode() {
+    this.selectedNodeTree = [];
+    this.isAlbumPrint = !this.isAlbumPrint;
+  }
+
+  printAlbum() {
+    console.log(this.selectedNodeTree);
+    this.albumService.getNomenclaturesImages((<any[]>this.selectedNodeTree).map(r => r.data?.nomenclature));
   }
 
   getAll() {

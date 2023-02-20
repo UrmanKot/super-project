@@ -76,13 +76,13 @@
       <div class="page__table">
         <p-table
           #dt
-          selectionMode="single"
           scrollHeight="calc(100vh - 24rem)"
           [scrollable]="true"
           [paginator]="products.length > 0"
           [rows]="10"
           [(selection)]="selectedProduct"
           [value]="products"
+          [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
@@ -90,7 +90,28 @@
               <p-menubar
                 class="ml-auto"
                 [model]="productMenuItems"
-                [class.disabled]="!selectedProduct"></p-menubar>
+                [class.disabled]="!selectedProduct || isAlbumPrint"></p-menubar>
+              <button
+                [loading]="albumService.loading$ | async"
+                pButton
+                *ngIf="isAlbumPrint"
+                class="p-button-success ml-2"
+                type="button"
+                label="Print Album"
+                (click)="printAlbum()"
+                [disabled]="selectedProduct?.length === 0"
+              >
+              </button>
+              <button
+                pButton
+                [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
+                class="ml-2"
+                type="button"
+                [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
+                (click)="togglePrintAlbumMode()"
+                [disabled]="isLoading"
+              >
+              </button>
               <button
                 (click)="onAddProduct()"
                 pButton type="button"
@@ -107,14 +128,21 @@
                 class="ml-2"
                 label="Add Material"
                 (click)="onAddMaterial()"
-                [disabled]="!selectedProduct"
+                [disabled]="!selectedProduct || isAlbumPrint"
               ></button>
             </div>
           </ng-template>
           <ng-container *ngIf="orderType !== 'outsourcing'">
             <ng-template pTemplate="header">
               <tr>
-                <th style="width: 5%" class="index-header text-center">#</th>
+                <th style="width: 3%" class="text-center">
+                  <div class="row-toggler">
+                    <div class="toggle">
+                      <p-tableHeaderCheckbox *ngIf="isAlbumPrint"></p-tableHeaderCheckbox>
+                    </div>
+                    #
+                  </div>
+                </th>
                 <th style="width: 14%">Code</th>
                 <th style="width: 18%">Name</th>
                 <th style="width: 15%">Description</th>
@@ -129,7 +157,14 @@
           <ng-container *ngIf="orderType === 'outsourcing'">
             <ng-template pTemplate="header">
               <tr>
-                <th style="width: 3%" class="index-header text-center">#</th>
+                <th style="width: 5%" class="index-header text-center">
+                  <div class="row-toggler">
+                    <div class="toggle">
+                      <p-tableHeaderCheckbox *ngIf="isAlbumPrint"></p-tableHeaderCheckbox>
+                    </div>
+                    #
+                  </div>
+                </th>
                 <th style="width: 14%">Code</th>
                 <th style="width: 14%">Name</th>
                 <th style="width: 15%">Description</th>
@@ -145,7 +180,14 @@
           <ng-container *ngIf="orderType !== 'outsourcing'">
             <ng-template pTemplate="body" let-product let-i="rowIndex">
               <tr [pSelectableRow]="product">
-                <td style="width: 5%" class="text-center">{{i + 1}}</td>
+                <td style="width: 5%" class="text-center">
+                  <div class="row-toggler">
+                    <div class="toggle">
+                      <p-tableCheckbox *ngIf="isAlbumPrint" [value]="product"></p-tableCheckbox>
+                    </div>
+                    {{i + 1}}
+                  </div>
+                </td>
                 <td style="width: 14%">{{product.nomenclature.code}}</td>
                 <td style="width: 18%">{{product.nomenclature.name}}</td>
                 <td style="width: 15%">
@@ -174,7 +216,14 @@
           <ng-container *ngIf="orderType === 'outsourcing'">
             <ng-template pTemplate="body" let-product let-i="rowIndex">
               <tr [pSelectableRow]="product">
-                <td style="width: 3%" class="text-center">{{i + 1}}</td>
+                <td style="width: 3%" class="text-center">
+                  <div class="row-toggler">
+                    <div class="toggle">
+                      <p-tableCheckbox *ngIf="isAlbumPrint" [value]="product"></p-tableCheckbox>
+                    </div>
+                    {{i + 1}}
+                  </div>
+                </td>
                 <td style="width: 14%">{{product.nomenclature.code}}</td>
                 <td style="width: 14%">{{product.nomenclature.name}}</td>
                 <td style="width: 15%">
