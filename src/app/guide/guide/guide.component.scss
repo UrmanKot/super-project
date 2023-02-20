@@ -2509,3 +2509,11 @@
     left: 21px;
   }
 }
+
+.small {
+  &::ng-deep {
+    span {
+      font-size: 9px;
+    }
+  }
+}
