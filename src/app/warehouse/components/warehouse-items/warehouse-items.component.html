@@ -13,7 +13,7 @@
         label="Generate QR Codes"
         [loading]="isGenerating"
         (click)="onGenerateQrCodes()"
-        [disabled]="!selectedProducts"
+        [disabled]="!selectedProduct"
       >
       </button>
       <button
@@ -22,8 +22,8 @@
         type="button"
         icon="pi pi-info-circle"
         label="Serial Info"
-        [disabled]="!selectedProducts ||
-         selectedProducts?.nomenclature?.bulk_or_serial !== '1'"
+        [disabled]="!selectedProduct ||
+         selectedProduct?.nomenclature?.bulk_or_serial !== '1'"
         (click)="showSerialsInfo()"
       >
       </button>
@@ -33,9 +33,9 @@
         type="button"
         icon="pi pi-angle-double-right"
         label="Move"
-        [disabled]="!selectedProducts ||
-         (!selectedProducts?.total_locator_quantity &&
-          !selectedProducts?.total_area_locator_quantity)"
+        [disabled]="!selectedProduct ||
+         (!selectedProduct?.total_locator_quantity &&
+          !selectedProduct?.total_area_locator_quantity)"
         (click)="onMoveProduct()"
       >
       </button>
@@ -46,7 +46,7 @@
         class="mr-2"
         label="Edit Item"
         (click)="onEditItem()"
-        [disabled]="!selectedProducts"
+        [disabled]="!selectedProduct"
       ></button>
       <button pButton type="button" icon="pi pi-plus" label="New Item" (click)="onAddItem()"></button>
     </div>
@@ -190,7 +190,7 @@
               dataKey="uid"
               [scrollable]="true"
               [rows]="10"
-              [(selection)]="selectedProducts"
+              [(selection)]="selectedProduct"
               [value]="products"
             >
               <ng-template pTemplate="header">

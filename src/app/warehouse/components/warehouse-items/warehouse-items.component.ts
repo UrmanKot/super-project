@@ -31,7 +31,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   isLoading = false;
   isStartOnePage = false;
 
-  selectedProducts: WarehouseProduct;
+  selectedProduct: WarehouseProduct;
   products: WarehouseProduct[] = [];
   countProducts: number = 0;
 
@@ -81,7 +81,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     fromEvent(this.searchBoxName.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = null),
+        tap(() => this.selectedProduct = null),
         map(() => this.searchBoxName.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -90,7 +90,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxCode.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = null),
+        tap(() => this.selectedProduct = null),
         map(() => this.searchBoxCode.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -99,7 +99,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
     fromEvent(this.searchBoxDescription.nativeElement, 'keyup')
       .pipe(
-        tap(() => this.selectedProducts = null),
+        tap(() => this.selectedProduct = null),
         map(() => this.searchBoxDescription.nativeElement.value),
         debounceTime(350),
       ).subscribe(() => {
@@ -179,7 +179,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   searchProducts() {
     this.isLoading = true;
     this.destroy$.next(true);
-    this.selectedProducts = null;
+    this.selectedProduct = null;
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
 
@@ -293,7 +293,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onEditItem() {
-    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProducts[0].nomenclature.id).subscribe(response => {
+    this.warehouseProductService.openCreateEditWarehouseProductModal('edit', this.selectedProduct.nomenclature.id).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -301,7 +301,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onMoveProduct() {
-    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProducts[0]).subscribe(response => {
+    this.warehouseProductService.openMoveWarehouseProductModal(this.selectedProduct).subscribe(response => {
       if (response) {
         this.searchProducts();
       }
@@ -390,8 +390,8 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   showSerialsInfo() {
-    if (this.selectedProducts) {
-      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProducts.extra_info, this.selectedProducts.nomenclature as Nomenclature).subscribe();
+    if (this.selectedProduct) {
+      this.warehouseProductService.openNomenclatureInfoModal(this.selectedProduct.extra_info, this.selectedProduct.nomenclature as Nomenclature).subscribe();
     }
   }
 
@@ -475,17 +475,17 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       by_nomenclatures_list: [],
     };
 
-    if (this.selectedProducts.nomenclature.bulk_or_serial !== '1') {
+    if (this.selectedProduct.nomenclature.bulk_or_serial !== '1') {
       send.by_nomenclatures_list.push({
-        nomenclature_id: this.selectedProducts.nomenclature.id,
+        nomenclature_id: this.selectedProduct.nomenclature.id,
         serial_number_ids: [],
         order_product_ids: [],
         invoice_product_ids: [],
       });
     } else {
       send.by_nomenclatures_list.push({
-        nomenclature_id: this.selectedProducts.nomenclature.id,
-        serial_number_ids: this.selectedProducts.extra_info && this.selectedProducts.extra_info.length > 0 ? this.selectedProducts.extra_info.map(product => +product.serial_number_id) : [],
+        nomenclature_id: this.selectedProduct.nomenclature.id,
+        serial_number_ids: this.selectedProduct.extra_info && this.selectedProduct.extra_info.length > 0 ? this.selectedProduct.extra_info.map(product => +product.serial_number_id) : [],
         order_product_ids: [],
         invoice_product_ids: [],
       });
@@ -495,7 +495,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   isReservedDisable(): boolean {
-    return Boolean(this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.quantity, 0) === this.selectedProducts[0]?.extra_info.reduce((sum, item) => sum += item.reserved_by_opened_production_lists_quantity, 0));
+    return Boolean(this.selectedProduct[0]?.extra_info.reduce((sum, item) => sum += item.quantity, 0) === this.selectedProduct[0]?.extra_info.reduce((sum, item) => sum += item.reserved_by_opened_production_lists_quantity, 0));
   }
 
   onSelectedTechnologies(technologies: Technology[]) {
