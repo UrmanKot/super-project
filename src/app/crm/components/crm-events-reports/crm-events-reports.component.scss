@@ -218,12 +218,12 @@ h4 {
 
 ::ng-deep {
   table, tbody, tr, td, .event-item {
-    height: 100%;
+    //height: 100%;
   }
 
   .event-item-col {
     .report-event {
-      border-bottom: 1px solid #c3cbd3;
+      //border-bottom: 1px solid #c3cbd3;
 
       &:last-child {
         border-bottom: none;
@@ -355,5 +355,26 @@ h4 {
     label {
       margin-bottom: 0 !important;
     }
+  }
+
+  .company-company-header-td {
+    background-color: white !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+
+  .no-border-bottom {
+    border-bottom: none !important;
+  }
+
+  .p-treetable .p-treetable-tbody > tr:not(.p-highlight) {
+    &.is-hovered {
+      background: #e9ecef !important
+    }
+  }
+
+  .one-item-up {
+    //transform: translateY(-1.75rem);
   }
 }

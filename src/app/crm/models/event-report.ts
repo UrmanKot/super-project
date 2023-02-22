@@ -6,6 +6,7 @@ export class EventReport {
   last_events?: EventItem[];
   next_event?: EventItem;
   last_event?: EventItem;
+  name?: string;
 
   lastDateEventsStart?: Date;
   lastDateEventsEnd?: Date;

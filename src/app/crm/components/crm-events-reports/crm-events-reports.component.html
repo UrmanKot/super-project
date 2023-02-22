@@ -20,167 +20,170 @@
         (click)="toggleFilterVisibility()"
       ></button>
       <form [formGroup]="searchForm" class="pb-2">
-      <div class="row mt-4">
-        <div class="col-3">
-          <div class="form-group">
-            <label>Company</label>
-            <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Event Types</label>
-            <pek-crm-multi-event-types-picker
-              (selectEventTypes)="onSelectEventTypes($event)"></pek-crm-multi-event-types-picker>
-          </div>
-        </div>
-        <div class="col-2">
-          <div class="form-group">
-            <label>Sales Chain Statuses</label>
-            <pek-multi-sales-status-picker (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="event-row-filters">
-            <div class="form-group mr-3">
-              <label>Employees</label>
-              <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
-            </div>
-            <div class="form-group mr-3">
-              <label>Hide Status Events</label>
-              <p-checkbox
-                class="checkbox-big"
-                name="group1"
-                [binary]="true"
-                inputId="auto-events"
-                (onChange)="search()"
-                formControlName="autoEvents"
-              >
-              </p-checkbox>
-            </div>
+        <div class="row mt-4">
+          <div class="col-3">
             <div class="form-group">
-              <label>Group Linked Events</label>
-              <p-checkbox
-                class="checkbox-big"
-                name="group2"
-                [binary]="true"
-                inputId="group-linked-events"
-                formControlName="groupView"
-              >
-              </p-checkbox>
+              <label>Company</label>
+              <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Event Types</label>
+              <pek-crm-multi-event-types-picker
+                (selectEventTypes)="onSelectEventTypes($event)"></pek-crm-multi-event-types-picker>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label>Sales Chain Statuses</label>
+              <pek-multi-sales-status-picker
+                (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="event-row-filters">
+              <div class="form-group mr-3">
+                <label>Employees</label>
+                <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
+              </div>
+              <div class="form-group mr-3">
+                <label>Hide Status Events</label>
+                <p-checkbox
+                  class="checkbox-big"
+                  name="group1"
+                  [binary]="true"
+                  inputId="auto-events"
+                  (onChange)="search()"
+                  formControlName="autoEvents"
+                >
+                </p-checkbox>
+              </div>
+              <div class="form-group">
+                <label>Group Linked Events</label>
+                <p-checkbox
+                  class="checkbox-big"
+                  name="group2"
+                  [binary]="true"
+                  inputId="group-linked-events"
+                  formControlName="groupView"
+                >
+                </p-checkbox>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-3">
-          <div class="form-group">
-            <label>Company Category</label>
-            <pek-company-category-picker (selectCompanyCategory)="onSelectCompanyCategory($event)"></pek-company-category-picker>
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Company Category</label>
+              <pek-company-category-picker
+                (selectCompanyCategory)="onSelectCompanyCategory($event)"></pek-company-category-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Country</label>
+              <pek-crm-company-picker [showClear]="true"
+                                      (valueChange)="onSelectCountry($event)"></pek-crm-company-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Region</label>
+              <pek-region-picker
+                [isDisabled]="!searchForm.get('country_id').value"
+                [countrySelected]="searchForm.get('country_id').value"
+                (selectRegion)="onSelectRegion($event)"></pek-region-picker>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Sub Region</label>
+              <pek-sub-region-picker
+                [isDisabled]="!searchForm.get('region_id').value"
+                [regionSelected]="searchForm.get('region_id').value"
+                (selectSubRegionFull)="regionSubSelected($event)"
+              ></pek-sub-region-picker>
+            </div>
           </div>
         </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Country</label>
-            <pek-crm-company-picker [showClear]="true" (valueChange)="onSelectCountry($event)"></pek-crm-company-picker>
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Event Date Filter</label>
+              <p-multiSelect
+                [options]="dateFilters"
+                [(ngModel)]="selectedFilters"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Select Date Filters Types"
+                (ngModelChange)="updated($event)"
+                optionLabel="name"
+                optionValue="value"></p-multiSelect>
+            </div>
           </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Region</label>
-            <pek-region-picker
-              [isDisabled]="!searchForm.get('country_id').value"
-              [countrySelected]="searchForm.get('country_id').value"
-              (selectRegion)="onSelectRegion($event)"></pek-region-picker>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <label>Sub Region</label>
-            <pek-sub-region-picker
-              [isDisabled]="!searchForm.get('region_id').value"
-              [regionSelected]="searchForm.get('region_id').value"
-              (selectSubRegionFull)="regionSubSelected($event)"
-            ></pek-sub-region-picker>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3">
-          <div class="form-group">
-            <label>Event Date Filter</label>
-            <p-multiSelect
-              [options]="dateFilters"
-              [(ngModel)]="selectedFilters"
-              [ngModelOptions]="{standalone: true}"
-              placeholder="Select Date Filters Types"
-              (ngModelChange)="updated($event)"
-              optionLabel="name"
-              optionValue="value"></p-multiSelect>
-          </div>
-        </div>
-        <div class="col-3">
+          <div class="col-3">
 
-          <div *ngIf="isLastEventStartFilterOpen" class="form-group">
-            <label>Last Events Date Start From</label>
-                <p-calendar
-                  [firstDayOfWeek]="1"
-                  [showButtonBar]="true"
-                  inputId="basic"
-                  dateFormat="dd/mm/yy"
-                  formControlName="last_events_date_start_after"
-                  (ngModelChange)="filterByLastStartDate()"
-                  [readonlyInput]="true"
-                  [maxDate]="lastBeforeStartDateSelected ? lastBeforeStartDateSelected : dateRangeLimit"
-                ></p-calendar>
+            <div *ngIf="isLastEventStartFilterOpen" class="form-group">
+              <label>Last Events Date Start From</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                dateFormat="dd/mm/yy"
+                formControlName="last_events_date_start_after"
+                (ngModelChange)="filterByLastStartDate()"
+                [readonlyInput]="true"
+                [maxDate]="lastBeforeStartDateSelected ? lastBeforeStartDateSelected : dateRangeLimit"
+              ></p-calendar>
+            </div>
+            <div *ngIf="isLastEventEndFilterOpen" class="form-group">
+              <label>Last Events Date End From</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                dateFormat="dd/mm/yy"
+                formControlName="last_events_date_end_after"
+                (ngModelChange)="filterByLastEndDate()"
+                [readonlyInput]="true"
+                [maxDate]="lastBeforeEndDateSelected ? lastBeforeEndDateSelected : dateRangeLimit"
+              ></p-calendar>
+            </div>
+            <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
+              <label>Feature Events Date Start From</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="next_events_date_start_after"
+                (ngModelChange)="filterByFeatureStartDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [minDate]="dateRangeLimit"
+                [maxDate]="featureBeforeStartDateSelected ? featureBeforeStartDateSelected : null"
+              ></p-calendar>
+            </div>
+            <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
+              <label>Feature Events Date End From</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="next_events_date_end_after"
+                (ngModelChange)="filterByFeatureEndDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [minDate]="dateRangeLimit"
+                [maxDate]="featureBeforeEndDateSelected ? featureBeforeEndDateSelected : null"
+              ></p-calendar>
+            </div>
           </div>
-          <div *ngIf="isLastEventEndFilterOpen" class="form-group">
-            <label>Last Events Date End From</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              dateFormat="dd/mm/yy"
-              formControlName="last_events_date_end_after"
-              (ngModelChange)="filterByLastEndDate()"
-              [readonlyInput]="true"
-              [maxDate]="lastBeforeEndDateSelected ? lastBeforeEndDateSelected : dateRangeLimit"
-            ></p-calendar>
-          </div>
-          <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
-            <label>Feature Events Date Start From</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="next_events_date_start_after"
-              (ngModelChange)="filterByFeatureStartDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [minDate]="dateRangeLimit"
-              [maxDate]="featureBeforeStartDateSelected ? featureBeforeStartDateSelected : null"
-            ></p-calendar>
-          </div>
-          <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
-            <label>Feature Events Date End From</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="next_events_date_end_after"
-              (ngModelChange)="filterByFeatureEndDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [minDate]="dateRangeLimit"
-              [maxDate]="featureBeforeEndDateSelected ? featureBeforeEndDateSelected : null"
-            ></p-calendar>
-          </div>
-        </div>
-<!--   UNTIL     -->
-        <div class="col-3">
-          <div *ngIf="isLastEventStartFilterOpen" class="form-group">
-            <label>Last Events Date Start To</label>
+          <!--   UNTIL     -->
+          <div class="col-3">
+            <div *ngIf="isLastEventStartFilterOpen" class="form-group">
+              <label>Last Events Date Start To</label>
               <p-calendar
                 [firstDayOfWeek]="1"
                 [showButtonBar]="true"
@@ -192,99 +195,115 @@
                 [maxDate]="dateRangeLimit"
                 [minDate]="lastAfterStartDateSelected ? lastAfterStartDateSelected : lastAfterStartDateSelected"
               ></p-calendar>
+            </div>
+            <div *ngIf="isLastEventEndFilterOpen" class="form-group">
+              <label>Last Events Date End To</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="last_events_date_end_before"
+                (ngModelChange)="filterByLastEndDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [maxDate]="dateRangeLimit"
+                [minDate]="lastAfterEndDateSelected ? lastAfterEndDateSelected : dateRangeLimit"
+              ></p-calendar>
+            </div>
+            <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
+              <label>Feature Events Date Start To</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="next_events_date_start_before"
+                (ngModelChange)="filterByFeatureStartDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [minDate]="featureAfterStartDateSelected ? featureAfterStartDateSelected : dateRangeLimit"
+              ></p-calendar>
+            </div>
+            <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
+              <label>Feature Events Date End To</label>
+              <p-calendar
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                inputId="basic"
+                formControlName="next_events_date_end_before"
+                (ngModelChange)="filterByFeatureEndDate()"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [minDate]="featureAfterEndDateSelected ? featureAfterEndDateSelected : dateRangeLimit"
+              ></p-calendar>
+            </div>
           </div>
-          <div *ngIf="isLastEventEndFilterOpen" class="form-group">
-            <label>Last Events Date End To</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="last_events_date_end_before"
-              (ngModelChange)="filterByLastEndDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [maxDate]="dateRangeLimit"
-              [minDate]="lastAfterEndDateSelected ? lastAfterEndDateSelected : dateRangeLimit"
-            ></p-calendar>
-          </div>
-          <div *ngIf="isFeatureEventStartFilterOpen" class="form-group">
-            <label>Feature Events Date Start To</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="next_events_date_start_before"
-              (ngModelChange)="filterByFeatureStartDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [minDate]="featureAfterStartDateSelected ? featureAfterStartDateSelected : dateRangeLimit"
-            ></p-calendar>
-          </div>
-          <div *ngIf="isFeatureEventEndFilterOpen" class="form-group">
-            <label>Feature Events Date End To</label>
-            <p-calendar
-              [firstDayOfWeek]="1"
-              [showButtonBar]="true"
-              inputId="basic"
-              formControlName="next_events_date_end_before"
-              (ngModelChange)="filterByFeatureEndDate()"
-              dateFormat="dd/mm/yy"
-              [readonlyInput]="true"
-              [minDate]="featureAfterEndDateSelected ? featureAfterEndDateSelected : dateRangeLimit"
-            ></p-calendar>
-          </div>
-        </div>
-<!--   CHECK BOX    -->
-        <div class="col-3">
-          <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen">
-            <label>Intersections Last Events Dates</label>
-            <p-checkbox
-              class="checkbox-big"
-              name="group1"
-              [binary]="true"
-              inputId="auto-events"
-              (onChange)="search()"
-              formControlName="intersect_last_event"
-            >
-            </p-checkbox>
-          </div>
-          <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
+          <!--   CHECK BOX    -->
+          <div class="col-3">
+            <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen">
+              <label>Intersections Last Events Dates</label>
+              <p-checkbox
+                class="checkbox-big"
+                name="group1"
+                [binary]="true"
+                inputId="auto-events"
+                (onChange)="search()"
+                formControlName="intersect_last_event"
+              >
+              </p-checkbox>
+            </div>
+            <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
            isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen &&
             (!isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
              isLastEventStartFilterOpen && !isLastEventEndFilterOpen )">
-            <label >&nbsp;</label>
-            <div style="height: 33px"></div>
-          </div>
-          <div class="form-group" *ngIf="isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen">
-            <label>Intersections Last Feature Dates</label>
-            <p-checkbox
-              class="checkbox-big"
-              name="group1"
-              [binary]="true"
-              inputId="auto-events"
-              (onChange)="search()"
-              formControlName="intersect_next_event"
-            >
-            </p-checkbox>
+              <label>&nbsp;</label>
+              <div style="height: 33px"></div>
+            </div>
+            <div class="form-group" *ngIf="isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen">
+              <label>Intersections Last Feature Dates</label>
+              <p-checkbox
+                class="checkbox-big"
+                name="group1"
+                [binary]="true"
+                inputId="auto-events"
+                (onChange)="search()"
+                formControlName="intersect_next_event"
+              >
+              </p-checkbox>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+        <div class="row">
+          <div class="d-flex align-items-center justify-content-end">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-angle-down"
+              label="Expand All"
+              class="mr-2"
+              (click)="onExpandCollapseAll()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-angle-up"
+              label="Collapse All"
+              (click)="onExpandCollapseAll(false)"
+            ></button>
+          </div>
+        </div>
+      </form>
     </div>
+    <!--  TABLE non Grouped  -->
     <div class="page__table" *ngIf="!searchForm.get('groupView').value else groupedView">
       <div class="table-pagination-preloader">
-        <p-table
+        <p-treeTable
           #dt
-          class="table-full-loading events-reports"
+          [value]="companiesTree"
           [rows]="10"
-          [value]="eventsReports"
-          [globalFilterFields]="['name']"
-          selectionMode="single"
-          [(selection)]="selectedEventsReport"
-        >
+          scrollHeight="calc(100vh - 19.2rem)">
           <ng-template pTemplate="header">
             <tr class="bord-all">
-              <th rowspan="3" style="width: 5%" class="text-center bord-top bord-left bord-dark">#</th>
+              <th rowspan="3" style="width: 5%" class="text-center bord-top bord-left bord-dark"></th>
               <th rowspan="3" style="width: 15%;" class="bord-dark bord-top sort-label"
                   (click)="sorting(searchForm.get('order_by_name').value, 'order_by_name')">
                 Company
@@ -337,154 +356,198 @@
             </tr>
           </ng-template>
 
-          <ng-template pTemplate="body" let-report let-i="rowIndex">
-            <tr>
-              <td style="width: 5%" class="text-center bord-dark">
-                <div class="event-item justify-content-center">
-                  {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
-                </div>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+            <tr
+              [class.is-hovered]="hoveredItem && hoveredItem.id === rowData.report?.id"
+              (mouseenter)="hoveredItem = rowData.report"
+              (mouseleave)="hoveredItem = null"
+              [ttRow]="rowNode">
+              <td style="width: 5%" class="text-center bord-dark"
+                  [class.no-border-bottom]="rowData.level === 0 && rowNode.node.expanded">
+                <ng-container *ngIf="rowData.level === 0">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                </ng-container>
               </td>
-              <td style="width: 15%" class="table-comment small-comment bord-dark">
-                <div class="event-item justify-content-center">
-                        <span>
-                          <a
-                            [routerLink]="'/crm/business-partners/company-page/' + report.id"
-                            target="_blank"
-                          >
-                            {{ report.name }}
-                          </a>
-                        </span>
-                  <div class="full-comment full-comment_big">
-                    <div class="row">
-                      <div class="col-md-5">
-                        <h4>Name: <i>{{ report.name }}</i></h4>
-                        <h4>
-                          Category:
-                          <i>
-                            <ng-container *ngFor="let item of report.categories"
-                            >{{ item.name }},
-                            </ng-container>
-                          </i>
-                        </h4>
-                        <h4>Address: <i>{{ report.address }}</i></h4>
-                        <h4>Email: <i>{{ report.email }}</i></h4>
-                        <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
-                        <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
-                        <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
-                        <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
-                      </div>
-                      <div class="col-md-7">
-                        <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
-                        <h4>Description: <i>{{ report.comment }}</i></h4>
-                        <h4>Connected Companies</h4>
-                        <p *ngFor="let linked_company of report.linked_companies">
-                          <i>{{ linked_company.name }}</i>
-                        </p>
-                        <h4>Dont have VAT:
-                          <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
-                          <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <td style="width: 10%" class="text-center bord dark-two no-padding">
-                <div class="event-item event-type-name" [class.event-item-col]="report.last_events.length > 1">
-                  <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
-                      <a [routerLink]="'/crm/events/' + event?.id"
-                         target="_blank">{{ event?.event_name }}</a>
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <td style="width: 10%" class="text-center dark-two no-padding">
-                <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
-                  <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
-                      {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <td style="width: 10%" class="text-center dark-two no-padding">
-                <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
-                  <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
-                      {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <td style="width: 10%" class="table-comment  text-center dark-two no-padding">
-                <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
-                  <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
-                      <div class="small-comment">
+              <td style="width: 15%" class="table-comment small-comment bord-dark"
+                  [class.no-border-bottom]="rowData.level === 0 && rowNode.node.expanded">
+                <ng-container *ngIf="rowData.level === 0">
                               <span>
-                                {{getSmallComment(event?.event_comment)}}
+                                <a
+                                  [routerLink]="'/crm/business-partners/company-page/' + rowData.report?.id"
+                                  target="_blank"
+                                >
+                                  {{ rowData.report?.name }}
+                                </a>
                               </span>
-                        <span
-                          *ngIf="getSmallComment(event?.event_comment)"
-                          class="full-comment"
-                        >
-                                {{event?.event_comment}}
-                              </span>
+                  <div class="event-item justify-content-center">
+
+                    <div class="full-comment full-comment_big">
+                      <div class="row">
+                        <div class="col-md-5">
+                          <h4>Name: <i>{{ rowData.report?.name }}</i></h4>
+                          <h4>
+                            Category:
+                            <i>
+                              <ng-container *ngFor="let item of rowData.report?.categories"
+                              >{{ item.name }},
+                              </ng-container>
+                            </i>
+                          </h4>
+                          <h4>Address: <i>{{ rowData.report?.address }}</i></h4>
+                          <h4>Email: <i>{{ rowData.report?.email }}</i></h4>
+                          <h4>Phone Number: <i>{{ rowData.report?.phone_number }}</i></h4>
+                          <h4>Website: <i><a [href]="rowData.report?.website"
+                                             target="_blank">{{ rowData.report?.website }}</a></i></h4>
+                          <h4>Tax Number: <i>{{ rowData.report?.tax_number }}</i></h4>
+                          <h4>Register Number: <i>{{ rowData.report?.registration_number }}</i></h4>
+                        </div>
+                        <div class="col-md-7">
+                          <h4>Nomenclature: <i>{{ rowData.report?.supplier_nomenclature }}</i></h4>
+                          <h4>Description: <i>{{ rowData.report?.comment }}</i></h4>
+                          <h4>Connected Companies</h4>
+                          <p *ngFor="let linked_company of rowData.report?.linked_companies">
+                            <i>{{ linked_company.name }}</i>
+                          </p>
+                          <h4>Dont have VAT:
+                            <i class="pi pi-check text-success" *ngIf="rowData.report?.has_not_vat"></i>
+                            <i class="pi pi-times text-danger" *ngIf="!rowData.report?.has_not_vat"></i>
+                          </h4>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
               </td>
-              <td style="width: 10%" class="text-center dark-two no-padding">
-                <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
-                  <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
-                            <span [ngSwitch]="event?.is_done">
-                              <ng-container *ngSwitchCase="true">Done</ng-container>
-                              <ng-container *ngSwitchCase="false">Not Done</ng-container>
-                            </span>
+
+              <td style="width: 10%"
+                  class="text-center   no-padding"
+                  [class.dark-two]="rowData.level === 1"
+                  [class.bord]="rowData.level === 1"
+              >
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item event-type-name"
+                       [class.event-item-col]="rowData.report?.last_events.length > 1">
+                    <div *ngIf="rowData.report?.last_events && rowData.report?.last_events.length > 0">
+                      <div class="report-event" *ngFor="let event of rowData.report?.last_events">
+                        <a [routerLink]="'/crm/events/' + event?.id"
+                           target="_blank">{{ event?.event_name }}</a>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
+              </td>
+
+              <td style="width: 10%"
+                  class="text-center no-padding"
+                  [class.dark-two]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item" [class.event-item-col]="rowData.report?.last_events.length > 1">
+                    <div *ngIf="rowData.report?.last_events && rowData.report?.last_events.length > 0">
+                      <div class="report-event" *ngFor="let event of rowData.report?.last_events">
+                        {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </td>
+
+              <td style="width: 10%"
+                  class="text-center no-padding"
+                  [class.dark-two]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item" [class.event-item-col]="rowData.report?.last_events.length > 1">
+                    <div *ngIf="rowData.report?.last_events && rowData.report?.last_events.length > 0">
+                      <div class="report-event" *ngFor="let event of rowData.report?.last_events">
+                        {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </td>
+
+              <td style="width: 10%"
+                  class="table-comment text-center no-padding"
+                  [class.dark-two]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item" [class.event-item-col]="rowData.report?.last_events.length > 1">
+                    <div *ngIf="rowData.report?.last_events && rowData.report?.last_events.length > 0">
+                      <div class="report-event" *ngFor="let event of rowData.report?.last_events">
+                        <div class="small-comment">
+                                      <span>
+                                        {{getSmallComment(event?.event_comment)}}
+                                      </span>
+                          <span
+                            *ngIf="getSmallComment(event?.event_comment)"
+                            class="full-comment"
+                          >
+                                        {{event?.event_comment}}
+                                      </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </td>
+              <td style="width: 10%" class="text-center no-padding"
+                  [class.dark-two]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item" [class.event-item-col]="rowData.report?.last_events.length > 1">
+                    <div *ngIf="rowData.report?.last_events && rowData.report?.last_events.length > 0">
+                      <div class="report-event" *ngFor="let event of rowData.report?.last_events">
+                                    <span [ngSwitch]="event?.is_done">
+                                      <ng-container *ngSwitchCase="true">Done</ng-container>
+                                      <ng-container *ngSwitchCase="false">Not Done</ng-container>
+                                    </span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
               </td>
               <!-- FutureEvents -->
-              <td style="width: 10%" class="text-center bord dark no-padding">
-                <div class="event-item event-type-name" [class.event-item-col]="report.next_events.length > 1">
-                  <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
-                      <a [routerLink]="'/crm/events/' + event?.id"
-                         target="_blank">
-                        {{ event?.event_name }}
-                      </a>
+              <td style="width: 10%" class="text-center no-padding"
+                  [class.dark]="rowData.level === 1"
+                  [class.bord]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item event-type-name one-item-up"
+                       [class.event-item-col]="rowData.report?.next_events.length > 1">
+                    <div>
+                      <div class="report-event" *ngFor="let event of rowData.report?.next_events">
+                        <a [routerLink]="'/crm/events/' + event?.id"
+                           target="_blank">
+                          {{ event?.event_name }}
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
               </td>
-              <td style="width: 10%" class="text-center dark no-padding">
-                <div class="event-item">
-                  <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
-                      {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
+              <td style="width: 10%" class="text-center no-padding"
+                  [class.dark]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item">
+                    <div>
+                      <div class="report-event" *ngFor="let event of rowData.report?.next_events">
+                        {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
               </td>
-              <td style="width: 10%" class="text-center dark border-right no-padding">
-                <div class="event-item">
-                  <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
-                      {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
+              <td style="width: 10%" class="text-center border-right no-padding"
+                  [class.dark]="rowData.level === 1">
+                <ng-container *ngIf="rowData.level === 1">
+                  <div class="event-item">
+                    <div>
+                      <div class="report-event" *ngFor="let event of rowData.report?.next_events">
+                        {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
               </td>
             </tr>
           </ng-template>
+
           <ng-template pTemplate="emptymessage">
             <tr>
               <td class="text-center p-4" [attr.colspan]="12">
@@ -493,55 +556,56 @@
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </p-treeTable>
         <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
           <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
         </div>
-      </div>
-      <div
-        class="paginator-wrapper"
-        *ngIf="!isShowAll"
-        [class.hidden]="eventsReports.length === 0"
-      >
-        <p-paginator
-          #paginator
-          [rows]="10"
-          [totalRecords]="reportsCount"
-          (onPageChange)="paginate($event)"
+        <div
+          class="paginator-wrapper"
+          *ngIf="!isShowAll"
+          [class.hidden]="eventsReports.length === 0"
         >
-        </p-paginator>
-        <p-button
-          (click)="onShowAll()"
-          class="paginator-all"
-          type="button"
-          styleClass="p-button-text"
-        >
-          All
-        </p-button>
-      </div>
+          <p-paginator
+            #paginator
+            [rows]="10"
+            [totalRecords]="reportsCount"
+            (onPageChange)="paginate($event)"
+          >
+          </p-paginator>
+          <p-button
+            (click)="onShowAll()"
+            class="paginator-all"
+            type="button"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </div>
 
-      <div *ngIf="isShowAll" class="paginator-return-pagination">
-        <p-button
-          type="button"
-          (click)="onShowPartial()"
-          styleClass="p-button-text"
-        >
-          Return pagination
-        </p-button>
+        <div *ngIf="isShowAll" class="paginator-return-pagination">
+          <p-button
+            type="button"
+            (click)="onShowPartial()"
+            styleClass="p-button-text"
+          >
+            Return pagination
+          </p-button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 
+<!-- TABLE Groupped -->
 <ng-template #groupedView>
   <div class="page__table">
     <div class="table-pagination-preloader">
-      <p-table
+      <p-treeTable
         #dt
         class="table-full-loading events-reports"
         [rows]="10"
-        [value]="eventsReports"
+        [value]="companiesTree"
         [globalFilterFields]="['name']"
         selectionMode="single"
         [(selection)]="selectedEventsReport"
@@ -601,59 +665,73 @@
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-report let-i="rowIndex">
-          <tr>
-            <td style="width: 5%" class="text-center bord-dark">
-              <div class="event-item justify-content-center">
-                {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
-              </div>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+          <tr
+            [class.is-hovered]="hoveredItem && hoveredItem.id === rowData.report?.id"
+            (mouseenter)="hoveredItem = rowData.report"
+            (mouseleave)="hoveredItem = null"
+            [ttRow]="rowNode">
+            <td style="width: 5%" class="text-center bord-dark"
+                [class.no-border-bottom]="rowData.level === 0 && rowNode.node.expanded">
+<!--              <div class="event-item justify-content-center">-->
+<!--                {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}-->
+<!--              </div>-->
+              <ng-container *ngIf="rowData.level === 0">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              </ng-container>
             </td>
-            <td style="width: 15%" class="table-comment small-comment bord-dark">
+            <td style="width: 15%" class="table-comment small-comment bord-dark"
+                [class.no-border-bottom]="rowData.level === 0 && rowNode.node.expanded">
               <div class="event-item justify-content-center">
+                <ng-container *ngIf="rowData.level === 0">
                 <span>
-                  <a [routerLink]="'/crm/business-partners/company-page/' + report.id"
-                     target="_blank">{{ report.name }}</a>
+                  <a [routerLink]="'/crm/business-partners/company-page/' + rowData.report.id"
+                     target="_blank">{{ rowData.report.name }}</a>
                 </span>
                 <div class="full-comment full-comment_big">
                   <div class="row">
                     <div class="col-md-5">
-                      <h4>Name: <i>{{ report.name }}</i></h4>
+                      <h4>Name: <i>{{ rowData.report.name }}</i></h4>
                       <h4>
                         Category:
                         <i>
-                          <ng-container *ngFor="let item of report.categories"
+                          <ng-container *ngFor="let item of rowData.report.categories"
                           >{{ item.name }},
                           </ng-container>
                         </i>
                       </h4>
-                      <h4>Address: <i>{{ report.address }}</i></h4>
-                      <h4>Email: <i>{{ report.email }}</i></h4>
-                      <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
-                      <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
-                      <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
-                      <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
+                      <h4>Address: <i>{{ rowData.report.address }}</i></h4>
+                      <h4>Email: <i>{{ rowData.report.email }}</i></h4>
+                      <h4>Phone Number: <i>{{ rowData.report.phone_number }}</i></h4>
+                      <h4>Website: <i><a [href]="rowData.report.website" target="_blank">{{ rowData.report.website }}</a></i></h4>
+                      <h4>Tax Number: <i>{{ rowData.report.tax_number }}</i></h4>
+                      <h4>Register Number: <i>{{ rowData.report.registration_number }}</i></h4>
                     </div>
                     <div class="col-md-7">
-                      <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
-                      <h4>Description: <i>{{ report.comment }}</i></h4>
+                      <h4>Nomenclature: <i>{{ rowData.report.supplier_nomenclature }}</i></h4>
+                      <h4>Description: <i>{{ rowData.report.comment }}</i></h4>
                       <h4>Connected Companies</h4>
-                      <p *ngFor="let linked_company of report.linked_companies">
+                      <p *ngFor="let linked_company of rowData.report.linked_companies">
                         <i>{{ linked_company.name }}</i>
                       </p>
                       <h4>Dont have VAT:
-                        <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
-                        <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
+                        <i class="pi pi-check text-success" *ngIf="rowData.report.has_not_vat"></i>
+                        <i class="pi pi-times text-danger" *ngIf="!rowData.report.has_not_vat"></i>
                       </h4>
                     </div>
                   </div>
                 </div>
+                </ng-container>
               </div>
             </td>
 
-            <td style="width: 10%" class="text-center bord dark-two no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark-two]="rowData.level === 1"
+                [class.bord]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item event-type-name">
-                <div class="report-event-group" *ngIf="report.groupedLastEvents && report.groupedLastEvents.length > 0">
-                  <div *ngFor="let eventGroup of report.groupedLastEvents; let index=index"
+                <div class="report-event-group" *ngIf="rowData.report.groupedLastEvents && rowData.report.groupedLastEvents.length > 0">
+                  <div *ngFor="let eventGroup of rowData.report.groupedLastEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event pl-1 unhide">
                         <span *ngIf="eventGroup.root_id > -1">
@@ -678,11 +756,14 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="text-center dark-two no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark-two]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
-                <div class="report-event-group" *ngIf="report.groupedLastEvents && report.groupedLastEvents.length > 0">
-                  <div *ngFor="let eventGroup of report.groupedLastEvents; let index=index"
+                <div class="report-event-group" *ngIf="rowData.report.groupedLastEvents && rowData.report.groupedLastEvents.length > 0">
+                  <div *ngFor="let eventGroup of rowData.report.groupedLastEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event">
 
@@ -693,11 +774,14 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="text-center dark-two no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark-two]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
-                <div class="report-event-group" *ngIf="report.groupedLastEvents && report.groupedLastEvents.length > 0">
-                  <div *ngFor="let eventGroup of report.groupedLastEvents; let index=index"
+                <div class="report-event-group" *ngIf="rowData.report.groupedLastEvents && rowData.report.groupedLastEvents.length > 0">
+                  <div *ngFor="let eventGroup of rowData.report.groupedLastEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event">
 
@@ -708,11 +792,14 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="table-comment  text-center dark-two no-padding">
+            <td style="width: 10%" class="table-comment  text-center no-padding"
+                [class.dark-two]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
-                <div class="report-event-group" *ngIf="report.groupedLastEvents && report.groupedLastEvents.length > 0">
-                  <div *ngFor="let eventGroup of report.groupedLastEvents; let index=index"
+                <div class="report-event-group" *ngIf="rowData.report.groupedLastEvents && rowData.report.groupedLastEvents.length > 0">
+                  <div *ngFor="let eventGroup of rowData.report.groupedLastEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event">
 
@@ -728,17 +815,19 @@
                         </span>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="text-center dark-two no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark-two]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
-                <div class="report-event-group" *ngIf="report.groupedLastEvents && report.groupedLastEvents.length > 0">
-                  <div *ngFor="let eventGroup of report.groupedLastEvents; let index=index"
+                <div class="report-event-group" *ngIf="rowData.report.groupedLastEvents && rowData.report.groupedLastEvents.length > 0">
+                  <div *ngFor="let eventGroup of rowData.report.groupedLastEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
-                    <div class="report-event">
+                    <div class="report-event unhide">
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event">
@@ -750,20 +839,18 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
             <!-- FutureEvents -->
-            <td style="width: 10%" class="bord text-center dark no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark]="rowData.level === 1"
+                [class.bord]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item event-type-name">
                 <div class="report-event-group">
-                  <div *ngFor="let eventGroup of report.groupedNextEvents; let index=index"
+                  <div *ngFor="let eventGroup of rowData.report.groupedNextEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event pl-1 unhide">
-                      <!--                          <b>-->
-                      <!--                            {{eventGroup.label}}-->
-                      <!--                            <a *ngIf="eventGroup.root_id > -1" [routerLink]="'/dash/crm/events-list/event-card/' + eventGroup.root_id"-->
-                      <!--                               target="_blank">{{eventGroup.root_id}}-->
-                      <!--                            </a>-->
-                      <!--                          </b>-->
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event hide">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
@@ -772,11 +859,14 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="text-center dark no-padding">
+            <td style="width: 10%" class="text-center no-padding"
+                [class.dark]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
                 <div class="report-event-group">
-                  <div *ngFor="let eventGroup of report.groupedNextEvents; let index=index"
+                  <div *ngFor="let eventGroup of rowData.report.groupedNextEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event">
 
@@ -789,11 +879,14 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
-            <td style="width: 10%" class="text-center dark border-right no-padding">
+            <td style="width: 10%" class="text-center border-right no-padding"
+                [class.dark]="rowData.level === 1">
+              <ng-container *ngIf="rowData.level === 1">
               <div class="event-item">
                 <div class="report-event-group">
-                  <div *ngFor="let eventGroup of report.groupedNextEvents; let index=index"
+                  <div *ngFor="let eventGroup of rowData.report.groupedNextEvents; let index=index"
                        [class]="eventGroup.root_id > -1 ?'row-' + index : ''">
                     <div class="report-event">
 
@@ -806,6 +899,7 @@
                   </div>
                 </div>
               </div>
+              </ng-container>
             </td>
           </tr>
         </ng-template>
@@ -817,7 +911,7 @@
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </p-treeTable>
       <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
         <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
       </div>
