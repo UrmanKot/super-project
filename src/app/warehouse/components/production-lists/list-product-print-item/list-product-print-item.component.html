@@ -7,6 +7,7 @@
     <div class="list-product-print-item__col">Name</div>
     <div class="list-product-print-item__col">UOM</div>
     <div class="list-product-print-item__col">Total Req Qty</div>
+    <div class="list-product-print-item__col">Free Wh Qty</div>
     <div class="list-product-print-item__col">Locator</div>
     <div class="list-product-print-item__col">Status</div>
   </div>
@@ -17,6 +18,7 @@
     <div class="list-product-print-item__col list-product-print-item__col_body">{{product.nomenclature.name}}</div>
     <div class="list-product-print-item__col list-product-print-item__col_body">{{product.nomenclature?.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}</div>
     <div class="list-product-print-item__col list-product-print-item__col_body">{{product.total_required_quantity}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.warehouse_quantity}}</div>
     <div class="list-product-print-item__col list-product-print-item__col_body">{{product.available_on_locator}}</div>
     <div class="list-product-print-item__col list-product-print-item__col_body">{{statuses[product.status]}}</div>
   </div>

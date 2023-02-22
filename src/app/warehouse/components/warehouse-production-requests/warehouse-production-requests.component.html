@@ -125,6 +125,7 @@
           <p-table
             #dt
             selectionMode="single"
+            [scrollable]="true"
             [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
             dataKey="id"
             [rows]="10"
@@ -141,7 +142,7 @@
                 <th style="width: 25%;">Technologies</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-order let-i="rowIndex">
+            <ng-template pTemplate="body" let-order let-i="rowIndex" let-last='last'>
               <tr [pSelectableRow]="order">
                 <td class="text-center" style="width: 5%;">
                   <h3 class="td-title">#</h3>
@@ -166,7 +167,12 @@
                   <div class="root_product" *ngFor="let plan of order.root_production_plans_display">
                     <a (click)="goProductionList(plan.root_list.id)">
                       {{plan.root_list.list_product.nomenclature.name}} ({{plan.list.length}})
-                      <div *ngIf="plan.list.length > 1" class="root_list_products">
+                      <div *ngIf="plan.list.length > 1"
+                           class="root_list_products"
+                           [class.is-fixed]="orders.length <= 10"
+                           [class.is-absolute]="orders.length > 10"
+                           [class.is-last]="orders.length - 10 <= i"
+                      >
                         <div class="d-flex flex-column">
                           <a *ngFor="let list of plan.list" (click)="goProductionList(list.id);
                          $event.preventDefault();

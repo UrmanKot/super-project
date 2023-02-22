@@ -208,11 +208,6 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         parent: null
       });
     });
-    this.detailedRequestTree.forEach(node => {
-      console.log('node', node);
-      // this.loadPlanInfo(node);
-    });
-
   }
 
   changeView(view: ViewMode) {
@@ -236,7 +231,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.hierarchyRequests = [...this.requests];
       this.listRequests.forEach(request => {
 
-        request.requests = this.listRequests.filter(req => {
+        request.requests = this.listRequests
+          .sort((a, b) => a.list_product.nomenclature.id - b.list_product.nomenclature.id)
+          .filter(req => {
           return this.getSameRequests(req, request) && req.id !== request.id;
         });
 
@@ -281,7 +278,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       });
 
       this.hierarchyRequests.forEach(request => {
-        request.requests = this.hierarchyRequests.filter(req => {
+        request.requests = this.hierarchyRequests
+          .sort((a, b) => a.list_product.nomenclature.id - b.list_product.nomenclature.id)
+          .filter(req => {
           return this.getSameRequests(req, request) && req.id !== request.id &&
             (req.for_order_product?.nomenclature.id === request.for_order_product?.nomenclature.id ||
               req.list_product?.nomenclature.id === request.list_product?.nomenclature.id);
@@ -312,7 +311,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
     let codeNameSecond = this.getCodeAndName(request);
 
-    return codeName.code === codeNameSecond.code && codeName.name === codeNameSecond.name;
+    return (codeName.code === codeNameSecond.code
+      && codeName.name === codeNameSecond.name
+      && req.reserved_serial_products.length === 0);
   }
 
   getCodeAndName(request: GroupedRequest): { name: string, code: string } {
@@ -455,14 +456,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     if (node.data.level === level && node.data.id === task.list_product.parent) {
       const existingIndex = node.children.findIndex(el => el.data.id === task.list_product?.id);
       if (existingIndex < 0) {
-        // const foundInRequest = this.requests.find(el => el.task === task.id);
         const foundInRequest = this.requests.find(el => el.list_product?.id === task.list_product?.id);
-        // if (task.list_product.nomenclature.name .includes('Washer 6 DIN 125 Zn')) {
-        //   console.log('foundInRequest', foundInRequest);
-        //   console.log('task', task);
-        //   console.log('this.requests', this.requests);
-        // }
-
 
         node.children.push({
           data: {
