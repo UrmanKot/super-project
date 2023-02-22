@@ -52,7 +52,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     is_production_requests_fully_completed: [null],
   });
 
-  queryKey = 'created_after:null/created_before:null/category__in:null/root_categories:null/accounting_type:null/is_production_requests_fully_completed:null'
+  queryKey = 'created_after:null/created_before:null/category__in:null/root_categories:null/accounting_type:null/is_production_requests_fully_completed:null';
 
   query: QuerySearch[] = [
     {name: 'accounting_type__in', value: '2,3'},
@@ -85,37 +85,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     ).subscribe(orders => {
       this.count = orders.count;
       this.orders = orders.results;
-      this.orders.forEach(order => {
-        // console.log('order', order);
-        order.ordered_items_technologies = [];
-        order.order_products.forEach(product => {
-          if (product.current_technology) {
-            const canAddTechnology = order.ordered_items_technologies
-              .findIndex(el => el === product.current_technology.name) < 0;
-            if (canAddTechnology) {
-              order.ordered_items_technologies.push(product.current_technology.name);
-            }
-          }
-        });
-
-        order.root_production_plans.forEach(plan => {
-          if (order.root_production_plans_display) {
-            const index = order.root_production_plans_display.findIndex(el =>
-              el.root_list.list_product.nomenclature.id === plan.list_product.nomenclature.id);
-            if (index >= 0) {
-              order.root_production_plans_display[index].list.push(plan);
-            } else {
-              order.root_production_plans_display.push({root_list: plan, list: [plan]})
-            }
-          } else {
-            order.root_production_plans_display = [
-              {root_list: plan, list: [plan]}
-            ]
-          }
-
-        });
-      });
-      console.log('orders', this.orders);
+      this.prepareOrderItems();
 
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
@@ -133,18 +103,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
       this.count = orders.length;
       this.orders = orders;
 
-      this.orders.forEach(order => {
-        order.ordered_items_technologies = [];
-        order.order_products.forEach(product => {
-          if (product.current_technology) {
-            const canAddTechnology = order.ordered_items_technologies
-              .findIndex(el => el === product.current_technology.name) < 0;
-            if (canAddTechnology) {
-              order.ordered_items_technologies.push(product.current_technology.name);
-            }
-          }
-        });
-      });
+      this.prepareOrderItems();
 
       if (this.isStartOnePage) {
         this.paginator?.changePage(0);
@@ -153,6 +112,37 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
       this.isStartOnePage = false;
 
       this.isLoading = false;
+    });
+  }
+
+  prepareOrderItems() {
+    this.orders.forEach(order => {
+      order.ordered_items_technologies = [];
+      order.order_products.forEach(product => {
+        if (product.current_technology) {
+          const canAddTechnology = order.ordered_items_technologies
+            .findIndex(el => el === product.current_technology.name) < 0;
+          if (canAddTechnology) {
+            order.ordered_items_technologies.push(product.current_technology.name);
+          }
+        }
+      });
+
+      order.root_production_plans.forEach(plan => {
+        if (order.root_production_plans_display) {
+          const index = order.root_production_plans_display.findIndex(el =>
+            el.root_list.list_product.nomenclature.id === plan.list_product.nomenclature.id);
+          if (index >= 0) {
+            order.root_production_plans_display[index].list.push(plan);
+          } else {
+            order.root_production_plans_display.push({root_list: plan, list: [plan]});
+          }
+        } else {
+          order.root_production_plans_display = [
+            {root_list: plan, list: [plan]}
+          ];
+        }
+      });
     });
   }
 
@@ -175,8 +165,8 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     ];
 
     if (!this.isShowAll) {
-      this.query.push({name: 'paginated', value: 'true'})
-      this.query.push({name: 'page', value: this.searchForm.get('page').value})
+      this.query.push({name: 'paginated', value: 'true'});
+      this.query.push({name: 'page', value: this.searchForm.get('page').value});
     }
 
     if (this.searchForm.get('accounting_type').value !== null) {
@@ -220,7 +210,6 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     }
 
     if (!this.isShowAll) {
-      console.log(this.query);
       this.getOrdersForPagination();
     } else {
       this.searchForm.get('page').patchValue(1);
@@ -318,7 +307,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
 
   goProductionList(id: number) {
     const link = `${this.link}production/plan/tasks/${id}`;
-    window.open(link, '_blank')
+    window.open(link, '_blank');
   }
 
 
