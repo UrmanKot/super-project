@@ -2,6 +2,16 @@
   margin-top: -0.25rem;
 }
 
+.col-3 {
+  width: 20%;
+}
+
+.action-buttons {
+  margin-top: 0.25rem;
+}
+
+
+
 .input-wrapper {
   position: relative;
   display: flex;
@@ -19,5 +29,32 @@
     color: #6c757d;
     right: 0.6rem;
     top: 0.275rem;
+  }
+}
+
+.other-duration {
+  display: flex;
+}
+
+.col-actions {
+  width: 30%;
+}
+
+.duration {
+  padding: 0.5rem 0;
+
+  & > p {
+    margin-bottom: 0.6875rem;
+    font-weight: 500;
+  }
+}
+
+.other-duration-row {
+  margin-left: 0.75rem;
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-left: 0.5rem;
   }
 }

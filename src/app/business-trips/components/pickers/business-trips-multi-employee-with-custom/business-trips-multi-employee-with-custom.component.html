@@ -1,8 +1,10 @@
 <p-multiSelect
   optionValue="id"
-  optionLabel="first_name"
+  optionLabel="employee.fullName"
   [options]="customEmployees"
   [(ngModel)]="selectedEmployees"
+  [showClear]="true"
+  placeholder="Choice Employees"
   (ngModelChange)="onChange($event)"
 >
   <ng-template let-employee pTemplate="item">

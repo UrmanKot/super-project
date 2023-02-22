@@ -91,6 +91,7 @@ import { OrderStatusesTableComponent } from './components/order-statuses-table/o
 import { OrderStatusesChartComponent } from './components/order-statuses-chart/order-statuses-chart.component';
 import { SearchPipe } from './pipes/search.pipe';
 import { AlbumComponent } from './modals/album/album.component';
+import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/multi-countries-picker.component';
 
 
 @NgModule({
@@ -161,6 +162,7 @@ import { AlbumComponent } from './modals/album/album.component';
     OrderStatusesChartComponent,
     SearchPipe,
     AlbumComponent,
+    MultiCountriesPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -232,6 +234,7 @@ import { AlbumComponent } from './modals/album/album.component';
     SubRegionPickerComponent,
     OrderStatusesTableComponent,
     SearchPipe,
+    MultiCountriesPickerComponent,
   ],
   imports: [
     MultiSelectModule,
