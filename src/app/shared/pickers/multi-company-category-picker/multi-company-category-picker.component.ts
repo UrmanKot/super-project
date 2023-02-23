@@ -13,6 +13,7 @@ import {CompanyCategoryService} from '../../../crm/services/company-category.ser
 export class MultiCompanyCategoryPickerComponent implements OnInit, OnChanges {
   @Input() isDisabled = false;
   @Output() selectCompanyCategories: EventEmitter<string> = new EventEmitter<string>();
+  @Output() selectCompanyCategoriesIds: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Input() currentCompanyCategoriesIds: number[] = [];
 
   isLoading = true;
@@ -58,8 +59,10 @@ export class MultiCompanyCategoryPickerComponent implements OnInit, OnChanges {
   onSelectCompanyCategories() {
     if (this.selectedCompanyCategories === null || this.selectedCompanyCategories?.length === 0) {
       this.selectCompanyCategories.emit(null);
+      this.selectCompanyCategoriesIds.emit(null);
     } else {
       this.selectCompanyCategories.emit(this.selectedCompanyCategories.map(c => c.id).join(','));
+      this.selectCompanyCategoriesIds.emit(this.selectedCompanyCategories.map(c => c.id));
     }
   }
 

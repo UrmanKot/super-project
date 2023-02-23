@@ -230,9 +230,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.listRequests = [...this.requests];
       this.hierarchyRequests = [...this.requests];
       this.listRequests.forEach(request => {
-
+        console.log('this.listRequests', this.listRequests);
         request.requests = this.listRequests
-          .sort((a, b) => a.list_product.nomenclature.id - b.list_product.nomenclature.id)
+          .sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id)
           .filter(req => {
           return this.getSameRequests(req, request) && req.id !== request.id;
         });
@@ -279,7 +279,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
       this.hierarchyRequests.forEach(request => {
         request.requests = this.hierarchyRequests
-          .sort((a, b) => a.list_product.nomenclature.id - b.list_product.nomenclature.id)
+          .sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id)
           .filter(req => {
           return this.getSameRequests(req, request) && req.id !== request.id &&
             (req.for_order_product?.nomenclature.id === request.for_order_product?.nomenclature.id ||
@@ -307,29 +307,32 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   getSameRequests(req: GroupedRequest, request: GroupedRequest): boolean {
-    let codeName = this.getCodeAndName(req);
+    let codeName = this.getCodeAndNameId(req);
 
-    let codeNameSecond = this.getCodeAndName(request);
-
+    let codeNameSecond = this.getCodeAndNameId(request);
     return (codeName.code === codeNameSecond.code
       && codeName.name === codeNameSecond.name
-      && req.reserved_serial_products.length === 0);
+      && (!req.reserved_serial_products || req.reserved_serial_products?.length === 0));
   }
 
-  getCodeAndName(request: GroupedRequest): { name: string, code: string } {
+  getCodeAndNameId(request: GroupedRequest): { name: string, code: string, id: number } {
     let codeSecond = '';
     let nameSecond = '';
+    let id;
     if (request.material_nomenclature) {
       codeSecond = request.material_nomenclature.code;
       nameSecond = request.material_nomenclature.name;
+      id = request.material_nomenclature.id;
     } else if (request.order_product_nomenclature) {
       codeSecond = request.order_product_nomenclature.code;
       nameSecond = request.order_product_nomenclature.name;
+      id = request.order_product_nomenclature.id;
     } else if (!request.material_nomenclature && !request.order_product_nomenclature) {
       codeSecond = request.list_product.nomenclature.code;
       nameSecond = request.list_product.nomenclature.name;
+      id = request.list_product.nomenclature.id;
     }
-    return {code: codeSecond, name: nameSecond};
+    return {code: codeSecond, name: nameSecond, id: id};
   }
 
   expandCollapseAllOrders(isToExpand = true): void {

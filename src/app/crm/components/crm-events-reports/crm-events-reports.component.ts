@@ -10,10 +10,6 @@ import {Subject, takeUntil} from 'rxjs';
 import {AdapterService} from '@shared/services/adapter.service';
 import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
-import {TreeNode} from 'primeng/api';
-import {Product} from '../../../product-structure/models/product';
-import {ProductStructureCategory} from '../../../product-structure/models/product-structure-category';
-import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -29,6 +25,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   isShowAll = false;
   isStartOnePage = false;
   reportsCount = 0;
+  isLastDateDefaultFilterSelected = true;
+  isNextDateDefaultFilterSelected = true;
 
   dateFilters: { name: string, value: string }[] = [
     {
@@ -75,7 +73,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.eventsReportService.get(this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(response => {
-      this.companiesTree = [];
       this.eventsReports = response;
       this.reportsCount = this.eventsReports.length;
 
@@ -87,19 +84,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
       this.breakForGroupedEvents();
 
-      this.eventsReports.forEach(report => {
-        this.companiesTree.push({
-          data: {
-            report: report,
-            level: 0
-          },
-          expanded: false,
-          parent: null,
-          children: [{data: {report, level: 1}}]
-        });
-      });
-      this.sortEvents();
-      this.companiesTree = [...this.companiesTree];
       this.isLoading = false;
     });
   }
@@ -112,7 +96,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.groupLastEvents(report);
       this.groupNextEvents(report);
 
-      report.groupedLastEvents.filter(group => group.root_id).forEach(group => {
+      report.groupedLastEvents.filter(group => group.root_id >= 0).forEach(group => {
         const groupInNextEvents = report.groupedNextEvents.find(el => el.root_id === group.root_id);
         if (groupInNextEvents) {
           const groupedLastEventsAmount = group.events.length;
@@ -129,39 +113,26 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
         }
       });
 
-
       report.groupedLastEvents.sort((a, b) => b.root_id - a.root_id);
       report.groupedNextEvents.sort((a, b) => b.root_id - a.root_id);
       report.groupedLastEvents.forEach(group => {
         group.events = group.events.sort((a, b) => {
           if (a && b) {
-            b.start = new Date(b?.start);
-            a.start = new Date(a?.start);
-            return a?.start.getTime() - b?.start.getTime();
+            b.start = new Date(b.start);
+            a.start = new Date(a.start);
+            return a.start.getTime() - b.start.getTime();
           }
         });
       });
       report.groupedNextEvents.forEach(group => {
         group.events = group.events.sort((a, b) => {
           if (a && b) {
-            b.start = new Date(b?.start);
-            a.start = new Date(a?.start);
-            return a?.start.getTime() - b?.start.getTime();
+            b.start = new Date(b.start);
+            a.start = new Date(a.start);
+            return a.start.getTime() - b.start.getTime();
           }
         });
       });
-
-      const lastEventsAmount = report.last_events.length;
-      const nextEventsAmount = report.next_events.length;
-      if (lastEventsAmount > nextEventsAmount) {
-        const difference = lastEventsAmount - nextEventsAmount;
-        const emptyCell = Array(difference).fill(null);
-        report.next_events.push(...emptyCell);
-      } else {
-        const difference = nextEventsAmount - lastEventsAmount;
-        const emptyCell = Array(difference).fill(null);
-        report.last_events.push(...emptyCell);
-      }
     });
   }
 
@@ -232,7 +203,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.eventsReportService.getForPagination(this.query).pipe(
       takeUntil(this.destroy$)
     ).subscribe(response => {
-      this.companiesTree = [];
       this.eventsReports = response.results;
       this.reportsCount = response.count;
 
@@ -243,98 +213,106 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.isStartOnePage = false;
       this.breakForGroupedEvents();
 
-      this.eventsReports.forEach(report => {
-        this.companiesTree.push({
-          data: {
-            report: report,
-            level: 0
-          },
-          expanded: false,
-          parent: null,
-          children: [{data: {report, level: 1}}]
-        });
-      });
       this.sortEvents();
-      this.companiesTree = [...this.companiesTree];
+
       this.isLoading = false;
     });
   }
 
   sortEvents() {
-    this.companiesTree.forEach(node => {
-      // @ts-ignore
-      const company = node.data.report;
-
-      if (this.searchForm.get('order_by_date').value !== null) {
-        if (this.searchForm.get('order_by_date').value) {
-          company.last_events.sort((a, b) =>
-              new Date(b?.start).getTime() - new Date(a?.start).getTime()
-            );
-            company.groupedLastEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(b?.start).getTime() - new Date(a?.start).getTime());
-            });
-        } else {
-          company.last_events.sort((a, b) =>
-              new Date(a?.start).getTime() - new Date(b?.start).getTime());
-            company.groupedLastEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(a?.start).getTime() - new Date(b?.start).getTime());
-            });
-        }
-      }
-
-      if (this.searchForm.get('order_by_date_end').value !== null) {
-        if (this.searchForm.get('order_by_date_end').value) {
-            company.last_events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
-            company.groupedLastEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
-            });
-        } else {
-            company.last_events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
-            company.groupedLastEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
+    if (this.searchForm.get('order_by_date').value !== null) {
+      if (this.searchForm.get('order_by_date').value) {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b?.start).getTime() - new Date(a?.start).getTime());
           });
-        }
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a?.start).getTime() - new Date(b?.start).getTime());
+          });
+        });
       }
+    }
 
-      if (this.searchForm.get('order_by_next_event_date').value !== null) {
-        if (this.searchForm.get('order_by_next_event_date').value) {
-            company.next_events.sort((a, b) =>
-              new Date(b?.start).getTime() - new Date(a?.start).getTime()
-           );
-            company.groupedNextEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(b?.start).getTime() - new Date(a?.start).getTime());
-            });
-        } else {
-            company.next_events.sort((a, b) => new Date(a?.start).getTime() - new Date(b?.start).getTime());
-            company.groupedNextEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(a?.start).getTime() - new Date(b?.start).getTime());
-            });
-        }
+    if (this.searchForm.get('order_by_date_end').value !== null) {
+      if (this.searchForm.get('order_by_date_end').value) {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.last_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedLastEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
+          });
+        });
       }
+    }
 
-      if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
-        if (this.searchForm.get('order_by_next_event_date_end').value) {
-            company.next_events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
-            company.groupedNextEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
-            });
-        } else {
-            company.next_events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
-            company.groupedNextEvents.forEach(group => {
-              group.events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
-            });
-        }
+    if (this.searchForm.get('order_by_next_event_date').value !== null) {
+      if (this.searchForm.get('order_by_next_event_date').value) {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b?.start).getTime() - new Date(a?.start).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a?.start).getTime() - new Date(b?.start).getTime());
+          });
+        });
       }
-    });
-    requestAnimationFrame(() => {
-      this.companiesTree = [...this.companiesTree];
-    });
+    }
+
+    if (this.searchForm.get('order_by_next_event_date_end').value !== null) {
+      if (this.searchForm.get('order_by_next_event_date_end').value) {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(b?.end).getTime() - new Date(a?.end).getTime());
+          });
+        });
+      } else {
+        this.eventsReports.forEach(company => {
+          company.next_events.sort((a, b) => new Date(a.end).getTime() - new Date(b.end).getTime());
+        });
+        this.eventsReports.forEach(company => {
+          company.groupedNextEvents.forEach(group => {
+            group.events.sort((a, b) => new Date(a?.end).getTime() - new Date(b?.end).getTime());
+          });
+        });
+      }
+    }
   }
 
   searchForm: FormGroup = this.fb.group({
     page: [1],
     id: [null],
-    company_category_id: [null],
+    company_category_ids: [null],
     country_id: [null],
     region_id: [null],
     sub_region_id: [null],
@@ -381,8 +359,6 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   eventsReports: EventReport[];
   selectedEventsReport: EventReport;
 
-  companiesTree: TreeNode<{ report?: EventReport } | { level: number }>[] = [];
-  hoveredItem: EventReport;
   selectedFilterType = 'lastNextDate';
 
   queryKey = 'id:null/categories_ids:null/chain_status_ids:null/employees_ids:null/is_null_chain_status:null';
@@ -506,6 +482,12 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (isCustomFilterByLastStartValues || isCustomFilterByLastEndValues) {
+      this.isLastDateDefaultFilterSelected = false;
+    } else {
+      this.isLastDateDefaultFilterSelected = true;
+    }
+
     if (!isCustomFilterByLastStartValues && !isCustomFilterByLastEndValues) {
       this.query.push({
         name: 'last_events_date_start_after',
@@ -552,6 +534,12 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
         this.padTo2Digits(minuteAfter),
         23,
         59);
+    }
+
+    if (isCustomFilterByFeatureStartValues || isCustomFilterByFeatureEndValues) {
+      this.isNextDateDefaultFilterSelected = false;
+    } else {
+      this.isNextDateDefaultFilterSelected = true;
     }
 
     if (this.isFeatureEventStartFilterOpen && this.isFeatureEventEndFilterOpen) {
@@ -601,9 +589,9 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       value: this.searchForm.get('is_null_chain_status').value
     });
 
-    if (this.searchForm.get('company_category_id').value !== null) this.query.push({
-      name: 'company_category_id',
-      value: this.searchForm.get('company_category_id').value
+    if (this.searchForm.get('company_category_ids').value !== null) this.query.push({
+      name: 'company_category_ids',
+      value: this.searchForm.get('company_category_ids').value
     });
 
     if (this.searchForm.get('country_id').value !== null) this.query.push({
@@ -901,8 +889,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.search();
   }
 
-  onSelectCompanyCategory(companyCategoryId: number) {
-    this.searchForm.get('company_category_id').setValue(companyCategoryId);
+  onSelectCompanyCategory(companyCategoryIds: number[]) {
+    this.searchForm.get('company_category_ids').setValue(companyCategoryIds);
     this.search();
   }
 
@@ -963,22 +951,5 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
 
     this.search();
-  }
-
-  onExpandCollapseAll(isToExpand = true) {
-    const temp = cloneDeep(this.companiesTree);
-    temp.forEach(node => {
-      this.expandCollapseRecursive(node, isToExpand);
-    });
-    this.companiesTree = temp;
-  }
-
-  expandCollapseRecursive(node: TreeNode, isExpand: boolean): void {
-    node.expanded = isExpand;
-    if (node.children) {
-      node.children.forEach(childNode => {
-        this.expandCollapseRecursive(childNode, isExpand);
-      });
-    }
   }
 }

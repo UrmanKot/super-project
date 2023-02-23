@@ -66,7 +66,7 @@ export class BusinessTripsComponent implements OnInit {
     created_at: [null],
     statuses: [null],
     duration_more_than: [null],
-    duration: [null],
+    duration: ['other'],
     durationOther: [0],
     location_countries_ids: [null]
   });

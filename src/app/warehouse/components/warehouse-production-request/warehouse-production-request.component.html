@@ -287,7 +287,7 @@
               </td>
               <td style="width: 10%" class="text-center">
                 <h3 class="td-title">Serial number</h3>
-                <span *ngIf="request.reserved_serial_products.length === 1">
+                <span *ngIf="request.reserved_serial_products?.length === 1">
                 {{request.reserved_serial_products[0].serial_number.type_with_number}}
                 </span>
               </td>
@@ -489,7 +489,7 @@
             <td style="width: 10%" class="text-center">
               <h3 class="td-title">Serial Number</h3>
               <div *ngIf="rowData.level === 4">
-                <span *ngIf="rowData.request.reserved_serial_products.length === 1">
+                <span *ngIf="rowData.request.reserved_serial_products?.length === 1">
                 {{rowData.request.reserved_serial_products[0].serial_number.type_with_number}}
                 </span>
               </div>
