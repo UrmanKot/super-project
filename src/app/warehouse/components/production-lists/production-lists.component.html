@@ -113,8 +113,7 @@
               ></p-calendar>
             </div>
           </div>
-          <div class="col-3"></div>
-          <div class="col-3">
+          <div class="col-6">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
         </div>
@@ -258,33 +257,181 @@
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.HIERARCHY">
-      In development
+      <p-treeTable
+        [value]="orderTree"
+        selectionMode="single"
+        [(selection)]="selectedOrderNode"
+        (selectionChange)="test()"
+        scrollHeight="calc(100vh - 300px)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 20%">Code</th>
+            <th style="width: 15%">Name</th>
+            <th style="width: 10%" class="text-center">Date Of Creation</th>
+            <th style="width: 6%" class="text-center">Sets</th>
+            <th style="width: 9%" class="text-center">Locator</th>
+            <th style="width: 6%" class="text-center">Total</th>
+            <th style="width: 7%" class="text-center">Not Processed</th>
+            <th style="width: 6%" class="text-center">Deficit</th>
+            <th style="width: 7%" class="text-center">Outsource</th>
+            <th style="width: 7%" class="text-center">Own Production</th>
+            <th style="width: 7%" class="text-center">Purchased</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+              [ttSelectableRowDisabled]="rowData.level < 4"
+              *ngIf="!rowData.hideFromTable"
+              [class.deficit]="rowData.level === 4 && rowData.list.descendants_has_deficit_accepted"
+              [class.free-products]="rowData.level === 4 && rowData.list.descendants_has_free_warehouse_products"
+          >
+            <td style="width: 20%">
+              <div class="toggle-row">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span [class.bold]="rowData.level < 4">
+                      {{rowData.name}}
+                  </span>
+                <span *ngIf="rowData.level === 4">
+                    ({{rowData.list.id}}) {{rowData.list.nomenclature.code}}
+                  </span>
+              </div>
+            </td>
+            <td style="width: 15%">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.nomenclature.name}}
+                </span>
+            </td>
+            <td style="width: 10%" class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.created|date:'dd/MM/yyyy'}}
+                </span>
+            </td>
+            <td style="width: 6%" class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.sets_number}}
+                </span>
+            </td>
+            <td style="width: 9%" class="text-center">
+                  <span *ngIf="rowData.level === 4">
+                      <div *ngIf="rowData.list.locator" class="d-flex justify-content-center">
+                        {{rowData.list.locator.name + ' '}} R: {{rowData.list.locator.row}} Col:
+                        {{rowData.list.locator.column}} Sh: {{rowData.list.locator.shelf}} Pl:
+                        {{rowData.list.locator.place}}
+                      </div>
+                  </span>
+            </td>
+            <td class="text-center" style="width: 6%">
+                <span *ngIf="rowData.level === 4">
+                   {{rowData.list.statistics.total_products_count}}
+                </span>
+            </td>
+            <td class="text-center" style="width: 7%">
+                <span *ngIf="rowData.level === 4">
+                   {{rowData.list.statistics.not_processed_products_count}}
+                </span>
+            </td>
+
+            <td class="text-center" style="width: 6%">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.statistics.deficit_products_count}}
+                </span>
+            </td>
+            <td class="text-center" style="width: 7%">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.statistics.outsource_production_count}}
+                </span>
+            </td>
+            <td class="text-center" style="width: 7%">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.statistics.own_production_count}}
+                </span>
+            </td>
+            <td class="text-center" style="width: 7%">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.statistics.purchased_ordered_count}}
+                </span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="12">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
     </ng-container>
   </div>
 </div>
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <a
-      class="ml-auto mt-auto mr-2"
-      [class.disabled]="!selectedList"
-      [routerLink]="[selectedList?.id]"
-      target="_blank"
-      pButton
-      type="button"
-      icon="pi pi-bars"
-      label="Production List"
-    >
-    </a>
-    <button
-      class="mt-auto"
-      pButton
-      type="button"
-      icon="pi pi-angle-double-right"
-      label="Set List Locator"
-      (click)="onSetListLocator()"
-      [disabled]="!selectedList"
-    >
-    </button>
+    <ng-container *ngIf="viewMode === viewModeType.HIERARCHY">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-down"
+        label="Expand All"
+        class="ml-auto mr-2"
+        (click)="expandCollapseAllOrders()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-up"
+        class="mr-2"
+        label="Collapse All"
+        (click)="expandCollapseAllOrders(false)"
+      ></button>
+      {{selectedOrderNode?.data?.id}}
+      <a
+        class="mr-2"
+        [class.disabled]="!selectedOrderNode"
+        [routerLink]="[selectedOrderNode?.data?.list?.id]"
+        target="_blank"
+        pButton
+        type="button"
+        icon="pi pi-bars"
+        label="Production List"
+      >
+      </a>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-double-right"
+        label="Set List Locator"
+        (click)="onSetListLocatorNode()"
+        [disabled]="!selectedOrderNode"
+      >
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModeType.LIST">
+      <a
+        class="ml-auto mr-2"
+        [class.disabled]="!selectedList"
+        [routerLink]="[selectedList?.id]"
+        target="_blank"
+        pButton
+        type="button"
+        icon="pi pi-bars"
+        label="Production List"
+      >
+      </a>
+      <button
+        class="mt-auto"
+        pButton
+        type="button"
+        icon="pi pi-angle-double-right"
+        label="Set List Locator"
+        (click)="onSetListLocator()"
+        [disabled]="!selectedList"
+      >
+      </button>
+    </ng-container>
   </div>
 </ng-template>
