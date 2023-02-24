@@ -487,6 +487,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     this.isLoading = true;
     this.destroy$.next(true);
     this.selectedList = null;
+    this.selectedOrderNode = null;
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/responsible_employee_id:${this.searchForm.get('responsible_employee_id').value}/date_created_after:${this.searchForm.get('date_created_after').value}/date_created_before:${this.searchForm.get('date_created_before').value}/category_ids:${this.searchForm.get('category_ids').value}/root_categories:${this.searchForm.get('root_categories').value}`;
 
