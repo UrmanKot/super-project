@@ -437,8 +437,8 @@
                   </span>
                 <span *ngIf="rowData.level === 4">
                      {{rowData.request.id}}
-                  <span *ngIf="rowData.request.ids.length > 0">L({{rowData.request.ids.length + 1}})</span>
-                <span *ngIf="rowData.request.ids.length > 0"
+                  <span *ngIf="rowData.request.ids?.length > 0">L({{rowData.request.ids?.length + 1}})</span>
+                <span *ngIf="rowData.request.ids?.length > 0"
                       [class.is-fixed]="listRequests.length <= 10"
                       [class.is-absolute]="listRequests.length > 10"
                       [class.is-last]="listRequests.length - 10 <= i"

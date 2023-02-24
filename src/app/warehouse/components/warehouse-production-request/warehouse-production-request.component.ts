@@ -229,15 +229,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.requests = requests;
       this.listRequests = [...this.requests];
       this.hierarchyRequests = [...this.requests];
-      this.listRequests.forEach(request => {
-        console.log('this.listRequests', this.listRequests);
+      this.listRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(request => {
         request.requests = this.listRequests
-          .sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id)
           .filter(req => {
           return this.getSameRequests(req, request) && req.id !== request.id;
         });
-
         request.ids = request.requests.map(req => req.id);
+
         request.all_reserved_serial_products = [];
         request.unique_locators = [...request.locators];
         if (request.is_reserved && request.requests
@@ -256,7 +254,6 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
             }
           }
         }
-
         if (request.reserved_serial_products) {
           request.all_reserved_serial_products.push(...request.reserved_serial_products.map(serial_number => serial_number.serial_number));
         }
@@ -277,22 +274,21 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         });
       });
 
-      this.hierarchyRequests.forEach(request => {
-        request.requests = this.hierarchyRequests
-          .sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id)
+      this.hierarchyRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(HierRequest => {
+        HierRequest.requests = this.hierarchyRequests
           .filter(req => {
-          return this.getSameRequests(req, request) && req.id !== request.id &&
-            (req.for_order_product?.nomenclature.id === request.for_order_product?.nomenclature.id ||
-              req.list_product?.nomenclature.id === request.list_product?.nomenclature.id);
+          return this.getSameRequests(req, HierRequest) && req.id !== HierRequest.id &&
+            (req.for_order_product?.nomenclature.id === HierRequest.for_order_product?.nomenclature.id ||
+              req.list_product?.nomenclature.id === HierRequest.list_product?.nomenclature.id);
         });
 
-        request.ids = request.requests.map(req => req.id);
+        HierRequest.ids = HierRequest.requests.map(req => req.id);
 
-        request.total_required_quantity = request.requests.reduce(
-          (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
+        HierRequest.total_required_quantity = HierRequest.requests.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.required_quantity, HierRequest.required_quantity
         );
 
-        request.ids.forEach(id => {
+        HierRequest.ids.forEach(id => {
           const index = this.hierarchyRequests.findIndex(req => req.id === id);
           this.hierarchyRequests.splice(index, 1);
         });
