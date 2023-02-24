@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {ListService} from '../../../services/list.service';
 import {take} from 'rxjs/operators';
@@ -194,26 +194,28 @@ export class ProductionListComponent implements OnInit {
         list.actual_quantity = list.actual_quantity ?? 0;
 
         if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
-         list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)
-          list.groupedProductIds = list.products.map(p => p.id)
+          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
+          list.groupedProductIds = list.products.map(p => p.id);
+          list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
+          // list.status
           newListProducts.push(list);
         }
-      })
+      });
 
       newListProducts.forEach(list => {
         // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
-        list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0)
+        list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0);
         list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
         list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
-      })
+      });
 
       newListProducts.filter(l => l.level === 1).forEach(list => {
         this.tree.push({
           data: list,
           children: [],
           expanded: false
-        })
-      })
+        });
+      });
 
       const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
         const newListProducts: ListProduct[] = [];
@@ -221,9 +223,9 @@ export class ProductionListComponent implements OnInit {
 
         lists.filter(l => l.level === level).forEach(list => {
           if (!newListProducts.find((l) => l.nomenclature.id === list.nomenclature.id && list.technology?.id === l.technology?.id)) {
-            newListProducts.push(list)
+            newListProducts.push(list);
           }
-        })
+        });
 
         nodes.filter(n => n.data.has_children).forEach(n => {
           newListProducts.forEach(list => {
@@ -233,17 +235,18 @@ export class ProductionListComponent implements OnInit {
                 data: list,
                 children: [],
                 expanded: false
-              })
+              });
             }
-          })
+          });
 
           if (n.children.length > 0) {
-            fillTree(n.children, level)
+            fillTree(n.children, level);
           }
-        })
-      }
+        });
+      };
 
-      fillTree(this.tree, 1)
+      fillTree(this.tree, 1);
+
       this.tree = this.tree.map(l => l);
 
       this.isLoading = false;
