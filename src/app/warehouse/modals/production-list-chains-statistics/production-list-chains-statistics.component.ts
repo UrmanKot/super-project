@@ -81,14 +81,14 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
     let link: string;
 
     switch (order.accounting_type) {
-      case 0:
-        link = '/outsourcing/chains/order/' + order.id;
-        break;
       case 1:
         link = '/procurement/chains/order/' + order.id;
         break;
       case 2:
-        link = `${this.link}production/orders/order/8501` + order.id;
+        link = '/outsourcing/chains/order/' + order.id;
+        break;
+      case 3:
+        link = `${this.link}production/orders/order/` + order.id;
         break;
     }
 
