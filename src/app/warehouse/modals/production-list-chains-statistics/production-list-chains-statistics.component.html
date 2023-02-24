@@ -1,0 +1,87 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Production List Statistics for {{accountingType}} {{positionType}}
+  </h2>
+</div>
+
+<div class="nomenclature-serial-info">
+  <p-table
+    [rows]="10"
+    rowExpandMode="single"
+    dataKey="id"
+    selectionMode="single"
+    [value]="orders"
+    [paginator]="orders.length > 10"
+    scrollHeight="calc(100vh - 20rem)"
+    [scrollable]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3%" class="index-header text-center">#</th>
+        <th style="width: 15%">Code</th>
+        <th style="width: 20%">Name</th>
+        <th style="width: 10%" class="text-center">Technology</th>
+        <th style="width: 10%" class="text-center">Order</th>
+        <th style="width: 12%" class="text-center">Ordered Quantity</th>
+        <th style="width: 10%" class="text-center">Created</th>
+        <th style="width: 20%" class="text-center">Date of Receipt of the Position</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr>
+        <td class="text-center">
+          <h3 class="td-title">#</h3>
+          {{i + 1}}
+        </td>
+        <td class="word-break">
+          <h3 class="td-title">Code</h3>
+          {{item.code}}
+        </td>
+        <td>
+          <h3 class="td-title">Name</h3>
+          {{item.name}}
+        </td>
+        <td class="text-center">
+          <h3 class="td-title">Technology</h3>
+          {{item.technology}}
+        </td>
+        <td class="text-center">
+          <h3 class="td-title">Order</h3>
+            <a (click)="goToOrder(item.order)">
+              {{item.order.id}}
+            </a>
+        </td>
+        <td class="text-center">
+          <h3 class="td-title">Ordered Quantity</h3>
+          {{item.ordered_quantity}}
+        </td>
+        <td class="text-center">
+          <h3 class="td-title">Created</h3>
+          {{item.created | date: 'dd/MM/yyyy'}}
+        </td>
+        <td class="text-center">
+          <h3 class="td-title">Date of Receipt of the Position</h3>
+          {{item.latest_order_status_date | date: 'dd/MM/yyyy'}}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="8">
+          <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoading">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Close"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+</mat-dialog-actions>

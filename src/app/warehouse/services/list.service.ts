@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
-import {concat, forkJoin, Observable, toArray} from 'rxjs';
+import {concat, Observable, toArray} from 'rxjs';
 import {List, Lists} from '../models/list';
 import {map} from 'rxjs/operators';
 import {HttpClient, HttpContext} from '@angular/common/http';
@@ -9,9 +9,15 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   SetProductionListLocatorComponent
 } from '../modals/set-production-list-locator/set-production-list-locator.component';
-import {ListProduct} from '../models/list-product';
 import {ScanResult} from '../../qr-code/models/scan-result';
 import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
+import {
+  ProductionListAccountingType,
+  ProductionListPositionType
+} from '../components/production-lists/production-lists.component';
+import {
+  ProductionListChainsStatisticsComponent
+} from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +67,7 @@ export class ListService {
 
   makeProductionList(entity: Partial<List>): Observable<any> {
     return this.httpClient.post(this.API_URL + 'list_creation_requests/', entity).pipe(
-        map(response => response
+      map(response => response
       ));
   }
 
@@ -113,7 +119,7 @@ export class ListService {
   updateListSeveral(lists: List[]): Observable<any> {
     return concat(...lists.map(list => this.httpClient.patch<{ data: List }>(this.API_URL + 'list_creation_requests/' + list.id + '/', list))).pipe(
       toArray()
-    )
+    );
   }
 
   getNomenclatureInfo(id: number): Observable<any> {
@@ -135,11 +141,36 @@ export class ListService {
       .afterClosed();
   }
 
-  getScanned(listId, scanData: ScanResult): Observable<{ids_found: number[]}> {
-    return this.httpClient.post<{ data: {ids_found: number[]} }>(this.API_URL + this.url + listId + '/scan_list_product/', scanData, {
+  getScanned(listId, scanData: ScanResult): Observable<{ ids_found: number[] }> {
+    return this.httpClient.post<{ data: { ids_found: number[] } }>(this.API_URL + this.url + listId + '/scan_list_product/', scanData, {
       context: new HttpContext().set(IS_SCANNING_ENABLED, true)
     }).pipe(map(response => {
       return response.data;
     }));
+  }
+
+  getChainsStatisticsForProductionList(id: number, send: any): Observable<any> {
+    return this.httpClient.post<{ data: any }>(this.API_URL + this.url + `${id}/ordered_products_info/`, send).pipe(
+      map(response => response.data)
+    );
+  }
+
+  showStatisticsForChainsModal(
+    id: number,
+    send: {
+      accounting_type: ProductionListAccountingType,
+      positions_type: ProductionListPositionType
+    }
+  ): Observable<any> {
+    return this.dialog
+      .open<ProductionListChainsStatisticsComponent>(ProductionListChainsStatisticsComponent, {
+        width: '90rem',
+        height: 'auto',
+        panelClass: '',
+        data: {id, send},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

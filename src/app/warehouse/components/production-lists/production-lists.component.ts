@@ -17,6 +17,9 @@ export enum ViewMode {
   HIERARCHY = 1
 }
 
+export type ProductionListAccountingType = 'purchased' | 'own' | 'outsource';
+export type ProductionListPositionType = 'assembly' | 'not assembly';
+
 @Component({
   selector: 'pek-production-lists',
   templateUrl: './production-lists.component.html',
@@ -637,7 +640,15 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     this.destroy$.complete();
   }
 
-  test() {
-    console.log(this.selectedOrderNode);
+  showStatisticsForChains(
+    id: number,
+    accountType: ProductionListAccountingType,
+    positionType: ProductionListPositionType = null
+  ) {
+    const send = {
+      accounting_type: accountType,
+      positions_type: positionType,
+    };
+    this.listService.showStatisticsForChainsModal(id, send).subscribe();
   }
 }
