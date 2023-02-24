@@ -14,6 +14,7 @@ export class List {
   label?: string;
   list?: any;
   root_production_plans?: any[];
+  unique_root_production_plans?: any[];
 }
 
 export class Lists {
