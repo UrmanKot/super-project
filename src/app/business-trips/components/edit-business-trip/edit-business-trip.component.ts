@@ -886,7 +886,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
       switchMap(res => {
         return this.loadVehicleData(res);
       })).pipe(takeUntil(this.destroy$)).subscribe(res => {
-      this.businessService.exportToExcel(res, this.expensesSum).then();
+      this.businessService.exportToExcel(res).then();
     });
   }
 
@@ -1163,11 +1163,12 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
 
   }
 
-  clearFile() {
 
-  }
-
-  hotelsUpdated($event: BusinessTripHotel[]) {
-
+  getBtForExport() {
+    this.businessService.getBtForExport([{name: 'business_trips_ids', value: [this.tripId]}]).subscribe(res => {
+      if (res) {
+        this.businessService.exportToExcel(res[0]).then();
+      }
+    });
   }
 }
