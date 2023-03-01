@@ -143,12 +143,12 @@
     <div class="page__table">
       <div class="table-pagination-preloader">
         <p-table
-          selectionMode="single"
+          selectionMode="multiple"
           scrollHeight="calc(100vh - 27.375rem)"
           [scrollable]="true"
           [rows]="10"
           [value]="businessTrips$ | async"
-          [(selection)]="selectedBusinessTrip"
+          [(selection)]="selectedBusinessTrips"
         >
           <ng-template pTemplate="header">
             <tr>
@@ -232,6 +232,7 @@
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedBusinessTrip"></p-menubar>
+    <p-menubar class="ml-auto" *ngIf="!selectedBusinessTrips || selectedBusinessTrips?.length === 1" [model]="menuItems" [class.disabled]="!selectedBusinessTrips"></p-menubar>
+    <p-menubar class="ml-auto" *ngIf="selectedBusinessTrips?.length > 1" [model]="menuItemsMultiple" [class.disabled]="!selectedBusinessTrips"></p-menubar>
   </div>
 </ng-template>

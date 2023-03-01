@@ -20,6 +20,7 @@ import {BusinessTripHotel} from '../models/business-trip-hotel';
 import {BusinessTripExpensesType} from '../enums/business-trip-expenses-type';
 import {Currency} from '@shared/models/currency';
 import {BusinessTripVehicleType} from '../enums/business-trip-vehicle-type';
+import {BusinessTripCountry} from '../models/business-trip-country';
 
 const SPACE_BETWEEN = 4;
 
@@ -81,6 +82,26 @@ export class BusinessTripService {
   getDetailed(id: number): Observable<BusinessTrip> {
     return this.httpClient
       .get<{ data: BusinessTrip }>(this.API_URL + this.url + id + '/detailed_business_trip/')
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
+  getBtForExport(query?: QuerySearch[]): Observable<BusinessTrip[]> {
+    let qString = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          qString += '&' + element.name + '=' + element.value;
+        } else {
+          qString += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+    return this.httpClient
+      .get<{ data: BusinessTrip[] }>(this.API_URL + this.url + 'for_export_business_trips/' + qString)
       .pipe(
         map((response) => {
           return response.data;
@@ -150,10 +171,13 @@ export class BusinessTripService {
       }));
   }
 
-  async exportToExcel(businessTripData: DataToSend, expensesSum: ExpensesSum[]) {
+  async exportToExcel(businessTripData) {
     // Создаем книгу Excel
     const workbook = new Excel.Workbook();
     let worksheet: any;
+    let firstName = '';
+    let lastName = '';
+    let startDate = businessTripData.trip_start ? formatDate(businessTripData.trip_start, 'dd/MM/yyyy HH:mm', 'en') : null;
 
     // Создаем лист Excel
     worksheet = workbook.addWorksheet('Business Trip');
@@ -182,14 +206,30 @@ export class BusinessTripService {
       idx++;
     }
     worksheet = this.makeHeader(worksheet);
+    if (businessTripData.employee) {
+      firstName = businessTripData.employee.first_name;
+      lastName = businessTripData.employee.last_name;
+      worksheet.addRow({
+        index: this.totalDisplayedRows,
+        firstCol: 'Employee',
+        secondCol: businessTripData.employee.first_name +
+          ' ' + businessTripData.employee.last_name +
+          (businessTripData.employee.position ? ' (' + businessTripData.employee.position.title + ')' : '')
+      });
+    }
 
-    worksheet.addRow({
-      index: this.totalDisplayedRows,
-      firstCol: 'Employee',
-      secondCol: businessTripData.full_employee.first_name +
-      ' ' + businessTripData.full_employee.last_name +
-      (businessTripData.fullPosition ? ' (' + businessTripData.fullPosition.title + ')' : '')
-    });
+    if (businessTripData.custom_employee) {
+      firstName = businessTripData.custom_employee.first_name;
+      lastName = businessTripData.custom_employee.last_name;
+      worksheet.addRow({
+        index: this.totalDisplayedRows,
+        firstCol: 'Employee',
+        secondCol: businessTripData.custom_employee.first_name +
+          ' ' + businessTripData.custom_employee.last_name +
+          (businessTripData.custom_employee.position ? ' (' + businessTripData.custom_employee.position.title + ')' : '')
+      });
+    }
+
     this.totalIndex++;
     this.totalDisplayedRows++;
     worksheet = this.makeGap(worksheet, 1);
@@ -221,7 +261,7 @@ export class BusinessTripService {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Starting point',
-        secondCol: startLocation.fullCountry.name + ', ' + startLocation.address
+        secondCol: startLocation.country.name + ', ' + startLocation.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
@@ -231,7 +271,7 @@ export class BusinessTripService {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Arrival point',
-        secondCol: lastLocation.fullCountry.name + ', ' + lastLocation.address
+        secondCol: lastLocation.country.name + ', ' + lastLocation.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
@@ -239,9 +279,9 @@ export class BusinessTripService {
         worksheet.addRow({
           index: this.totalDisplayedRows,
           firstCol: 'Meeting Company ' + (meetingIndex + 1),
-          secondCol: meeting.fullCompany.name
+          secondCol: meeting.company.name
         });
-        meeting.fullContacts.forEach((person, personIndex) => {
+        meeting.contacts.forEach((person, personIndex) => {
           worksheet.addRow({
             index: this.totalDisplayedRows,
             firstCol: 'Company Contact Person ' + (personIndex + 1),
@@ -262,7 +302,7 @@ export class BusinessTripService {
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Intermediate point ' + (index + 1),
-        secondCol: location.fullCountry.name + ', ' + location.address
+        secondCol: location.country.name + ', ' + location.address
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
@@ -270,9 +310,9 @@ export class BusinessTripService {
         worksheet.addRow({
           index: this.totalDisplayedRows,
           firstCol: 'Meeting Company ' + (meetingIndex + 1),
-          secondCol: meeting.fullCompany.name
+          secondCol: meeting.company.name
         });
-        meeting.fullContacts.forEach((person, personIndex) => {
+        meeting.contacts.forEach((person, personIndex) => {
           worksheet.addRow({
             index: this.totalDisplayedRows,
             firstCol: 'Company Contact Person ' + (personIndex + 1),
@@ -324,11 +364,11 @@ export class BusinessTripService {
           this.totalIndex++;
           this.totalDisplayedRows++;
 
-          if (hotel.fullCountry) {
+          if (hotel.country) {
             worksheet.addRow({
               index: this.totalDisplayedRows,
               firstCol: 'Hotel Address',
-              secondCol: hotel.fullCountry.name + ', ' + hotel.address
+              secondCol: (hotel.country as BusinessTripCountry)?.name + ', ' + hotel.address
             });
             this.totalIndex++;
             this.totalDisplayedRows++;
@@ -351,55 +391,59 @@ export class BusinessTripService {
     }
 
     // Vehicle
-    if (businessTripData.fullVehicle) {
-      worksheet.addRow({
-        index: this.totalDisplayedRows,
-        firstCol: 'Vehicle Details',
-        secondCol: ''
-      });
-      this.totalIndex++;
-      this.totalDisplayedRows++;
-      let type = '';
-      if (businessTripData.vehicle_type === BusinessTripVehicleType.PRIVATE) {
-        type = 'Private';
-      }
-      if (businessTripData.vehicle_type === BusinessTripVehicleType.RENT) {
-        type = 'Rent';
-      }
-      if (businessTripData.vehicle_type === BusinessTripVehicleType.COMPANY_CAR) {
-        type = 'Company Car';
-      }
-      worksheet.addRow({
-        index: this.totalDisplayedRows,
-        firstCol: 'Type',
-        secondCol: type
-      });
-      this.totalIndex++;
-      this.totalDisplayedRows++;
-      const vehicle = businessTripData.fullVehicle;
-      worksheet.addRow({
-        index: this.totalDisplayedRows,
-        firstCol: 'Model (number)',
-        secondCol: vehicle.model + ' (' + vehicle.number + ')'
-      });
-      this.totalIndex++;
-      this.totalDisplayedRows++;
+    if (businessTripData.vehicle && businessTripData.vehicle.vehicle_type && businessTripData.vehicle.vehicle_type !== BusinessTripVehicleType.WITHOUT) {
+      const vehicle = businessTripData.vehicle.vehicle ? businessTripData.vehicle.vehicle : businessTripData.vehicle.custom_vehicle;
+      if (vehicle) {
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Vehicle Details',
+          secondCol: ''
+        });
+        this.totalIndex++;
+        this.totalDisplayedRows++;
+        let type = '';
+        if (businessTripData.vehicle.vehicle_type === BusinessTripVehicleType.PRIVATE) {
+          type = 'Private';
+        }
+        if (businessTripData.vehicle.vehicle_type === BusinessTripVehicleType.RENT) {
+          type = 'Rent';
+        }
+        if (businessTripData.vehicle.vehicle_type === BusinessTripVehicleType.COMPANY_CAR) {
+          type = 'Company Car';
+        }
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Type',
+          secondCol: type
+        });
+        this.totalIndex++;
+        this.totalDisplayedRows++;
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Model (number)',
+          secondCol: vehicle.model + ' (' + vehicle.number + ')'
+        });
+        this.totalIndex++;
+        this.totalDisplayedRows++;
 
-      worksheet.addRow({
-        index: this.totalDisplayedRows,
-        firstCol: 'Mileage start - end',
-        secondCol: businessTripData.start_mileage + '  -  ' + businessTripData.end_mileage
-      });
-      this.totalIndex++;
-      this.totalDisplayedRows++;
+        worksheet.addRow({
+          index: this.totalDisplayedRows,
+          firstCol: 'Mileage start - end',
+          secondCol: businessTripData.vehicle.start_mileage + '  -  ' + businessTripData.vehicle.end_mileage
+        });
+        this.totalIndex++;
+        this.totalDisplayedRows++;
+      }
     }
-    if (businessTripData.fullInitiator) {
+
+    // INITIATOR
+    if (businessTripData.initiator) {
       worksheet = this.makeGap(worksheet, 1);
       // Initiator
       worksheet.addRow({
         index: this.totalDisplayedRows,
         firstCol: 'Initiator',
-        secondCol: businessTripData.fullInitiator.first_name + ' ' + businessTripData.fullInitiator.last_name
+        secondCol: businessTripData.initiator?.first_name + ' ' + businessTripData.initiator?.last_name
       });
       this.totalIndex++;
       this.totalDisplayedRows++;
@@ -437,12 +481,13 @@ export class BusinessTripService {
       worksheet = this.makeHeader(worksheet);
 
       ownEvidences.forEach((expense, index) => {
+        const resExpense = expense.expense ? expense.expense : expense.custom_expense;
         worksheet.addRow({
           index: (index + 1),
-          firstCol: expense.fullExpense.name,
-          secondCol: expense.fullExpense.description,
+          firstCol: resExpense.name,
+          secondCol: resExpense.description,
           thirdCol: expense.sum,
-          fourthCol: expense.currency,
+          fourthCol: expense.currency.code,
           fifthCol: expense.is_verified ? 'Verified' : 'Need Verification',
           sixthCol: 'Own Evidence',
         });
@@ -451,12 +496,12 @@ export class BusinessTripService {
       this.makeGap(worksheet, 1);
       const ownSum: {currency: string | Currency, amount: number }[] = [];
       ownEvidences.forEach(expense => {
-        const sumForCurrency = ownSum.find(evidence => evidence.currency === expense.currency);
+        const sumForCurrency = ownSum.find(evidence => evidence.currency === (expense.currency as Currency).code);
         if (sumForCurrency) {
           sumForCurrency.amount += +expense.sum;
         } else {
           ownSum.push({
-            currency: expense.currency,
+            currency: expense.currency.code,
             amount: +expense.sum
           });
         }
@@ -520,12 +565,13 @@ export class BusinessTripService {
       worksheet = this.makeHeader(worksheet);
 
       corporateEvidences.forEach((expense, index) => {
+        const resExpense = expense.expense ? expense.expense : expense.custom_expense;
         worksheet.addRow({
           index: (index + 1),
-          firstCol: expense.fullExpense.name,
-          secondCol: expense.fullExpense.description,
+          firstCol: resExpense.name,
+          secondCol: resExpense.description,
           thirdCol: expense.sum,
-          fourthCol: expense.currency,
+          fourthCol: expense.currency.code,
           fifthCol: expense.is_verified ? 'Verified' : 'Need Verification',
           sixthCol: 'Corporate Evidence',
         });
@@ -535,12 +581,12 @@ export class BusinessTripService {
 
       const corporateSum: {currency: string | Currency, amount: number }[] = [];
       corporateEvidences.forEach(expense => {
-        const sumForCurrency = corporateSum.find(evidence => evidence.currency === expense.currency);
+        const sumForCurrency = corporateSum.find(evidence => evidence.currency === (expense.currency as Currency).code);
         if (sumForCurrency) {
           sumForCurrency.amount += +expense.sum;
         } else {
           corporateSum.push({
-            currency: expense.currency,
+            currency: expense.currency.code,
             amount: +expense.sum
           });
         }
@@ -602,12 +648,13 @@ export class BusinessTripService {
       worksheet = this.makeHeader(worksheet);
 
       canceledEvidences.forEach((expense, index) => {
+        const resExpense = expense.expense ? expense.expense : expense.custom_expense;
         worksheet.addRow({
           index: (index + 1),
-          firstCol: expense.fullExpense.name,
-          secondCol: expense.fullExpense.description,
+          firstCol: resExpense.name,
+          secondCol: resExpense.description,
           thirdCol: expense.sum,
-          fourthCol: expense.currency,
+          fourthCol: expense.currency.code,
           fifthCol: 'Canceled',
           sixthCol: expense.type === BusinessTripExpensesType.OWN ? 'Own Evidence' : 'Corporate Evidence',
         });
@@ -617,12 +664,12 @@ export class BusinessTripService {
 
       const canceledSum: {currency: string | Currency, amount: number }[] = [];
       canceledEvidences.forEach(expense => {
-        const sumForCurrency = canceledSum.find(evidence => evidence.currency === expense.currency);
+        const sumForCurrency = canceledSum.find(evidence => evidence.currency === (expense.currency as Currency).code);
         if (sumForCurrency) {
           sumForCurrency.amount += +expense.sum;
         } else {
           canceledSum.push({
-            currency: expense.currency,
+            currency: expense.currency.code,
             amount: +expense.sum
           });
         }
@@ -666,7 +713,7 @@ export class BusinessTripService {
       document.body.appendChild(a);
       a.setAttribute('style', 'display: none');
       a.href = url;
-      a.download = `Business Trip.xlsx`;
+      a.download = `Business Trip - ${firstName} ${lastName} - ${startDate ? startDate : '' }.xlsx`;
       a.click();
       window.URL.revokeObjectURL(url);
       a.remove();

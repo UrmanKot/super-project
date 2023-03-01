@@ -11,7 +11,7 @@ import {BusinessTripService} from '../../services/business-trip.service';
 import {MenuItem} from 'primeng/api';
 import {Paginator} from 'primeng/paginator';
 import {AuthService} from '../../../auth/auth.service';
-import {BehaviorSubject, iif, Observable} from 'rxjs';
+import {BehaviorSubject, forkJoin, iif, Observable} from 'rxjs';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {
   EmployeeWithCustom
@@ -28,7 +28,7 @@ export class BusinessTripsComponent implements OnInit {
   @ViewChild('paginator') paginator: Paginator;
   isLoading = false;
 
-  selectedBusinessTrip: BusinessTrip;
+  selectedBusinessTrips: BusinessTrip[];
   tripStatus = BusinessTripStatus;
 
   count = 0;
@@ -86,6 +86,27 @@ export class BusinessTripsComponent implements OnInit {
         label: 'Remove',
         icon: 'pi pi-trash',
         command: () => this.deleteBusinessTrip()
+      },
+      {
+        label: 'Export To XLS',
+        icon: 'pi pi-file-excel',
+        command: () => this.exportToXls()
+      }
+    ]
+  }];
+
+  menuItemsMultiple: MenuItem[] = [{
+    label: 'Selected Business Trips',
+    items: [
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.deleteBusinessTrip()
+      },
+      {
+        label: 'Export To XLS',
+        icon: 'pi pi-file-excel',
+        command: () => this.exportToXls()
       }
     ]
   }];
@@ -123,22 +144,35 @@ export class BusinessTripsComponent implements OnInit {
   }
 
   editExpenseBusinessTrip() {
-    this.router.navigate(['/business-trips/trip/edit/', this.selectedBusinessTrip.id]);
+    this.router.navigate(['/business-trips/trip/edit/', this.selectedBusinessTrips[0].id]);
   }
 
   verifyBt() {
-    this.router.navigate(['/business-trips/trip/verify/', this.selectedBusinessTrip.id]);
+    this.router.navigate(['/business-trips/trip/verify/', this.selectedBusinessTrips[0].id]);
   }
 
   deleteBusinessTrip() {
     this.modalService.confirm('danger', 'Confirm').subscribe((confirm) => {
       if (confirm) {
-        this.businessTripService.delete(this.selectedBusinessTrip).pipe(
-          untilDestroyed(this)
-        ).subscribe(() => {
+        const calls = [];
+        this.selectedBusinessTrips.forEach(trip => {
+          calls.push(this.businessTripService.delete(trip).pipe(
+            untilDestroyed(this)
+          ))
+        });
+        forkJoin([...calls]).subscribe(() => {
           this.search$.next();
         });
       }
+    });
+  }
+
+  exportToXls() {
+    const tripIds = this.selectedBusinessTrips.map(trip => trip.id);
+    this.businessTripService.getBtForExport([{name: 'business_trips_ids', value: tripIds}]).subscribe(res => {
+      res.forEach(trip => {
+          this.businessTripService.exportToExcel(trip).then();
+      });
     });
   }
 
@@ -170,7 +204,7 @@ export class BusinessTripsComponent implements OnInit {
 
   prepareForSearch() {
     this.isLoading = true;
-    this.selectedBusinessTrip = null;
+    this.selectedBusinessTrips = null;
 
     const newQueryKey = this.adapterService.generateQueryKey(this.searchForm);
 
