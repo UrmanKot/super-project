@@ -122,6 +122,7 @@
     <ng-container *ngIf="viewMode === viewModeType.LIST">
       <div class="table-pagination-preloader">
         <p-table
+          class="table"
           #dt
           selectionMode="single"
           [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
@@ -133,23 +134,24 @@
         >
           <ng-template pTemplate="header">
             <tr>
-              <th style="width: 5%" class="text-center">#</th>
-              <th style="width: 15%">Code</th>
-              <th style="width: 15%">Name</th>
-              <th style="width: 10%" class="text-center">Date Of Creation</th>
-              <th style="width: 6%" class="text-center">Sets</th>
-              <th style="width: 9%">Locator</th>
-              <th class="text-center">Total</th>
-              <th class="text-center">Not Processed</th>
-              <th class="text-center">Total Items</th>
-              <th class="text-center">Deficit Items</th>
-              <th class="text-center">Outsource Items</th>
-              <th class="text-center">Own Production Items</th>
-              <th class="text-center">Total Assembly</th>
-              <th class="text-center">Deficit Assembly</th>
-              <th class="text-center">Outsource Assembly</th>
-              <th class="text-center">Own Production Assembly</th>
-              <th class="text-center">Purchased</th>
+              <th rowspan="4" style="width: 5%" class="text-center">#</th>
+              <th rowspan="4" style="width: 20%">Code</th>
+              <th rowspan="4" style="width: 20%">Name</th>
+              <th rowspan="4" style="width: 10%" class="text-center">Date Of Creation</th>
+              <th rowspan="4" style="width: 5%" class="text-center">Sets</th>
+              <th rowspan="4" style="width: 10%" class="bord-right">Locator</th>
+            </tr>
+
+            <tr>
+              <th colspan="6" class="bord text-center dark-two bord-top" style="width: 15%">Total</th>
+              <th colspan="6" class="bord text-center dark-two bord-top" style="width: 15%">Not Processed</th>
+            </tr>
+
+            <tr>
+              <th colspan="3" class="bord text-center dark-two" style="width: 8%">Nomenclature</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 7%">Elements</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 8%">Nomenclature</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 7%">Elements</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-list let-i="rowIndex">
@@ -162,11 +164,11 @@
                 <h3 class="td-title">#</h3>
                 {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
               </td>
-              <td style="width: 15%">
+              <td style="width: 20%">
                 <h3 class="td-title">Code</h3>
                 ({{list.id}}) {{list.nomenclature.code}}
               </td>
-              <td style="width: 15%">
+              <td style="width: 20%">
                 <h3 class="td-title">Name</h3>
                 {{list.nomenclature.name}}
               </td>
@@ -174,11 +176,11 @@
                 <h3 class="td-title">Date Of Creation</h3>
                 {{list.created|date:'dd/MM/yyyy'}}
               </td>
-              <td style="width: 6%" class="text-center">
+              <td style="width: 5%" class="text-center">
                 <h3 class="td-title">Sets</h3>
                 {{list.sets_number}}
               </td>
-              <td style="width: 9%">
+              <td style="width: 10%">
                 <h3 class="td-title">Locator</h3>
                 <ng-container *ngIf="list.locator">
                   {{list.locator.name + ' '}}<br>
@@ -188,59 +190,21 @@
                   Pl: {{list.locator.place}}
                 </ng-container>
               </td>
-              <td class="text-center">
-                <h3 class="td-title">Total</h3>
-                {{list.statistics.total_not_assembly_products_count + list.statistics.total_assembly_products_count}}
+              <td class="text-center" style="width: 8%" colspan="3">
+                <h3 class="td-title">Nomenclature</h3>
+                {{list.statistics.total_products_count}}
               </td>
-              <td class="text-center">
-                <h3 class="td-title">Not Processed</h3>
+              <td class="text-center" style="width: 7%" colspan="3">
+                <h3 class="td-title">Elements</h3>
+                {{list.statistics.total_products_quantity}}
+              </td>
+              <td class="text-center" style="width: 8%" colspan="3">
+                <h3 class="td-title">Nomenclature</h3>
                 {{list.statistics.not_processed_products_count}}
               </td>
-              <td class="text-center">
-                <h3 class="td-title">Total Items</h3>
-                {{list.statistics.total_not_assembly_products_count}}
-              </td>
-              <td class="text-center">
-                <h3 class="td-title">Deficit Items</h3>
-                {{list.statistics.deficit_not_assembly_count}}
-              </td>
-              <td class="text-center">
-                <a (click)="showStatisticsForChains(list.id, 'outsource', 'not assembly')" class="count-link">
-                  <h3 class="td-title">Outsource Items</h3>
-                  {{list.statistics.not_assembly_outsource_production_count}}
-                </a>
-              </td>
-              <td class="text-center">
-                <a (click)="showStatisticsForChains(list.id, 'own', 'not assembly')" class="count-link">
-                  <h3 class="td-title">Own Production Items</h3>
-                  {{list.statistics.not_assembly_own_production_count}}
-                </a>
-              </td>
-              <td class="text-center">
-                <h3 class="td-title">Total Assembly</h3>
-                {{list.statistics.total_assembly_products_count}}
-              </td>
-              <td class="text-center">
-                <h3 class="td-title">Deficit Assembly</h3>
-                {{list.statistics.deficit_assembly_count}}
-              </td>
-              <td class="text-center">
-                <a (click)="showStatisticsForChains(list.id, 'outsource', 'assembly')" class="count-link">
-                  <h3 class="td-title">Outsource Assembly</h3>
-                  {{list.statistics.assembly_outsource_production_count}}
-                </a>
-              </td>
-              <td class="text-center">
-                <a (click)="showStatisticsForChains(list.id, 'own', 'assembly')" class="count-link">
-                  <h3 class="td-title">Own Production Assembly</h3>
-                  {{list.statistics.assembly_own_production_count}}
-                </a>
-              </td>
-              <td class="text-center">
-                <a (click)="showStatisticsForChains(list.id, 'purchased')" class="count-link">
-                  <h3 class="td-title">Purchased</h3>
-                  {{list.statistics.purchased_ordered_count}}
-                </a>
+              <td class="text-center" style="width: 7%" colspan="3">
+                <h3 class="td-title">Elements</h3>
+                {{list.statistics.not_processed_products_quantity}}
               </td>
             </tr>
           </ng-template>
@@ -270,22 +234,23 @@
         >
           <ng-template pTemplate="header">
             <tr>
-              <th style="width: 16%">Code</th>
-              <th style="width: 12%">Name</th>
-              <th style="width: 8%" class="text-center">Date Of Creation</th>
-              <th style="width: 5%" class="text-center">Sets</th>
-              <th style="width: 8%" class="text-center">Locator</th>
-              <th class="text-center">Total</th>
-              <th class="text-center">Not Processed</th>
-              <th class="text-center">Total Items</th>
-              <th class="text-center">Deficit Items</th>
-              <th class="text-center">Outsource Items</th>
-              <th class="text-center">Own Production Items</th>
-              <th class="text-center">Total Assembly</th>
-              <th class="text-center">Deficit Assembly</th>
-              <th class="text-center">Outsource Assembly</th>
-              <th class="text-center">Own Production Assembly</th>
-              <th class="text-center">Purchased</th>
+              <th rowspan="4" style="width: 20%; padding-left: 1.625rem;">Code</th>
+              <th rowspan="4" style="width: 20%">Name</th>
+              <th rowspan="4" style="width: 10%" class="text-center">Date Of Creation</th>
+              <th rowspan="4" style="width: 10%" class="text-center">Sets</th>
+              <th rowspan="4" style="width: 10%" class="bord-right">Locator</th>
+            </tr>
+
+            <tr>
+              <th colspan="6" class="bord text-center dark-two bord-top" style="width: 15%">Total</th>
+              <th colspan="6" class="bord text-center dark-two bord-top" style="width: 15%">Not Processed</th>
+            </tr>
+
+            <tr>
+              <th colspan="3" class="bord text-center dark-two" style="width: 8%">Nomenclature</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 7%">Elements</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 8%">Nomenclature</th>
+              <th colspan="3" class="bord text-center dark-two" style="width: 7%">Elements</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
@@ -296,7 +261,7 @@
                 [class.deficit]="rowData.level === 4 && rowData.list.descendants_has_deficit_accepted"
                 [class.free-products]="rowData.level === 4 && rowData.list.descendants_has_free_warehouse_products"
             >
-              <td style="width: 16%">
+              <td style="width: 20%">
                 <div class="toggle-row word-break">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <span [class.bold]="rowData.level < 4">
@@ -307,22 +272,22 @@
                   </span>
                 </div>
               </td>
-              <td style="width: 12%">
+              <td style="width: 20%">
                 <span *ngIf="rowData.level === 4">
                     {{rowData.list.nomenclature.name}}
                 </span>
               </td>
-              <td style="width: 8%" class="text-center">
+              <td style="width: 10%" class="text-center">
                 <span *ngIf="rowData.level === 4">
                     {{rowData.list.created|date:'dd/MM/yyyy'}}
                 </span>
               </td>
-              <td style="width: 5%" class="text-center">
+              <td style="width: 10%" class="text-center">
                 <span *ngIf="rowData.level === 4">
                     {{rowData.list.sets_number}}
                 </span>
               </td>
-              <td style="width: 8%" class="text-center">
+              <td style="width: 10%">
                   <span *ngIf="rowData.level === 4">
                       <div *ngIf="rowData.list.locator" class="d-flex justify-content-center">
                         {{rowData.list.locator.name + ' '}} R: {{rowData.list.locator.row}} Col:
@@ -331,81 +296,29 @@
                       </div>
                   </span>
               </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Total</h3>
-                {{rowData.list.statistics.total_not_assembly_products_count + rowData.list.statistics.total_assembly_products_count}}
-              </span>
+              <td class="text-center" style="width: 8%" colspan="3">
+                <ng-container *ngIf="rowData.level === 4">
+                  <h3 class="td-title">Nomenclature</h3>
+                  {{rowData.list.statistics.total_products_count}}
+                </ng-container>
               </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Not Processed</h3>
-                {{rowData.list.statistics.not_processed_products_count}}
-              </span>
+              <td class="text-center" style="width: 7%" colspan="3">
+                <ng-container *ngIf="rowData.level === 4">
+                  <h3 class="td-title">Elements</h3>
+                  {{rowData.list.statistics.total_products_quantity}}
+                </ng-container>
               </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Total Items</h3>
-                {{rowData.list.statistics.total_not_assembly_products_count}}
-              </span>
+              <td class="text-center" style="width: 8%" colspan="3">
+                <ng-container *ngIf="rowData.level === 4">
+                  <h3 class="td-title">Nomenclature</h3>
+                  {{rowData.list.statistics.not_processed_products_count}}
+                </ng-container>
               </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Deficit Items</h3>
-                {{rowData.list.statistics.deficit_not_assembly_count}}
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-                <a (click)="showStatisticsForChains(rowData.list.id, 'outsource', 'not assembly')" class="count-link">
-                  <h3 class="td-title">Outsource Items</h3>
-                  {{rowData.list.statistics.not_assembly_outsource_production_count}}
-                </a>
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-                <a (click)="showStatisticsForChains(rowData.list.id, 'own', 'not assembly')" class="count-link">
-              <h3 class="td-title">Own Production Items</h3>
-                {{rowData.list.statistics.not_assembly_own_production_count}}
-                </a>
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Total Assembly</h3>
-                {{rowData.list.statistics.total_assembly_products_count}}
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-              <h3 class="td-title">Deficit Assembly</h3>
-                {{rowData.list.statistics.deficit_assembly_count}}
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-                <a (click)="showStatisticsForChains(rowData.list.id, 'outsource', 'assembly')" class="count-link">
-              <h3 class="td-title">Outsource Assembly</h3>
-                {{rowData.list.statistics.assembly_outsource_production_count}}
-                </a>
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-                <a (click)="showStatisticsForChains(rowData.list.id, 'own', 'assembly')" class="count-link">
-              <h3 class="td-title">Own Production Assembly</h3>
-                {{rowData.list.statistics.assembly_own_production_count}}
-                </a>
-              </span>
-              </td>
-              <td class="text-center">
-              <span *ngIf="rowData.level === 4">
-                <a (click)="showStatisticsForChains(rowData.list.id, 'purchased', null)" class="count-link">
-                  <h3 class="td-title">Purchased</h3>
-                  {{rowData.list.statistics.purchased_ordered_count}}
-                </a>
-              </span>
+              <td class="text-center" style="width: 7%" colspan="3">
+                <ng-container *ngIf="rowData.level === 4">
+                  <h3 class="td-title">Elements</h3>
+                  {{rowData.list.statistics.not_processed_products_quantity}}
+                </ng-container>
               </td>
             </tr>
           </ng-template>
@@ -476,7 +389,16 @@
         label="Collapse All"
         (click)="expandCollapseAllOrders(false)"
       ></button>
-      {{selectedOrderNode?.data?.id}}
+      <button
+        class="mr-2"
+        pButton
+        type="button"
+        icon="pi pi-chart-bar"
+        label="Full Statistic"
+        (click)="onShowFullStatisticsNode()"
+        [disabled]="!selectedOrderNode"
+      >
+      </button>
       <a
         class="mr-2"
         [class.disabled]="!selectedOrderNode"
@@ -500,8 +422,18 @@
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.LIST">
-      <a
+      <button
         class="ml-auto mr-2"
+        pButton
+        type="button"
+        icon="pi pi-chart-bar"
+        label="Full Statistic"
+        (click)="onShowFullStatistics()"
+        [disabled]="!selectedList"
+      >
+      </button>
+      <a
+        class="mr-2"
         [class.disabled]="!selectedList"
         [routerLink]="[selectedList?.id]"
         target="_blank"
