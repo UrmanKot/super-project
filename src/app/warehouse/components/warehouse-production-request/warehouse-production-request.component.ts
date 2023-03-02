@@ -15,7 +15,7 @@ import {environment} from '@env/environment';
 import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
-import {take} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ScanResult} from '../../../qr-code/models/scan-result';
@@ -509,14 +509,44 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       if (res) {
         const call = [];
         const ids = request.ids ? request.ids : [];
-        const requestIds = [request, ...ids];
+        const requestIds = [requestId, ...ids];
         requestIds.forEach(id => {
-          call.push(this.requestsService.cancelRequest(requestId));
+          call.push(this.requestsService.cancelRequest(id).pipe(tap(response  => {
+          })));
         });
 
         forkJoin([
           ...call
-        ]).pipe(untilDestroyed(this)).subscribe(res => {
+        ]).pipe(untilDestroyed(this)).subscribe((result) => {
+          if (result) {
+            result.forEach((data, index) => {
+              if (data) {
+                let changeRequest = index === 0 ? request : request.requests.find(req => req.id === data.id);
+                changeRequest.required_quantity = data.required_quantity;
+                changeRequest.warehouse_quantity = data.warehouse_quantity;
+              }
+            });
+
+            if (request.is_reserved && request.requests
+              .every(req => req.is_reserved)) {
+              request.available_quantity_sum = request.requests.map(req => req.warehouse_quantity)
+                .reduce((sum, quantity) => sum + quantity, request.warehouse_quantity);
+            } else {
+              if (request.ids.length === 0) {
+                request.available_quantity_sum = request.warehouse_quantity;
+              } else {
+                if (!request.is_reserved) {
+                  request.available_quantity_sum = request.warehouse_quantity;
+                } else {
+                  request.available_quantity_sum = request.requests
+                    .find(req => !req.is_reserved).warehouse_quantity;
+                }
+              }
+            }
+            request.total_required_quantity = request.requests.reduce(
+              (accumulator, currentValue) => accumulator + currentValue.required_quantity, request.required_quantity
+            );
+          }
           this.selectedRequest = null;
         });
       }
