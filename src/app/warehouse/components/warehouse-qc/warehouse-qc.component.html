@@ -62,7 +62,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th style="width: 5%;" class="text-center">#</th>
-                  <th style="width: 25%" class="text-center">Date</th>
+                  <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
                   <th style="width: 10%" class="text-center">Invoice Number</th>
                   <th style="width: 15%" class="text-center">Supplier</th>
                   <th style="width: 10%" class="text-center">Order ID</th>
@@ -76,7 +76,7 @@
                     {{i + 1}}
                   </td>
                   <td style="width: 25%" class="text-center">
-                    {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                    {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date : invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
                   </td>
                   <td style="width: 10%" class="text-center">
                     {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
@@ -188,7 +188,7 @@
               </ng-template>
               <ng-template pTemplate="header">
                 <tr>
-                  <th style="width: 30%; padding-left: 19px">Date</th>
+                  <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
                   <th style="width: 10%" class="text-center">Invoice Number</th>
                   <th style="width: 15%" class="text-center">Supplier</th>
                   <th style="width: 10%" class="text-center">Order ID</th>
@@ -223,7 +223,8 @@
                         </p>
                       </ng-container>
                       <ng-container *ngIf="invoice.level === 4">
-                        <p>{{invoice.order.system_creation_date | date:'dd/MM/yyyy'}}</p>
+                        <p>{{(invoice.order?.order?.qc_wh_started_date ? invoice.order?.order?.qc_wh_started_date :
+                          invoice.order.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}</p>
                       </ng-container>
                     </div>
                   </td>
@@ -325,7 +326,7 @@
                 <tr>
                   <th style="width: 5%;" class="text-center">#</th>
                   <th style="width: 50%" class="text-center">
-                    Date
+                    QC-Wh Started Date
                   </th>
                   <th style="width: 10%" class="text-center">Order ID</th>
                   <th style="width: 15%;" class="text-center">Items Reception Date</th>
@@ -336,7 +337,7 @@
                 <tr [pSelectableRow]="order">
                   <td class="text-center">{{i + 1}}</td>
                   <td style="width: 50%" class="text-center">
-                    {{order?.created | date:'dd/MM/yyyy'}}
+                    {{(order?.qc_wh_started_date ? order?.qc_wh_started_date : order?.created) | date:'dd/MM/yyyy HH:mm'}}
                   </td>
                   <td style="width: 10%" class="text-center">
                     {{order.id}}
@@ -443,7 +444,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th style="width: 55%; padding-left: 19px">
-                    Date
+                    QC-Wh started Date
                   </th>
                   <th style="width: 10%" class="text-center">Order ID</th>
                   <th style="width: 15%;" class="text-center">Items Reception Date</th>
@@ -468,7 +469,7 @@
                       </i>
                     </span>
                       <span *ngIf="rowData.order">
-                      {{rowData.order?.created | date:'dd/MM/yyyy'}}
+                      {{(rowData.order?.qc_wh_started_date ? rowData.order?.qc_wh_started_date : rowData.order?.created) | date:'dd/MM/yyyy HH:mm'}}
                     </span>
                     </div>
                   </td>
@@ -485,7 +486,6 @@
                       {{rowData.order.items_reception_date | date: 'dd/MM/yyyy'}}
                     </ng-container>
                   </td>
-
                   <td style="width: 20%;">
                     <ng-container *ngIf="rowData.order && rowData.plan">
                       {{rowData.plan.list_product.nomenclature.code}}~{{rowData.plan.list_product.nomenclature.name}}
@@ -557,7 +557,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th style="width: 5%;" class="text-center">#</th>
-                  <th style="width: 25%" class="text-center">Date</th>
+                  <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
                   <th style="width: 10%" class="text-center">Invoice Number</th>
                   <th style="width: 15%" class="text-center">Supplier</th>
                   <th style="width: 10%" class="text-center">Order ID</th>
@@ -571,7 +571,8 @@
                     {{i + 1}}
                   </td>
                   <td style="width: 25%" class="text-center">
-                    {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                    {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
+                    invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
                   </td>
                   <td style="width: 10%" class="text-center">
                     {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
@@ -683,7 +684,7 @@
               </ng-template>
               <ng-template pTemplate="header">
                 <tr>
-                  <th style="width: 30%; padding-left: 19px">Date</th>
+                  <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
                   <th style="width: 10%" class="text-center">Invoice Number</th>
                   <th style="width: 15%" class="text-center">Supplier</th>
                   <th style="width: 10%" class="text-center">Order ID</th>
@@ -710,12 +711,13 @@
                       </ng-container>
                       <ng-container *ngIf="invoice.order">
                         <p class="category-name">
-                          {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
+                          {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
+                          invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
                         </p>
                       </ng-container>
-                      <span *ngIf="invoice.level === 4">
-                      {{invoice.invoice.system_creation_date | date:'dd/MM/yyyy'}}
-                    </span>
+<!--                      <span *ngIf="invoice.level === 4">-->
+<!--                      {{invoice.invoice.system_creation_date | date:'dd/MM/yyyy'}}-->
+<!--                    </span>-->
                     </div>
                   </td>
                   <td style="width: 10%" class="text-center">

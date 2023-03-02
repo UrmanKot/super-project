@@ -46,6 +46,10 @@ export class Order {
   is_hand_added?: boolean;
   accounting_type?: number;
   ordered_products_unique_technologies?: Technology[]
+  qc_wh_started_date?: Date;
+  qc_closed_date?: Date;
+  qc_started_date?: Date;
+  qc_wh_closed_date?: Date;
 }
 
 export class Orders {
