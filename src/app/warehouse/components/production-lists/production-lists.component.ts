@@ -640,7 +640,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     this.destroy$.complete();
   }
 
-  showStatisticsForChains(
+  onShowStatisticsForChains(
     id: number,
     accountType: ProductionListAccountingType,
     positionType: ProductionListPositionType = null
@@ -650,5 +650,13 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       positions_type: positionType,
     };
     this.listService.showStatisticsForChainsModal(id, send).subscribe();
+  }
+
+  onShowFullStatistics() {
+    this.listService.openFullStatisticsModal(this.selectedList).subscribe()
+  }
+
+  onShowFullStatisticsNode() {
+    this.listService.openFullStatisticsModal(this.selectedOrderNode.data.list).subscribe()
   }
 }

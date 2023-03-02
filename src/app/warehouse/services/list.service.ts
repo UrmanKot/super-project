@@ -18,6 +18,9 @@ import {
 import {
   ProductionListChainsStatisticsComponent
 } from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
+import {
+  ProductionListFullStatisticsComponent
+} from '../modals/production-list-full-statistics/production-list-full-statistics.component';
 
 @Injectable({
   providedIn: 'root'
@@ -155,6 +158,12 @@ export class ListService {
     );
   }
 
+  getFullStatistics(id: number) {
+    return this.httpClient.get<{ data: any }>(this.API_URL + this.url + `${id}/full_statistic/`).pipe(
+      map(response => response.data)
+    );
+  }
+
   showStatisticsForChainsModal(
     id: number,
     send: {
@@ -168,6 +177,19 @@ export class ListService {
         height: 'auto',
         panelClass: '',
         data: {id, send},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openFullStatisticsModal(list: List): Observable<boolean> {
+    return this.dialog
+      .open<ProductionListFullStatisticsComponent>(ProductionListFullStatisticsComponent, {
+        width: '90rem',
+        height: 'auto',
+        panelClass: '',
+        data: {list},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
