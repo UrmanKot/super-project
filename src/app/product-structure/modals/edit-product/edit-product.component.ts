@@ -98,7 +98,6 @@ export class EditProductComponent implements OnInit {
         }),
         deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,
       };
-
       if (this.product.parent && this.product.nomenclature.type !== ENomenclatureType.ASSEMBLY) {
         forkJoin({
           nomenclature: this.nomenclatureService.update(send),
@@ -114,13 +113,14 @@ export class EditProductComponent implements OnInit {
       } else {
         forkJoin({
           nomenclature: this.nomenclatureService.update(send),
+          product: this.productService.updatePartly(sendUpdateQuantity),
           technicalEquipment: this.product.nomenclature.type !== ENomenclatureType.PURCHASED ?
             this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(this.product.nomenclature.id, createUpdateTechnicalEquipments) :
             of(true),
         }).pipe(
           finalize(() => this.isSaving = false)
-        ).subscribe(({nomenclature, technicalEquipment}) => {
-          this.dialogRef.close({nomenclature, product: null});
+        ).subscribe(({nomenclature, product, technicalEquipment}) => {
+          this.dialogRef.close({nomenclature, product});
         });
       }
     }
