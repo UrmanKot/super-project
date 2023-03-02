@@ -331,6 +331,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       }
       this.listRequests.sort((a, b) => b.id - a.id);
       this.hierarchyRequests.sort((a, b) => b.id - a.id);
+
     });
   }
 
@@ -519,11 +520,17 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           ...call
         ]).pipe(untilDestroyed(this)).subscribe((result) => {
           if (result) {
+            let lastFreeValue = 0;
             result.forEach((data, index) => {
               if (data) {
                 let changeRequest = index === 0 ? request : request.requests.find(req => req.id === data.id);
                 changeRequest.required_quantity = data.required_quantity;
                 changeRequest.warehouse_quantity = data.warehouse_quantity;
+                if (!changeRequest.is_reserved) {
+                  if (data.warehouse_quantity > lastFreeValue) {
+                    lastFreeValue = data.warehouse_quantity;
+                  }
+                }
               }
             });
 
@@ -536,10 +543,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
                 request.available_quantity_sum = request.warehouse_quantity;
               } else {
                 if (!request.is_reserved) {
-                  request.available_quantity_sum = request.warehouse_quantity;
+                  request.available_quantity_sum = lastFreeValue;
                 } else {
-                  request.available_quantity_sum = request.requests
-                    .find(req => !req.is_reserved).warehouse_quantity;
+                  request.available_quantity_sum = lastFreeValue;
                 }
               }
             }
