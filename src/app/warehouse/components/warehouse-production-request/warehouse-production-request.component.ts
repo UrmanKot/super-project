@@ -227,13 +227,16 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     ).subscribe(requests => {
       this.isLoading = false;
       this.requests = requests;
-      this.listRequests = [...this.requests];
-      this.hierarchyRequests = [...this.requests];
+      this.listRequests = JSON.parse(JSON.stringify(this.requests));
+      this.hierarchyRequests = JSON.parse(JSON.stringify(this.requests));
       this.listRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(request => {
         request.requests = this.listRequests
+          .filter(req => !req.material_nomenclature)
+          .filter(req => req.reserved_serial_products.length === 0)
           .filter(req => {
-          return this.getSameRequests(req, request) && req.id !== request.id;
-        });
+            return this.getSameRequests(req, request) && req.id !== request.id;
+          });
+
         request.ids = request.requests.map(req => req.id);
 
         request.all_reserved_serial_products = [];
@@ -274,21 +277,48 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         });
       });
 
-      this.hierarchyRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(HierRequest => {
-        HierRequest.requests = this.hierarchyRequests
+      this.hierarchyRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(hierRequest => {
+        hierRequest.requests = this.hierarchyRequests
+          .filter(req => !req.material_nomenclature)
+          .filter(req => req.for_order_product?.nomenclature.id === hierRequest.for_order_product?.nomenclature.id)
+          .filter(req => req.reserved_serial_products.length === 0)
           .filter(req => {
-          return this.getSameRequests(req, HierRequest) && req.id !== HierRequest.id &&
-            (req.for_order_product?.nomenclature.id === HierRequest.for_order_product?.nomenclature.id ||
-              req.list_product?.nomenclature.id === HierRequest.list_product?.nomenclature.id);
+            return this.getSameRequests(req, hierRequest) && req.id !== hierRequest.id &&
+              (req.for_order_product?.nomenclature.id === hierRequest.for_order_product?.nomenclature.id ||
+                req.list_product?.nomenclature.id === hierRequest.list_product?.nomenclature.id);
+          });
+
+        hierRequest.ids = hierRequest.requests.map(req => req.id);
+        if (hierRequest.is_reserved && hierRequest.requests
+          .every(req => req.is_reserved)) {
+          hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.warehouse_quantity)
+            .reduce((sum, quantity) => sum + quantity, hierRequest.warehouse_quantity);
+        } else {
+          if (hierRequest.ids.length === 0) {
+            hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+          } else {
+            if (!hierRequest.is_reserved) {
+              hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+            } else {
+              hierRequest.available_quantity_sum = hierRequest.requests
+                .find(req => !req.is_reserved).warehouse_quantity;
+            }
+          }
+        }
+
+        hierRequest.unique_locators = [...hierRequest.locators];
+        hierRequest.requests.forEach(req => {
+          hierRequest.unique_locators.push(...req.locators);
         });
 
-        HierRequest.ids = HierRequest.requests.map(req => req.id);
+        hierRequest.unique_locators = hierRequest.unique_locators.filter((locator, index, self) =>
+          self.findIndex(innerLocator => innerLocator.id === locator.id) === index);
 
-        HierRequest.total_required_quantity = HierRequest.requests.reduce(
-          (accumulator, currentValue) => accumulator + currentValue.required_quantity, HierRequest.required_quantity
+        hierRequest.total_required_quantity = hierRequest.requests.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.required_quantity, hierRequest.required_quantity
         );
 
-        HierRequest.ids.forEach(id => {
+        hierRequest.ids.forEach(id => {
           const index = this.hierarchyRequests.findIndex(req => req.id === id);
           this.hierarchyRequests.splice(index, 1);
         });
@@ -299,6 +329,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         this.rootList = this.listRequests[0].root_production_list_products[0];
         this.currentReqDate = this.listRequests[0].created;
       }
+      this.listRequests.sort((a, b) => b.id - a.id);
+      this.hierarchyRequests.sort((a, b) => b.id - a.id);
     });
   }
 
@@ -308,18 +340,14 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     let codeNameSecond = this.getCodeAndNameId(request);
     return (codeName.code === codeNameSecond.code
       && codeName.name === codeNameSecond.name
-      && (!req.reserved_serial_products || req.reserved_serial_products?.length === 0));
+      && (!req.reserved_serial_products || req.reserved_serial_products?.length === 0 || !req.material_nomenclature));
   }
 
   getCodeAndNameId(request: GroupedRequest): { name: string, code: string, id: number } {
     let codeSecond = '';
     let nameSecond = '';
     let id;
-    if (request.material_nomenclature) {
-      codeSecond = request.material_nomenclature.code;
-      nameSecond = request.material_nomenclature.name;
-      id = request.material_nomenclature.id;
-    } else if (request.order_product_nomenclature) {
+    if (request.order_product_nomenclature) {
       codeSecond = request.order_product_nomenclature.code;
       nameSecond = request.order_product_nomenclature.name;
       id = request.order_product_nomenclature.id;

@@ -232,6 +232,7 @@
             <tr class="pagebreak" [pSelectableRow]="request"
                 [class.last-scanned]="request.id === lastScannedId"
                 [class.partly-scanned]="isPartlyScanned(request)"
+                [class.is-added-after-order-creation]="request.material_nomenclature"
                 [class.qr-code-scanned]="isFullyScanned(request)">
               <td style="width: 5%;" class="text-center">
                 <div class="row-toggler">
@@ -426,6 +427,7 @@
             [id]="rowData.request ? 'row-' + rowData.request?.id : null"
             [class.partly-scanned]="rowData.request ? isPartlyScanned(rowData.request) : false"
             [class.qr-code-scanned]="rowData.request ? isFullyScanned(rowData.request) : false"
+            [class.is-added-after-order-creation]="rowData.request?.material_nomenclature"
             [class.tr-toggler]="rowNode.node.children.length > 0"
           >
             <td style="width: 16%;" class="text-center ids-container">
