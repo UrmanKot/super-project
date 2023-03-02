@@ -123,11 +123,21 @@ export class RegionsComponent implements OnInit, OnDestroy {
       this.mapExpansion();
     }
     const tree = [];
+    let expanded = false;
+    if (this.expanseMapCountry) {
+      expanded = this.expanseMapCountry[9_000_000];
+    }
     tree.push({
-      data: {country: {name: 'Not Country'}},
+      data: {country: {name: 'Not Country', id: 9_000_000}},
+      expanded: expanded,
       children: this.regions.filter(r => !r.country).map(region => {
+        let expanded = false;
+        if (this.expanseMapRegion) {
+          expanded = this.expanseMapRegion[region.id];
+        }
         return {
           data: {region: region},
+          expanded: expanded,
           children: [],
         };
       })
@@ -143,7 +153,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
         expanded: expanded,
         children: this.regions.filter(r => r.country).filter(r => (r.country as Country).id === country.id).map(region => {
           let expanded = false;
-          if (this.expanseMapCountry) {
+          if (this.expanseMapRegion) {
             expanded = this.expanseMapRegion[region.id];
           }
           return {
