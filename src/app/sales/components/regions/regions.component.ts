@@ -24,6 +24,9 @@ export class RegionsComponent implements OnInit, OnDestroy {
   regions: Region[] = [];
   countries: Country[] = [];
   subRegions: SubRegion[] = [];
+  expanseMapCountry = {};
+  expanseMapRegion = {};
+  expanseMapSubRegion = {};
 
   private destroy$ = new Subject();
 
@@ -110,13 +113,17 @@ export class RegionsComponent implements OnInit, OnDestroy {
       this.regions = regions;
       this.countries = countries;
       this.subRegions = subRegion;
-      this.tree = [];
+
       this.createTree();
     });
   }
 
   createTree() {
-    this.tree.push({
+    if (this.tree) {
+      this.mapExpansion();
+    }
+    const tree = [];
+    tree.push({
       data: {country: {name: 'Not Country'}},
       children: this.regions.filter(r => !r.country).map(region => {
         return {
@@ -127,40 +134,80 @@ export class RegionsComponent implements OnInit, OnDestroy {
     });
 
     this.countries.forEach(country => {
-      this.tree.push({
+      let expanded = false;
+      if (this.expanseMapCountry) {
+        expanded = this.expanseMapCountry[country.id];
+      }
+      tree.push({
         data: {country: country},
+        expanded: expanded,
         children: this.regions.filter(r => r.country).filter(r => (r.country as Country).id === country.id).map(region => {
+          let expanded = false;
+          if (this.expanseMapCountry) {
+            expanded = this.expanseMapRegion[region.id];
+          }
           return {
             data: {region: region},
+            expanded: expanded,
             children: [],
           };
         })
       });
     });
-    this.tree.forEach(node => {
+    tree.forEach(node => {
       node.children.forEach(child => {
         const regionSubRegions = this.subRegions.filter(el => el.region === child.data.region.id);
 
         if (regionSubRegions.length > 0) {
           child.children.push(
             ...regionSubRegions.map(subRegion => {
+              let expanded = false;
+              if (this.expanseMapCountry) {
+                expanded = this.expanseMapSubRegion[subRegion.id];
+              }
               return {
                 data: {subRegion: subRegion, countryRegionId: child.data.region.country.id},
                 children: [],
+                expanded: expanded,
                 parent: child
               };
             })
           );
-          console.log('CHILD.children', child.children);
-          console.log('CHILD', child);
         }
-
-
-        // if (child.data.region.id === this.subRegions
       });
     });
-    // console.log('this.tree', this.tree);
-    this.tree = this.tree.map(n => n);
+    this.tree = tree.map(n => n);
+  }
+
+  mapExpansion() {
+    this.tree.forEach(element => {
+      this.createExpanseMap(element);
+    });
+  }
+
+  createExpanseMap(node) {
+    if (node.expanded) {
+      if (node.data.country) {
+        this.expanseMapCountry[node.data.country.id] = node.expanded;
+      } else if (node.data.region) {
+        this.expanseMapRegion[node.data.region.id] = node.expanded;
+      } else if (node.data.subRegion) {
+        this.expanseMapSubRegion[node.data.subRegion.id] = node.expanded;
+      }
+    } else {
+      if (node.data.country) {
+        this.expanseMapCountry[node.data.country.id] = false;
+      } else if (node.data.region) {
+        this.expanseMapRegion[node.data.region.id] = false;
+      } else if (node.data.subRegion) {
+        this.expanseMapSubRegion[node.data.subRegion.id] = false;
+      }
+    }
+    if (node.children) {
+      node.children.forEach(element => {
+        this.createExpanseMap(element);
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -242,10 +289,6 @@ export class RegionsComponent implements OnInit, OnDestroy {
         this.loadInfo();
       }
     });
-  }
-
-  updateInfo(type: 'country' | 'region' | 'subRegion') {
-    console.log('TREE', this.tree);
   }
 
   private deleteSubRegion() {
