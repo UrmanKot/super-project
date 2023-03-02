@@ -232,7 +232,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.listRequests.sort((a, b) => this.getCodeAndNameId(a).id - this.getCodeAndNameId(b).id).forEach(request => {
         request.requests = this.listRequests
           .filter(req => !req.material_nomenclature)
-          .filter(req => req.reserved_serial_products.length === 0)
+          .filter(req => !req.reserved_serial_products || req.reserved_serial_products.length === 0)
           .filter(req => {
             return this.getSameRequests(req, request) && req.id !== request.id;
           });
@@ -281,7 +281,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         hierRequest.requests = this.hierarchyRequests
           .filter(req => !req.material_nomenclature)
           .filter(req => req.for_order_product?.nomenclature.id === hierRequest.for_order_product?.nomenclature.id)
-          .filter(req => req.reserved_serial_products.length === 0)
+          .filter(req => !req.reserved_serial_products || req.reserved_serial_products.length === 0)
           .filter(req => {
             return this.getSameRequests(req, hierRequest) && req.id !== hierRequest.id &&
               (req.for_order_product?.nomenclature.id === hierRequest.for_order_product?.nomenclature.id ||

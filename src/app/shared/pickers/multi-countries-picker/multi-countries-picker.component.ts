@@ -1,7 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Technology} from '../../../product-structure/models/technology';
-import {Subject, takeUntil} from 'rxjs';
-import {TechnologyService} from '../../../product-structure/services/technology.service';
 import {Country} from '@shared/models/country';
 import {CountryService} from '@shared/services/country.service';
 
@@ -12,6 +9,7 @@ import {CountryService} from '@shared/services/country.service';
 })
 export class MultiCountriesPickerComponent implements OnInit {
   @Input() currentCountriesIds: number[] = [];
+  @Input() showClear: boolean = true;
   @Output() selectCountries: EventEmitter<Country[]> = new EventEmitter<Country[]>();
 
   isLoading = true;
