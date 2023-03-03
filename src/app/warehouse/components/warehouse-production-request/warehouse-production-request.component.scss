@@ -217,12 +217,6 @@ a {
 
   &:hover {
     .ids {
-      &.is-fixed {
-        position: fixed;
-        transform: translate(100%, -1.5rem);
-        top: unset;
-        left: unset;
-      }
       &.is-absolute {
         position: absolute;
         top: 0;
@@ -245,6 +239,13 @@ a {
       z-index: 100;
       right: -86%;
 
+      &.is-fixed {
+        position: fixed;
+        transform: translate(80%, -1.5rem);
+        top: unset;
+        left: unset;
+        right: unset;
+      }
       &.hierarchy {
         right: unset;
         left: 10.25rem;
