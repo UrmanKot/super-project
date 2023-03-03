@@ -15,6 +15,7 @@ export class List {
   list?: any;
   root_production_plans?: any[];
   unique_root_production_plans?: any[];
+  full_statistics?: any;
 }
 
 export class Lists {

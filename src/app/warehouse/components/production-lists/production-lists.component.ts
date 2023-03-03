@@ -653,10 +653,6 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   onShowFullStatistics() {
-    this.listService.openFullStatisticsModal(this.selectedList).subscribe()
-  }
-
-  onShowFullStatisticsNode() {
-    this.listService.openFullStatisticsModal(this.selectedOrderNode.data.list).subscribe()
+    this.listService.openFullStatisticsModal(this.lists).subscribe()
   }
 }

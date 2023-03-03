@@ -158,8 +158,8 @@ export class ListService {
     );
   }
 
-  getFullStatistics(id: number) {
-    return this.httpClient.get<{ data: any }>(this.API_URL + this.url + `${id}/full_statistic/`).pipe(
+  getFullStatistics(ids: string): Observable<any[]> {
+    return this.httpClient.get<{ data: any[] }>(this.API_URL + this.url + `full_statistic/?ids=${ids}`).pipe(
       map(response => response.data)
     );
   }
@@ -183,13 +183,13 @@ export class ListService {
       .afterClosed();
   }
 
-  openFullStatisticsModal(list: List): Observable<boolean> {
+  openFullStatisticsModal(lists: List[]): Observable<boolean> {
     return this.dialog
       .open<ProductionListFullStatisticsComponent>(ProductionListFullStatisticsComponent, {
-        width: '90rem',
+        width: '85vw',
         height: 'auto',
         panelClass: '',
-        data: {list},
+        data: {lists},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

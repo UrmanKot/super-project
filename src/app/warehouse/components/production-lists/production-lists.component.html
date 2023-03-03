@@ -395,8 +395,8 @@
         type="button"
         icon="pi pi-chart-bar"
         label="Full Statistic"
-        (click)="onShowFullStatisticsNode()"
-        [disabled]="!selectedOrderNode"
+        (click)="onShowFullStatistics()"
+        [disabled]="isLoading"
       >
       </button>
       <a
@@ -429,7 +429,7 @@
         icon="pi pi-chart-bar"
         label="Full Statistic"
         (click)="onShowFullStatistics()"
-        [disabled]="!selectedList"
+        [disabled]="isLoading"
       >
       </button>
       <a

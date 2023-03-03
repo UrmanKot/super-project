@@ -34,8 +34,50 @@ table {
 }
 
 .spinner {
-  height: 592px;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.bord-right {
+  th, td {
+    border-right: 1px solid #dee2e6 !important;
+  }
+}
+
+.bord {
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #dee2e6;
+  }
+}
+
+.td-bord {
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #dee2e6;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+p-table {
+  &::ng-deep {
+    th {
+      padding: 0.5rem 1.625rem !important;
+    }
+  }
 }

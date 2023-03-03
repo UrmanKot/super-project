@@ -1,247 +1,196 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    Production List ({{data.list.nomenclature.code}} {{data.list.nomenclature.name}}) Full Statistic
+    <!--    Production List ({{data.list.nomenclature.code}} {{data.list.nomenclature.name}}) Full Statistic-->
+
+    Full Statistics for Production Lists
   </h2>
 </div>
 
-<mat-dialog-content>
-  <ng-container *ngIf="!isLoading; else spinner">
-    <div class="row">
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Total</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.total_products_count}}</td>
-            <td>{{statistic.total_products_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Not Processed</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.not_processed_products_count}}</td>
-            <td>{{statistic.not_processed_products_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+<mat-dialog-content [class.disabled]="isLoading">
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Total Assemblies</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.total_assembly_count}}</td>
-            <td>{{statistic.total_assembly_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+  <p-table
+    *ngIf="!isLoading; else spinner"
+    [value]="lists"
+    selectionMode="single"
+    [scrollable]="true"
+    [paginator]="lists.length > 10"
+    [rows]="10"
+  >
+    <ng-template pTemplate="header">
+      <tr class="bord-right">
+        <th
+          style="min-width: 50px; border-right: none !important;"
+          class="text-center bord-none"
+          rowspan="3"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          #
+        </th>
+        <th
+          class="bord-none"
+          rowspan="3"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          style="min-width: 200px; border-right: none !important;"
+        >
+          Code
+        </th>
+        <th
+          style="min-width: 200px; border-right: none !important;"
+          rowspan="3"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="bord"
+        >
+          Name
+        </th>
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Deficit Assemblies</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.not_ordered_assembly_count}}</td>
-            <td>{{statistic.not_ordered_assembly_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+        <th colspan="2" class="text-center">Total</th>
+        <th colspan="2" class="text-center">Not Processed</th>
 
-      <div class="col-6">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="4">Total Items\Parts</th>
-          </tr>
-          <tr>
-            <th colspan="2">Purchased</th>
-            <th colspan="2">Manufactured</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.total_purchased_count}}</td>
-            <td>{{statistic.total_purchased_quantity}}</td>
-            <td>{{statistic.total_manufactured_count}}</td>
-            <td>{{statistic.total_manufactured_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-6">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="4">Deficit Items\Parts</th>
-          </tr>
-          <tr>
-            <th colspan="2">Purchased</th>
-            <th colspan="2">Manufactured</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.not_ordered_purchased_count}}</td>
-            <td>{{statistic.not_ordered_purchased_quantity}}</td>
-            <td>{{statistic.not_ordered_manufactured_count}}</td>
-            <td>{{statistic.not_ordered_manufactured_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+        <th colspan="4" class="text-center">Total Items\Parts</th>
+        <th colspan="4" class="text-center">Deficit Items\Parts</th>
+        <th colspan="2" class="text-center">Outsoursing Items\Parts</th>
+        <th colspan="2" class="text-center">Own Production Items\Parts</th>
+        <th colspan="2" class="text-center">Procurement Items\Parts</th>
+        <th colspan="2" class="text-center">Total Assemblies</th>
+        <th colspan="2" class="text-center">Deficit assemblies</th>
+        <th colspan="2" class="text-center">Outsourse assemblies</th>
+        <th colspan="2" class="text-center" style="border-right: none !important;">Own Production Assemblies</th>
+      </tr>
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Outsoursing Items/Parts</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.not_assembly_outsource_production_count}}</td>
-            <td>{{statistic.not_assembly_outsource_production_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+      <!--      <tr>-->
+      <!--      </tr>-->
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Own Production/Parts</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.not_assembly_own_production_count}}</td>
-            <td>{{statistic.not_assembly_own_production_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+      <tr class="bord-right">
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th colspan="2" class="text-center">Purchased</th>
+        <th colspan="2" class="text-center">Manufactured</th>
+        <th colspan="2" class="text-center">Purchased</th>
+        <th colspan="2" class="text-center">Manufactured</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2">Elements</th>
+        <th class="text-center" rowspan="2">Nomenclature</th>
+        <th class="text-center" rowspan="2" style="border-right: none !important;">Elements</th>
+      </tr>
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Procurement Items\Parts</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.ordered_purchased_count}}</td>
-            <td>{{statistic.ordered_purchased_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+      <tr class="bord-right">
+        <th class="text-center">Nomenclature</th>
+        <th class="text-center">Elements</th>
+        <th class="text-center">Nomenclature</th>
+        <th class="text-center">Elements</th>
+        <th class="text-center">Nomenclature</th>
+        <th class="text-center">Elements</th>
+        <th class="text-center">Nomenclature</th>
+        <th class="text-center">Elements</th>
+      </tr>
+    </ng-template>
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Outsourse Assemblies</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.outsource_assembly_count}}</td>
-            <td>{{statistic.outsource_assembly_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+    <ng-template pTemplate="body" let-list let-i="rowIndex">
+      <tr>
+        <td
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+          class="text-center"
+          style="min-width: 50px"
+        >
+          {{i + 1}}
+        </td>
+        <td
+          style="min-width: 200px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          {{list.nomenclature.code}}
+        </td>
+        <td
+          class="td-bord"
+          style="min-width: 200px"
+          pFrozenColumn
+          alignFrozen="left"
+          [frozen]="true"
+        >
+          {{list.nomenclature.name}}
+        </td>
 
-      <div class="col-3">
-        <table>
-          <thead>
-          <tr>
-            <th colspan="2">Own Production Assemblies</th>
-          </tr>
-          <tr>
-            <th>Nomenclature</th>
-            <th>Elements</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>{{statistic.own_production_assembly_count}}</td>
-            <td>{{statistic.own_production_assembly_quantity}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </ng-container>
+        <td class="text-center">
+          {{list.full_statistics.total_products_count}}
+        </td>
+        <td class="text-center">
+          {{list.full_statistics.total_products_quantity}}
+        </td>
+        <td class="text-center">
+          {{list.full_statistics.not_processed_products_count}}
+        </td>
+        <td class="text-center">
+          {{list.full_statistics.not_processed_products_quantity}}
+        </td>
+
+        <td class="text-center">{{list.full_statistics.total_purchased_count}}</td>
+        <td class="text-center">{{list.full_statistics.total_purchased_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.total_manufactured_count}}</td>
+        <td class="text-center">{{list.full_statistics.total_manufactured_quantity}}</td>
+
+        <td class="text-center">{{list.full_statistics.not_ordered_purchased_count}}</td>
+        <td class="text-center">{{list.full_statistics.not_ordered_purchased_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.not_ordered_manufactured_count}}</td>
+        <td class="text-center">{{list.full_statistics.not_ordered_manufactured_quantity}}</td>
+        <td class="text-center">
+          <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'not assembly')">
+            {{list.full_statistics.not_assembly_outsource_production_count}}
+          </a>
+        </td>
+        <td class="text-center">{{list.full_statistics.not_assembly_outsource_production_quantity}}</td>
+        <td class="text-center">
+          <a (click)="onShowStatisticsForChains(list.id, 'own', 'not assembly')">
+            {{list.full_statistics.not_assembly_own_production_count}}
+          </a>
+        </td>
+        <td class="text-center">{{list.full_statistics.not_assembly_own_production_quantity}}</td>
+        <td class="text-center">
+          <a (click)="onShowStatisticsForChains(list.id, 'purchased')">
+            {{list.full_statistics.ordered_purchased_count}}
+          </a>
+        </td>
+        <td class="text-center">{{list.full_statistics.ordered_purchased_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.total_assembly_count}}</td>
+        <td class="text-center">{{list.full_statistics.total_assembly_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.not_ordered_assembly_count}}</td>
+        <td class="text-center">{{list.full_statistics.not_ordered_assembly_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.outsource_assembly_count}}</td>
+        <td class="text-center">{{list.full_statistics.outsource_assembly_quantity}}</td>
+        <td class="text-center">{{list.full_statistics.own_production_assembly_count}}</td>
+        <td class="text-center">{{list.full_statistics.own_production_assembly_quantity}}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4">
+          <span>No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
 </mat-dialog-content>
 
