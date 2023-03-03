@@ -9,6 +9,7 @@ export class Request {
   is_scanned?: boolean;
   root_production_list_products?: any;
   required_quantity?: number;
+  initial_quantity?: number;
   created?: Date;
   reserved_serial_products: any[];
   parent_production_list_products: any[];

@@ -92,6 +92,8 @@ import { OrderStatusesChartComponent } from './components/order-statuses-chart/o
 import { SearchPipe } from './pipes/search.pipe';
 import { AlbumComponent } from './modals/album/album.component';
 import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/multi-countries-picker.component';
+import { CrmMultiRegionPickerComponent } from './pickers/crm-multi-region-picker/crm-multi-region-picker.component';
+import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tree-picker/crm-multi-region-tree-picker.component';
 
 
 @NgModule({
@@ -163,6 +165,8 @@ import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/
     SearchPipe,
     AlbumComponent,
     MultiCountriesPickerComponent,
+    CrmMultiRegionPickerComponent,
+    CrmMultiRegionTreePickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -235,6 +239,8 @@ import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/
     OrderStatusesTableComponent,
     SearchPipe,
     MultiCountriesPickerComponent,
+    CrmMultiRegionPickerComponent,
+    CrmMultiRegionTreePickerComponent,
   ],
   imports: [
     MultiSelectModule,

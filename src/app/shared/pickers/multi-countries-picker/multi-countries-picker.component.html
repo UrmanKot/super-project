@@ -1,6 +1,6 @@
 <div class="multi-countries-picker">
   <p-multiSelect
-    [showClear]="true"
+    [showClear]="showClear"
     *ngIf="!isLoading; else spinner"
     [options]="countries"
     [(ngModel)]="selectedCountries"

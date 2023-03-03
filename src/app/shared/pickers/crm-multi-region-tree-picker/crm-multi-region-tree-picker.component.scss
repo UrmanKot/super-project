@@ -1,0 +1,38 @@
+.multi-categories-picker {
+  &::ng-deep {
+    .p-treenode-children {
+      margin-top: 0.1875rem !important;
+    }
+
+    .p-treenode-content {
+      button.p-ripple.p-element.p-tree-toggler.p-link {
+        display: none;
+      }
+      div.p-checkbox.p-component.p-checkbox-disabled {
+        display: none;
+      }
+    }
+
+    .region {
+      >.p-treenode-content:first-child {
+        font-weight: 500;
+        font-size: 14px;
+        &.p-highlight {
+          background-color: unset !important;
+          color: unset !important;
+        }
+      }
+    }
+
+    .country {
+      >.p-treenode-content:first-child {
+        font-weight: 700;
+        font-size: 14px;
+        &.p-highlight {
+          background-color: unset !important;
+          color: unset !important;
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {AdapterService} from '@shared/services/adapter.service';
 import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
+import {Region} from '@shared/models/region';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -313,9 +314,9 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     page: [1],
     id: [null],
     company_category_ids: [null],
-    country_id: [null],
-    region_id: [null],
-    sub_region_id: [null],
+    countries: [null],
+    regions: [null],
+    sub_regions: [null],
     categories_ids: [null],
     chain_status_ids: [null],
     employees_ids: [null],
@@ -594,19 +595,19 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       value: this.searchForm.get('company_category_ids').value
     });
 
-    if (this.searchForm.get('country_id').value !== null) this.query.push({
-      name: 'country',
-      value: this.searchForm.get('country_id').value
+    if (this.searchForm.get('countries').value !== null) this.query.push({
+      name: 'countries',
+      value: this.searchForm.get('countries').value.map(country => country.id)
     });
 
-    if (this.searchForm.get('region_id').value !== null) this.query.push({
-      name: 'region',
-      value: this.searchForm.get('region_id').value
+    if (this.searchForm.get('regions').value !== null) this.query.push({
+      name: 'regions',
+      value: this.searchForm.get('regions').value.map(region => region.id)
     });
 
-    if (this.searchForm.get('sub_region_id').value !== null) this.query.push({
-      name: 'sub_region',
-      value: this.searchForm.get('sub_region_id').value
+    if (this.searchForm.get('sub_regions').value !== null) this.query.push({
+      name: 'sub_regions',
+      value: this.searchForm.get('sub_regions').value.map(region => region.id)
     });
     if (this.isShowAll) {
       this.searchForm.get('page').patchValue(1);
@@ -894,24 +895,24 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.search();
   }
 
-  onSelectCountry(country: Country) {
-    if (country) {
-      this.searchForm.get('country_id').setValue(country.id);
+  onSelectCountry(countries: Country[]) {
+    if (countries) {
+      this.searchForm.get('countries').setValue(countries);
     } else {
-      this.searchForm.get('country_id').setValue(null);
+      this.searchForm.get('countries').setValue(null);
     }
-    this.searchForm.get('sub_region_id').setValue(null);
-    this.searchForm.get('region_id').setValue(null);
+    this.searchForm.get('sub_regions').setValue(null);
+    this.searchForm.get('regions').setValue(null);
     this.search();
   }
 
-  onSelectRegion(region: number) {
-    if (region) {
-      this.searchForm.get('region_id').setValue(region);
+  onSelectRegion(regions: Region[]) {
+    if (regions) {
+      this.searchForm.get('regions').setValue(regions);
     } else {
-      this.searchForm.get('region_id').setValue(null);
+      this.searchForm.get('regions').setValue(null);
     }
-    this.searchForm.get('sub_region_id').setValue(null);
+    this.searchForm.get('sub_regions').setValue(null);
 
     this.search();
   }
@@ -943,11 +944,11 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  regionSubSelected(subRegion: Partial<SubRegion>) {
+  regionSubSelected(subRegion: SubRegion[]) {
     if (subRegion) {
-      this.searchForm.get('sub_region_id').setValue(subRegion.id);
+      this.searchForm.get('sub_regions').setValue(subRegion);
     } else {
-      this.searchForm.get('sub_region_id').setValue(null);
+      this.searchForm.get('sub_regions').setValue(null);
     }
 
     this.search();
