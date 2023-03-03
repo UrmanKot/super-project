@@ -33,6 +33,7 @@ table {
   margin: -1rem;
 }
 
+
 .spinner {
   height: 200px;
   display: flex;
@@ -76,6 +77,12 @@ table {
 
 p-table {
   &::ng-deep {
+
+    td {
+      a {
+        padding: 0.25rem 0.5rem;
+      }
+    }
     th {
       padding: 0.5rem 1.625rem !important;
     }

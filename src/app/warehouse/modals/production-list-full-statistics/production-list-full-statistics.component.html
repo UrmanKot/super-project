@@ -176,9 +176,17 @@
         <td class="text-center">{{list.full_statistics.total_assembly_quantity}}</td>
         <td class="text-center">{{list.full_statistics.not_ordered_assembly_count}}</td>
         <td class="text-center">{{list.full_statistics.not_ordered_assembly_quantity}}</td>
-        <td class="text-center">{{list.full_statistics.outsource_assembly_count}}</td>
+        <td class="text-center">
+          <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'assembly')">
+            {{list.full_statistics.outsource_assembly_count}}
+          </a>
+        </td>
         <td class="text-center">{{list.full_statistics.outsource_assembly_quantity}}</td>
-        <td class="text-center">{{list.full_statistics.own_production_assembly_count}}</td>
+        <td class="text-center">
+          <a (click)="onShowStatisticsForChains(list.id, 'own', 'assembly')">
+            {{list.full_statistics.own_production_assembly_count}}
+          </a>
+        </td>
         <td class="text-center">{{list.full_statistics.own_production_assembly_quantity}}</td>
       </tr>
     </ng-template>
