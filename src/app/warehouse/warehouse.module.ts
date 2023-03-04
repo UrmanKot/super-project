@@ -59,7 +59,6 @@ import { WarehouseShippingRequestsComponent } from './components/warehouse-shipp
 import { WarehouseShippingRequestComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
 import { WarehouseShippingRequestPrintComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request-print/warehouse-shipping-request-print.component';
 import { ProductionListChainsStatisticsComponent } from './modals/production-list-chains-statistics/production-list-chains-statistics.component';
-import { ProductionListFullStatisticsComponent } from './modals/production-list-full-statistics/production-list-full-statistics.component';
 
 
 
@@ -108,7 +107,6 @@ import { ProductionListFullStatisticsComponent } from './modals/production-list-
     WarehouseShippingRequestComponent,
     WarehouseShippingRequestPrintComponent,
     ProductionListChainsStatisticsComponent,
-    ProductionListFullStatisticsComponent,
   ],
   exports: [
     WarehouseCategoriesComponent

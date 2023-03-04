@@ -99,3 +99,102 @@ form {
     top: 0;
   }
 }
+
+.full-statistics {
+  .frozen-col-1 {
+    left: 0 !important;
+    position: sticky;
+  }
+
+  .frozen-col-2 {
+    left: 50px !important;
+    position: sticky;
+  }
+
+  .frozen-col-3 {
+    left: 250px !important;
+    position: sticky;
+  }
+
+  .frozen {
+    background: #fff;
+  }
+
+  .bord {
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: #dee2e6;
+    }
+  }
+
+  .td-bord {
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: #dee2e6;
+    }
+  }
+
+  .disabled {
+    pointer-events: none;
+  }
+
+  //.pagination-preloader-full {
+  //  padding-top: 4rem;
+  //}
+
+  p-table {
+    th {
+      font-weight: 500;
+      vertical-align: middle;
+      padding: 0.5rem 0.625rem;
+      border-bottom: 1px solid #dee2e6;
+      background: #f8f9fa;
+
+      border-right: 1px solid #dee2e6;
+
+      &:last-child {
+        border-right: 0;
+      }
+    }
+
+    &::ng-deep {
+      .p-datatable-thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr {
+        td {
+          transition: background 0.1s, color 0.1s;
+        }
+      }
+
+      .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+        td {
+          background: #e9ecef !important;
+        }
+      }
+
+      td {
+        a {
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      th {
+        padding: 0.5rem 1.625rem !important;
+      }
+    }
+  }
+}

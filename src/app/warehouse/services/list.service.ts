@@ -18,9 +18,6 @@ import {
 import {
   ProductionListChainsStatisticsComponent
 } from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
-import {
-  ProductionListFullStatisticsComponent
-} from '../modals/production-list-full-statistics/production-list-full-statistics.component';
 
 @Injectable({
   providedIn: 'root'
@@ -177,19 +174,6 @@ export class ListService {
         height: 'auto',
         panelClass: '',
         data: {id, send},
-        autoFocus: false,
-        enterAnimationDuration: '250ms'
-      })
-      .afterClosed();
-  }
-
-  openFullStatisticsModal(lists: List[]): Observable<boolean> {
-    return this.dialog
-      .open<ProductionListFullStatisticsComponent>(ProductionListFullStatisticsComponent, {
-        width: '85vw',
-        height: 'auto',
-        panelClass: '',
-        data: {lists},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
