@@ -480,10 +480,10 @@
                 <td class="text-center">{{list.full_statistics.total_manufactured_count}}</td>
                 <td class="text-center">{{list.full_statistics.total_manufactured_quantity}}</td>
 
-                <td class="text-center">{{list.full_statistics.not_ordered_purchased_count}}</td>
-                <td class="text-center">{{list.full_statistics.not_ordered_purchased_quantity}}</td>
-                <td class="text-center">{{list.full_statistics.not_ordered_manufactured_count}}</td>
-                <td class="text-center">{{list.full_statistics.not_ordered_manufactured_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_purchased_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_purchased_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_manufactured_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_manufactured_quantity}}</td>
                 <td class="text-center">
                   <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'not assembly')">
                     {{list.full_statistics.not_assembly_outsource_production_count}}
@@ -504,8 +504,8 @@
                 <td class="text-center">{{list.full_statistics.ordered_purchased_quantity}}</td>
                 <td class="text-center">{{list.full_statistics.total_assembly_count}}</td>
                 <td class="text-center">{{list.full_statistics.total_assembly_quantity}}</td>
-                <td class="text-center">{{list.full_statistics.not_ordered_assembly_count}}</td>
-                <td class="text-center">{{list.full_statistics.not_ordered_assembly_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_assembly_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_assembly_quantity}}</td>
                 <td class="text-center">
                   <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'assembly')">
                     {{list.full_statistics.outsource_assembly_count}}
@@ -694,22 +694,22 @@
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_purchased_count}}
+                    {{rowData.list.full_statistics.deficit_purchased_count}}
                 </span>
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_purchased_quantity}}
+                    {{rowData.list.full_statistics.deficit_purchased_quantity}}
                 </span>
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_manufactured_count}}
+                    {{rowData.list.full_statistics.deficit_manufactured_count}}
                 </span>
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_manufactured_quantity}}
+                    {{rowData.list.full_statistics.deficit_manufactured_quantity}}
                 </span>
               </td>
               <td class="text-center">
@@ -760,12 +760,12 @@
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_assembly_count}}
+                    {{rowData.list.full_statistics.deficit_assembly_count}}
                 </span>
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_ordered_assembly_quantity}}
+                    {{rowData.list.full_statistics.deficit_assembly_quantity}}
                 </span>
               </td>
               <td class="text-center">
