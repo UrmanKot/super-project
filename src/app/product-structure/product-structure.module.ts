@@ -36,6 +36,7 @@ import { EditTechnicalEquipmentComponent } from './components/create-edit-produc
 import { NomenclatureFilesComponent } from './components/create-edit-product-form/components/nomenclature-files/nomenclature-files.component';
 import {CompareStructureComponent} from './modals/compare-structure/compare-structure.component';
 import { SerialConfirmationComponent } from './modals/serial-confirmation/serial-confirmation.component';
+import {CreateEditSerialTypeComponent} from './modals/create-edit-serial-type/create-edit-serial-type.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { SerialConfirmationComponent } from './modals/serial-confirmation/serial
     NomenclatureFilesComponent,
     CompareStructureComponent,
     SerialConfirmationComponent,
+    CreateEditSerialTypeComponent,
   ],
   exports: [
     CreateEditProductFormComponent

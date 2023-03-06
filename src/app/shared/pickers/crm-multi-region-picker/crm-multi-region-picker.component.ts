@@ -79,15 +79,20 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
       });
     };
 
-    const tree: TreeNode<any>[] = this.countrySelected.map(country => {
-      return {
-        label: country.name,
-        data: <Country>country,
-        expanded: true,
-        styleClass: 'country',
-        selectable: false,
-        children: [],
-      };
+    const tree: TreeNode<any>[] = [];
+
+    this.countrySelected.forEach(country => {
+      const hasChildren = this.regions.filter(c => c.country.id === country.id).length > 0;
+      if (hasChildren) {
+        tree.push({
+          label: country.name,
+          data: <Country>country,
+          expanded: true,
+          styleClass: 'country',
+          selectable: false,
+          children: [],
+        });
+      }
     });
 
     getChildren(tree);

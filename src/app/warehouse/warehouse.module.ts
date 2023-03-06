@@ -10,7 +10,7 @@ import { WarehouseWarehousesComponent } from './components/warehouse-warehouses/
 import {TreeModule} from 'primeng/tree';
 import { WarehouseLocatorsComponent } from './components/warehouse-locators/warehouse-locators.component';
 import {WarehouseUnitsMeasureComponent} from './components/warehouse-units-measure/warehouse-units-measure.component';
-import { WarehouseSerialTypesComponent } from './components/warehouse-serial-types/warehouse-serial-types.component';
+import { WarehouseSerialTypesComponent } from '../product-structure/components/warehouse-serial-types/warehouse-serial-types.component';
 import { WarehouseCategoriesComponent } from './components/warehouse-categories/warehouse-categories.component';
 import { WarehouseWhereUsedComponent } from './components/warehouse-where-used/warehouse-where-used.component';
 import { PhysicalInventoryComponent } from './components/physical-inventory/physical-inventory.component';
@@ -26,7 +26,6 @@ import { CreateEditWarehouseComponent } from './modals/create-edit-warehouse/cre
 import { CreateEditLocatorComponent } from './modals/create-edit-locator/create-edit-locator.component';
 import { CreateEditWarehouseCategoryComponent } from './modals/create-edit-warehouse-category/create-edit-warehouse-category.component';
 import {CreateEditUnitMeasureComponent} from './modals/create-edit-unit-measure/create-edit-unit-measure.component';
-import { CreateEditSerialTypeComponent } from './modals/create-edit-serial-type/create-edit-serial-type.component';
 import { CreateEditWarehouseProductComponent } from './modals/create-edit-warehouse-item/create-edit-warehouse-product.component';
 import {ProductStructureModule} from '../product-structure/product-structure.module';
 import { MoveWarehouseProductComponent } from './modals/move-warehouse-product/move-warehouse-product.component';
@@ -88,7 +87,6 @@ import { ProductionListChainsStatisticsComponent } from './modals/production-lis
     CreateEditLocatorComponent,
     CreateEditWarehouseCategoryComponent,
     CreateEditUnitMeasureComponent,
-    CreateEditSerialTypeComponent,
     CreateEditWarehouseProductComponent,
     MoveWarehouseProductComponent,
     ProductionListsComponent,

@@ -256,6 +256,18 @@ body {
   }
 }
 
+.white-tool-tip {
+  .p-tooltip-text {
+    box-shadow: 0 0 7px 1px rgb(0 0 0 / 15%);
+    background: white;
+    color: var(--text-color);
+  }
+
+  .p-tooltip-arrow {
+    border-right-color: white !important;
+  }
+}
+
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/form';
 @import 'app/shared/styles/table';

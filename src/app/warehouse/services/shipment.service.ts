@@ -3,7 +3,7 @@ import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {QuerySearch} from '@shared/models/other';
 import {Observable} from 'rxjs';
-import {SerialType} from '../models/serial-type';
+import {SerialType} from '../../product-structure/models/serial-type';
 import {map} from 'rxjs/operators';
 import {Shipment} from '../models/shipment';
 import {ShipmentProduct} from '../models/shipment-product';

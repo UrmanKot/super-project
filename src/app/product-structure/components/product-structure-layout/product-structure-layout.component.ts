@@ -16,6 +16,7 @@ export class ProductStructureLayoutComponent implements OnInit {
   settingRoutes: NavigationLink[] = [
     {label: 'Technologies', commands: ['technologies']},
     {label: 'Prefixes', commands: ['prefixes']},
+    {label: 'Serial Number Types', commands: ['serial-types']},
   ]
 
   constructor() { }

@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
 import {ToolOrder, ToolOrderPaginated} from '../models/tool-order';
 import {map} from 'rxjs/operators';
-import {SerialType} from '../models/serial-type';
+import {SerialType} from '../../product-structure/models/serial-type';
 
 @Injectable({
   providedIn: 'root'

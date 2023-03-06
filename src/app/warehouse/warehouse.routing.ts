@@ -5,7 +5,6 @@ import {WarehouseLayoutComponent} from './components/warehouse-layout/warehouse-
 import {WarehouseWarehousesComponent} from './components/warehouse-warehouses/warehouse-warehouses.component';
 import {WarehouseLocatorsComponent} from './components/warehouse-locators/warehouse-locators.component';
 import {WarehouseUnitsMeasureComponent} from './components/warehouse-units-measure/warehouse-units-measure.component';
-import {WarehouseSerialTypesComponent} from './components/warehouse-serial-types/warehouse-serial-types.component';
 
 
 import {WarehouseCategoriesComponent} from './components/warehouse-categories/warehouse-categories.component';
@@ -57,7 +56,6 @@ const routes: Routes = [
         ]
       },
       {path: 'measure', title: 'Units of Measure', component: WarehouseUnitsMeasureComponent},
-      {path: 'serial-types', title: 'Serial Number Types', component: WarehouseSerialTypesComponent},
       {path: 'categories', title: 'Warehouse Categories', component: WarehouseCategoriesComponent},
       {path: 'where-used', title: 'Where Used', component: WarehouseWhereUsedComponent},
       {
