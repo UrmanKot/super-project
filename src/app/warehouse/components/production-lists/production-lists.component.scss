@@ -136,6 +136,11 @@ form {
     position: sticky;
   }
 
+  .frozen-col-4 {
+    left: 450px !important;
+    position: sticky;
+  }
+
   .frozen {
     background: #fff;
   }
@@ -254,7 +259,11 @@ form {
   .tree-frozen-col-2 {
     position: sticky;
     left: 300px;
+  }
 
+  .tree-frozen-col-3 {
+    position: sticky;
+    left: 550px;
     &::after {
       content: '';
       position: absolute;

@@ -375,9 +375,20 @@
                   pFrozenColumn
                   alignFrozen="left"
                   [frozen]="true"
-                  class="bord frozen-col-3"
+                  class="frozen-col-3"
                 >
                   Name
+                </th>
+
+                <th
+                  style="min-width: 150px; border-right: none !important;"
+                  rowspan="3"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                  class="bord frozen-col-4 text-cente"
+                >
+                  Date of Creation
                 </th>
 
                 <th colspan="2" class="text-center">Total</th>
@@ -453,13 +464,23 @@
                   {{list.nomenclature.code}}
                 </td>
                 <td
-                  class="td-bord frozen frozen-col-3"
+                  class="frozen frozen-col-3"
                   style="min-width: 200px"
                   pFrozenColumn
                   alignFrozen="left"
                   [frozen]="true"
                 >
                   {{list.nomenclature.name}}
+                </td>
+
+                <td
+                  class="td-bord frozen frozen-col-4 text-center"
+                  style="min-width: 200px"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                >
+                  data
                 </td>
 
                 <td class="text-center">
@@ -575,12 +596,14 @@
               <col style="width:150px">
               <col style="width:150px">
               <col style="width:150px">
+              <col style="width:150px">
             </colgroup>
           </ng-template>
           <ng-template pTemplate="header">
             <tr>
               <th rowspan="3" style="padding-left: 1.625rem; border-right: none !important" class="tree-frozen-col-1">Code</th>
               <th rowspan="3" class="tree-frozen-col-2" style="border-right: none !important">Name</th>
+              <th rowspan="3" class="tree-frozen-col-3" style="border-right: none !important">Date Of Creation</th>
 
               <th colspan="2" class="text-center">Total</th>
               <th colspan="2" class="text-center">Not Processed</th>
@@ -650,6 +673,11 @@
               <td class="tree-frozen-col-2 tree-td">
                 <span *ngIf="rowData.level === 4">
                     {{rowData.list.nomenclature.name}}
+                </span>
+              </td>
+              <td class="tree-frozen-col-3 tree-td">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.created | date:'dd/MM/yyyy HH:mm'}}
                 </span>
               </td>
               <td class="text-center">
