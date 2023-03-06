@@ -377,6 +377,20 @@
                       <div class="col-md-7">
                         <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
                         <h4>Description: <i>{{ report.comment }}</i></h4>
+                        <h4>
+                          Country:
+                          <span *ngIf="report.country">{{report.country.name}}</span>
+                        </h4>
+
+                        <h4>
+                          Region:
+                          <span *ngIf="report.region">{{report.region.name}}</span>
+                        </h4>
+
+                        <h4>
+                          Sub Region:
+                          <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
+                        </h4>
                         <h4>Connected Companies</h4>
                         <p *ngFor="let linked_company of report.linked_companies">
                           <i>{{ linked_company.name }}</i>
@@ -637,6 +651,20 @@
                     <div class="col-md-7">
                       <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
                       <h4>Description: <i>{{ report.comment }}</i></h4>
+                      <h4>
+                        Country:
+                        <span *ngIf="report.country">{{report.country.name}}</span>
+                      </h4>
+
+                      <h4>
+                        Region:
+                        <span *ngIf="report.region">{{report.region.name}}</span>
+                      </h4>
+
+                      <h4>
+                        Sub Region:
+                        <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
+                      </h4>
                       <h4>Connected Companies</h4>
                       <p *ngFor="let linked_company of report.linked_companies">
                         <i>{{ linked_company.name }}</i>

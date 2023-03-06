@@ -1165,7 +1165,7 @@ export class EditBusinessTripComponent implements OnInit, OnDestroy {
 
 
   getBtForExport() {
-    this.businessService.getBtForExport([{name: 'business_trips_ids', value: [this.tripId]}]).subscribe(res => {
+    this.businessService.getBtForExport([{name: 'ids', value: [this.tripId]}]).subscribe(res => {
       if (res) {
         this.businessService.exportToExcel(res[0]).then();
       }

@@ -169,7 +169,7 @@ export class BusinessTripsComponent implements OnInit {
 
   exportToXls() {
     const tripIds = this.selectedBusinessTrips.map(trip => trip.id);
-    this.businessTripService.getBtForExport([{name: 'business_trips_ids', value: tripIds}]).subscribe(res => {
+    this.businessTripService.getBtForExport([{name: 'ids', value: tripIds}]).subscribe(res => {
       res.forEach(trip => {
           this.businessTripService.exportToExcel(trip).then();
       });
