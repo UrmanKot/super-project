@@ -19,7 +19,7 @@
     </div>
     <div class="page__tools">
       <button
-        class="ml-auto mr-2"
+        class="mr-2"
         pButton
         type="button"
         icon="pi pi-table"
@@ -119,8 +119,8 @@
         </div>
       </form>
     </div>
-    <ng-container *ngIf="viewMode === viewModeType.LIST">
-      <div class="table-pagination-preloader">
+    <ng-container *ngIf="viewMode === viewModeType.LIST && !isShowFullStatistics">
+      <div class="table-pagination-preloader table-list">
         <p-table
           class="table"
           #dt
@@ -210,7 +210,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="12">
+              <td class="text-center p-4" [attr.colspan]="16">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
               </td>
@@ -223,7 +223,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="viewMode === viewModeType.HIERARCHY">
+    <ng-container *ngIf="viewMode === viewModeType.HIERARCHY && !isShowFullStatistics">
       <div class="table-pagination-preloader">
         <p-treeTable
           [value]="orderTree"
@@ -324,7 +324,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="15">
+              <td class="text-center p-4" [attr.colspan]="17">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
               </td>
@@ -336,10 +336,482 @@
         </div>
       </div>
     </ng-container>
+
+
+    <ng-container *ngIf="viewMode === viewModeType.LIST && this.isShowFullStatistics">
+      <div class="table-pagination-preloader full-statistics">
+        <div class="table-pagination-preloader">
+          <p-table
+            [value]="fullStatisticList"
+            selectionMode="single"
+            [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
+            [rows]="10"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th
+                  style="min-width: 50px; max-width: 50px; border-right: none !important;"
+                  class="text-center bord-none frozen-col-1"
+                  rowspan="3"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                >
+                  #
+                </th>
+                <th
+                  class="bord-none frozen-col-2"
+                  rowspan="3"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                  style="min-width: 200px; border-right: none !important;"
+                >
+                  Code
+                </th>
+                <th
+                  style="min-width: 200px; border-right: none !important;"
+                  rowspan="3"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                  class="bord frozen-col-3"
+                >
+                  Name
+                </th>
+
+                <th colspan="2" class="text-center">Total</th>
+                <th colspan="2" class="text-center">Not Processed</th>
+
+                <th colspan="4" class="text-center">Total Items\Parts</th>
+                <th colspan="4" class="text-center">Deficit Items\Parts</th>
+                <th colspan="2" class="text-center">Outsoursing Items\Parts</th>
+                <th colspan="2" class="text-center">Own Production Items\Parts</th>
+                <th colspan="2" class="text-center">Procurement Items\Parts</th>
+                <th colspan="2" class="text-center">Total Assemblies</th>
+                <th colspan="2" class="text-center">Deficit assemblies</th>
+                <th colspan="2" class="text-center">Outsourse assemblies</th>
+                <th colspan="2" class="text-center" style="border-right: none !important;">Own Production Assemblies
+                </th>
+              </tr>
+
+              <tr>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th colspan="2" class="text-center">Purchased</th>
+                <th colspan="2" class="text-center">Manufactured</th>
+                <th colspan="2" class="text-center">Purchased</th>
+                <th colspan="2" class="text-center">Manufactured</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2" style="border-right: none !important;">Elements</th>
+              </tr>
+
+              <tr>
+                <th class="text-center">Nomenclature</th>
+                <th class="text-center">Elements</th>
+                <th class="text-center">Nomenclature</th>
+                <th class="text-center">Elements</th>
+                <th class="text-center">Nomenclature</th>
+                <th class="text-center">Elements</th>
+                <th class="text-center">Nomenclature</th>
+                <th class="text-center" style="border-right: 1px solid #dee2e6">Elements</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-list let-i="rowIndex">
+              <tr>
+                <td
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                  class="text-center frozen frozen-col-1"
+                  style="min-width: 50px"
+                >
+                  {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
+                </td>
+                <td
+                  class="frozen frozen-col-2"
+                  style="min-width: 200px"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                >
+                  {{list.nomenclature.code}}
+                </td>
+                <td
+                  class="td-bord frozen frozen-col-3"
+                  style="min-width: 200px"
+                  pFrozenColumn
+                  alignFrozen="left"
+                  [frozen]="true"
+                >
+                  {{list.nomenclature.name}}
+                </td>
+
+                <td class="text-center">
+                  {{list.full_statistics.total_products_count}}
+                </td>
+                <td class="text-center">
+                  {{list.full_statistics.total_products_quantity}}
+                </td>
+                <td class="text-center">
+                  {{list.full_statistics.not_processed_products_count}}
+                </td>
+                <td class="text-center">
+                  {{list.full_statistics.not_processed_products_quantity}}
+                </td>
+
+                <td class="text-center">{{list.full_statistics.total_purchased_count}}</td>
+                <td class="text-center">{{list.full_statistics.total_purchased_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.total_manufactured_count}}</td>
+                <td class="text-center">{{list.full_statistics.total_manufactured_quantity}}</td>
+
+                <td class="text-center">{{list.full_statistics.deficit_purchased_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_purchased_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_manufactured_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_manufactured_quantity}}</td>
+                <td class="text-center">
+                  <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'not assembly')">
+                    {{list.full_statistics.not_assembly_outsource_production_count}}
+                  </a>
+                </td>
+                <td class="text-center">{{list.full_statistics.not_assembly_outsource_production_quantity}}</td>
+                <td class="text-center">
+                  <a (click)="onShowStatisticsForChains(list.id, 'own', 'not assembly')">
+                    {{list.full_statistics.not_assembly_own_production_count}}
+                  </a>
+                </td>
+                <td class="text-center">{{list.full_statistics.not_assembly_own_production_quantity}}</td>
+                <td class="text-center">
+                  <a (click)="onShowStatisticsForChains(list.id, 'purchased')">
+                    {{list.full_statistics.ordered_purchased_count}}
+                  </a>
+                </td>
+                <td class="text-center">{{list.full_statistics.ordered_purchased_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.total_assembly_count}}</td>
+                <td class="text-center">{{list.full_statistics.total_assembly_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_assembly_count}}</td>
+                <td class="text-center">{{list.full_statistics.deficit_assembly_quantity}}</td>
+                <td class="text-center">
+                  <a (click)="onShowStatisticsForChains(list.id, 'outsource', 'assembly')">
+                    {{list.full_statistics.outsource_assembly_count}}
+                  </a>
+                </td>
+                <td class="text-center">{{list.full_statistics.outsource_assembly_quantity}}</td>
+                <td class="text-center">
+                  <a (click)="onShowStatisticsForChains(list.id, 'own', 'assembly')">
+                    {{list.full_statistics.own_production_assembly_count}}
+                  </a>
+                </td>
+                <td class="text-center">{{list.full_statistics.own_production_assembly_quantity}}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="32">
+                  <span>No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div class="pagination-preloader pagination-preloader_bord pagination-preloader-full"
+               *ngIf="isLoadingFullStatistic">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModeType.HIERARCHY && isShowFullStatistics">
+      <div class="table-pagination-preloader tree-table-statistics">
+        <p-treeTable
+          [value]="fullOrderTree"
+          selectionMode="single"
+          [scrollHeight]="'calc(88vh - ' + tableScrollHeight + ')'"
+          [scrollable]="true"
+        >
+          <ng-template pTemplate="colgroup" let-columns>
+            <colgroup>
+              <col style="width:300px">
+              <col style="width:250px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+              <col style="width:150px">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th rowspan="3" style="padding-left: 1.625rem; border-right: none !important" class="tree-frozen-col-1">Code</th>
+              <th rowspan="3" class="tree-frozen-col-2" style="border-right: none !important">Name</th>
+
+              <th colspan="2" class="text-center">Total</th>
+              <th colspan="2" class="text-center">Not Processed</th>
+
+              <th colspan="4" class="text-center">Total Items\Parts</th>
+              <th colspan="4" class="text-center">Deficit Items\Parts</th>
+              <th colspan="2" class="text-center">Outsoursing Items\Parts</th>
+              <th colspan="2" class="text-center">Own Production Items\Parts</th>
+              <th colspan="2" class="text-center">Procurement Items\Parts</th>
+              <th colspan="2" class="text-center">Total Assemblies</th>
+              <th colspan="2" class="text-center">Deficit assemblies</th>
+              <th colspan="2" class="text-center">Outsourse assemblies</th>
+              <th colspan="2" class="text-center" style="border-right: none !important;">Own Production Assemblies
+              </th>
+            </tr>
+
+            <tr>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th colspan="2" class="text-center">Purchased</th>
+              <th colspan="2" class="text-center">Manufactured</th>
+              <th colspan="2" class="text-center">Purchased</th>
+              <th colspan="2" class="text-center">Manufactured</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2">Elements</th>
+              <th class="text-center" rowspan="2">Nomenclature</th>
+              <th class="text-center" rowspan="2" style="border-right: none !important;">Elements</th>
+            </tr>
+
+            <tr>
+              <th class="text-center">Nomenclature</th>
+              <th class="text-center">Elements</th>
+              <th class="text-center">Nomenclature</th>
+              <th class="text-center">Elements</th>
+              <th class="text-center">Nomenclature</th>
+              <th class="text-center">Elements</th>
+              <th class="text-center">Nomenclature</th>
+              <th class="text-center">Elements</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+            >
+              <td class="tree-frozen-col-1 tree-td">
+                  <div class="toggle-row word-break">
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <span [class.bold]="rowData.level < 4">
+                      {{rowData.name}}
+                  </span>
+                    <span *ngIf="rowData.level === 4">
+                    ({{rowData.list.id}}) {{rowData.list.nomenclature.code}}
+                  </span>
+                  </div>
+              </td>
+              <td class="tree-frozen-col-2 tree-td">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.nomenclature.name}}
+                </span>
+              </td>
+              <td class="text-center">
+                  <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_products_count}}
+                  </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_products_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.not_processed_products_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.not_processed_products_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_purchased_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_purchased_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_manufactured_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_manufactured_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_purchased_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_purchased_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_manufactured_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_manufactured_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                  <a (click)="onShowStatisticsForChains(rowData.list.id, 'outsource', 'not assembly')">
+                    {{rowData.list.full_statistics.not_assembly_outsource_production_count}}
+                  </a>
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.not_assembly_outsource_production_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    <a (click)="onShowStatisticsForChains(rowData.list.id, 'own', 'not assembly')">
+                    {{rowData.list.full_statistics.not_assembly_own_production_count}}
+                  </a>
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.not_assembly_own_production_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    <a (click)="onShowStatisticsForChains(rowData.list.id, 'purchased')">
+                    {{rowData.list.full_statistics.ordered_purchased_count}}
+                  </a>
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.ordered_purchased_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_assembly_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.total_assembly_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_assembly_count}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.deficit_assembly_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    <a (click)="onShowStatisticsForChains(rowData.list.id, 'outsource', 'assembly')">
+                    {{rowData.list.full_statistics.outsource_assembly_count}}
+                  </a>
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.outsource_assembly_quantity}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    <a (click)="onShowStatisticsForChains(rowData.list.id, 'own', 'assembly')">
+                    {{rowData.list.full_statistics.own_production_assembly_count}}
+                  </a>
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="rowData.level === 4">
+                    {{rowData.list.full_statistics.own_production_assembly_quantity}}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="32">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+        <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoadingFullStatistic">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+        </div>
+      </div>
+    </ng-container>
+
     <div
       class="paginator-wrapper"
       *ngIf="!isShowAll"
-      [class.hide]="lists.length === 0"
+      [class.hide]="lists.length === 0 || (isShowFullStatistics && isLoadingFullStatistic)"
     >
       <p-paginator
         #paginator
@@ -394,9 +866,9 @@
         pButton
         type="button"
         icon="pi pi-chart-bar"
-        label="Full Statistic"
-        (click)="onShowFullStatisticsNode()"
-        [disabled]="!selectedOrderNode"
+        [label]="(isShowFullStatistics ? 'Hide ' : 'Show') + ' Full Statistic'"
+        (click)="onShowFullStatistics()"
+        [disabled]="isLoading || isLoadingFullStatistic"
       >
       </button>
       <a
@@ -427,9 +899,9 @@
         pButton
         type="button"
         icon="pi pi-chart-bar"
-        label="Full Statistic"
+        [label]="(isShowFullStatistics ? 'Hide ' : 'Show') + ' Full Statistic'"
         (click)="onShowFullStatistics()"
-        [disabled]="!selectedList"
+        [disabled]="isLoading || isLoadingFullStatistic"
       >
       </button>
       <a

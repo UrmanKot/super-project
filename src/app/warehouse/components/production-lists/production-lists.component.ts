@@ -14,7 +14,7 @@ import {ProductStructureCategoryService} from '../../../product-structure/servic
 
 export enum ViewMode {
   LIST = 0,
-  HIERARCHY = 1
+  HIERARCHY = 1,
 }
 
 export type ProductionListAccountingType = 'purchased' | 'own' | 'outsource';
@@ -33,6 +33,9 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   expanseMap = {};
 
   categories: TreeNode[];
+
+  isLoadingFullStatistic = false;
+  isShowFullStatistics = false;
 
   isShowAll = false;
   isStartOnePage = false;
@@ -59,10 +62,13 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   selectedOrderNode: TreeNode<List>;
   productionCategorizedList: TreeNode<List>[];
 
+  fullOrderTree: TreeNode<List>[] = [];
+
   orderTree: TreeNode[] = [];
   selectedList: List;
   lists: List[] = [];
   count = 0;
+  fullStatisticList: List[] = [];
 
   query: QuerySearch[] = [
     {name: 'paginated', value: true},
@@ -204,6 +210,10 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       this.makeUniqueProductionPlansList();
       this.prepareTreeCategories();
       this.fillCategorizedTree();
+
+      if (this.isShowFullStatistics) {
+        this.getFullStatistics();
+      }
 
       this.isLoading = false;
     });
@@ -380,6 +390,12 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       this.expandCollapseRecursive(node, isToExpand);
     });
     this.orderTree = temp;
+
+    const tempFull = cloneDeep(this.fullOrderTree);
+    tempFull.forEach(node => {
+      this.expandCollapseRecursive(node, isToExpand);
+    });
+    this.fullOrderTree = tempFull;
   }
 
   expandCollapseRecursive(node: TreeNode, isExpand: boolean): void {
@@ -407,6 +423,11 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
       this.makeUniqueProductionPlansList();
       this.prepareTreeCategories();
       this.fillCategorizedTree();
+
+      if (this.isShowFullStatistics) {
+        this.getFullStatistics();
+      }
+
       this.isLoading = false;
     });
   }
@@ -488,9 +509,14 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
 
   searchLists() {
     this.isLoading = true;
+    if (this.isShowFullStatistics) {
+      this.isLoadingFullStatistic = true;
+    }
     this.destroy$.next(true);
     this.selectedList = null;
     this.selectedOrderNode = null;
+    this.fullStatisticList = [];
+    this.fullOrderTree = [];
 
     const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/responsible_employee_id:${this.searchForm.get('responsible_employee_id').value}/date_created_after:${this.searchForm.get('date_created_after').value}/date_created_before:${this.searchForm.get('date_created_before').value}/category_ids:${this.searchForm.get('category_ids').value}/root_categories:${this.searchForm.get('root_categories').value}`;
 
@@ -653,10 +679,49 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   onShowFullStatistics() {
-    this.listService.openFullStatisticsModal(this.selectedList).subscribe()
+    if (!this.isShowFullStatistics) {
+      this.isShowFullStatistics = true;
+      this.isLoadingFullStatistic = true;
+
+      if (this.lists.length === 0) {
+        this.isLoadingFullStatistic = false;
+        return;
+      }
+
+      this.listService.getFullStatistics(this.lists.map(l => l.id).join(',')).pipe(
+        tap(statistics => this.generateStatistic(statistics)),
+        tap(() => this.isLoadingFullStatistic = false),
+        takeUntil(this.destroy$)
+      ).subscribe();
+    } else {
+      this.isShowFullStatistics = false;
+      this.isLoadingFullStatistic = false;
+    }
   }
 
-  onShowFullStatisticsNode() {
-    this.listService.openFullStatisticsModal(this.selectedOrderNode.data.list).subscribe()
+  getFullStatistics() {
+    this.isLoadingFullStatistic = true;
+    this.listService.getFullStatistics(this.lists.map(l => l.id).join(',')).pipe(
+      tap(statistics => this.generateStatistic(statistics)),
+      tap(() => this.isLoadingFullStatistic = false),
+      takeUntil(this.destroy$)
+    ).subscribe();
+  }
+
+  generateStatistic(statistics: any[]) {
+    this.fullStatisticList = [...this.lists];
+    this.fullStatisticList.forEach(l => l.full_statistics = statistics.find(s => s.id === l.id));
+    this.fullOrderTree = [...this.orderTree];
+
+    this.fullOrderTree.forEach(n => {
+      n.children.forEach(n => {
+        n.children.forEach(n => {
+          n.children.forEach(n => {
+            n.data.list.full_statistics = statistics.find(s => s.id === n.data.list.id);
+            console.log(n);
+          });
+        });
+      });
+    });
   }
 }
