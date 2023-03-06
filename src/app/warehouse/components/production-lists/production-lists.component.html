@@ -348,6 +348,7 @@
             selectionMode="single"
             [scrollHeight]="'calc(100vh - ' + tableScrollHeight + ')'"
             [rows]="10"
+            [(selection)]="selectedList"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -388,7 +389,7 @@
                   pFrozenColumn
                   alignFrozen="left"
                   [frozen]="true"
-                  class="bord frozen-col-4 text-cente"
+                  class="bord frozen-col-4 text-center"
                 >
                   Date of Creation
                 </th>
@@ -446,7 +447,7 @@
             </ng-template>
 
             <ng-template pTemplate="body" let-list let-i="rowIndex">
-              <tr>
+              <tr [pSelectableRow]="list">
                 <td
                   pFrozenColumn
                   alignFrozen="left"
@@ -482,7 +483,7 @@
                   alignFrozen="left"
                   [frozen]="true"
                 >
-                  data
+                  {{list.created | date:'dd/MM/yyyy HH:mm'}}
                 </td>
 
                 <td class="text-center">
@@ -567,6 +568,7 @@
           selectionMode="single"
           [scrollHeight]="'calc(88vh - ' + tableScrollHeight + ')'"
           [scrollable]="true"
+          [(selection)]="selectedOrderNode"
         >
           <ng-template pTemplate="colgroup" let-columns>
             <colgroup>
@@ -660,6 +662,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
             <tr
+              [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+              [ttSelectableRowDisabled]="rowData.level < 4"
+              *ngIf="!rowData.hideFromTable"
             >
               <td class="tree-frozen-col-1 tree-td">
                   <div class="toggle-row word-break">
