@@ -45,19 +45,21 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.recreateTree.pipe(debounceTime(200)).subscribe(() => {
-        this.loadRegions();
+      this.loadRegions();
     });
   }
 
   loadRegions() {
-    const regionIds = this.regionsSelected.map(country => country.id);
+    const regionIds = this.regionsSelected ? this.regionsSelected.map(country => country.id) : [];
     this.subRegionService.get([{name: 'region_ids', value: regionIds}]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(regions => {
       this.selectedSubRegions = [];
       this.subRegions = regions;
 
-      this.createTree();
+      if (this.regionsSelected && this.regionsSelected.length > 0) {
+        this.createTree();
+      }
       this.isLoading = false;
     });
   }
@@ -78,28 +80,31 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
 
       const regions = this.regionsSelected.filter(c => c.country.id === country.id);
       regions.forEach(region => {
-        const regionNode = {
-          label: region.name,
-          data: <Region>region,
-          expanded: true,
-          styleClass: 'region',
-          selectable: false,
-          children: [],
-        };
-        countryNode.children.push(regionNode);
-
-        const regions = this.subRegions.filter(c => c.region === region.id);
-        regions.forEach(subRegion => {
-          const subRegionNode = {
-            label: subRegion.name,
-            data: <SubRegion>subRegion,
+        const hasChildren = this.subRegions.filter(c => c.region === region.id).length > 0;
+        if (hasChildren) {
+          const regionNode = {
+            label: region.name,
+            data: <Region>region,
             expanded: true,
-            styleClass: 'subRegion',
+            styleClass: 'region',
+            selectable: false,
             children: [],
           };
-          this.selectedSubRegions.push(subRegionNode)
-          regionNode.children.push(subRegionNode);
-        });
+          countryNode.children.push(regionNode);
+
+          const regions = this.subRegions.filter(c => c.region === region.id);
+          regions.forEach(subRegion => {
+            const subRegionNode = {
+              label: subRegion.name,
+              data: <SubRegion>subRegion,
+              expanded: true,
+              styleClass: 'subRegion',
+              children: [],
+            };
+            this.selectedSubRegions.push(subRegionNode)
+            regionNode.children.push(subRegionNode);
+          });
+        }
       });
 
     });

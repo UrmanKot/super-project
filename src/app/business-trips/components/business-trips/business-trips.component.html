@@ -18,11 +18,19 @@
 
 <div class="page__content">
   <div class="page__card">
-    <div class="filters-visibility">
+    <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
       <div class="filters-visibility__header">
         <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
       </div>
+      <button
+        class="icon pi"
 
+        [class.pi-angle-double-up]="!isHideFilters"
+        [class.pi-angle-double-down]="isHideFilters"
+        (click)="toggleFilterVisibility()"
+        [pTooltip]="isHideFilters ? 'Expand Filters' : 'Collapse Filters'"
+        tooltipPosition="left"
+      ></button>
       <form
         [formGroup]="searchForm"
         class="form mb-3"

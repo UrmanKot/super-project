@@ -28,6 +28,8 @@
         class="icon pi"
         [class.pi-angle-double-up]="!isHideFilters"
         [class.pi-angle-double-down]="isHideFilters"
+        [pTooltip]="isHideFilters ? 'Expand Filters' : 'Collapse Filters'"
+        tooltipPosition="left"
       ></button>
 
       <form

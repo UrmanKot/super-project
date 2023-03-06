@@ -18,6 +18,8 @@
         [class.pi-angle-double-up]="!isHideFilters"
         [class.pi-angle-double-down]="isHideFilters"
         (click)="toggleFilterVisibility()"
+        [pTooltip]="isHideFilters ? 'Expand Filters' : 'Collapse Filters'"
+        tooltipPosition="left"
       ></button>
       <form [formGroup]="searchForm" class="pb-2">
         <div class="row mt-4">
@@ -40,35 +42,62 @@
               <pek-multi-sales-status-picker (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-2">
             <div class="event-row-filters">
               <div class="form-group mr-3">
                 <label>Employees</label>
                 <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
               </div>
-              <div class="form-group mr-3">
-                <label>Hide Status Events</label>
-                <p-checkbox
-                  class="checkbox-big"
-                  name="group1"
-                  [binary]="true"
-                  inputId="auto-events"
-                  (onChange)="search()"
-                  formControlName="autoEvents"
-                >
-                </p-checkbox>
-              </div>
-              <div class="form-group">
-                <label>Group Linked Events</label>
-                <p-checkbox
-                  class="checkbox-big"
-                  name="group2"
-                  [binary]="true"
-                  inputId="group-linked-events"
-                  formControlName="groupView"
-                >
-                </p-checkbox>
-              </div>
+<!--              <div class="form-group mr-3">-->
+<!--                <label>Hide Status Events</label>-->
+<!--                <p-checkbox-->
+<!--                  class="checkbox-big"-->
+<!--                  name="group1"-->
+<!--                  [binary]="true"-->
+<!--                  inputId="auto-events"-->
+<!--                  (onChange)="search()"-->
+<!--                  formControlName="autoEvents"-->
+<!--                >-->
+<!--                </p-checkbox>-->
+<!--              </div>-->
+<!--              <div class="form-group">-->
+<!--                <label>Group Linked Events</label>-->
+<!--                <p-checkbox-->
+<!--                  class="checkbox-big"-->
+<!--                  name="group2"-->
+<!--                  [binary]="true"-->
+<!--                  inputId="group-linked-events"-->
+<!--                  formControlName="groupView"-->
+<!--                >-->
+<!--                </p-checkbox>-->
+<!--              </div>-->
+            </div>
+          </div>
+          <div class="col-1">
+            <div class="form-group">
+              <label>Hide Status Events</label>
+              <p-checkbox
+                class="checkbox-big"
+                name="group1"
+                [binary]="true"
+                inputId="auto-events"
+                (onChange)="search()"
+                formControlName="autoEvents"
+              >
+              </p-checkbox>
+            </div>
+          </div>
+          <div class="col-1">
+            <div class="form-group">
+              <label>Group Linked Events</label>
+              <p-checkbox
+                class="checkbox-big"
+                name="group2"
+                [binary]="true"
+                inputId="group-linked-events"
+                formControlName="groupView"
+              >
+              </p-checkbox>
             </div>
           </div>
         </div>
@@ -408,7 +437,10 @@
               <td style="width: 10%" class="text-center bord dark-two no-padding">
                 <div class="event-item event-type-name" [class.event-item-col]="report.last_events.length > 1">
                   <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
+                    <div class="report-event" *ngFor="let event of report.last_events"
+                         [pTooltip]="event ? event.description : 'No Description'"
+                         tooltipStyleClass="white-tool-tip"
+                         tooltipPosition="right">
                       <a [routerLink]="'/crm/events/' + event?.id"
                          target="_blank">{{ event?.event_name }}</a>
                     </div>
@@ -473,7 +505,10 @@
                   <div>
                     <div class="report-event" *ngFor="let event of report.next_events">
                       <a [routerLink]="'/crm/events/' + event?.id"
-                         target="_blank">
+                         target="_blank"
+                         [pTooltip]="event ? event.description : 'No Description'"
+                         tooltipStyleClass="white-tool-tip"
+                         tooltipPosition="right">
                         {{ event?.event_name }}
                       </a>
                     </div>
@@ -702,7 +737,10 @@
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event hide">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
-                         target="_blank">{{event.event_name}}</a>
+                         target="_blank"
+                         [pTooltip]="event ? event.description : 'No Description'"
+                         tooltipStyleClass="white-tool-tip"
+                         tooltipPosition="right">{{event.event_name}}</a>
                     </div>
                   </div>
                 </div>
@@ -796,7 +834,10 @@
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event hide">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
-                         target="_blank">{{event.event_name}}</a>
+                         target="_blank"
+                         [pTooltip]="event ? event.description : 'No Description'"
+                         tooltipStyleClass="white-tool-tip"
+                         tooltipPosition="right">{{event.event_name}}</a>
                     </div>
                   </div>
                 </div>

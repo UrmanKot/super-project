@@ -34,6 +34,7 @@ export class BusinessTripsComponent implements OnInit {
   count = 0;
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  isHideFilters = false;
 
   businessTrips$: Observable<BusinessTrip[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
@@ -281,5 +282,32 @@ export class BusinessTripsComponent implements OnInit {
     this.searchForm.get('location_countries_ids').patchValue(countries?.map(c => c.alpha2_code).join(',') ?? null);
     console.log(this.searchForm.get('location_countries_ids').value);
     this.search$.next()
+  }
+
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+    this.setTableScrollHeight();
+  }
+
+  setTableScrollHeight() {
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.875rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.75rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.625rem';
+      return;
+    }
   }
 }
