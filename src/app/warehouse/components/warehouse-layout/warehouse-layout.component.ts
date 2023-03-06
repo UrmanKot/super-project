@@ -25,7 +25,6 @@ export class WarehouseLayoutComponent implements OnInit {
     {label: 'Warehouses', commands: ['warehouses']},
     {label: 'Categories', commands: ['categories']},
     {label: 'Units of Measure', commands: ['measure']},
-    {label: 'Serial Number Types', commands: ['serial-types']},
   ]
 
   constructor() { }

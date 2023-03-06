@@ -14,6 +14,7 @@ import {
 import {
   ProductStructureCategoriesComponent
 } from './components/product-structure-categories/product-structure-categories.component';
+import {WarehouseSerialTypesComponent} from './components/warehouse-serial-types/warehouse-serial-types.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,7 @@ const routes: Routes = [
       {path: 'technologies', title: 'Technologies', component: TechnologiesComponent},
       {path: 'prefixes', title: 'Prefixes', component: PrefixesComponent},
       {path: 'categories', title: 'Categories', component: ProductStructureCategoriesComponent},
+      {path: 'serial-types', title: 'Serial Number Types', component: WarehouseSerialTypesComponent},
     ]
   }
 ];
