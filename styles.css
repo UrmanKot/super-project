@@ -12904,6 +12904,14 @@ body::-webkit-scrollbar {
     padding: 0 0.75rem 0 0.75rem;
   }
 }
+.white-tool-tip .p-tooltip-text {
+  box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.15);
+  background: white;
+  color: var(--text-color);
+}
+.white-tool-tip .p-tooltip-arrow {
+  border-right-color: white !important;
+}
 .page__header {
   display: flex;
   align-items: center;

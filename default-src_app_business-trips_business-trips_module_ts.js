@@ -231,7 +231,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BusinessTripsComponent": () => (/* binding */ BusinessTripsComponent)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! tslib */ 34929);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs/operators */ 19337);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ 32673);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! rxjs/operators */ 50635);
@@ -252,13 +252,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! primeng/inputtext */ 69906);
 /* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! primeng/api */ 14356);
 /* harmony import */ var primeng_menubar__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! primeng/menubar */ 80552);
-/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! primeng/table */ 17485);
+/* harmony import */ var primeng_tooltip__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! primeng/tooltip */ 24329);
+/* harmony import */ var primeng_table__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! primeng/table */ 17485);
 /* harmony import */ var _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../shared/icons/module-icon/module-icon.component */ 73237);
-/* harmony import */ var primeng_paginator__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! primeng/paginator */ 42722);
-/* harmony import */ var primeng_calendar__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! primeng/calendar */ 32547);
+/* harmony import */ var primeng_paginator__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! primeng/paginator */ 42722);
+/* harmony import */ var primeng_calendar__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! primeng/calendar */ 32547);
 /* harmony import */ var _shared_pickers_multi_countries_picker_multi_countries_picker_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../shared/pickers/multi-countries-picker/multi-countries-picker.component */ 92083);
 /* harmony import */ var _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../pickers/business-trips-multi-status-picker/business-trips-multi-status-picker.component */ 61370);
 /* harmony import */ var _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../pickers/business-trips-multi-employee-with-custom/business-trips-multi-employee-with-custom.component */ 60495);
+
 
 
 
@@ -291,36 +293,36 @@ function BusinessTripsComponent_ng_container_12_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_container_56_Template(rf, ctx) {
+function BusinessTripsComponent_ng_container_57_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementContainer"](0);
   }
 }
 
-function BusinessTripsComponent_ng_template_61_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_62_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr")(1, "th", 37);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr")(1, "th", 38);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](2, "#");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "th", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "th", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](4, "Employee");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](5, "th", 39);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](5, "th", 40);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](6, "Created");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](7, "th", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](7, "th", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](8, "Trip Start");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](9, "th", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](9, "th", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](10, "Trip End");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](11, "th", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](11, "th", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](12, "Status");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()();
   }
 }
 
-function BusinessTripsComponent_ng_template_62_span_15_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_63_span_15_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](1, " Verified ");
@@ -328,7 +330,7 @@ function BusinessTripsComponent_ng_template_62_span_15_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_62_span_16_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_63_span_16_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](1, " Need To Be Verified ");
@@ -336,7 +338,7 @@ function BusinessTripsComponent_ng_template_62_span_16_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_62_span_17_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_63_span_17_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](1, " In Progress ");
@@ -344,30 +346,30 @@ function BusinessTripsComponent_ng_template_62_span_17_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_62_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_63_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr", 40)(1, "td", 37);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr", 41)(1, "td", 38);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "td", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "td", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](5, "td", 39);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](5, "td", 40);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](6);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipe"](7, "date");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](8, "td", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](8, "td", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](9);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipe"](10, "date");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](11, "td", 38);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](11, "td", 39);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](12);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipe"](13, "date");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](14, "td", 38);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](15, BusinessTripsComponent_ng_template_62_span_15_Template, 2, 0, "span", 41);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](16, BusinessTripsComponent_ng_template_62_span_16_Template, 2, 0, "span", 41);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](17, BusinessTripsComponent_ng_template_62_span_17_Template, 2, 0, "span", 41);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](14, "td", 39);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](15, BusinessTripsComponent_ng_template_63_span_15_Template, 2, 0, "span", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](16, BusinessTripsComponent_ng_template_63_span_16_Template, 2, 0, "span", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](17, BusinessTripsComponent_ng_template_63_span_17_Template, 2, 0, "span", 42);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()();
   }
 
@@ -395,13 +397,13 @@ function BusinessTripsComponent_ng_template_62_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_63_i_2_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_64_i_2_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "i", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "i", 45);
   }
 }
 
-function BusinessTripsComponent_ng_template_63_span_3_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_64_span_3_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](1, "No Records Found");
@@ -409,11 +411,11 @@ function BusinessTripsComponent_ng_template_63_span_3_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_63_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_64_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr")(1, "td", 42);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](2, BusinessTripsComponent_ng_template_63_i_2_Template, 1, 0, "i", 43);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](3, BusinessTripsComponent_ng_template_63_span_3_Template, 2, 0, "span", 41);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "tr")(1, "td", 43);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](2, BusinessTripsComponent_ng_template_64_i_2_Template, 1, 0, "i", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](3, BusinessTripsComponent_ng_template_64_span_3_Template, 2, 0, "span", 42);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()();
   }
 
@@ -428,27 +430,27 @@ function BusinessTripsComponent_ng_template_63_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_div_64_Template(rf, ctx) {
+function BusinessTripsComponent_div_65_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 45);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](1, "i", 44);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 46);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](1, "i", 45);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
   }
 }
 
-function BusinessTripsComponent_div_65_Template(rf, ctx) {
+function BusinessTripsComponent_div_66_Template(rf, ctx) {
   if (rf & 1) {
     const _r19 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵgetCurrentView"]();
 
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 46)(1, "p-paginator", 47, 48);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("onPageChange", function BusinessTripsComponent_div_65_Template_p_paginator_onPageChange_1_listener($event) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 47)(1, "p-paginator", 48, 49);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("onPageChange", function BusinessTripsComponent_div_66_Template_p_paginator_onPageChange_1_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵrestoreView"](_r19);
       const ctx_r18 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵresetView"](ctx_r18.paginate($event));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "p-button", 49);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("click", function BusinessTripsComponent_div_65_Template_p_button_click_3_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](3, "p-button", 50);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("click", function BusinessTripsComponent_div_66_Template_p_button_click_3_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵrestoreView"](_r19);
       const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵresetView"](ctx_r20.onShowAll(true));
@@ -465,12 +467,12 @@ function BusinessTripsComponent_div_65_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_div_66_Template(rf, ctx) {
+function BusinessTripsComponent_div_67_Template(rf, ctx) {
   if (rf & 1) {
     const _r22 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵgetCurrentView"]();
 
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 50)(1, "p-button", 51);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("click", function BusinessTripsComponent_div_66_Template_p_button_click_1_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 51)(1, "p-button", 52);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("click", function BusinessTripsComponent_div_67_Template_p_button_click_1_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵrestoreView"](_r22);
       const ctx_r21 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵresetView"](ctx_r21.onShowAll(false));
@@ -480,9 +482,9 @@ function BusinessTripsComponent_div_66_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_67_p_menubar_1_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_68_p_menubar_1_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "p-menubar", 54);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "p-menubar", 55);
   }
 
   if (rf & 2) {
@@ -492,9 +494,9 @@ function BusinessTripsComponent_ng_template_67_p_menubar_1_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_67_p_menubar_2_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_68_p_menubar_2_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "p-menubar", 54);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelement"](0, "p-menubar", 55);
   }
 
   if (rf & 2) {
@@ -504,11 +506,11 @@ function BusinessTripsComponent_ng_template_67_p_menubar_2_Template(rf, ctx) {
   }
 }
 
-function BusinessTripsComponent_ng_template_67_Template(rf, ctx) {
+function BusinessTripsComponent_ng_template_68_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 52);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](1, BusinessTripsComponent_ng_template_67_p_menubar_1_Template, 1, 3, "p-menubar", 53);
-    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](2, BusinessTripsComponent_ng_template_67_p_menubar_2_Template, 1, 3, "p-menubar", 53);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 53);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](1, BusinessTripsComponent_ng_template_68_p_menubar_1_Template, 1, 3, "p-menubar", 54);
+    _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](2, BusinessTripsComponent_ng_template_68_p_menubar_2_Template, 1, 3, "p-menubar", 54);
     _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
   }
 
@@ -533,6 +535,7 @@ let BusinessTripsComponent = class BusinessTripsComponent {
     this.tripStatus = _models_business_trip_status_enum__WEBPACK_IMPORTED_MODULE_0__.BusinessTripStatus;
     this.count = 0;
     this.search$ = new rxjs__WEBPACK_IMPORTED_MODULE_10__.BehaviorSubject(null);
+    this.isHideFilters = false;
     this.businessTrips$ = this.search$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.tap)(() => this.prepareForSearch()), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.switchMap)(() => (0,rxjs__WEBPACK_IMPORTED_MODULE_13__.iif)(() => !this.isShowAll, this.businessTripService.get(this.query).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.tap)(response => this.count = response.count), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.map)(response => response.results)), this.businessTripService.getAll(this.query).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.tap)(products => this.count = products.length), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.map)(response => response)))), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.tap)(() => this.paginateToFistPage()), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.tap)(() => this.isLoading = false), (0,_ngneat_until_destroy__WEBPACK_IMPORTED_MODULE_15__.untilDestroyed)(this));
     this.isStartFirstPage = false;
     this.currentPage = 1;
@@ -622,7 +625,7 @@ let BusinessTripsComponent = class BusinessTripsComponent {
   exportToXls() {
     const tripIds = this.selectedBusinessTrips.map(trip => trip.id);
     this.businessTripService.getBtForExport([{
-      name: 'business_trips_ids',
+      name: 'ids',
       value: tripIds
     }]).subscribe(res => {
       res.forEach(trip => {
@@ -744,6 +747,33 @@ let BusinessTripsComponent = class BusinessTripsComponent {
     this.search$.next();
   }
 
+  toggleFilterVisibility() {
+    this.isHideFilters = !this.isHideFilters;
+    this.setTableScrollHeight();
+  }
+
+  setTableScrollHeight() {
+    if (this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '20.875rem';
+      return;
+    }
+
+    if (this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '18.75rem';
+      return;
+    }
+
+    if (!this.isHideFilters && this.isShowAll) {
+      this.tableScrollHeight = '27.5rem';
+      return;
+    }
+
+    if (!this.isHideFilters && !this.isShowAll) {
+      this.tableScrollHeight = '29.625rem';
+      return;
+    }
+  }
+
 };
 
 BusinessTripsComponent.ɵfac = function BusinessTripsComponent_Factory(t) {
@@ -764,9 +794,9 @@ BusinessTripsComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODU
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵloadQuery"]()) && (ctx.paginator = _t.first);
     }
   },
-  decls: 69,
-  vars: 20,
-  consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Create Business Trip", 3, "click"], [1, "page__content"], [1, "page__card"], [1, "filters-visibility"], [1, "filters-visibility__header"], [4, "ngTemplateOutlet"], [1, "form", "mb-3", 3, "formGroup"], [1, "row"], [1, "col-3"], [1, "form-group"], [3, "valueChange"], ["formControlName", "trip_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], ["formControlName", "trip_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], ["formControlName", "created_at", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], [3, "selectCountries"], [1, "col-6"], [1, "duration"], [1, "d-flex"], [1, "other-duration"], [1, "other-duration-row"], ["type", "number", "pInputText", "", "formControlName", "durationOther", "placeholder", "Number in hours", 3, "ngModelChange"], [1, "col-3", "col-actions"], [1, "page__table"], [1, "table-pagination-preloader"], ["selectionMode", "multiple", "scrollHeight", "calc(100vh - 27.375rem)", 3, "scrollable", "rows", "value", "selection", "selectionChange"], ["pTemplate", "header"], ["pTemplate", "body"], ["pTemplate", "emptymessage"], ["class", "pagination-preloader pagination-preloader_bord", 4, "ngIf"], ["class", "paginator-wrapper", 3, "paginator-wrapper_hide", 4, "ngIf"], ["class", "paginator-return-pagination", 4, "ngIf"], ["actionButtons", ""], [1, "text-center", 2, "width", "5%"], [1, "text-center", 2, "width", "20%"], [1, "text-center", 2, "width", "15%"], [3, "pSelectableRow"], [4, "ngIf"], [1, "text-center", "p-4"], ["class", "pi pi-spin pi-spinner", "style", "font-size: 2.25rem", 4, "ngIf"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"], [1, "pagination-preloader", "pagination-preloader_bord"], [1, "paginator-wrapper"], [3, "rows", "totalRecords", "onPageChange"], ["paginator", ""], ["type", "button", "styleClass", "p-button-text", 1, "paginator-all", 3, "click"], [1, "paginator-return-pagination"], ["type", "button", "styleClass", "p-button-text", 3, "click"], [1, "action-buttons"], ["class", "ml-auto", 3, "model", "disabled", 4, "ngIf"], [1, "ml-auto", 3, "model"]],
+  decls: 70,
+  vars: 27,
+  consts: [[1, "page"], [1, "page__header"], [1, "page__title"], [3, "module", "isActive"], [1, "page__tools"], ["pButton", "", "type", "button", "icon", "pi pi-plus", "label", "Create Business Trip", 3, "click"], [1, "page__content"], [1, "page__card"], [1, "filters-visibility"], [1, "filters-visibility__header"], [4, "ngTemplateOutlet"], ["tooltipPosition", "left", 1, "icon", "pi", 3, "pTooltip", "click"], [1, "form", "mb-3", 3, "formGroup"], [1, "row"], [1, "col-3"], [1, "form-group"], [3, "valueChange"], ["formControlName", "trip_start", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], ["formControlName", "trip_end", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], ["formControlName", "created_at", "dataType", "date", "dateFormat", "dd/mm/yy", 3, "showButtonBar", "readonlyInput", "ngModelChange"], [3, "selectCountries"], [1, "col-6"], [1, "duration"], [1, "d-flex"], [1, "other-duration"], [1, "other-duration-row"], ["type", "number", "pInputText", "", "formControlName", "durationOther", "placeholder", "Number in hours", 3, "ngModelChange"], [1, "col-3", "col-actions"], [1, "page__table"], [1, "table-pagination-preloader"], ["selectionMode", "multiple", "scrollHeight", "calc(100vh - 27.375rem)", 3, "scrollable", "rows", "value", "selection", "selectionChange"], ["pTemplate", "header"], ["pTemplate", "body"], ["pTemplate", "emptymessage"], ["class", "pagination-preloader pagination-preloader_bord", 4, "ngIf"], ["class", "paginator-wrapper", 3, "paginator-wrapper_hide", 4, "ngIf"], ["class", "paginator-return-pagination", 4, "ngIf"], ["actionButtons", ""], [1, "text-center", 2, "width", "5%"], [1, "text-center", 2, "width", "20%"], [1, "text-center", 2, "width", "15%"], [3, "pSelectableRow"], [4, "ngIf"], [1, "text-center", "p-4"], ["class", "pi pi-spin pi-spinner", "style", "font-size: 2.25rem", 4, "ngIf"], [1, "pi", "pi-spin", "pi-spinner", 2, "font-size", "2.25rem"], [1, "pagination-preloader", "pagination-preloader_bord"], [1, "paginator-wrapper"], [3, "rows", "totalRecords", "onPageChange"], ["paginator", ""], ["type", "button", "styleClass", "p-button-text", 1, "paginator-all", 3, "click"], [1, "paginator-return-pagination"], ["type", "button", "styleClass", "p-button-text", 3, "click"], [1, "action-buttons"], ["class", "ml-auto", 3, "model", "disabled", 4, "ngIf"], [1, "ml-auto", 3, "model"]],
   template: function BusinessTripsComponent_Template(rf, ctx) {
     if (rf & 1) {
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "div", 2);
@@ -782,92 +812,102 @@ BusinessTripsComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODU
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](8, "div", 6)(9, "div", 7)(10, "div", 8)(11, "div", 9);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](12, BusinessTripsComponent_ng_container_12_Template, 1, 0, "ng-container", 10);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](13, "form", 11)(14, "div", 12)(15, "div", 13)(16, "div", 14)(17, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](18, "Employees");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](13, "button", 11);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("click", function BusinessTripsComponent_Template_button_click_13_listener() {
+        return ctx.toggleFilterVisibility();
+      });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](19, "pek-business-trips-multi-employee-with-custom", 15);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("valueChange", function BusinessTripsComponent_Template_pek_business_trips_multi_employee_with_custom_valueChange_19_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](14, "form", 12)(15, "div", 13)(16, "div", 14)(17, "div", 15)(18, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](19, "Employees");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](20, "pek-business-trips-multi-employee-with-custom", 16);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("valueChange", function BusinessTripsComponent_Template_pek_business_trips_multi_employee_with_custom_valueChange_20_listener($event) {
         return ctx.onSelectEmployees($event);
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](20, "div", 13)(21, "div", 14)(22, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](23, "Date Trip Start");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](21, "div", 14)(22, "div", 15)(23, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](24, "Date Trip Start");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](24, "p-calendar", 16);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_24_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](25, "p-calendar", 17);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_25_listener() {
         return ctx.search$.next();
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](25, "div", 13)(26, "div", 14)(27, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](28, "Date Trip End");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](26, "div", 14)(27, "div", 15)(28, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](29, "Date Trip End");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](29, "p-calendar", 17);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_29_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](30, "p-calendar", 18);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_30_listener() {
         return ctx.search$.next();
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](30, "div", 13)(31, "div", 14)(32, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](33, "Date Trip Created");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](31, "div", 14)(32, "div", 15)(33, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](34, "Date Trip Created");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](34, "p-calendar", 18);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_34_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](35, "p-calendar", 19);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_p_calendar_ngModelChange_35_listener() {
         return ctx.search$.next();
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](35, "div", 13)(36, "div", 14)(37, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](38, "Statuses");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](36, "div", 14)(37, "div", 15)(38, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](39, "Statuses");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](39, "pek-business-trips-multi-status-picker", 15);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("valueChange", function BusinessTripsComponent_Template_pek_business_trips_multi_status_picker_valueChange_39_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](40, "pek-business-trips-multi-status-picker", 16);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("valueChange", function BusinessTripsComponent_Template_pek_business_trips_multi_status_picker_valueChange_40_listener($event) {
         return ctx.onSelectStatuses($event);
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](40, "div", 13)(41, "div", 14)(42, "label");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](43, "Countries");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](41, "div", 14)(42, "div", 15)(43, "label");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](44, "Countries");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](44, "pek-multi-countries-picker", 19);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("selectCountries", function BusinessTripsComponent_Template_pek_multi_countries_picker_selectCountries_44_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](45, "pek-multi-countries-picker", 20);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("selectCountries", function BusinessTripsComponent_Template_pek_multi_countries_picker_selectCountries_45_listener($event) {
         return ctx.onSelectCountries($event);
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](45, "div", 20)(46, "div", 21)(47, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](48, "Duration Is Longer Than");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](46, "div", 21)(47, "div", 22)(48, "p");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](49, "Duration Is Longer Than");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](49, "div", 22)(50, "div", 23)(51, "div", 24)(52, "input", 25);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_input_ngModelChange_52_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](50, "div", 23)(51, "div", 24)(52, "div", 25)(53, "input", 26);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("ngModelChange", function BusinessTripsComponent_Template_input_ngModelChange_53_listener() {
         return ctx.changeOtherDuration();
       });
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](53, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](54, "Hour(s)");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](54, "p");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtext"](55, "Hour(s)");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()()()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](55, "div", 26);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](56, BusinessTripsComponent_ng_container_56_Template, 1, 0, "ng-container", 10);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](56, "div", 27);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](57, BusinessTripsComponent_ng_container_57_Template, 1, 0, "ng-container", 10);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](57, "div", 27)(58, "div", 28)(59, "p-table", 29);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("selectionChange", function BusinessTripsComponent_Template_p_table_selectionChange_59_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementStart"](58, "div", 28)(59, "div", 29)(60, "p-table", 30);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵlistener"]("selectionChange", function BusinessTripsComponent_Template_p_table_selectionChange_60_listener($event) {
         return ctx.selectedBusinessTrips = $event;
       });
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipe"](60, "async");
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](61, BusinessTripsComponent_ng_template_61_Template, 13, 0, "ng-template", 30);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](62, BusinessTripsComponent_ng_template_62_Template, 18, 18, "ng-template", 31);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](63, BusinessTripsComponent_ng_template_63_Template, 4, 3, "ng-template", 32);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipe"](61, "async");
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](62, BusinessTripsComponent_ng_template_62_Template, 13, 0, "ng-template", 31);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](63, BusinessTripsComponent_ng_template_63_Template, 18, 18, "ng-template", 32);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](64, BusinessTripsComponent_ng_template_64_Template, 4, 3, "ng-template", 33);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](64, BusinessTripsComponent_div_64_Template, 2, 0, "div", 33);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](65, BusinessTripsComponent_div_65_Template, 5, 4, "div", 34);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](65, BusinessTripsComponent_div_65_Template, 2, 0, "div", 34);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](66, BusinessTripsComponent_div_66_Template, 5, 4, "div", 35);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](66, BusinessTripsComponent_div_66_Template, 3, 0, "div", 35);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](67, BusinessTripsComponent_div_67_Template, 3, 0, "div", 36);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](67, BusinessTripsComponent_ng_template_67_Template, 3, 2, "ng-template", null, 36, _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplateRefExtractor"]);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplate"](68, BusinessTripsComponent_ng_template_68_Template, 3, 2, "ng-template", null, 37, _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵtemplateRefExtractor"]);
     }
 
     if (rf & 2) {
-      const _r8 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵreference"](68);
+      const _r8 = _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵreference"](69);
 
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](3);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("module", "business-trip")("isActive", true);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](9);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](7);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵclassProp"]("filters-visibility_hide", ctx.isHideFilters);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](2);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("ngTemplateOutlet", _r8);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](1);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵclassProp"]("pi-angle-double-up", !ctx.isHideFilters)("pi-angle-double-down", ctx.isHideFilters);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("pTooltip", ctx.isHideFilters ? "Expand Filters" : "Collapse Filters");
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](1);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("formGroup", ctx.searchForm);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](11);
@@ -879,7 +919,7 @@ BusinessTripsComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODU
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](22);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("ngTemplateOutlet", _r8);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("scrollable", true)("rows", 10)("value", _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipeBind1"](60, 18, ctx.businessTrips$))("selection", ctx.selectedBusinessTrips);
+      _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("scrollable", true)("rows", 10)("value", _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵpipeBind1"](61, 25, ctx.businessTrips$))("selection", ctx.selectedBusinessTrips);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](5);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("ngIf", ctx.isLoading);
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵadvance"](1);
@@ -888,10 +928,10 @@ BusinessTripsComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODU
       _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵproperty"]("ngIf", ctx.isShowAll);
     }
   },
-  dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_19__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_19__.NgTemplateOutlet, primeng_button__WEBPACK_IMPORTED_MODULE_20__.ButtonDirective, primeng_button__WEBPACK_IMPORTED_MODULE_20__.Button, primeng_inputtext__WEBPACK_IMPORTED_MODULE_21__.InputText, primeng_api__WEBPACK_IMPORTED_MODULE_22__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_18__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_18__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NumberValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControlName, primeng_menubar__WEBPACK_IMPORTED_MODULE_23__.Menubar, primeng_table__WEBPACK_IMPORTED_MODULE_24__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_24__.SelectableRow, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__.ModuleIconComponent, primeng_paginator__WEBPACK_IMPORTED_MODULE_25__.Paginator, primeng_calendar__WEBPACK_IMPORTED_MODULE_26__.Calendar, _shared_pickers_multi_countries_picker_multi_countries_picker_component__WEBPACK_IMPORTED_MODULE_6__.MultiCountriesPickerComponent, _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_7__.BusinessTripsMultiStatusPickerComponent, _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_8__.BusinessTripsMultiEmployeeWithCustomComponent, _angular_common__WEBPACK_IMPORTED_MODULE_19__.AsyncPipe, _angular_common__WEBPACK_IMPORTED_MODULE_19__.DatePipe],
+  dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_19__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_19__.NgTemplateOutlet, primeng_button__WEBPACK_IMPORTED_MODULE_20__.ButtonDirective, primeng_button__WEBPACK_IMPORTED_MODULE_20__.Button, primeng_inputtext__WEBPACK_IMPORTED_MODULE_21__.InputText, primeng_api__WEBPACK_IMPORTED_MODULE_22__.PrimeTemplate, _angular_forms__WEBPACK_IMPORTED_MODULE_18__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_18__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NumberValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormGroupDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControlName, primeng_menubar__WEBPACK_IMPORTED_MODULE_23__.Menubar, primeng_tooltip__WEBPACK_IMPORTED_MODULE_24__.Tooltip, primeng_table__WEBPACK_IMPORTED_MODULE_25__.Table, primeng_table__WEBPACK_IMPORTED_MODULE_25__.SelectableRow, _shared_icons_module_icon_module_icon_component__WEBPACK_IMPORTED_MODULE_5__.ModuleIconComponent, primeng_paginator__WEBPACK_IMPORTED_MODULE_26__.Paginator, primeng_calendar__WEBPACK_IMPORTED_MODULE_27__.Calendar, _shared_pickers_multi_countries_picker_multi_countries_picker_component__WEBPACK_IMPORTED_MODULE_6__.MultiCountriesPickerComponent, _pickers_business_trips_multi_status_picker_business_trips_multi_status_picker_component__WEBPACK_IMPORTED_MODULE_7__.BusinessTripsMultiStatusPickerComponent, _pickers_business_trips_multi_employee_with_custom_business_trips_multi_employee_with_custom_component__WEBPACK_IMPORTED_MODULE_8__.BusinessTripsMultiEmployeeWithCustomComponent, _angular_common__WEBPACK_IMPORTED_MODULE_19__.AsyncPipe, _angular_common__WEBPACK_IMPORTED_MODULE_19__.DatePipe],
   styles: [".form[_ngcontent-%COMP%] {\n  margin-top: -0.25rem;\n}\n\n.col-3[_ngcontent-%COMP%] {\n  width: 20%;\n}\n\n.action-buttons[_ngcontent-%COMP%] {\n  margin-top: 0.25rem;\n}\n\n.input-wrapper[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  width: 100%;\n}\n\n.input-wrapper[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  position: absolute;\n  bottom: 0;\n  background: transparent;\n  cursor: pointer;\n  color: #6c757d;\n  right: 0.6rem;\n  top: 0.275rem;\n}\n\n.other-duration[_ngcontent-%COMP%] {\n  display: flex;\n}\n\n.col-actions[_ngcontent-%COMP%] {\n  width: 30%;\n}\n\n.duration[_ngcontent-%COMP%] {\n  padding: 0.5rem 0;\n}\n\n.duration[_ngcontent-%COMP%]    > p[_ngcontent-%COMP%] {\n  margin-bottom: 0.6875rem;\n  font-weight: 500;\n}\n\n.other-duration-row[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n}\n\n.other-duration-row[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin-left: 0.5rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJ1c2luZXNzLXRyaXBzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usb0JBQUE7QUFDRjs7QUFFQTtFQUNFLFVBQUE7QUFDRjs7QUFFQTtFQUNFLG1CQUFBO0FBQ0Y7O0FBSUE7RUFDRSxrQkFBQTtFQUNBLGFBQUE7RUFDQSxtQkFBQTtBQURGOztBQUdFO0VBQ0UsV0FBQTtBQURKOztBQUlFO0VBQ0Usa0JBQUE7RUFDQSxTQUFBO0VBQ0EsdUJBQUE7RUFDQSxlQUFBO0VBQ0EsY0FBQTtFQUNBLGFBQUE7RUFDQSxhQUFBO0FBRko7O0FBTUE7RUFDRSxhQUFBO0FBSEY7O0FBTUE7RUFDRSxVQUFBO0FBSEY7O0FBTUE7RUFDRSxpQkFBQTtBQUhGOztBQUtFO0VBQ0Usd0JBQUE7RUFDQSxnQkFBQTtBQUhKOztBQU9BO0VBRUUsYUFBQTtFQUNBLG1CQUFBO0FBTEY7O0FBT0U7RUFDRSxtQkFBQTtBQUxKIiwiZmlsZSI6ImJ1c2luZXNzLXRyaXBzLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmZvcm0ge1xyXG4gIG1hcmdpbi10b3A6IC0wLjI1cmVtO1xyXG59XHJcblxyXG4uY29sLTMge1xyXG4gIHdpZHRoOiAyMCU7XHJcbn1cclxuXHJcbi5hY3Rpb24tYnV0dG9ucyB7XHJcbiAgbWFyZ2luLXRvcDogMC4yNXJlbTtcclxufVxyXG5cclxuXHJcblxyXG4uaW5wdXQtd3JhcHBlciB7XHJcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gIGRpc3BsYXk6IGZsZXg7XHJcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcclxuXHJcbiAgaW5wdXQge1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcbiAgfVxyXG5cclxuICBidXR0b24ge1xyXG4gICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgYm90dG9tOiAwO1xyXG4gICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XHJcbiAgICBjdXJzb3I6IHBvaW50ZXI7XHJcbiAgICBjb2xvcjogIzZjNzU3ZDtcclxuICAgIHJpZ2h0OiAwLjZyZW07XHJcbiAgICB0b3A6IDAuMjc1cmVtO1xyXG4gIH1cclxufVxyXG5cclxuLm90aGVyLWR1cmF0aW9uIHtcclxuICBkaXNwbGF5OiBmbGV4O1xyXG59XHJcblxyXG4uY29sLWFjdGlvbnMge1xyXG4gIHdpZHRoOiAzMCU7XHJcbn1cclxuXHJcbi5kdXJhdGlvbiB7XHJcbiAgcGFkZGluZzogMC41cmVtIDA7XHJcblxyXG4gICYgPiBwIHtcclxuICAgIG1hcmdpbi1ib3R0b206IDAuNjg3NXJlbTtcclxuICAgIGZvbnQtd2VpZ2h0OiA1MDA7XHJcbiAgfVxyXG59XHJcblxyXG4ub3RoZXItZHVyYXRpb24tcm93IHtcclxuICAvL21hcmdpbi1sZWZ0OiAwLjc1cmVtO1xyXG4gIGRpc3BsYXk6IGZsZXg7XHJcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcclxuXHJcbiAgcCB7XHJcbiAgICBtYXJnaW4tbGVmdDogMC41cmVtO1xyXG4gIH1cclxufVxyXG4iXX0= */"]
 });
-BusinessTripsComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_27__.__decorate)([(0,_ngneat_until_destroy__WEBPACK_IMPORTED_MODULE_15__.UntilDestroy)()], BusinessTripsComponent);
+BusinessTripsComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_28__.__decorate)([(0,_ngneat_until_destroy__WEBPACK_IMPORTED_MODULE_15__.UntilDestroy)()], BusinessTripsComponent);
 
 
 /***/ }),
@@ -2788,7 +2828,7 @@ class EditBusinessTripComponent {
     viewFile() {
     }
     getBtForExport() {
-        this.businessService.getBtForExport([{ name: 'business_trips_ids', value: [this.tripId] }]).subscribe(res => {
+        this.businessService.getBtForExport([{ name: 'ids', value: [this.tripId] }]).subscribe(res => {
             if (res) {
                 this.businessService.exportToExcel(res[0]).then();
             }
