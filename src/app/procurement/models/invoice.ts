@@ -14,6 +14,7 @@ export class Invoice {
   qc_completed: boolean;
   order?: Order;
   related_files: boolean;
+  invoice?: Invoice;
   // currency: Currency;
   invoice_date: Date;
   items_reception_date: Date;

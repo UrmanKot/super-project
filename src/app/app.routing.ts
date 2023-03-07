@@ -86,6 +86,11 @@ const routes: Routes = [
         title: 'Instruments',
         loadChildren: () => import('./instruments/instruments.module').then(m => m.InstrumentsModule)
       },
+      {
+        path: 'quality-control',
+        title: 'Quality Control',
+        loadChildren: () => import('./qc/qc.module').then(m => m.QcModule)
+      },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   },

@@ -8,9 +8,10 @@ import {fromEvent, Subject, takeUntil} from 'rxjs';
 import {List} from '../../models/list';
 import {AdapterService} from '@shared/services/adapter.service';
 import {debounceTime, map, tap} from 'rxjs/operators';
-import {TreeNode} from 'primeng/api';
+import {MenuItem, TreeNode} from 'primeng/api';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
+import {environment} from '@env/environment';
 
 export enum ViewMode {
   LIST = 0,
@@ -29,6 +30,53 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   @ViewChild('paginator') paginator: Paginator;
   @ViewChild('searchBoxName') searchBoxName;
   @ViewChild('searchBoxCode') searchBoxCode;
+
+  selectedOrderNode: TreeNode<List>;
+  selectedList: List;
+
+  menuItems: MenuItem[] = [{
+    label: 'Selected Production List',
+    items: [
+      {
+        label: 'Production List',
+        icon: 'pi pi-bars',
+        command: () => this.goToProductionList()
+      },
+      {
+        label: 'Set List Locator',
+        icon: 'pi pi-angle-double-right',
+        command: () => this.onSetListLocator()
+      },
+      {
+        label: 'Go To Plan',
+        icon: 'pi pi-angle-double-right',
+        command: () => this.goToPlan()
+      }
+    ]
+  }];
+
+  menuItemsNode: MenuItem[] = [{
+    label: 'Selected Production List',
+    items: [
+      {
+        label: 'Production List',
+        icon: 'pi pi-bars',
+        command: () => this.goToProductionListNode()
+      },
+      {
+        label: 'Set List Locator',
+        icon: 'pi pi-angle-double-right',
+        command: () => this.onSetListLocatorNode()
+      },
+      {
+        label: 'Go To Plan',
+        icon: 'pi pi-angle-double-right',
+        command: () => this.goToPlanNode()
+      }
+    ]
+  }];
+
+  link = environment.link_url + 'dash/';
 
   expanseMap = {};
 
@@ -59,13 +107,11 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     root_categories: null,
   });
 
-  selectedOrderNode: TreeNode<List>;
   productionCategorizedList: TreeNode<List>[];
 
   fullOrderTree: TreeNode<List>[] = [];
 
   orderTree: TreeNode[] = [];
-  selectedList: List;
   lists: List[] = [];
   count = 0;
   fullStatisticList: List[] = [];
@@ -708,6 +754,14 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     ).subscribe();
   }
 
+  goToPlan() {
+    window.open(this.link + `production/plan/tasks/${this.selectedList.root_production_plans[0].id}`, '_blank');
+  }
+
+  goToPlanNode() {
+    window.open(this.link + `production/plan/tasks/${this.selectedOrderNode.data.list.root_production_plans[0].id}`, '_blank');
+  }
+
   generateStatistic(statistics: any[]) {
     this.fullStatisticList = [...this.lists];
     this.fullStatisticList.forEach(l => l.full_statistics = statistics.find(s => s.id === l.id));
@@ -718,10 +772,17 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
         n.children.forEach(n => {
           n.children.forEach(n => {
             n.data.list.full_statistics = statistics.find(s => s.id === n.data.list.id);
-            console.log(n);
           });
         });
       });
     });
+  }
+
+  private goToProductionList() {
+    window.open(`/warehouse/production-lists/${this.selectedList?.id}`, '_blank')
+  }
+
+  private goToProductionListNode() {
+    window.open(`/warehouse/production-lists/${this.selectedOrderNode.data.list.id}`, '_blank')
   }
 }

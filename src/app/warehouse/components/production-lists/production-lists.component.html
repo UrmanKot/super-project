@@ -493,10 +493,10 @@
                   {{list.full_statistics.total_products_quantity}}
                 </td>
                 <td class="text-center">
-                  {{list.full_statistics.not_processed_products_count}}
+                  {{list.statistics.not_processed_products_count}}
                 </td>
                 <td class="text-center">
-                  {{list.full_statistics.not_processed_products_quantity}}
+                  {{list.statistics.not_processed_products_quantity}}
                 </td>
 
                 <td class="text-center">{{list.full_statistics.total_purchased_count}}</td>
@@ -700,12 +700,12 @@
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_processed_products_count}}
+                    {{rowData.list.statistics.not_processed_products_count}}
                 </span>
               </td>
               <td class="text-center">
                 <span *ngIf="rowData.level === 4">
-                    {{rowData.list.full_statistics.not_processed_products_quantity}}
+                    {{rowData.list.statistics.not_processed_products_quantity}}
                 </span>
               </td>
               <td class="text-center">
@@ -907,26 +907,39 @@
         [disabled]="isLoading || isLoadingFullStatistic"
       >
       </button>
-      <a
-        class="mr-2"
-        [class.disabled]="!selectedOrderNode"
-        [routerLink]="[selectedOrderNode?.data?.list?.id]"
-        target="_blank"
-        pButton
-        type="button"
-        icon="pi pi-bars"
-        label="Production List"
-      >
-      </a>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-angle-double-right"
-        label="Set List Locator"
-        (click)="onSetListLocatorNode()"
-        [disabled]="!selectedOrderNode"
-      >
-      </button>
+<!--      <a-->
+<!--        class="mr-2"-->
+<!--        [class.disabled]="!selectedOrderNode"-->
+<!--        [routerLink]="[selectedOrderNode?.data?.list?.id]"-->
+<!--        target="_blank"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-bars"-->
+<!--        label="Production List"-->
+<!--      >-->
+<!--      </a>-->
+<!--      <button-->
+<!--        class="mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-angle-double-right"-->
+<!--        label="Set List Locator"-->
+<!--        (click)="onSetListLocatorNode()"-->
+<!--        [disabled]="!selectedOrderNode"-->
+<!--      >-->
+<!--      </button>-->
+<!--      <button-->
+<!--        class="mt-auto"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-angle-double-right"-->
+<!--        label="Go To Plan"-->
+<!--        (click)="goToPlanNode()"-->
+<!--        [disabled]="!selectedOrderNode"-->
+<!--      >-->
+<!--      </button>-->
+
+      <p-menubar [model]="menuItemsNode" [class.disabled]="!selectedOrderNode"></p-menubar>
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.LIST">
@@ -940,27 +953,38 @@
         [disabled]="isLoading || isLoadingFullStatistic"
       >
       </button>
-      <a
-        class="mr-2"
-        [class.disabled]="!selectedList"
-        [routerLink]="[selectedList?.id]"
-        target="_blank"
-        pButton
-        type="button"
-        icon="pi pi-bars"
-        label="Production List"
-      >
-      </a>
-      <button
-        class="mt-auto"
-        pButton
-        type="button"
-        icon="pi pi-angle-double-right"
-        label="Set List Locator"
-        (click)="onSetListLocator()"
-        [disabled]="!selectedList"
-      >
-      </button>
+<!--      <a-->
+<!--        class="mr-2"-->
+<!--        [class.disabled]="!selectedList"-->
+<!--        [routerLink]="[selectedList?.id]"-->
+<!--        target="_blank"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-bars"-->
+<!--        label="Production List"-->
+<!--      >-->
+<!--      </a>-->
+<!--      <button-->
+<!--        class="mt-auto mr-2"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-angle-double-right"-->
+<!--        label="Set List Locator"-->
+<!--        (click)="onSetListLocator()"-->
+<!--        [disabled]="!selectedList"-->
+<!--      >-->
+<!--      </button>-->
+<!--      <button-->
+<!--        class="mt-auto"-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        icon="pi pi-angle-double-right"-->
+<!--        label="Go To Plan"-->
+<!--        (click)="goToPlan()"-->
+<!--        [disabled]="!selectedList"-->
+<!--      >-->
+<!--      </button>-->
+      <p-menubar [model]="menuItems" [class.disabled]="!selectedList"></p-menubar>
     </ng-container>
   </div>
 </ng-template>

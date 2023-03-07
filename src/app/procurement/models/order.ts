@@ -34,6 +34,7 @@ export class Order {
   statusesIds?: number[];
   dateFrom?: Date;
   dateTo?: Date;
+  order?: Order;
   rootLists?: [];
   list_ids?: number[];
   orderStatuses?: any;

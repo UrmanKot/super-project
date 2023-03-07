@@ -1,58 +1,46 @@
 import {Component, OnInit} from '@angular/core';
+import {Invoice} from '../../../procurement/models/invoice';
 import {TreeNode} from 'primeng/api';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
-import {Invoice} from '../../../procurement/models/invoice';
 import {Order} from '../../../procurement/models/order';
-import * as cloneDeep from 'lodash/cloneDeep';
-import {TreeService} from '@shared/services/tree.service';
+import {tap} from 'rxjs/operators';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
+import {Category} from '../../../product-structure/models/category';
+import * as cloneDeep from 'lodash/cloneDeep';
 import {forkJoin} from 'rxjs';
 
-type ViewType = 'list' | 'hierarchy'
-
 @Component({
-  selector: 'pek-warehouse-qc',
-  templateUrl: './warehouse-qc.component.html',
-  styleUrls: ['./warehouse-qc.component.scss']
+  selector: 'pek-qc-list',
+  templateUrl: './qc-list.component.html',
+  styleUrls: ['./qc-list.component.scss']
 })
-export class WarehouseQcComponent implements OnInit {
-  isLoading = true;
+export class QcListComponent implements OnInit {
+  invoices: Invoice[];
+  orders: Order[];
 
-  categories: TreeNode[];
-
-  invoices: Invoice[] = [];
-  orders: Order[] = [];
-
-  invoiceTree: TreeNode<Invoice>[];
-
-  selectedInvoiceItem: Invoice;
-  selectedInvoicePurchaseItem: Invoice;
-  selectedOrderItem: Order;
+  selectedInvoiceNode: TreeNode<Invoice>;
+  selectedOrderNode: TreeNode<Order>;
+  selectedPurchasedInvoiceNode: TreeNode<Invoice>;
 
   invoiceManufacturedTree: TreeNode<Invoice>[];
   invoicePurchasedTree: TreeNode<Invoice>[];
-
-  invoicesViewType: ViewType = 'hierarchy';
-  invoicesOrderType: ViewType = 'hierarchy';
-  invoicesPurchasedType: ViewType = 'hierarchy';
-
-  selectedInvoiceNode: TreeNode<Invoice>;
-  selectedOrderNode: TreeNode<Invoice>;
-  selectedPurchasedInvoiceNode: TreeNode;
-
   ownProductionCategorizedList: TreeNode[];
 
-  invoicesList: Invoice[] = [];
-  ordersList: Order[] = [];
-  purchasedInvoicesList: Invoice[] = [];
+  invoiceTree: TreeNode<Invoice>[];
 
+  isLoadingInvoices = true;
+  isLoadingOrders = true;
+
+  categories: TreeNode<Category>[];
+
+
+  expanseMap = {};
 
   constructor(
-    private readonly invoiceService: InvoiceService,
-    private readonly orderService: OrderService,
-    private readonly productStructureCategoryService: ProductStructureCategoryService,
-    private readonly treeService: TreeService,
+    private invoiceService: InvoiceService,
+    private orderService: OrderService,
+    private productStructureCategoryService: ProductStructureCategoryService,
   ) {
   }
 
@@ -60,185 +48,76 @@ export class WarehouseQcComponent implements OnInit {
     forkJoin({
       categories: this.productStructureCategoryService.get(),
       invoices: this.invoiceService.get([
-        {name: 'completed', value: true},
-        {name: 'qc_completed', value: true},
-        {name: 'is_full_accepted', value: false}
+        {name: 'needs_qc', value: true},
+        {name: 'by_qc_module_permission', value: true}
       ]),
       orders: this.orderService.get([
-        {name: 'completed', value: true},
-        {name: 'qc_completed', value: true},
-        {name: 'is_full_accepted', value: false}
+        {name: 'needs_qc', value: true},
+        {name: 'by_qc_module_permission', value: true}
       ])
     }).subscribe(({categories, invoices, orders}) => {
-      this.categories = this.treeService.createTree(categories);
+      if (this.categories) {
+        this.mapExpansion();
+      }
 
-      this.categories.unshift({
-        children: [],
-        data: {
-          name: 'Not Category',
-          id: -1,
-          level: 0,
-        },
-        expanded: false
-      })
-
-      this.ownProductionCategorizedList = cloneDeep(this.categories);
+      this.createTree(categories);
 
       this.invoices = invoices;
-      this.makeUniqueProductionPlansInvoice(<Invoice[]>this.invoices);
+      this.makeUniqueProductionPlansInvoice();
       this.resetProductPaymentTree();
 
       this.orders = orders;
-      this.makeUniqueProductionPlansInvoice(<Order[]>this.orders);
+      this.makeUniqueProductionPlans();
       this.fillOwnProductionWithData();
 
-      this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
-      this.invoicesList = this.invoices.filter(i => !i.purchase_category);
-      // console.log('this.invoicesList', this.invoicesList);
-      this.ordersList = this.orders.map(o => o);
-      // console.log('this.ordersList', this.ordersList);
-      this.isLoading = false;
+      this.isLoadingInvoices = false;
     });
   }
 
-  makeUniqueProductionPlansInvoice(items: Invoice[] | Order[]): void {
-    items.forEach(item => {
-      item.unique_root_production_plans = [];
-      item.root_production_plans.forEach(plan => {
-        if (plan.root_nomenclature) {
-          const nomenclatureId = plan.root_nomenclature.id;
-          const existingIndex = item.unique_root_production_plans.findIndex(unPlan => unPlan.root_nomenclature.id === nomenclatureId);
+  mapExpansion() {
+    this.categories.forEach(element => {
+      this.createExpanseMap(element);
+    });
+  }
 
-          if (existingIndex < 0) {
-            item.unique_root_production_plans.push(plan);
-          }
-        }
+  createExpanseMap(node: TreeNode<Category>) {
+    if (node.expanded) {
+      this.expanseMap[node.data.id] = node.expanded;
+    } else {
+      this.expanseMap[node.data.id] = false;
+    }
+    if (node.children) {
+      node.children.forEach(element => {
+        this.createExpanseMap(element);
       });
-    });
+    }
   }
 
-  private fillOwnProductionWithData() {
-    this.fillCategorizedTree();
+  getInvoices() {
+    this.invoiceService.get([
+      {name: 'needs_qc', value: true},
+      {name: 'by_qc_module_permission', value: true}
+    ]).pipe(
+      tap(invoices => this.invoices = invoices),
+      tap(() => this.makeUniqueProductionPlansInvoice()),
+      tap(() => this.resetProductPaymentTree()),
+      tap(() => this.isLoadingInvoices = false)
+    ).subscribe();
   }
 
-  fillCategorizedTree(): void {
-    const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
-
-    this.orders.forEach(order => {
-      order.unique_root_production_plans.forEach(plan => {
-        if (plan.root_nomenclature && plan.root_nomenclature.root_category) {
-          const rootCatId = plan.root_nomenclature.root_category.id;
-          const rootCatName = plan.root_nomenclature.root_category.name;
-          const rootLevel = 1;
-
-          const catId = plan.root_nomenclature.id;
-          const catName = plan.root_nomenclature.name;
-          const catLevel = 2;
-
-          const rootExistsIndex = categoriesTemp.findIndex(cat => cat.id === rootCatId && rootLevel === cat.level);
-
-          if (rootExistsIndex < 0) {
-            categoriesTemp.push({
-              id: rootCatId,
-              level: rootLevel,
-              name: rootCatName,
-              parentId: null
-            });
-          }
-
-          const catExistsIndex = categoriesTemp.findIndex(cat => cat.id === catId && catLevel === cat.level);
-
-          if (catExistsIndex < 0) {
-            categoriesTemp.push({
-              id: catId,
-              level: catLevel,
-              name: catName,
-              parentId: rootCatId
-            });
-          }
-        } else if (plan.root_nomenclature && !plan.root_nomenclature.root_category) {
-          const rootCatId = -1;
-          const rootCatName = 'Not Category';
-          const rootLevel = 1;
-
-          const catId = plan.root_nomenclature.id;
-          const catName = plan.root_nomenclature.name;
-          const catLevel = 2;
-
-          const rootExistsIndex = categoriesTemp.findIndex(cat => cat.id === rootCatId && rootLevel === cat.level);
-
-          if (rootExistsIndex < 0) {
-            categoriesTemp.push({
-              id: rootCatId,
-              level: rootLevel,
-              name: rootCatName,
-              parentId: null
-            });
-          }
-
-          const catExistsIndex = categoriesTemp.findIndex(cat => cat.id === catId && catLevel === cat.level);
-
-          if (catExistsIndex < 0) {
-            categoriesTemp.push({
-              id: catId,
-              level: catLevel,
-              name: catName,
-              parentId: rootCatId
-            });
-          }
-        }
-      });
-
-      if (order.unique_root_production_plans.length < 1) {
-        const noCategoryIndex = this.ownProductionCategorizedList.findIndex(nodeInner => nodeInner.data.id === -1);
-
-        if (noCategoryIndex < 0) {
-          this.ownProductionCategorizedList.push({
-            data: {
-              id: -1,
-              level: 1,
-              name: 'No Root List',
-              parentId: null
-            },
-            expanded: false,
-            children: [
-              {
-                data: {order, plan: null, level: 4},
-                expanded: false,
-                children: []
-              }]
-          });
-        } else {
-          this.ownProductionCategorizedList[noCategoryIndex].children.push(
-            {
-              data: {order, plan: null, level: 4},
-              expanded: false,
-              children: []
-            }
-          );
-        }
-      }
-    });
-
-    const temp = cloneDeep(this.ownProductionCategorizedList);
-    temp.forEach(node => {
-      this.appendCategories(node, categoriesTemp);
-    });
-
-    temp.forEach(node => {
-      this.fillWithTheData(node, this.orders);
-    });
-
-    temp.forEach(node => {
-      this.removeUpdateEmptyCategories(node);
-    });
-
-    this.ownProductionCategorizedList = temp;
+  getServices(): void {
+    this.orderService.get([
+      {name: 'needs_qc', value: true},
+      {name: 'by_qc_module_permission', value: true}
+    ]).pipe(
+      tap(orders => this.orders = orders),
+      tap(() => this.makeUniqueProductionPlans()),
+      tap(() => this.fillOwnProductionWithData()),
+    ).subscribe();
   }
 
   resetProductPaymentTree(): void {
     const categories: { name: string, description: string, id: number, level?: number }[] = [];
-
     this.invoices.forEach(invoice => {
       const purchaseCategory = invoice.purchase_category;
 
@@ -248,17 +127,17 @@ export class WarehouseQcComponent implements OnInit {
           categories.push({
             name: purchaseCategory.name,
             id: purchaseCategory.id,
-            description: purchaseCategory.description
+            description: purchaseCategory.description,
           });
         }
       } else {
-        if (invoice.order.accounting_type === 1) {
+        if (invoice.order?.accounting_type === 1) {
           const isAdded = categories.findIndex(el => el.id === -2);
           if (isAdded < 0) {
             categories.push({name: 'Production Lists Procurement', id: -2, description: '', level: 0});
           }
         }
-        if (invoice.order.accounting_type === 2) {
+        if (invoice.order?.accounting_type === 2) {
           const isAdded = categories.findIndex(el => el.id === -1);
           if (isAdded < 0) {
             categories.push({name: 'Outsourcing', id: -1, description: '', level: 0});
@@ -267,9 +146,8 @@ export class WarehouseQcComponent implements OnInit {
       }
     });
 
-    this.invoiceTree = [];
-
     categories.sort((a, b) => a.id - b.id);
+    this.invoiceTree = [];
     categories.forEach(cat => {
       this.invoiceTree.push({
         data: <any>cat,
@@ -290,6 +168,7 @@ export class WarehouseQcComponent implements OnInit {
     });
 
     this.invoiceTree.forEach(node => {
+      // Preparing Purchased Invoices
       this.invoices.filter(invoice => invoice.purchase_category).forEach(invoice => {
 
         const purchaseCategory = invoice.purchase_category;
@@ -306,14 +185,14 @@ export class WarehouseQcComponent implements OnInit {
 
       // Preparing Manufacturing Procurement
       if (node.data.id === -2) {
-        const manProc = this.invoices.filter(invoice => !invoice.purchase_category && invoice.order.accounting_type === 1);
+        const manProc = this.invoices.filter(invoice => !invoice.purchase_category && invoice.order?.accounting_type === 1);
         node.children = cloneDeep(this.categories);
         this.prepareInnerTreeCategories(manProc, node);
       }
 
       // Preparing Outsourcing
       if (node.data.id === -1) {
-        const outsourcing = this.invoices.filter(invoice => !invoice.purchase_category && invoice.order.accounting_type === 2);
+        const outsourcing = this.invoices.filter(invoice => !invoice.purchase_category && invoice.order?.accounting_type === 2);
         node.children = cloneDeep(this.categories);
         this.prepareInnerTreeCategories(outsourcing, node);
       }
@@ -322,14 +201,13 @@ export class WarehouseQcComponent implements OnInit {
     this.separatePurchasedAndManufactured();
   }
 
-  prepareInnerTreeCategories(invoices: Invoice[], nodeInner: TreeNode): void {
+  prepareInnerTreeCategories(invoices, nodeInner: TreeNode): void {
     const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
-
     invoices.forEach(order => {
       order.unique_root_production_plans.forEach(plan => {
-        if (plan.root_nomenclature) {
-          const rootCatId = plan.root_nomenclature.root_category?.id;
-          const rootCatName = plan.root_nomenclature.root_category?.name;
+        if (plan.root_nomenclature && plan.root_nomenclature.root_category) {
+          const rootCatId = plan.root_nomenclature.root_category.id;
+          const rootCatName = plan.root_nomenclature.root_category.name;
           const rootLevel = 1;
 
           const catId = plan.root_nomenclature.id;
@@ -377,7 +255,7 @@ export class WarehouseQcComponent implements OnInit {
           nodeInner.children.push({
             data: {
               id: -1,
-              level: 1,
+              level: 0,
               name: 'No Root List',
               parentId: null
             },
@@ -420,8 +298,164 @@ export class WarehouseQcComponent implements OnInit {
   separatePurchasedAndManufactured(): void {
     this.invoicePurchasedTree = this.invoiceTree.filter(invoice => invoice.data.id >= 0);
     this.invoiceManufacturedTree = this.invoiceTree.filter(invoice => invoice.data.id < 0);
+  }
 
-    console.log(this.invoiceTree);
+  makeUniqueProductionPlans(): void {
+    this.orders.forEach(order => {
+      order.unique_root_production_plans = [];
+      order.root_production_plans.forEach(plan => {
+        if (plan.root_nomenclature) {
+          const nomenclatureId = plan.root_nomenclature.id;
+          const existingIndex =
+            order.unique_root_production_plans
+              .findIndex(unPlan => unPlan.root_nomenclature.id === nomenclatureId);
+
+          if (existingIndex < 0) {
+            order.unique_root_production_plans.push(plan);
+          }
+        }
+      });
+    });
+  }
+
+  makeUniqueProductionPlansInvoice(): void {
+    this.invoices.forEach(invoice => {
+      invoice.unique_root_production_plans = [];
+      invoice.root_production_plans.forEach(plan => {
+        if (plan.root_nomenclature) {
+          const nomenclatureId = plan.root_nomenclature.id;
+          const existingIndex =
+            invoice.unique_root_production_plans
+              .findIndex(unPlan => unPlan.root_nomenclature.id === nomenclatureId);
+
+          if (existingIndex < 0) {
+            invoice.unique_root_production_plans.push(plan);
+          }
+        }
+      });
+    });
+  }
+
+  createTree(data) {
+    const dd = [];
+    data.forEach(element => {
+      const ins = {data: element, expanded: false};
+      if (this.expanseMap) {
+        ins.expanded = this.expanseMap[element.id];
+      }
+      dd.push(ins);
+    });
+    const root = [];
+    const idMapping = dd.reduce((acc, el, i) => {
+      acc[el.data.id] = i;
+      return acc;
+    }, {});
+    dd.forEach(el => {
+      if (el.data.parent === null) {
+        root.push(el);
+        return;
+      }
+      const parentEl = dd[idMapping[el.data.parent]];
+      parentEl.children = [...(parentEl.children || []), el];
+      if (parentEl.children.length === 0) {
+        delete parentEl.children;
+      }
+
+    });
+    this.categories = root;
+    this.ownProductionCategorizedList = cloneDeep(this.categories);
+  }
+
+  private fillOwnProductionWithData() {
+    this.fillCategorizedTree();
+  }
+
+  fillCategorizedTree(): void {
+    const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
+
+    this.orders.forEach(order => {
+      order.unique_root_production_plans.forEach(plan => {
+        if (plan.root_nomenclature && plan.root_nomenclature.root_category) {
+          const rootCatId = plan.root_nomenclature.root_category.id;
+          const rootCatName = plan.root_nomenclature.root_category.name;
+          const rootLevel = 1;
+
+          const catId = plan.root_nomenclature.id;
+          const catName = plan.root_nomenclature.name;
+          const catLevel = 2;
+
+          const rootExistsIndex = categoriesTemp.findIndex(cat => cat.id === rootCatId && rootLevel === cat.level);
+
+          if (rootExistsIndex < 0) {
+            categoriesTemp.push({
+              id: rootCatId,
+              level: rootLevel,
+              name: rootCatName,
+              parentId: null
+            });
+          }
+
+          const catExistsIndex = categoriesTemp.findIndex(cat => cat.id === catId && catLevel === cat.level);
+
+          if (catExistsIndex < 0) {
+            categoriesTemp.push({
+              id: catId,
+              level: catLevel,
+              name: catName,
+              parentId: rootCatId
+            });
+          }
+        }
+      });
+
+      if (order.unique_root_production_plans.length < 1) {
+        const noCategoryIndex = this.ownProductionCategorizedList.findIndex(nodeInner => nodeInner.data.id === -1);
+
+        if (noCategoryIndex < 0) {
+          this.ownProductionCategorizedList.push({
+            data: {
+              id: -1,
+              level: 0,
+              name: 'No Root List',
+              parentId: null
+            },
+            expanded: false,
+            children: [
+              {
+                data: {order, plan: null, level: 4},
+                expanded: false,
+                children: []
+              }]
+          });
+        } else {
+          this.ownProductionCategorizedList[noCategoryIndex].children.push(
+            {
+              data: {order, plan: null, level: 4},
+              expanded: false,
+              children: []
+            }
+          );
+        }
+      }
+    });
+
+    if (this.ownProductionCategorizedList) {
+      const temp = cloneDeep(this.ownProductionCategorizedList);
+      temp.forEach(node => {
+        this.appendCategories(node, categoriesTemp);
+      });
+
+      temp.forEach(node => {
+        this.fillWithTheData(node, this.orders);
+      });
+
+      temp.forEach(node => {
+        this.removeUpdateEmptyCategories(node);
+      });
+
+      this.ownProductionCategorizedList = temp;
+      this.isLoadingOrders = false;
+    }
   }
 
   appendCategories(node: TreeNode, categoriesTemp: { id: number, level: number, parentId: number, name: string }[]): void {
@@ -507,6 +541,7 @@ export class WarehouseQcComponent implements OnInit {
       if (hasContent) {
         hideFromTable = false;
       }
+
       node.children.forEach(childNode => {
         checkForContent(childNode);
       });
@@ -551,14 +586,6 @@ export class WarehouseQcComponent implements OnInit {
     }
   }
 
-  expandCollapseAllOrders(isToExpand = true): void {
-    const temp = cloneDeep(this.ownProductionCategorizedList);
-    temp.forEach(node => {
-      this.expandCollapseRecursive(node, isToExpand);
-    });
-    this.ownProductionCategorizedList = temp;
-  }
-
   expandCollapsePurchasedInvoices(isToExpand = true): void {
     const temp = cloneDeep(this.invoicePurchasedTree);
     temp.forEach(node => {
@@ -567,19 +594,11 @@ export class WarehouseQcComponent implements OnInit {
     this.invoicePurchasedTree = temp;
   }
 
-  onSelectInvoiceType(view: ViewType) {
-    this.invoicesViewType = view;
-  }
-
-  onSelectOrderType(view: ViewType) {
-    this.invoicesOrderType = view;
-  }
-
-  onSelectPurchaseType(view: ViewType) {
-    this.invoicesPurchasedType = view;
-  }
-
-  test() {
-    console.log(this.selectedInvoiceItem);
+  expandCollapseAllOrders(isToExpand = true): void {
+    const temp = cloneDeep(this.ownProductionCategorizedList);
+    temp.forEach(node => {
+      this.expandCollapseRecursive(node, isToExpand);
+    });
+    this.ownProductionCategorizedList = temp;
   }
 }

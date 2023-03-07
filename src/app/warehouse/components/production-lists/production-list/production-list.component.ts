@@ -12,6 +12,7 @@ import {ListProductService} from '../../../services/list-product.service';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
 import {GroupedRequest} from '../../../models/grouped-request';
 import {AlbumService} from '@shared/services/album.service';
+import {environment} from '@env/environment';
 
 export class TreePrint {
   data: ListProduct;
@@ -25,6 +26,8 @@ export class TreePrint {
 })
 
 export class ProductionListComponent implements OnInit {
+
+  link = environment.link_url + 'dash/';
 
   selectedNodeMenuItems: MenuItem[] = [
     {
@@ -132,6 +135,11 @@ export class ProductionListComponent implements OnInit {
           label: 'Make request for all',
           icon: 'pi pi-caret-right',
           command: () => this.makeRequestsForAll(),
+        },
+        {
+          label: 'Go To Plan',
+          icon: 'pi pi-angle-double-right',
+          command: () => this.goToPlan(),
         },
       ]
     }
@@ -594,5 +602,9 @@ export class ProductionListComponent implements OnInit {
   clearQrResults() {
     this.currentDisplayRowId = null;
     this.foundRowsIds = [];
+  }
+
+  goToPlan() {
+    window.open(this.link + `production/plan/tasks/${this.list.root_production_plans[0].id}`, '_blank');
   }
 }
