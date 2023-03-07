@@ -256,6 +256,7 @@ form {
   .tree-frozen-col-1 {
     position: sticky;
     left: 0;
+    z-index: 1;
   }
 
   .tree-frozen-col-2 {
@@ -266,6 +267,7 @@ form {
   .tree-frozen-col-3 {
     position: sticky;
     left: 550px;
+
     &::after {
       content: '';
       position: absolute;
@@ -303,5 +305,54 @@ form {
 
   th {
     border-right: 1px solid #dee2e6;
+  }
+}
+
+.text-overflow {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #fff;
+  line-height: 2rem;
+  transition: background 0.1s, color 0.1s;
+  padding-right: 0.5rem;
+  position: relative;
+  z-index: 2;
+
+  &:hover {
+    overflow: initial;
+  }
+}
+
+.deficit {
+  .text-overflow {
+    background: #f5dfe1;
+  }
+}
+
+.free-products {
+  .text-overflow {
+    background: #e1efe2;
+  }
+}
+
+.tree-table {
+  &::ng-deep {
+    .p-treetable .p-treetable-tbody > tr.p-highlight {
+      td {
+        .text-overflow {
+          background: #6f97d7;
+        }
+      }
+    }
+
+    .p-treetable.p-treetable-hoverable-rows .p-treetable-tbody > tr:not(.p-highlight):hover {
+      td {
+        .text-overflow {
+          background: #e9ecef !important;
+        }
+      }
+    }
   }
 }

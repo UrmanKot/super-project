@@ -226,7 +226,7 @@
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.HIERARCHY && !isShowFullStatistics">
-      <div class="table-pagination-preloader">
+      <div class="table-pagination-preloader tree-table">
         <p-treeTable
           [value]="orderTree"
           selectionMode="single"
@@ -237,10 +237,10 @@
           <ng-template pTemplate="header">
             <tr>
               <th rowspan="4" style="width: 20%; padding-left: 1.625rem;">Code</th>
-              <th rowspan="4" style="width: 20%">Name</th>
+              <th rowspan="4" style="width: 15%">Name</th>
               <th rowspan="4" style="width: 10%" class="text-center">Date Of Creation</th>
               <th rowspan="4" style="width: 10%" class="text-center">Sets</th>
-              <th rowspan="4" style="width: 10%" class="bord-right">Locator</th>
+              <th rowspan="4" style="width: 15%" class="bord-right text-center" >Locator</th>
             </tr>
 
             <tr>
@@ -258,23 +258,24 @@
           <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
             <tr [ttRow]="rowNode"
                 [ttSelectableRow]="rowNode"
-                [ttSelectableRowDisabled]="rowData.level < 4"
                 *ngIf="!rowData.hideFromTable"
                 [class.deficit]="rowData.level === 4 && rowData.list.descendants_has_deficit_accepted"
                 [class.free-products]="rowData.level === 4 && rowData.list.descendants_has_free_warehouse_products"
             >
               <td style="width: 20%">
-                <div class="toggle-row word-break">
+                <div class="toggle-row">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  <span [class.bold]="rowData.level < 4">
-                      {{rowData.name}}
-                  </span>
-                  <span *ngIf="rowData.level === 4">
-                    ({{rowData.list.id}}) {{rowData.list.nomenclature.code}}
+                  <span class="text-overflow">
+                    <span [class.bold]="rowData.level < 4">
+                        {{rowData.name}}
+                    </span>
+                    <span *ngIf="rowData.level === 4">
+                      ({{rowData.list.id}}) {{rowData.list.nomenclature.code}}
+                    </span>
                   </span>
                 </div>
               </td>
-              <td style="width: 20%">
+              <td style="width: 15%">
                 <span *ngIf="rowData.level === 4">
                     {{rowData.list.nomenclature.name}}
                 </span>
@@ -289,7 +290,7 @@
                     {{rowData.list.sets_number}}
                 </span>
               </td>
-              <td style="width: 10%">
+              <td style="width: 15%">
                   <span *ngIf="rowData.level === 4">
                       <div *ngIf="rowData.list.locator" class="d-flex justify-content-center">
                         {{rowData.list.locator.name + ' '}} R: {{rowData.list.locator.row}} Col:
@@ -562,7 +563,7 @@
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.HIERARCHY && isShowFullStatistics">
-      <div class="table-pagination-preloader tree-table-statistics">
+      <div class="table-pagination-preloader tree-table-statistics tree-table">
         <p-treeTable
           [value]="fullOrderTree"
           selectionMode="single"
@@ -664,18 +665,19 @@
             <tr
               [ttRow]="rowNode"
               [ttSelectableRow]="rowNode"
-              [ttSelectableRowDisabled]="rowData.level < 4"
               *ngIf="!rowData.hideFromTable"
             >
               <td class="tree-frozen-col-1 tree-td">
-                  <div class="toggle-row word-break">
+                  <div class="toggle-row">
                     <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <span class="text-overflow">
                     <span [class.bold]="rowData.level < 4">
                       {{rowData.name}}
                   </span>
                     <span *ngIf="rowData.level === 4">
                     ({{rowData.list.id}}) {{rowData.list.nomenclature.code}}
                   </span>
+                    </span>
                   </div>
               </td>
               <td class="tree-frozen-col-2 tree-td">
@@ -882,11 +884,29 @@
   <div class="action-buttons">
     <ng-container *ngIf="viewMode === viewModeType.HIERARCHY">
       <button
+        [disabled]="!selectedOrderNode || selectedOrderNode?.children.length === 0"
+        pButton
+        type="button"
+        icon="pi pi-angle-down"
+        label="Expand"
+        class="ml-auto mr-2"
+        (click)="expandCollapse(selectedOrderNode, true)"
+      ></button>
+      <button
+        [disabled]="!selectedOrderNode || selectedOrderNode?.children.length === 0"
+        pButton
+        type="button"
+        icon="pi pi-angle-up"
+        class="mr-2"
+        label="Collapse"
+        (click)="expandCollapse(selectedOrderNode, false)"
+      ></button>
+      <button
         pButton
         type="button"
         icon="pi pi-angle-down"
         label="Expand All"
-        class="ml-auto mr-2"
+        class="mr-2"
         (click)="expandCollapseAllOrders()"
       ></button>
       <button
@@ -939,7 +959,7 @@
 <!--      >-->
 <!--      </button>-->
 
-      <p-menubar [model]="menuItemsNode" [class.disabled]="!selectedOrderNode"></p-menubar>
+      <p-menubar [model]="menuItemsNode" [class.disabled]="!selectedOrderNode || selectedOrderNode.children.length > 0"></p-menubar>
     </ng-container>
 
     <ng-container *ngIf="viewMode === viewModeType.LIST">

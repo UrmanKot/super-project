@@ -779,10 +779,36 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private goToProductionList() {
-    window.open(`/warehouse/production-lists/${this.selectedList?.id}`, '_blank')
+    window.open(`/warehouse/production-lists/${this.selectedList?.id}`, '_blank');
   }
 
   private goToProductionListNode() {
-    window.open(`/warehouse/production-lists/${this.selectedOrderNode.data.list.id}`, '_blank')
+    window.open(`/warehouse/production-lists/${this.selectedOrderNode.data.list.id}`, '_blank');
+  }
+
+  expandCollapse(node, isToExpand) {
+    const temp = cloneDeep(this.orderTree);
+    temp.forEach(n => {
+      this.makeRow(n, node, isToExpand)
+    })
+    this.orderTree = temp;
+
+    const tempFull = cloneDeep(this.fullOrderTree);
+    tempFull.forEach(n => {
+      this.makeRow(n, node, isToExpand)
+    })
+    this.fullOrderTree = tempFull;
+  }
+
+  makeRow(node, dat, isExpanded) {
+    if (node.data?.id === dat.data?.id) {
+      this.expandCollapseRecursive(node, isExpanded);
+    } else {
+      if (node.children) {
+        node.children.forEach(element => {
+          this.makeRow(element, dat, isExpanded);
+        });
+      }
+    }
   }
 }
