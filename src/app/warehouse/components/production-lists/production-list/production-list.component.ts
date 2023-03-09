@@ -10,7 +10,6 @@ import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
-import {GroupedRequest} from '../../../models/grouped-request';
 import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
 
@@ -181,7 +180,6 @@ export class ProductionListComponent implements OnInit {
   }
 
   printAlbum() {
-    console.log(this.selectedNodeTree);
     this.albumService.getNomenclaturesImages((<any[]>this.selectedNodeTree).map(r => r.data?.nomenclature));
   }
 
@@ -276,6 +274,8 @@ export class ProductionListComponent implements OnInit {
   }
 
   generateTree() {
+    const sortType = {'0': 3, '1': 1, '2': 2};
+    this.copyProducts.sort((a, b) => sortType[a.nomenclature.type] - sortType[b.nomenclature.type]);
     const getChildren = (nodes) => {
       nodes.forEach(node => {
         const children = this.copyProducts.filter(c => c.parent === node.data.id);

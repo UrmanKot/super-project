@@ -37,8 +37,41 @@
       </p>
     </div>
   </div>
-
-
+  <h2>Ordered Items</h2>
+  <div class="warehouse-production-request-print-page__table">
+    <div
+      *ngFor="let request of orderedProducts"
+      class="warehouse-production-request-print-page__row"
+    >
+      <div class="warehouse-production-request-print-page__box">
+        <div class="warehouse-production-request-print-page__col">
+          <h3>ID</h3>
+          <p>{{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span></p>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Code</h3>
+            {{request.nomenclature.code}}
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Name</h3>
+          {{request.nomenclature.name}}
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Technology</h3>
+          <span *ngIf="request.current_technology">{{request.current_technology?.name}}</span>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Quantity</h3>
+          {{request.quantity}}
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Type</h3>
+          <p>{{getType(request.nomenclature?.type)}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>Parts/materials list</h2>
   <div class="warehouse-production-request-print-page__table">
     <div
       *ngFor="let request of requests"
@@ -76,9 +109,23 @@
             {{request.list_product.nomenclature.name}}
           </div>
         </div>
-        <div class="warehouse-production-request-print-page__col">
+        <div class="warehouse-production-request-print-page__col_half">
           <h3>Technology</h3>
           <span *ngIf="request.technology">{{request.technology}}</span>
+        </div>
+        <div class="warehouse-production-request-print-page__col_half">
+          <h3>UOM</h3>
+          <div
+            *ngIf="request.material_nomenclature">
+            {{request.material_nomenclature?.category?.unit_of_measure?.symbol ? request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
+          <div
+            *ngIf="request.order_product_nomenclature">
+            {{request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            {{request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
         </div>
         <div class="warehouse-production-request-print-page__col">
           <h3>Required Quantity</h3>

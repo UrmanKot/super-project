@@ -21,6 +21,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ScanResult} from '../../../qr-code/models/scan-result';
 import {GroupedRequest} from '../../models/grouped-request';
 import {AlbumService} from '@shared/services/album.service';
+import {OrderProduct} from '../../../procurement/models/order-product';
 
 
 enum ViewMode {
@@ -101,6 +102,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   detailedRequestTree: TreeNode[] = [];
   selectedDetailedRequestNode: TreeNode;
+  orderedProducts: OrderProduct[] = [];
 
   technicalEquipments: OrderTechnicalEquipment[] = [];
   isLoadingTree = true;
@@ -149,7 +151,6 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.ordersService.getById(orderId).pipe(
       takeUntil(this.destroy$)
     ).pipe(untilDestroyed(this)).subscribe(order => {
-
       this.order = order;
       this.order.ordered_items_technologies = [];
       this.order.order_products.forEach(product => {
@@ -159,6 +160,14 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           if (canAddTechnology) {
             this.order.ordered_items_technologies.push(product.current_technology.name);
           }
+        }
+
+        const productInList = this.orderedProducts.find(el => el.nomenclature.id === product.nomenclature.id &&
+          el.current_technology?.id === product.current_technology?.id);
+        if (productInList) {
+          productInList.quantity += product.quantity;
+        } else {
+          this.orderedProducts.push(product);
         }
       });
       this.prepareDetailedCategoryTree();
