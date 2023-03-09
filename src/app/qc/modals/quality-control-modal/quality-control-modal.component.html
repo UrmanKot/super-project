@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Quality Control (Name: {{data.entity.nomenclature.name}}, Quantity: {{data.entity.quantity}})
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="passed"> Passed* </label>
+      <input
+        pInputText
+        formControlName="passed_quantity"
+        class="form-control"
+        min="0"
+        max="{{data.entity.quantity}}"
+        type="number"
+        id="passed"
+      >
+    </div>
+    <div class="form-group">
+      <label for="np"> Not Passed* </label>
+      <input
+        pInputText
+        formControlName="not_passed_quantity"
+        class="form-control"
+        min="0"
+        max="{{data.entity.quantity}}"
+        type="number"
+        id="np"
+      >
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button pButton type="button" label="Complete" class="p-button-success" [disabled]="form.invalid || isDisableCompleteButton()" (click)="onComplete()" [loading]="isPending"></button>
+</mat-dialog-actions>

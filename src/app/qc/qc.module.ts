@@ -8,6 +8,7 @@ import {SharedModule} from '@shared/shared.module';
 import {LayoutModule} from '../layout/layout.module';
 import { QcInvoiceComponent } from './components/qc-invoice/qc-invoice.component';
 import { QcOrderComponent } from './components/qc-order/qc-order.component';
+import { QualityControlModalComponent } from './modals/quality-control-modal/quality-control-modal.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { QcOrderComponent } from './components/qc-order/qc-order.component';
     QcListComponent,
     QcLayoutComponent,
     QcInvoiceComponent,
-    QcOrderComponent
+    QcOrderComponent,
+    QualityControlModalComponent
   ],
   imports: [
     CommonModule,

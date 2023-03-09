@@ -20,7 +20,7 @@
         *ngFor="let qrCode of qrCodes.without_serial"
         class="qr-code-modal__item"
       >
-        <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+        <pek-qr-code-item [qrCode]="qrCode" [orderId]="data?.orderId" [invoiceId]="data?.invoiceId"></pek-qr-code-item>
       </li>
     </ul>
 
@@ -33,13 +33,13 @@
         *ngFor="let qrCode of qrCodes.with_serial"
         class="qr-code-modal__item"
       >
-        <pek-qr-code-item [qrCode]="qrCode"></pek-qr-code-item>
+        <pek-qr-code-item [qrCode]="qrCode" [invoiceId]="data?.invoiceId" [orderId]="data?.orderId"></pek-qr-code-item>
       </li>
     </ul>
   </div>
 
   <div class="qr-code-modal__print">
-    <pek-print-qr-codes [qrCodes]="qrCodes"></pek-print-qr-codes>
+    <pek-print-qr-codes [qrCodes]="qrCodes" [orderId]="data?.orderId" [invoiceId]="data?.invoiceId"></pek-print-qr-codes>
   </div>
 
 </mat-dialog-content>

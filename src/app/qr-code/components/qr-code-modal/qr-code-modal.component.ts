@@ -9,16 +9,18 @@ import {QrCode, QrCodes} from '../../qr-code';
 })
 export class QrCodeModalComponent implements OnInit {
 
+  qrCodes: QrCodes
   qrCodesWithOutSerial: QrCode[] = [];
   qrCodesWithSerial: QrCode[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<QrCodeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public qrCodes: QrCodes
+    @Inject(MAT_DIALOG_DATA) public data: {qrCodes: QrCodes, orderId: number, invoiceId: string}
   ) {
   }
 
   ngOnInit(): void {
+    this.qrCodes = this.data.qrCodes;
     this.qrCodesWithOutSerial = this.qrCodes.without_serial;
     this.qrCodesWithSerial = this.qrCodes.with_serial;
   }

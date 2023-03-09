@@ -20,6 +20,7 @@ export class InvoiceProduct {
   checkedForGeneration?: boolean;
   nomenclature?: Nomenclature;
   products: InvoiceProduct[];
+  serial_numbers: any;
   exists_on_locators: Locator[];
 }
 
