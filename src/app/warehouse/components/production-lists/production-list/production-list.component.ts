@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {ListService} from '../../../services/list.service';
 import {take} from 'rxjs/operators';
@@ -17,6 +17,16 @@ import {environment} from '@env/environment';
 export class TreePrint {
   data: ListProduct;
   children: ListProduct[];
+}
+
+export class UIListProduct extends ListProduct {
+  products: ListProduct[];
+
+  constructor(config: Partial<ListProduct>, products: ListProduct[]) {
+    super();
+    Object.assign(this, config);
+    this.products = products;
+  }
 }
 
 @Component({
@@ -104,7 +114,7 @@ export class ProductionListComponent implements OnInit {
   copyProducts: ListProduct[];
   isLoadingTree = true;
 
-  tree: any;
+  tree: TreeNode<ListProduct>[] = [];
 
   isShowPrint = false;
 
@@ -150,6 +160,7 @@ export class ProductionListComponent implements OnInit {
   isScanned = false;
   scanningEnd = true;
   elementsRowsIds: string[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private modalService: ModalService,
@@ -160,19 +171,98 @@ export class ProductionListComponent implements OnInit {
     private messageService: MessageService,
     public readonly albumService: AlbumService,
   ) {
-    this.routerHandler$ = router.events.subscribe(res => {
-      if (res instanceof NavigationEnd) {
-        this.listId = this.route.snapshot.paramMap.get('id');
-        this.getAll();
-      }
-    });
+    // this.routerHandler$ = router.events.subscribe(res => {
+    //   if (res instanceof NavigationEnd) {
+    //     this.listId = this.route.snapshot.paramMap.get('id');
+    //     // this.getAll();
+    //     this.getListProducts();
+    //     this.getList()
+    //   }
+    // });
   }
 
   ngOnInit(): void {
+    this.getList();
+    this.getListProducts();
   }
 
   ngOnDestroy(): void {
     this.routerHandler$.unsubscribe();
+  }
+
+  getList() {
+    this.listService.getById(+this.listId).subscribe(list => this.list = list);
+  }
+
+  getListProducts() {
+    this.tree = [];
+    this.isLoading = true;
+
+    this.listService.getFullList(+this.listId).subscribe(lists => {
+      const newListProducts: ListProduct[] = [];
+
+      lists.forEach(list => {
+        list.reserved_quantity = list.reserved_quantity ?? 0;
+        list.actual_quantity = list.actual_quantity ?? 0;
+
+        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
+          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
+          list.groupedProductIds = list.products.map(p => p.id);
+          list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
+          // list.status
+          newListProducts.push(list);
+        }
+      });
+
+      newListProducts.forEach(list => {
+        // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
+        list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0);
+        list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
+        list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
+      });
+
+      newListProducts.filter(l => l.level === 1).forEach(list => {
+        this.tree.push({
+          data: list,
+          children: [],
+          expanded: false
+        });
+      });
+
+      const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
+        const newListProducts: ListProduct[] = [];
+        level++;
+
+        lists.filter(l => l.level === level).forEach(list => {
+          if (!newListProducts.find((l) => l.nomenclature.id === list.nomenclature.id && list.technology?.id === l.technology?.id)) {
+            newListProducts.push(list);
+          }
+        });
+
+        nodes.filter(n => n.data.has_children).forEach(n => {
+          newListProducts.forEach(list => {
+            if (n.data.groupedProductIds.includes(list.parent)) {
+
+              n.children.push({
+                data: list,
+                children: [],
+                expanded: false
+              });
+            }
+          });
+
+          if (n.children.length > 0) {
+            fillTree(n.children, level);
+          }
+        });
+      };
+
+      fillTree(this.tree, 1);
+
+      this.tree = this.tree.map(l => l);
+
+      this.isLoading = false;
+    });
   }
 
   togglePrintAlbumMode() {
@@ -355,16 +445,16 @@ export class ProductionListComponent implements OnInit {
 
   setQuantities() {
     if (this.mode === 'list') {
-      this.listService.setQuantities(+this.listId).pipe(take(1)).subscribe(res => this.getAll());
+      this.listService.setQuantities(+this.listId).pipe(take(1)).subscribe(res => this.getListProducts());
     } else {
       if (!this.selectedNodeTree) {
         this.listService.setQuantities(+this.listId).subscribe(() => {
-          this.getAll();
+          this.getListProducts();
         });
       } else {
         if (this.selectedNodeTree.data.list_url) {
           this.listService.setQuantities(this.selectedNodeTree.data.list).subscribe(() => {
-            this.getAll();
+            this.getListProducts();
           });
         }
       }
@@ -411,7 +501,7 @@ export class ProductionListComponent implements OnInit {
     this.modalService.confirm('success').subscribe(res => {
       if (res) {
         this.listService.make_deficit(this.list.id).subscribe(res => {
-          this.getAll();
+          this.getListProducts();
         });
       }
     });
@@ -489,7 +579,7 @@ export class ProductionListComponent implements OnInit {
 
   selectMode(mode: any) {
     this.mode = mode;
-    this.onSelectTreeNode()
+    this.onSelectTreeNode();
   }
 
   makeDeficitOne(node: any) {
@@ -498,10 +588,10 @@ export class ProductionListComponent implements OnInit {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
         this.listService.makeDeficitOne(node.id).subscribe(() => {
-          this.getAll();
-        })
+          this.getListProducts();
+        });
       }
-    })
+    });
   }
 
   onSelectTreeNode() {
@@ -521,7 +611,7 @@ export class ProductionListComponent implements OnInit {
       this.elementsRowsIds = [];
       const elements = document.querySelectorAll(`[id^=row-]`);
       elements.forEach((element) => {
-        this.elementsRowsIds.push(element.id)
+        this.elementsRowsIds.push(element.id);
       });
     });
 
@@ -539,14 +629,18 @@ export class ProductionListComponent implements OnInit {
           this.scrollToElement('row-' + this.currentDisplayRowId);
         }
       } else {
-        this.messageService.add({severity: 'error', summary: 'No matching found.', detail: `No product lists was found with scanned QR code!`});
+        this.messageService.add({
+          severity: 'error',
+          summary: 'No matching found.',
+          detail: `No product lists was found with scanned QR code!`
+        });
       }
     });
   }
 
   scrollToElement(rowId: string): void {
     const element = document.getElementById(rowId);
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 
   isFoundRow(productId: number): boolean {
@@ -561,7 +655,7 @@ export class ProductionListComponent implements OnInit {
       this.elementsRowsIds = [];
       const elements = document.querySelectorAll(`[id^=row-]`);
       elements.forEach((element) => {
-        this.elementsRowsIds.push(element.id)
+        this.elementsRowsIds.push(element.id);
       });
     });
     this.isScanned = true;
@@ -571,7 +665,7 @@ export class ProductionListComponent implements OnInit {
   onScanned(data: any) {
     this.scanningEnd = true;
     this.isScanned = false;
-    this.scanForListProduct(data)
+    this.scanForListProduct(data);
   }
 
   onCancelScanned() {
