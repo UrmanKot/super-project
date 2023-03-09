@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {ListService} from '../../../services/list.service';
 import {take} from 'rxjs/operators';
@@ -16,16 +16,6 @@ import {environment} from '@env/environment';
 export class TreePrint {
   data: ListProduct;
   children: ListProduct[];
-}
-
-export class UIListProduct extends ListProduct {
-  products: ListProduct[];
-
-  constructor(config: Partial<ListProduct>, products: ListProduct[]) {
-    super();
-    Object.assign(this, config);
-    this.products = products;
-  }
 }
 
 @Component({
@@ -170,11 +160,17 @@ export class ProductionListComponent implements OnInit {
     private messageService: MessageService,
     public readonly albumService: AlbumService,
   ) {
+    this.routerHandler$ = router.events.subscribe(res => {
+      if (res instanceof NavigationEnd) {
+        this.listId = this.route.snapshot.paramMap.get('id');
+        this.getAll();
+      }
+    });
   }
 
   ngOnInit(): void {
-    this.getList();
-    this.getListProducts();
+    // this.getList();
+    // this.getListProducts();
   }
 
   getList() {
