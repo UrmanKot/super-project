@@ -76,6 +76,16 @@ export class InvoiceService {
     );
   }
 
+  cancellation(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + id + '/cancellation/', null);
+  }
+
+  updatePartly(invoice: Partial<Invoice>): Observable<Invoice> {
+    return this.httpClient.patch<{ data: Invoice }>(this.API_URL + this.url + invoice.id + '/', invoice).pipe(
+      map(response => response.data)
+    );
+  }
+
   severalUploadFiles(invoiceId: number, files: File[]): Observable<InvoiceFile[]> {
     const arrayFormData: FormData[] = [];
 

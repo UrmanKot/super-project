@@ -22,6 +22,8 @@ import {
 import {
   AddMaterialToOrderComponent
 } from '../../outsourcing/modals/add-material-to-order/add-material-to-order.component';
+import {OrderTechnicalEquipment} from '../../warehouse/models/order-technical-equipment';
+import {InvoiceProduct} from '../models/invoice-product';
 
 @Injectable({
   providedIn: 'root'
@@ -154,6 +156,12 @@ export class OrderProductService {
 
   removeFromOrder(orderProduct: OrderProduct): Observable<any> {
     return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct)
+  }
+
+  getTechnicalEquipmentToQC(id): Observable<OrderTechnicalEquipment[]> {
+    return this.httpClient.get<{ data: OrderTechnicalEquipment[] }>(this.API_URL + 'orders/' + id + '/technical_equipment_to_qc/').pipe(
+      map(response => response.data)
+    );
   }
 
   openAddOutsourcingRequestModal(orderId: number): Observable<OrderProduct> {

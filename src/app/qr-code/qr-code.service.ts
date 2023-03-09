@@ -20,11 +20,11 @@ export class QrCodeService {
   ) {
   }
 
-  showQrCodeModal(qrCodes: QrCodes): Observable<void> {
+  showQrCodeModal(qrCodes: QrCodes, orderId?: number, invoiceId?: string): Observable<void> {
     return this.dialog
       .open<QrCodeModalComponent>(QrCodeModalComponent, {
         width: '80rem',
-        data: qrCodes,
+        data: {qrCodes, orderId, invoiceId},
         height: 'auto',
         autoFocus: false,
         enterAnimationDuration: '250ms'
@@ -32,7 +32,7 @@ export class QrCodeService {
       .afterClosed();
   }
 
-  generateQrCodes(send: any): Observable<QrCodes> {
+  generateQrCodes(send: any, orderId?: number, invoiceId?: string): Observable<QrCodes> {
     return this.http.post<{ data: QrCodes }>(environment.base_url + 'warehouse/generate_qr_codes/', send).pipe(
       map(response => response.data),
       tap(qrCodes => {
@@ -52,7 +52,7 @@ export class QrCodeService {
 
         qrCodes.with_serial = [...newQrCodesSerials];
       }),
-      tap(qrCodes => this.showQrCodeModal(qrCodes))
+      tap(qrCodes => this.showQrCodeModal(qrCodes, orderId, invoiceId))
     );
   }
 }

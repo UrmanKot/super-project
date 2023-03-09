@@ -8,6 +8,8 @@ import {QrCode, QrCodes} from '../../qr-code';
 })
 export class QrCodeItemComponent implements OnInit {
   @Input() qrCode: QrCode;
+  @Input() orderId: number;
+  @Input() invoiceId: string;
 
   constructor() { }
 

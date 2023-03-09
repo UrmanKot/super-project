@@ -4,5 +4,7 @@
     <p *ngIf="qrCode?.serial_number">{{qrCode.serial_number}}</p>
     <p>{{qrCode.code}}</p>
     <p>{{qrCode.name}}</p>
+    <p *ngIf="invoiceId">Invoice {{invoiceId}}</p>
+    <p *ngIf="orderId">Order {{orderId}}</p>
   </div>
 </div>
