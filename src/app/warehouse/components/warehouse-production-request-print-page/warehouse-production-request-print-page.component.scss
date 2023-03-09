@@ -42,6 +42,11 @@
     padding: 5px;
   }
 
+  &__col_half {
+    width: 12.5%;
+    padding: 5px;
+  }
+
   h2 {
     font-size: 18px;
     font-weight: 500;
@@ -89,7 +94,7 @@
 
   &__table {
     margin-bottom: 60px;
-
+    margin-top: 10px;
     @media print {
       page-break-after: auto;
       //page-break-before: always;

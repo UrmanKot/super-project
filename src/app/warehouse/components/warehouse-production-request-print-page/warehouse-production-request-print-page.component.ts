@@ -1,9 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Request} from '../../models/request';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 import {AuthService} from '../../../auth/auth.service';
-import {SerialNumber} from '../../../procurement/models/invoice';
 import {GroupedRequest} from '../../models/grouped-request';
+import {OrderProduct} from '../../../procurement/models/order-product';
 
 @Component({
   selector: 'pek-warehouse-production-request-print-page',
@@ -12,6 +11,7 @@ import {GroupedRequest} from '../../models/grouped-request';
 })
 export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   @Input() requests: GroupedRequest[] = [];
+  @Input() orderedProducts: OrderProduct[] = [];
   @Input() rootList: any;
   @Input() orderId: number;
   @Input() technologies: string[];

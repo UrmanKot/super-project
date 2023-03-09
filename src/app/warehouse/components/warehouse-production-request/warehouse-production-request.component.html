@@ -28,10 +28,18 @@
         </a>
 
         <span *ngIf="order?.root_production_plans" class="ml-2">
-      <span *ngIf="order?.root_production_plans.length === 1">
+      <span *ngIf="order?.root_production_plans.length > 0"
+            class="order-ids-container">
         <a (click)="onGoProd(order?.root_production_plans[0].id)">
           {{order?.root_production_plans[0].list_product.nomenclature.name}}
         </a>
+        <div *ngIf="order?.root_production_plans.length > 1" class="orders-ids">
+          <div *ngFor="let root_plan of order.root_production_plans">
+            <a (click)="onGoProd(root_plan.id)">
+             {{root_plan.list_product.nomenclature.name}} ({{root_plan.id}})
+            </a>
+          </div>
+        </div>
       </span>
     </span>
         <div class="colors">
@@ -224,8 +232,9 @@
               <th style="width: 10%;" class="text-center">Serial Number</th>
               <th style="width: 12%;" class="text-center">Technology</th>
               <th class="text-center" style="width: 14%;">Required Quantity</th>
-              <th class="text-center" style="width: 12%;">Locator</th>
-              <th class="text-center" style="width: 12%;">Available Quantity</th>
+              <th class="text-center" style="width: 10%;">Locator</th>
+              <th class="text-center" style="width: 4%;">UOM</th>
+              <th class="text-center" style="width: 10%;">Available Quantity</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-request let-i="rowIndex">
@@ -300,7 +309,7 @@
                 <h3 class="td-title">Required Quantity</h3>
                 {{request.total_required_quantity}}
               </td>
-              <td style="width: 12%" class="text-center">
+              <td style="width: 10%" class="text-center">
                 <h3 class="td-title">Locator</h3>
                 <div *ngIf="request.locators">
                   <div *ngFor="let locator of request.unique_locators; let last=last">
@@ -308,7 +317,21 @@
                   </div>
                 </div>
               </td>
-              <td style="width: 12%;" class="text-center">
+              <td style="width: 4%" class="text-center">
+                <h3 class="td-title">UOM</h3>
+                <div
+                  *ngIf="request.material_nomenclature">
+                  {{request.material_nomenclature?.category?.unit_of_measure?.symbol ? request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div
+                  *ngIf="request.order_product_nomenclature">
+                  {{request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  {{request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+              </td>
+              <td style="width: 10%;" class="text-center">
                 <h3 class="td-title">Available Quantity</h3>
                 {{request.available_quantity_sum}}
               </td>
@@ -414,7 +437,8 @@
             <th style="width: 10%;">Name</th>
             <th style="width: 10%;" class="text-center">Serial Number</th>
             <th style="width: 10%;" class="text-center">Technology</th>
-            <th class="text-center" style="width: 14%;">Required Quantity</th>
+            <th class="text-center" style="width: 10%;">Required Quantity</th>
+            <th class="text-center" style="width: 4%;">UOM</th>
             <th class="text-center" style="width: 10%;">Locator</th>
             <th class="text-center" style="width: 12%;">Available Quantity</th>
           </tr>
@@ -502,10 +526,26 @@
                 <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
               </div>
             </td>
-            <td style="width: 14%;" class="text-center">
+            <td style="width: 10%;" class="text-center">
               <h3 class="td-title">Required Quantity</h3>
               <div *ngIf="rowData.level === 4">
                 {{rowData.request.total_required_quantity}}
+              </div>
+            </td>
+            <td style="width: 14%;" class="text-center">
+              <h3 class="td-title">UOM</h3>
+              <div *ngIf="rowData.level === 4">
+                <div
+                  *ngIf="rowData.request.material_nomenclature">
+                  {{rowData.request.material_nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div
+                  *ngIf="rowData.request.order_product_nomenclature">
+                  {{rowData.request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  {{rowData.request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
               </div>
             </td>
             <td style="width: 10%" class="text-center">
@@ -765,6 +805,7 @@
   <div>
     <pek-warehouse-production-request-print-page
       [rootList]="rootList"
+      [orderedProducts]="orderedProducts"
       [orderId]="+orderId"
       [requests]="listRequests"
       [currentReqDate]="currentReqDate"
