@@ -18,6 +18,7 @@ import {
 import {
   ProductionListChainsStatisticsComponent
 } from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
+import {ListProduct} from '../models/list-product';
 
 @Injectable({
   providedIn: 'root'

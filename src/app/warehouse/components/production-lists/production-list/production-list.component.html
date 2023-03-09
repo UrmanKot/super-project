@@ -358,7 +358,8 @@
               <div class="row-checkbox">
                 <h3 class="td-title">Code</h3>
                 <div class="toggle">
-                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [class.disabled-toggler]="rowData.status == 1" [value]="rowNode"></p-treeTableCheckbox>
+                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [class.disabled-toggler]="rowData.status == 1"
+                                       [value]="rowNode"></p-treeTableCheckbox>
                 </div>
                 <div class="toggle-row">
                   <p-treeTableToggler [rowNode]="rowNode"
@@ -380,14 +381,16 @@
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
               ) {{rowData.nomenclature.name}}
 
-              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0" class="serial-numbers">
-              <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0"
+              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
                    class="serial-numbers">
-                <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
-                  {{serialNumber.type_with_number}} (R)
-                </div>
-                <div *ngFor="let serialNumber of rowData.future_serial_numbers">
-                  {{serialNumber.type_with_number}} (F)
+                <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0"
+                     class="serial-numbers">
+                  <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
+                    {{serialNumber.type_with_number}} (R)
+                  </div>
+                  <div *ngFor="let serialNumber of rowData.future_serial_numbers">
+                    {{serialNumber.type_with_number}} (F)
+                  </div>
                 </div>
               </div>
             </td>

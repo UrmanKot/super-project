@@ -171,23 +171,11 @@ export class ProductionListComponent implements OnInit {
     private messageService: MessageService,
     public readonly albumService: AlbumService,
   ) {
-    // this.routerHandler$ = router.events.subscribe(res => {
-    //   if (res instanceof NavigationEnd) {
-    //     this.listId = this.route.snapshot.paramMap.get('id');
-    //     // this.getAll();
-    //     this.getListProducts();
-    //     this.getList()
-    //   }
-    // });
   }
 
   ngOnInit(): void {
     this.getList();
     this.getListProducts();
-  }
-
-  ngOnDestroy(): void {
-    this.routerHandler$.unsubscribe();
   }
 
   getList() {
