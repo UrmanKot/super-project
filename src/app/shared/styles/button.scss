@@ -85,6 +85,10 @@ a {
 .p-button-icon {
   font-size: var(--theme-font-size-s);
 
+  .p-button-label {
+    transition-duration: 0s !important;
+  }
+
   &.p-button-loading {
     .p-button-label {
       padding-left: 1.5rem !important;
