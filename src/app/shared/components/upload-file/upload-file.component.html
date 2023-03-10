@@ -84,7 +84,7 @@
           <div class="upload-file__upload-files-inner">
             <i class="pi pi-check-circle"></i>
             <p>{{file.name}}</p>
-            <span>{{getFileSize(file.size)}} КБ</span>
+            <span *ngIf="file?.size">{{getFileSize(file.size)}} КБ</span>
           </div>
 
           <div

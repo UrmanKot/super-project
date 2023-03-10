@@ -15,7 +15,6 @@ import {
 import {
   AddOrderProductToOrderComponent
 } from '../modals/add-order-product-to-order/add-order-product-to-order.component';
-import {Order} from '../models/order';
 import {
   CreateOutsourcingRequestComponent
 } from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
@@ -23,7 +22,6 @@ import {
   AddMaterialToOrderComponent
 } from '../../outsourcing/modals/add-material-to-order/add-material-to-order.component';
 import {OrderTechnicalEquipment} from '../../warehouse/models/order-technical-equipment';
-import {InvoiceProduct} from '../models/invoice-product';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +51,12 @@ export class OrderProductService {
     }
 
     return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'all/' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getQc(id: number): Observable<OrderProduct[]> {
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + 'orders/' + id + '/products_to_qc/').pipe(
       map(response => response.data)
     );
   }
@@ -108,6 +112,10 @@ export class OrderProductService {
     );
   }
 
+  reworkOrderProduct(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + `${id}/to_initial_state/`, null);
+  }
+
   getGroupedOutsource(query?: { name: string, value: any }[]): Observable<OrderProduct[]> {
     let queryParams = '';
     if (query) {
@@ -136,15 +144,21 @@ export class OrderProductService {
     );
   }
 
+  severalUpdatePartly(send: Partial<OrderProduct[]>): Observable<OrderProduct[]> {
+    return forkJoin(...send.map(product => this.httpClient.patch<{ data: OrderProduct }>(this.API_URL + this.url + product.id + '/', product).pipe(
+      map(response => response.data)))
+    );
+  }
+
   deleteSeveral(orderProducts: OrderProduct[]): Observable<OrderProduct[]> {
     return forkJoin(...orderProducts.map(orderProduct => this.httpClient.delete<OrderProduct>(this.API_URL + this.url + orderProduct.not_ordered_product_id + '/')));
   }
 
-  closeOrders(orderProducts: OrderProduct[]): Observable<OrderProduct[]>  {
+  closeOrders(orderProducts: OrderProduct[]): Observable<OrderProduct[]> {
     return forkJoin(...orderProducts.map(orderProduct => this.httpClient.post<OrderProduct>(this.API_URL + this.url + orderProduct.not_ordered_product_id + '/clean_unnecessary/', orderProduct.not_ordered_product_id)));
   }
 
-  addToOrder(send: {id: number; order: number}[]) : Observable<OrderProduct[]>{
+  addToOrder(send: { id: number; order: number }[]): Observable<OrderProduct[]> {
     return forkJoin(...send.map(send => this.httpClient.patch<OrderProduct>(this.API_URL + this.url + send.id + '/', send)));
   }
 
@@ -154,8 +168,12 @@ export class OrderProductService {
     );
   }
 
+  reworkOrder(ids: number[]): Observable<any> {
+    return forkJoin(...ids.map(id => this.httpClient.post(this.API_URL + this.url + `${id}/to_initial_state/`, null)));
+  }
+
   removeFromOrder(orderProduct: OrderProduct): Observable<any> {
-    return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct)
+    return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct);
   }
 
   getTechnicalEquipmentToQC(id): Observable<OrderTechnicalEquipment[]> {

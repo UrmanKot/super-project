@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavigationLink} from '../../../layout/navigation-route';
 
 @Component({
@@ -10,10 +10,14 @@ export class QcLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Invoices', commands: ['list']},
-    {label: 'Protocols', commands: ['protocols']},
-  ]
+  ];
 
-  constructor() { }
+  settingRoutes: NavigationLink[] = [
+    {label: 'Protocols', commands: ['protocols']},
+  ];
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

@@ -1,0 +1,12 @@
+.order-link {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h2 {
+  font-size: 1.1875rem;
+  font-weight: 600;
+}

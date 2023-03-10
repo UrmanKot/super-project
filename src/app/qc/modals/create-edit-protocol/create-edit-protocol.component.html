@@ -1,0 +1,126 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="!data.isShowMode">{{data.type === 'edit' ? 'Edit' : 'Create'}} Protocol</span>
+    <span *ngIf="data.isShowMode">Protocol &laquo;{{data.protocol.name}}&raquo;</span>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label for="name"> Name* </label>
+            <input pInputText formControlName="name" class="form-control" type="text" id="name">
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="comment"> Comment* </label>
+            <input pInputText formControlName="comment" class="form-control" type="text" id="comment">
+          </div>
+        </div>
+      </div>
+
+      <div class="paragraphs__header mt-3 mb-1">
+        <h4>Protocol Paragraph</h4>
+      </div>
+
+      <div [ngSwitch]="isLoadingParagraphs">
+        <ng-container *ngSwitchCase="true">
+          <div class="d-flex justify-content-center">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="false">
+          <div formArrayName="paragraphs" *ngIf="paragraphs.length > 0; else empty">
+            <div class="row"
+                 *ngFor="let paragraph of paragraphs.controls; let idx = index"
+                 [formGroupName]="idx"
+            >
+              <div class="col-6">
+                <div class="form-group">
+                  <label [for]="'p-name-' + idx"> Name* </label>
+                  <input formControlName="name" class="form-control" type="text" [id]="'p-name-' + idx" pInputText>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label [for]="'p-comment-' + idx"> Comment </label>
+                  <input formControlName="comment" class="form-control" type="text" [id]="'p-comment-' + idx" pInputText>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #empty>
+            <div class="empty-text">
+              There are no paragraphs of the protocol
+            </div>
+          </ng-template>
+        </ng-container>
+      </div>
+
+      <div class="paragraphs__header mt-4 mb-3">
+        <h4>Nomenclatures</h4>
+        <a class="btn-add" (click)="addNomenclature()" *ngIf="!data.isShowMode">
+          <i class="pi pi-plus"></i>
+          Add Nomenclature
+        </a>
+      </div>
+
+      <div *ngIf="form.get('nomenclatures').value.length > 0">
+        <p-table #dt [value]="form.get('nomenclatures').value" [paginator]="true" [rows]="10" selectionMode="single">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 7%" class="text-center">#</th>
+              <th style="width: 33%">Name</th>
+              <th style="width: 30%">Code</th>
+              <th style="width: 20%" class="text-center">Type</th>
+              <th style="width: 10%" class="text-right"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-nomenclature let-i="rowIndex">
+            <tr>
+              <td style="width: 7%" class="text-center">{{i + 1}}</td>
+              <td style="width: 33%">{{nomenclature.name}}</td>
+              <td style="width: 30%">{{nomenclature.code}}</td>
+              <td style="width: 20%" class="text-center">{{getType(nomenclature.type)}}</td>
+              <td style="width: 10%" class="text-right">
+                <button class="btn-remove" (click)="removeNomenclature(nomenclature.id)">
+                  <i class="pi pi-times"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <div class="paragraphs__header mt-4 mb-3">
+      <h4>Protocol Files</h4>
+    </div>
+
+    <div class="protocols-files">
+      <pek-upload-file
+        [uploadFiles]="files"
+        [multiple]="true"
+        (selectFile)="onSelectFiles($event)"
+      ></pek-upload-file>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -1,1 +1,298 @@
-<p>qc-order works!</p>
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>
+        Order ID <ng-container *ngIf="isLoading; else orderLink">...</ng-container>
+      </h1>
+    </div>
+    <div class="page__tools">
+      <button
+        class="mr-2 p-button-icon"
+        pButton
+        type="button"
+        icon="pi pi-print"
+        label="Print Album"
+        [loading]="albumService.loading$ | async"
+        (click)="onPrintAlbum()"
+        [disabled]="selectedOrderProducts.length === 0"
+      >
+      </button>
+      <button
+        class="mr-2 p-button-icon"
+        pButton
+        type="button"
+        icon="pi pi-qrcode"
+        label="Generate QR Codes"
+        [loading]="isGenerating"
+        (click)="onGenerateQrCodes()"
+        [disabled]="selectedOrderProducts.length === 0"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
+        class="p-button-icon mr-2"
+        icon="pi pi-check"
+        label="Complete Products"
+        [loading]="isCompletingProducts"
+        [disabled]="selectedOrderProducts.length === 0"
+        (click)="onCompleteItems()"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
+        class="p-button-icon p-button-danger mr-2"
+        icon="pi pi-refresh"
+        [loading]="isReworking"
+        label="Rework All"
+        (click)="onRework()"
+        [disabled]="isLoading"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
+        class="p-button-icon p-button-success"
+        icon="pi pi-check"
+        label="Complete"
+        [loading]="isCompleting"
+        (click)="onComplete()"
+        [disabled]="!orderCanBeCompleted"
+      >
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        scrollHeight="calc(100vh - 17rem)"
+        [scrollable]="true"
+        [paginator]="!isLoadingProducts"
+        dataKey="id"
+        [rows]="10"
+        [value]="orderProducts"
+        [(selection)]="selectedOrderProducts"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3%">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th class="index-header text-center" style="width: 5%">#</th>
+            <th style="width: 15%">Code</th>
+            <th style="width: 17%">Name</th>
+            <th style="width: 15%" class="text-center">Technology</th>
+            <th style="width: 5%" class="text-center">UOM</th>
+            <th style="width: 10%" class="text-center">Quantity</th>
+            <th style="width: 10%" class="text-center">Passed Qty</th>
+            <th style="width: 10%" class="text-center">Not Passed Qty</th>
+            <th style="width: 10%" class="text-center">Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="selectedOrderProducts.length === 0">Choose the Product to edit</p>
+            <button
+              pButton
+              type="button"
+              class="p-button-icon p-button-danger ml-auto mr-2"
+              icon="pi pi-refresh"
+              [loading]="isReworkingProduct"
+              label="Rework Item"
+              (click)="onReworkProduct()"
+              [disabled]="isLoadingProducts || selectedOrderProducts.length === 0 || selectedOrderProducts.length > 1"
+            >
+            </button>
+            <button
+              pButton
+              type="button"
+              class="p-button-icon mr-2"
+              icon="pi pi-images"
+              label="Show Images"
+              (click)="onShowImages()"
+              [disabled]="isLoadingProducts || selectedOrderProducts.length === 0 || selectedOrderProducts.length > 1"
+            >
+            </button>
+            <button
+              pButton
+              type="button"
+              class="p-button-icon"
+              icon="pi pi-angle-double-right"
+              label="Quality Control"
+              [disabled]="isLoadingProducts || selectedOrderProducts.length === 0 || selectedOrderProducts.length > 1"
+              (click)="onQualityControl()"
+            >
+            </button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr [pSelectableRow]="product">
+            <td style="width: 3%">
+              <p-tableCheckbox [value]="product"></p-tableCheckbox>
+            </td>
+            <td style="width: 5%" class="text-center">{{i + 1}}</td>
+            <td style="width: 15%">
+              {{product.nomenclature.code}}
+            </td>
+            <td style="width: 17%">
+              {{product.nomenclature.name}}
+            </td>
+            <td style="width: 15%" class="text-center">
+              {{product.current_technology?.name}}
+            </td>
+            <td style="width: 5%" class="text-center">
+              {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.passed_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.not_passed_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <span *ngIf="product.quality_control == 1" class="badge badge_success">PASSED</span>
+              <span *ngIf="product.quality_control == 2" class="badge badge_warning">PARTLY PASSED</span>
+              <span *ngIf="product.quality_control == 0" class="badge badge_danger">NOT PASSED</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="11">
+              <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoadingProducts">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+
+  <h2 class="mt-4 mb-4">Technical Equipment</h2>
+
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #st
+        selectionMode="single"
+        scrollHeight="calc(100vh - 17rem)"
+        [scrollable]="true"
+        [paginator]="!isLoadingTechnicalEquipment && technicalEquipments.length > 0"
+        dataKey="id"
+        [rows]="10"
+        [value]="technicalEquipments"
+        [(selection)]="selectedTechnicalEquipment"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="index-header text-center" style="width: 8%">#</th>
+            <th style="width: 15%">Code</th>
+            <th style="width: 32%">Name</th>
+            <th style="width: 5%" class="text-center">UOM</th>
+            <th style="width: 10%" class="text-center">Quantity</th>
+            <th style="width: 10%" class="text-center">Passed Qty</th>
+            <th style="width: 10%" class="text-center">Not Passed Qty</th>
+            <th style="width: 10%" class="text-center">Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <button
+              pButton
+              type="button"
+              class="ml-auto p-button-icon"
+              icon="pi pi-angle-double-right"
+              label="Quality Control"
+              [disabled]="isLoadingTechnicalEquipment || !selectedTechnicalEquipment"
+              (click)="onQualityControlTechnicalEquipment()"
+            >
+            </button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr [pSelectableRow]="product">
+            <td style="width: 8%" class="text-center">{{i + 1}}</td>
+            <td style="width: 15%">
+              {{product.nomenclature.code}}
+            </td>
+            <td style="width: 32%">
+              {{product.nomenclature.name}}
+            </td>
+            <td style="width: 5%" class="text-center">
+              {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.passed_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{product.not_passed_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              <span *ngIf="product.quality_control == 1" class="badge badge_success">PASSED</span>
+              <span *ngIf="product.quality_control == 2" class="badge badge_warning">PARTLY PASSED</span>
+              <span *ngIf="product.quality_control == 0" class="badge badge_danger">NOT PASSED</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="11">
+              <i *ngIf="isLoadingTechnicalEquipment" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoadingTechnicalEquipment">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="st.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!st.paginator && !isLoadingTechnicalEquipment && technicalEquipments.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="st.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #orderLink>
+  <a class="order-link" (click)="goToOrder()">{{order.id}}</a>
+</ng-template>
