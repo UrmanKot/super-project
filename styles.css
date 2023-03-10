@@ -14050,6 +14050,9 @@ a.p-button:hover {
 .p-button-icon {
   font-size: var(--theme-font-size-s);
 }
+.p-button-icon .p-button-label {
+  transition-duration: 0s !important;
+}
 .p-button-icon.p-button-loading .p-button-label {
   padding-left: 1.5rem !important;
 }
