@@ -3,6 +3,7 @@ import {Locator} from '../../warehouse/models/locator';
 import {ListProduct} from '../../warehouse/models/list-product';
 import {Technology} from '../../product-structure/models/technology';
 import {GroupedRequest} from '../../warehouse/models/grouped-request';
+import {User} from '@shared/models/user';
 
 export class OrderProduct {
   readonly id: number;
@@ -36,6 +37,7 @@ export class OrderProduct {
   isSelected?: boolean;
   checkedForGeneration?: boolean;
   serial_numbers?: { id: number, type_with_number: string, is_passed: boolean }[];
+  creator?: User;
 }
 
 export class OrderProductGroupedForPrint extends OrderProduct {

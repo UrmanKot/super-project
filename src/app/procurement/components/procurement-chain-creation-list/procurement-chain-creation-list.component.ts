@@ -36,6 +36,9 @@ export class ProcurementChainCreationListComponent implements OnInit {
     nomenclature__name: [null],
     categories_ids: [null],
     request_date: [null],
+    order_by_name: [null],
+    order_by_code: [null],
+    order_by_category: [null],
     status: ['not_ordered']
   });
 
@@ -132,7 +135,13 @@ export class ProcurementChainCreationListComponent implements OnInit {
     this.query = [
       {name: 'page', value: this.currentPage},
     ];
-
+    const ordering = this.prepareSortingField();
+    if (ordering) {
+      this.query.push({
+        name: 'ordering',
+        value: ordering
+      });
+    }
     if (!this.isShowAll) {
       this.query.push({name: 'paginated', value: true},)
     }
@@ -153,6 +162,48 @@ export class ProcurementChainCreationListComponent implements OnInit {
         }
       }
     }
+  }
+  prepareSortingField() {
+    let sorting = '';
+    if (this.searchForm.get('order_by_name').value !== null) {
+      if (this.searchForm.get('order_by_name').value) {
+        sorting += '-nomenclature__name,';
+      } else {
+        sorting += 'nomenclature__name,';
+      }
+    }
+    if (this.searchForm.get('order_by_code').value !== null) {
+      if (this.searchForm.get('order_by_code').value) {
+        sorting += '-nomenclature__code,';
+      } else {
+        sorting += 'nomenclature__code,';
+      }
+    }
+    if (this.searchForm.get('order_by_category').value !== null) {
+      if (this.searchForm.get('order_by_category').value) {
+        sorting += '-nomenclature__category__name,';
+      } else {
+        sorting += 'nomenclature__category__name,';
+      }
+    }
+    return sorting;
+  }
+
+  sorting(value: boolean, field: string) {
+    this.resetAllSorting();
+    if (value === null) {
+      this.searchForm.get(field).patchValue(false);
+    } else if (value === false) {
+      this.searchForm.get(field).patchValue(true);
+    } else if (value === true) {
+      this.searchForm.get(field).patchValue(null);
+    }
+    this.search$.next();
+  }
+  resetAllSorting() {
+    this.searchForm.get('order_by_code').setValue(null);
+    this.searchForm.get('order_by_name').setValue(null);
+    this.searchForm.get('order_by_category').setValue(null);
   }
 
   paginate(event: any) {

@@ -35,23 +35,29 @@ export class CrmFullCalendarComponent implements OnInit {
     eventDidMount: (info) => {
       const findEvent = this.findEvent(info.event._def.publicId);
 
-      let str = ``;
+      let str = `Event Description:\n`;
+      if (findEvent.description) {
+        str += `<p>${findEvent.description}</p></br>`
+      }
+      str += `<p>List Of Companies:</p>`
 
-      findEvent.on_companies.forEach(company => {
-        str += `<li>
+      if (findEvent.on_companies.length > 0) {
+        findEvent.on_companies.forEach(company => {
+          str += `<li>
             <a target="_blank" href="/crm/business-partners/company-page/${company.company_id}">${company.company_name}</a>
         </li>`;
-      });
+        });
+      } else {
+        str += `<li>
+            <p>There are no companies</p>
+        </li>`;
+      }
 
       let content = ``;
 
-      if (findEvent.on_companies.length > 0) {
-        content = `
+      content = `
         <ol>${str}</ol>
         `;
-      } else {
-        content = `There are no companies`;
-      }
 
       tippy(info.el, {
         content,
