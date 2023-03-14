@@ -55,16 +55,10 @@
       </h1>
     </div>
     <div class="page__tools">
-      <button
-        pButton
-        icon="pi pi-print"
-        class="mr-2"
-        type="button"
-        label="Print"
-        (click)="printPage()"
-        [disabled]="isLoading"
-      >
-      </button>
+      <p-menubar
+        class="ml-auto mr-2"
+        [model]="printMenuItems">
+      </p-menubar>
       <button
         [loading]="albumService.loading$ | async"
         pButton
@@ -805,7 +799,19 @@
   <div>
     <pek-warehouse-production-request-print-page
       [rootList]="rootList"
-      [orderedProducts]="orderedProducts"
+      [orderId]="+orderId"
+      [requests]="listRequests"
+      [currentReqDate]="currentReqDate"
+      [technologies]="order?.ordered_items_technologies"
+    ></pek-warehouse-production-request-print-page>
+  </div>
+</div>
+
+<div class="print-page" *ngIf="isShowPrintGrouped">
+  <div>
+    <pek-warehouse-production-request-print-page
+      [rootList]="rootList"
+      [orderedProducts]="orderedProductsForPrint"
       [orderId]="+orderId"
       [requests]="listRequests"
       [currentReqDate]="currentReqDate"

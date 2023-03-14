@@ -2,6 +2,7 @@ import {Nomenclature} from '@shared/models/nomenclature';
 import {Locator} from '../../warehouse/models/locator';
 import {ListProduct} from '../../warehouse/models/list-product';
 import {Technology} from '../../product-structure/models/technology';
+import {GroupedRequest} from '../../warehouse/models/grouped-request';
 
 export class OrderProduct {
   readonly id: number;
@@ -35,6 +36,10 @@ export class OrderProduct {
   isSelected?: boolean;
   checkedForGeneration?: boolean;
   serial_numbers?: { id: number, type_with_number: string, is_passed: boolean }[];
+}
+
+export class OrderProductGroupedForPrint extends OrderProduct {
+  children?: GroupedRequest[];
 }
 
 export class OrderMaterial {

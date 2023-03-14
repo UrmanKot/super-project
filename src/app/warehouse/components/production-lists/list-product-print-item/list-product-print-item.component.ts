@@ -8,6 +8,7 @@ import {TreePrint} from '../production-list/production-list.component';
 })
 export class ListProductPrintItemComponent implements OnInit {
   @Input() product: TreePrint;
+  @Input() last: boolean;
   statuses = {'0': 'Not Processed', '1': 'Completed', '2': 'Deficit', '3': 'Reserved'};
 
   constructor() { }

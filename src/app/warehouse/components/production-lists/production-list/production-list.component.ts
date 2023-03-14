@@ -106,6 +106,7 @@ export class ProductionListComponent implements OnInit {
   tree: any;
 
   isShowPrint = false;
+  isShowPrintSeparated = false;
 
   isLoadingListsForPrint = false;
   productsForPrint: TreePrint[];
@@ -118,6 +119,12 @@ export class ProductionListComponent implements OnInit {
           label: 'Print',
           icon: 'pi pi-print',
           command: () => this.printPage(),
+          disabled: true,
+        },
+        {
+          label: 'Print Separated By Assembly',
+          icon: 'pi pi-print',
+          command: () => this.printPage(true),
           disabled: true,
         },
         {
@@ -191,6 +198,7 @@ export class ProductionListComponent implements OnInit {
     this.copyProducts = [];
 
     this.menuItems[0].items[0].disabled = true;
+    this.menuItems[0].items[1].disabled = true;
 
     this.products = [];
     this.isLoading = true;
@@ -218,6 +226,7 @@ export class ProductionListComponent implements OnInit {
         this.getTree();
 
         this.menuItems[0].items[0].disabled = false;
+        this.menuItems[0].items[1].disabled = false;
 
         this.isLoading = false;
       }
@@ -299,7 +308,7 @@ export class ProductionListComponent implements OnInit {
     this.tree = [...this.addedTree];
   }
 
-  printPage() {
+  printPage(isShowPrintSeparated = false) {
     this.productsForPrint = [];
     this.isLoadingListsForPrint = true;
     // const ids = this.products.filter(p => p.list_url).map(p => p.list) as number[Ск];
@@ -344,6 +353,7 @@ export class ProductionListComponent implements OnInit {
         });
       } else {
         this.isShowPrint = true;
+        this.isShowPrintSeparated = isShowPrintSeparated;
         setTimeout(() => {
           window.print();
         });

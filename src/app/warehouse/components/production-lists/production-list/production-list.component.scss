@@ -104,7 +104,17 @@
   height: 100%;
 
   @media print {
+    position: unset;
     display: block;
+  }
+}
+
+@media print {
+  .page {
+    display: none;
+  }
+  .page__content {
+    display: none;
   }
 }
 
@@ -205,5 +215,13 @@
     position: relative;
     top: -1px;
     margin-right: 0.25rem;
+  }
+}
+
+@media print {
+  .print-list-product__item.break {
+    display: block;
+    page-break-after: always;
+    break-after: page;
   }
 }

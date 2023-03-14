@@ -443,8 +443,8 @@
 
 <div class="print-list-product" *ngIf="isShowPrint">
   <div class="print-list-product__list">
-    <div class="print-list-product__item" *ngFor="let product of productsForPrint">
-      <app-list-product-print-item [product]="product"></app-list-product-print-item>
+    <div class="print-list-product__item" [class.break]="isShowPrintSeparated"  *ngFor="let product of productsForPrint; let last=last">
+      <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {AuthService} from '../../../auth/auth.service';
 import {OrderService} from '../../../procurement/services/order.service';
@@ -21,7 +21,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ScanResult} from '../../../qr-code/models/scan-result';
 import {GroupedRequest} from '../../models/grouped-request';
 import {AlbumService} from '@shared/services/album.service';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderProduct, OrderProductGroupedForPrint} from '../../../procurement/models/order-product';
+import {DOCUMENT} from '@angular/common';
 
 
 enum ViewMode {
@@ -45,8 +46,10 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   viewModes = ViewMode;
   viewMode: ViewMode = ViewMode.LIST;
   @ViewChild('dt') dateTable: Table;
+  formGroupedOrderedProducts: Subject<void> = new Subject<void>();
 
-  isShowPrint = true;
+  isShowPrint = false;
+  isShowPrintGrouped = false;
 
   destroy$ = new Subject();
   lastScannedId: number;
@@ -85,6 +88,22 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     ]
   }];
 
+  printMenuItems: MenuItem[] = [{
+    label: 'Print Options',
+    items: [
+      {
+        label: 'Print (default)',
+        icon: 'pi pi-print',
+        command: () => this.printPage()
+      },
+      {
+        label: 'Print Grouped by Order Product',
+        icon: 'pi pi-print',
+        command: () => this.printPageGrouped()
+      }
+    ]
+  }];
+
   rootList: any = null;
   currentDate: Date = new Date();
   selectedRequest: GroupedRequest | GroupedRequest[] | any;
@@ -102,7 +121,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
   detailedRequestTree: TreeNode[] = [];
   selectedDetailedRequestNode: TreeNode;
-  orderedProducts: OrderProduct[] = [];
+  orderedProductsForPrint: OrderProductGroupedForPrint[] = [];
 
   technicalEquipments: OrderTechnicalEquipment[] = [];
   isLoadingTree = true;
@@ -123,6 +142,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     private readonly tasksService: TaskService,
     private orderTechnicalEquipmentsService: OrderTechnicalEquipmentsService,
     public readonly albumService: AlbumService,
+    @Inject(DOCUMENT) private document: Document,
   ) {
   }
 
@@ -130,6 +150,17 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.getOrderInfo(+this.orderId);
     this.getRequests();
     this.getOrderTechnicalEquipments();
+    this.formGroupedOrderedProducts.pipe(untilDestroyed(this)).subscribe(() => {
+      if (this.hierarchyRequests.length > 0 && this.orderedProductsForPrint.length > 0) {
+
+        this.orderedProductsForPrint.forEach(el => {
+          el.children = this.hierarchyRequests.filter(child => child.for_order_product.id === el.id);
+        });
+        console.log('update GrouppedOrders');
+        console.log('this.hierarchyRequests', this.hierarchyRequests);
+        console.log('this.orderedProductsForPrint', this.orderedProductsForPrint);
+      }
+    });
   }
 
   getOrderTechnicalEquipments() {
@@ -162,14 +193,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           }
         }
 
-        const productInList = this.orderedProducts.find(el => el.nomenclature.id === product.nomenclature.id &&
+        const productInList = this.orderedProductsForPrint.find(el => el.nomenclature.id === product.nomenclature.id &&
           el.current_technology?.id === product.current_technology?.id);
         if (productInList) {
           productInList.quantity += product.quantity;
         } else {
-          this.orderedProducts.push(product);
+          this.orderedProductsForPrint.push(product);
         }
       });
+      this.formGroupedOrderedProducts.next();
       this.prepareDetailedCategoryTree();
     });
   }
@@ -332,6 +364,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           this.hierarchyRequests.splice(index, 1);
         });
       });
+      this.formGroupedOrderedProducts.next();
 
       this.prepareTreeCategories();
       if (this.listRequests.length > 0) {
@@ -644,6 +677,23 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       window.print();
     });
+  }
+
+  printPageGrouped() {
+    this.isShowPrintGrouped = true;
+    setTimeout(() => {
+      window.print();
+    });
+  }
+
+  @HostListener("window:afterprint", [])
+  onWindowAfterPrint() {
+    this.isShowPrintGrouped = false;
+    this.isShowPrint = false;
+  }
+
+  @HostListener('afterprint') printClosed() {
+    console.log('closed Print');
   }
 
   printAlbum() {

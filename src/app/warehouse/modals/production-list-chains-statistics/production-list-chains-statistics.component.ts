@@ -8,6 +8,25 @@ import {ListService} from '../../services/list.service';
 import {tap} from 'rxjs/operators';
 import {Order} from '../../../procurement/models/order';
 import {environment} from '@env/environment';
+import {Table} from 'primeng/table';
+
+export class OrderedProductInfo {
+  code: string;
+  name: string;
+  created: Date;
+  latest_order_status_date: string;
+  ordered_quantity: number;
+  technology: string;
+  order: {
+    id: string;
+    accounting_type: number;
+  }
+  orders: {
+    id: string;
+    accounting_type: number;
+  }[];
+  children?: OrderedProductInfo[];
+}
 
 @Component({
   selector: 'pek-production-list-chains-statistics',
@@ -21,7 +40,8 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
 
   link = environment.link_url + 'dash/';
 
-  orders: any[] = [];
+  orders: OrderedProductInfo[] = [];
+  isShowAll: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ProductionListChainsStatisticsComponent>,
@@ -47,9 +67,27 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
       delete this.data.send.positions_type;
     }
     this.listService.getChainsStatisticsForProductionList(this.data.id, this.data.send).pipe(
-      tap(orders => this.orders = orders),
+      tap((orders: OrderedProductInfo[]) => {
+        orders.forEach(order => {
+          const isInList = this.orders.findIndex(el => el.code.trim() === order.code.trim() &&
+                                                 el.technology?.trim() === order.technology?.trim()) > -1;
+          if (!isInList) {
+            order.ordered_quantity = orders.filter(p => p.code.trim() === order.code.trim() &&
+              p.technology?.trim() === order.technology?.trim()).reduce((sum, p) => sum + p.ordered_quantity, 0);
+            order.orders = orders.filter(p => p.code.trim() === order.code.trim() &&
+              p.technology?.trim() === order.technology?.trim()).map(el => el.order);
+            order.orders = order.orders.filter(this.onlyUniqueById);
+            this.orders.push(order);
+          }
+        });
+        this.orders = [...this.orders];
+      }),
       tap(() => this.isLoading = false)
     ).subscribe();
+  }
+
+  onlyUniqueById(value, index, self) {
+    return self.findIndex(innerValue => innerValue?.id === value?.id) === index;
   }
 
   getPositionType() {
@@ -95,5 +133,18 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
     console.log(link);
 
     window.open(link, '_blank')
+  }
+
+  paginate($event: any, table: Table) {
+    console.log('event', $event);
+    console.log('table', table);
+  }
+
+  onShowAll() {
+    this.isShowAll = true;
+  }
+
+  onShowPartial() {
+    this.isShowAll = false;
   }
 }

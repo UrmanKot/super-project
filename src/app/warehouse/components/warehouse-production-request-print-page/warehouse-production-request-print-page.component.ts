@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ENomenclatureType} from '@shared/models/nomenclature';
 import {AuthService} from '../../../auth/auth.service';
 import {GroupedRequest} from '../../models/grouped-request';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderProduct, OrderProductGroupedForPrint} from '../../../procurement/models/order-product';
 
 @Component({
   selector: 'pek-warehouse-production-request-print-page',
@@ -11,7 +11,7 @@ import {OrderProduct} from '../../../procurement/models/order-product';
 })
 export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   @Input() requests: GroupedRequest[] = [];
-  @Input() orderedProducts: OrderProduct[] = [];
+  @Input() orderedProducts: OrderProductGroupedForPrint[];
   @Input() rootList: any;
   @Input() orderId: number;
   @Input() technologies: string[];
@@ -23,6 +23,7 @@ export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('initing');
   }
 
   getType(type: ENomenclatureType) {

@@ -142,7 +142,10 @@
             </td>
             <td style="width: 8%;">{{product.nomenclature.category?.name}}</td>
             <td style="width: 10%;">
-              <div class="word-break">
+              <div class="word-break"
+                   [pTooltip]="product.nomenclature.description ? product.nomenclature.description : 'No Description'"
+                   tooltipStyleClass="white-tool-tip"
+                   tooltipPosition="bottom">
                 {{getSmallDescription(product.nomenclature.description)}}
               </div>
             </td>
