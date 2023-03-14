@@ -8,8 +8,10 @@ import {OrderTechnicalEquipment} from '../../../warehouse/models/order-technical
 import {InvoiceProduct} from '../../../procurement/models/invoice-product';
 import {InvoiceProductService} from '../../../procurement/services/invoice-product.service';
 import {QrCodeService} from '../../../qr-code/qr-code.service';
-import {ModalService} from '../../../shared/services/modal.service';
+import {ModalService} from '@shared/services/modal.service';
 import {QcService} from '../../services/qc.service';
+import {AlbumService} from '@shared/services/album.service';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'pek-qc-invoice',
@@ -17,9 +19,11 @@ import {QcService} from '../../services/qc.service';
   styleUrls: ['./qc-invoice.component.scss']
 })
 export class QcInvoiceComponent implements OnInit {
+  link = environment.link_url + 'dash/';
+
   isLoading = true;
   isLoadingProducts = false;
-  isLoadingTechnicalEquipment = false;
+  isLoadingTechnicalEquipment = true;
   isGenerating = false;
   isCancellation = false;
   isCompletingProducts = false;
@@ -44,6 +48,7 @@ export class QcInvoiceComponent implements OnInit {
     private readonly qcService: QcService,
     private readonly route: ActivatedRoute,
     private readonly modalService: ModalService,
+    public readonly albumService: AlbumService,
     private readonly router: Router,
   ) {
   }
@@ -78,9 +83,11 @@ export class QcInvoiceComponent implements OnInit {
   }
 
   getTechnicalEquipmentToQc() {
+    this.isLoadingTechnicalEquipment = true;
+    this.technicalEquipments = [];
+
     if (this.invoice.order) {
       this.orderProductService.getTechnicalEquipmentToQC(this.invoice.order.id).pipe(
-        tap(() => this.isLoadingTechnicalEquipment = true),
         tap(equipment => this.technicalEquipments = equipment),
         tap(() => this.isLoadingTechnicalEquipment = false)
       ).subscribe();
@@ -195,5 +202,37 @@ export class QcInvoiceComponent implements OnInit {
         }
       });
     }
+  }
+
+  onPrintAlbum() {
+    this.albumService.getNomenclaturesImages((this.selectedInvoiceProducts.map(p => p?.nomenclature)));
+  }
+
+  goToOrder() {
+    let link: string;
+    const order = this.invoice.order;
+
+    switch (order.accounting_type) {
+      case 1:
+        link = '/procurement/chains/order/' + order.id;
+        break;
+      case 2:
+        link = '/outsourcing/chains/order/' + order.id;
+        break;
+      case 3:
+        link = `${this.link}production/orders/order/` + order.id;
+        break;
+    }
+
+    window.open(link, '_blank');
+  }
+
+  onQualityControlTechnicalEquipment() {
+    this.qcService.controlTechnicalEquipment(this.selectedTechnicalEquipment, true).subscribe(res => {
+      if (res) {
+        this.getTechnicalEquipmentToQc();
+        this.selectedTechnicalEquipment = null;
+      }
+    });
   }
 }

@@ -130,8 +130,6 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
         break;
     }
 
-    console.log(link);
-
     window.open(link, '_blank')
   }
 

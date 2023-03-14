@@ -45,6 +45,7 @@
                   [routerLink]="['../', 'invoice', selectedInvoiceNode?.data.order ?
       selectedInvoiceNode?.data.order.id :
       selectedInvoiceNode?.data.id]"
+                  target="_blank"
                   class="ml-auto mr-2"
                   pButton
                   type="button"
@@ -156,7 +157,7 @@
         </div>
       </p-tabPanel>
       <p-tabPanel
-        [header]="'Own Production Invoices'"
+        [header]="'Own Production'"
       >
         <div class="page__table">
           <p-treeTable
@@ -180,7 +181,7 @@
                 <p
                   class="subtitle"
                   *ngIf="!selectedOrderNode">
-                  Choose Own Production Invoice to view Items
+                  Choose Own Production Item to view Items
                 </p>
                 <a
                   [class.disabled]="!selectedOrderNode"
@@ -190,6 +191,7 @@
                   type="button"
                   icon="pi pi-bars"
                   label="Items"
+                  target="_blank"
                 >
                 </a>
                 <button
@@ -296,6 +298,7 @@
                   type="button"
                   icon="pi pi-bars"
                   label="Items"
+                  target="_blank"
                 >
                 </a>
                 <button

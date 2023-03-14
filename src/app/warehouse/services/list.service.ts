@@ -18,6 +18,7 @@ import {
 import {
   ProductionListChainsStatisticsComponent
 } from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
+import {ListProduct} from '../models/list-product';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,12 @@ export class ListService {
     }
 
     return this.httpClient.get<{ data: List[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getFullList(id: number): Observable<ListProduct[]> {
+    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + `${id}/with_descendant_list_products/`).pipe(
       map(response => response.data)
     );
   }
