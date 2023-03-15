@@ -400,7 +400,9 @@
                 <th colspan="2" class="text-center">Total Assemblies</th>
                 <th colspan="2" class="text-center">Deficit assemblies</th>
                 <th colspan="2" class="text-center">Outsourse assemblies</th>
-                <th colspan="2" class="text-center" style="border-right: none !important;">Own Production Assemblies
+                <th colspan="2" class="text-center">Own Production Assemblies
+                </th>
+                <th colspan="2" class="text-center" style="border-right: none !important;">Not Collected Items\Parts
                 </th>
               </tr>
 
@@ -413,6 +415,8 @@
                 <th colspan="2" class="text-center">Manufactured</th>
                 <th colspan="2" class="text-center">Purchased</th>
                 <th colspan="2" class="text-center">Manufactured</th>
+                <th class="text-center" rowspan="2">Nomenclature</th>
+                <th class="text-center" rowspan="2">Elements</th>
                 <th class="text-center" rowspan="2">Nomenclature</th>
                 <th class="text-center" rowspan="2">Elements</th>
                 <th class="text-center" rowspan="2">Nomenclature</th>
@@ -537,6 +541,8 @@
                   </a>
                 </td>
                 <td class="text-center">{{list.full_statistics.own_production_assembly_quantity}}</td>
+                <td class="text-center">{{list.full_statistics.total_not_collected_products_count}}</td>
+                <td class="text-center">{{list.full_statistics.total_not_collected_products_quantity}}</td>
               </tr>
             </ng-template>
 
