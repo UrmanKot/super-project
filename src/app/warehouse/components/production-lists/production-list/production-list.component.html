@@ -236,9 +236,18 @@
       >
         <ng-template pTemplate="caption">
           <div class="d-flex table-caption">
+            <button
+              [disabled]="!selectedNodeTree"
+              class="ml-auto mr-2"
+              pButton
+              type="button"
+              label="Set Actual Quantity"
+              (click)="onSetActualQuantity()"
+            >
+            </button>
             <p-menubar
               [class.disabled]="!selectedNodeTree"
-              class="production-list-bar ml-auto mr-2"
+              class="production-list-bar mr-2"
               [model]="selectedNodeTreeMenuItems"
             ></p-menubar>
             <button
@@ -346,8 +355,9 @@
             </td>
             <td style="width: 10%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
-              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
-              ) {{rowData.nomenclature.name}}
+              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
+<!--              ({{rowData.id}}) -->
+              {{rowData.nomenclature.name}}
 
               <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0" class="serial-numbers">
                 <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
@@ -358,7 +368,11 @@
                 </div>
               </div>
             </td>
-            <td>{{rowData.technology?.name}}</td>
+            <td>
+              <span *ngFor="let technology of rowData?.technologies">
+                {{technology?.name}}
+              </span>
+            </td>
             <td style="width: 6%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
               {{rowData.total_required_quantity}}

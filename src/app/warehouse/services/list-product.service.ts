@@ -48,4 +48,10 @@ export class ListProductService {
       map(response => response.data)
     );
   }
+
+  severalUpdatePartly(sends: Partial<ListProduct>[]): Observable<ListProduct[]> {
+    return forkJoin(...sends.map(send => this.httpClient.patch<{ data: ListProduct }>(this.API_URL + this.url + send.id + '/', send).pipe(
+      map(response => response.data)
+    )))
+  }
 }

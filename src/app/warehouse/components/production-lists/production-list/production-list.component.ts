@@ -10,6 +10,7 @@ import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
 import {ListProductService} from '../../../services/list-product.service';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
+import {AdapterService} from '@shared/services/adapter.service';
 
 export class TreePrint {
   data: ListProduct;
@@ -158,6 +159,7 @@ export class ProductionListComponent implements OnInit {
     private router: Router,
     public _location: Location,
     private messageService: MessageService,
+    private readonly adapterService: AdapterService,
   ) {
     // this.routerHandler$ = router.events.subscribe(res => {
     //   if (res instanceof NavigationEnd) {
@@ -187,28 +189,50 @@ export class ProductionListComponent implements OnInit {
     this.isLoading = true;
 
     this.listService.getFullList(+this.listId).subscribe(lists => {
+
       const newListProducts: ListProduct[] = [];
 
       lists.forEach(list => {
         list.reserved_quantity = list.reserved_quantity ?? 0;
         list.actual_quantity = list.actual_quantity ?? 0;
 
-        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
-          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
-          list.groupedProductIds = list.products.map(p => p.id);
-          list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
+        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id)) {
+          // list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
+          // list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
           // list.status
+
+          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id);
+
+          list.technologies = list.products.filter(l => l.technology).map(l => l.technology);
+          list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
+          list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+          list.has_children = list.products.some(p => p.has_children);
+
+          list.groupedProductIds = list.products.map(p => p.id);
           newListProducts.push(list);
         }
+
+
+        // if (newListProducts.f)
       });
 
-      newListProducts.forEach(list => {
-        // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
-        list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0);
-        list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
-        list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
-      });
+      console.log(newListProducts);
 
+        // console.log(newListProducts);
+        //
+        // newListProducts.forEach(l => {
+        //   console.log(l.nomenclature.name);
+        // })
+      // console.log(lists);
+      //
+      // newListProducts.forEach(list => {
+      //   // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
+      //   list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0);
+      //   list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
+      //   list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
+      // });
+      //
       newListProducts.filter(l => l.level === 1).forEach(list => {
         this.tree.push({
           data: list,
@@ -218,19 +242,18 @@ export class ProductionListComponent implements OnInit {
       });
 
       const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
-        const newListProducts: ListProduct[] = [];
+        // const newListProducts: ListProduct[] = [];
         level++;
 
-        lists.filter(l => l.level === level).forEach(list => {
-          if (!newListProducts.find((l) => l.nomenclature.id === list.nomenclature.id && list.technology?.id === l.technology?.id)) {
-            newListProducts.push(list);
-          }
-        });
+        // lists.filter(l => l.level === level).forEach(list => {
+        //   if (!newListProducts.find((l) => l.nomenclature.id === list.nomenclature.id)) {
+        //     newListProducts.push(list);
+        //   }
+        // });
 
-        nodes.filter(n => n.data.has_children).forEach(n => {
+        nodes.filter(n => n.data.products.find(p => p.has_children)).forEach(n => {
           newListProducts.forEach(list => {
             if (n.data.groupedProductIds.includes(list.parent)) {
-
               n.children.push({
                 data: list,
                 children: [],
@@ -248,6 +271,9 @@ export class ProductionListComponent implements OnInit {
       fillTree(this.tree, 1);
 
       this.tree = this.tree.map(l => l);
+
+      console.log(this.tree);
+      console.log(this.tree.filter(n => n.data.has_children));
 
       this.isLoading = false;
     });
@@ -674,5 +700,13 @@ export class ProductionListComponent implements OnInit {
   clearQrResults() {
     this.currentDisplayRowId = null;
     this.foundRowsIds = [];
+  }
+
+  onSetActualQuantity() {
+    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}).subscribe(response => {
+      if (response) {
+        this.getListProducts();
+      }
+    })
   }
 }

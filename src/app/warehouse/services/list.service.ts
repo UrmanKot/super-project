@@ -12,6 +12,9 @@ import {
 import {ListProduct} from '../models/list-product';
 import {ScanResult} from '../../qr-code/models/scan-result';
 import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
+import {
+  ProductionListActualQuantityComponent
+} from '../modals/production-list-actual-quantity/production-list-actual-quantity.component';
 
 @Injectable({
   providedIn: 'root'
@@ -135,6 +138,19 @@ export class ListService {
         height: 'auto',
         panelClass: 'modal-overflow-visible',
         data: id,
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  setActualQuantityDialog(listProduct: ListProduct): Observable<any> {
+    return this.dialog
+      .open<ProductionListActualQuantityComponent>(ProductionListActualQuantityComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {listProduct},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

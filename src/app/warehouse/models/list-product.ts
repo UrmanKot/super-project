@@ -23,5 +23,7 @@ export class ListProduct {
   list_url?: string;
   products?: ListProduct[];
   technology: Technology;
-  groupedProductIds?: number[]
+  groupedProductIds?: number[];
+  technologies: any[];
+  children?: ListProduct[]
 }
