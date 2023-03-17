@@ -188,7 +188,9 @@
     </div>
   </div>
   <div *ngFor="let orderProduct of orderedProducts">
-    <h3>{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}} Quantity:  {{orderProduct.quantity}}</h3>
+<!--    <h3 *ngIf="orderProduct.orderProduct">{{orderProduct.orderProduct.nomenclature.code}} {{orderProduct.orderProduct.nomenclature.name}} {{orderProduct.orderProduct.current_technology?.name}} Quantity:  {{orderProduct.orderProduct.quantity}}</h3>-->
+<!--    <h3 *ngIf="orderProduct.listProduct">{{orderProduct.listProduct.nomenclature.code}} {{orderProduct.listProduct.nomenclature.name}} {{orderProduct.listProduct.technology.name}} Quantity:  {{orderProduct.listProduct.required_quantity}}</h3>-->
+        <h3 >{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}} Quantity:  {{orderProduct.quantity}}</h3>
     <div class="warehouse-production-request-print-page__table">
       <div
         *ngFor="let request of orderProduct.children"

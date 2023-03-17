@@ -18,6 +18,8 @@ export class OrderProduct {
   passed_quantity?: number;
   not_passed_quantity?: number;
   request_type: string;
+  first_root_plan_name?: string;
+  first_product_list_name?: string;
   status: 0 | 1 | 2 | string;
   request_date?;
   request_id?;
@@ -40,7 +42,9 @@ export class OrderProduct {
   creator?: User;
 }
 
-export class OrderProductGroupedForPrint extends OrderProduct {
+export class OrderProductGroupedForPrint  extends OrderProduct {
+  // orderProduct?: OrderProduct;
+  // listProduct?: ListProduct;
   children?: GroupedRequest[];
 }
 

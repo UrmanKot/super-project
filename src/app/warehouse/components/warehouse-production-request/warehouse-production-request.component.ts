@@ -16,12 +16,15 @@ import {forkJoin, Subject, takeUntil} from 'rxjs';
 import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
 import {OrderTechnicalEquipmentsService} from '../../services/order-technical-equipments.service';
 import {take, tap} from 'rxjs/operators';
-import {Nomenclature} from '@shared/models/nomenclature';
+import {Nomenclature, Nomenclatures} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {ScanResult} from '../../../qr-code/models/scan-result';
 import {GroupedRequest} from '../../models/grouped-request';
 import {AlbumService} from '@shared/services/album.service';
-import {OrderProduct, OrderProductGroupedForPrint} from '../../../procurement/models/order-product';
+import {
+  OrderProduct,
+  OrderProductGroupedForPrint
+} from '../../../procurement/models/order-product';
 import {DOCUMENT} from '@angular/common';
 
 
@@ -152,13 +155,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
     this.getOrderTechnicalEquipments();
     this.formGroupedOrderedProducts.pipe(untilDestroyed(this)).subscribe(() => {
       if (this.hierarchyRequests.length > 0 && this.orderedProductsForPrint.length > 0) {
-
         this.orderedProductsForPrint.forEach(el => {
-          el.children = this.hierarchyRequests.filter(child => child.for_order_product.id === el.id);
+          el.children = this.hierarchyRequests.filter(child => child.for_order_product.id === el.id || child.for_order_ids.findIndex(child_ids => child_ids === el.id) >= 0);
         });
-        console.log('update GrouppedOrders');
-        console.log('this.hierarchyRequests', this.hierarchyRequests);
-        console.log('this.orderedProductsForPrint', this.orderedProductsForPrint);
       }
     });
   }
@@ -185,6 +184,7 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
       this.order = order;
       this.order.ordered_items_technologies = [];
       this.order.order_products.forEach(product => {
+        // console.log('this.order.order_products', this.order.order_products);
         if (product.current_technology) {
           const canAddTechnology = this.order.ordered_items_technologies
             .findIndex(el => el === product.current_technology.name) < 0;
@@ -330,6 +330,11 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           });
 
         hierRequest.ids = hierRequest.requests.map(req => req.id);
+        hierRequest.for_order_ids = [];
+        if (hierRequest.for_order_product.length > 0) {
+          hierRequest.for_order_ids.push(hierRequest.for_order_product.id);
+        }
+        hierRequest.for_order_ids.push(...hierRequest.requests.filter(req => req.for_order_product).map(req => req.for_order_product?.id));
         if (hierRequest.is_reserved && hierRequest.requests
           .every(req => req.is_reserved)) {
           hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.warehouse_quantity)
@@ -368,8 +373,9 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
 
       this.prepareTreeCategories();
       if (this.listRequests.length > 0) {
-        this.rootList = this.listRequests[0].root_production_list_products[0];
-        this.currentReqDate = this.listRequests[0].created;
+        const haveRootProduction = this.listRequests.find(el => el.root_production_list_products.length > 0);
+        this.rootList = haveRootProduction.root_production_list_products[0];
+        this.currentReqDate = haveRootProduction.created;
       }
       this.listRequests.sort((a, b) => b.id - a.id);
       this.hierarchyRequests.sort((a, b) => b.id - a.id);
@@ -420,14 +426,14 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   prepareTreeCategories(): void {
-    const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
+    const categoriesTemp: { id: number, level: number, parentId: number, name: string, for_order_product?: any, listProduct?: any }[] = [];
 
     this.hierarchyRequests.forEach(request => {
       if (request.for_order_product) {
         const parentProducts = request.for_order_product.nomenclature;
         const isAdded = categoriesTemp.findIndex(el => el.id === parentProducts.id);
         if (isAdded < 0) {
-          categoriesTemp.push({name: parentProducts.name, id: parentProducts.id, level: 0, parentId: null});
+          categoriesTemp.push({name: parentProducts.name, id: parentProducts.id, level: 0, parentId: null, for_order_product: request.for_order_product});
         }
       } else if (request.list_product) {
         const parentProducts = request.list_product.list as List;
@@ -437,7 +443,8 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
             name: parentProducts.nomenclature.name,
             id: parentProducts.nomenclature.id,
             level: 0,
-            parentId: null
+            parentId: null,
+            listProduct: request.list_product
           });
         }
       }

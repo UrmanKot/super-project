@@ -125,7 +125,7 @@
             <th style="width: 6%" class="text-center">Free Ordered Quantity</th>
             <th style="width: 4%" class="text-center">UOM</th>
             <th style="width: 7%;"
-                pSortableColumn="nomenclature.name"
+                pSortableColumn="nomenclature.category.name"
                 (click)="sorting(searchForm.get('order_by_category').value, 'order_by_category')">
               Category
               <pek-sort-icon [value]="searchForm.get('order_by_category').value"></pek-sort-icon>
@@ -134,8 +134,19 @@
             <th style="width: 5%;" class="text-center">Date</th>
             <th style="width: 6%;" class="text-center">Request Type</th>
             <th class="text-center" style="width: 6%;">Chains</th>
-            <th style="width: 9%;">Root Lists</th>
-            <th style="width: 9%;">Production Lists</th>
+            <th style="width: 9%;"
+                pSortableColumn="first_root_plan_name"
+                (click)="sorting(searchForm.get('first_root_plan_name').value, 'first_root_plan_name')">
+              Root Lists
+              <pek-sort-icon [value]="searchForm.get('first_root_plan_name').value"></pek-sort-icon>
+            </th>
+            <th style="width: 9%;"
+
+                pSortableColumn="first_product_list_name"
+                (click)="sorting(searchForm.get('first_product_list_name').value, 'first_product_list_name')">
+              Production Lists
+              <pek-sort-icon [value]="searchForm.get('first_product_list_name').value"></pek-sort-icon>
+            </th>
             <th class="text-center" style="width: 7%;">Status</th>
             <th class="text-center" style="width: 10%;">Creator</th>
           </tr>

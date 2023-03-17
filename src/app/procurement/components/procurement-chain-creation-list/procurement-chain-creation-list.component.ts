@@ -39,6 +39,8 @@ export class ProcurementChainCreationListComponent implements OnInit {
     order_by_name: [null],
     order_by_code: [null],
     order_by_category: [null],
+    first_root_plan_name: [null],
+    first_product_list_name: [null],
     status: ['not_ordered']
   });
 
@@ -186,6 +188,20 @@ export class ProcurementChainCreationListComponent implements OnInit {
         sorting += 'nomenclature__category__name,';
       }
     }
+    if (this.searchForm.get('first_root_plan_name').value !== null) {
+      if (this.searchForm.get('first_root_plan_name').value) {
+        sorting += '-first_root_plan_name,';
+      } else {
+        sorting += 'first_root_plan_name,';
+      }
+    }
+    if (this.searchForm.get('first_product_list_name').value !== null) {
+      if (this.searchForm.get('first_product_list_name').value) {
+        sorting += '-first_product_list_name,';
+      } else {
+        sorting += 'first_product_list_name,';
+      }
+    }
     return sorting;
   }
 
@@ -204,6 +220,8 @@ export class ProcurementChainCreationListComponent implements OnInit {
     this.searchForm.get('order_by_code').setValue(null);
     this.searchForm.get('order_by_name').setValue(null);
     this.searchForm.get('order_by_category').setValue(null);
+    this.searchForm.get('first_root_plan_name').setValue(null);
+    this.searchForm.get('first_product_list_name').setValue(null);
   }
 
   paginate(event: any) {
