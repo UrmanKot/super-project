@@ -115,7 +115,7 @@
               <pek-multi-countries-picker [showClear]="true" (selectCountries)="onSelectCountry($event)"></pek-multi-countries-picker>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Region</label>
               <pek-crm-multi-region-picker
@@ -124,7 +124,7 @@
                 (regionsSelected)="onSelectRegion($event)"></pek-crm-multi-region-picker>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Sub Region</label>
               <pek-crm-multi-region-tree-picker
@@ -132,6 +132,19 @@
                 [regionsSelected]="searchForm.get('regions').value"
                 (subRegionsSelected)="regionSubSelected($event)"
               ></pek-crm-multi-region-tree-picker>
+            </div>
+          </div>
+          <div class="col-1">
+            <div class="form-group">
+              <label>Enable Status Of Result</label>
+              <p-checkbox
+                class="checkbox-big"
+                name="group1"
+                [binary]="true"
+                inputId="enableColors"
+                formControlName="enableColors"
+              >
+              </p-checkbox>
             </div>
           </div>
         </div>
@@ -435,12 +448,20 @@
               </td>
 
               <td style="width: 10%" class="text-center bord dark-two no-padding">
-                <div class="event-item event-type-name" [class.event-item-col]="report.last_events.length > 1">
+                <div class="event-item event-type-name"
+                     [class.event-item-col]="report.last_events.length > 1"
+                >
                   <div *ngIf="report.last_events && report.last_events.length > 0">
                     <div class="report-event" *ngFor="let event of report.last_events"
                          [pTooltip]="event ? event.description : 'No Description'"
                          tooltipStyleClass="white-tool-tip"
-                         tooltipPosition="right">
+                         tooltipPosition="right"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       <a [routerLink]="'/crm/events/' + event?.id"
                          target="_blank">{{ event?.event_name }}</a>
                     </div>
@@ -451,7 +472,13 @@
               <td style="width: 10%" class="text-center dark-two no-padding">
                 <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
                   <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
+                    <div class="report-event" *ngFor="let event of report.last_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -461,7 +488,13 @@
               <td style="width: 10%" class="text-center dark-two no-padding">
                 <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
                   <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
+                    <div class="report-event" *ngFor="let event of report.last_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -471,7 +504,13 @@
               <td style="width: 10%" class="table-comment  text-center dark-two no-padding">
                 <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
                   <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
+                    <div class="report-event" *ngFor="let event of report.last_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       <div class="small-comment">
                               <span>
                                 {{getSmallComment(event?.event_comment)}}
@@ -490,7 +529,13 @@
               <td style="width: 10%" class="text-center dark-two no-padding">
                 <div class="event-item" [class.event-item-col]="report.last_events.length > 1">
                   <div *ngIf="report.last_events && report.last_events.length > 0">
-                    <div class="report-event" *ngFor="let event of report.last_events">
+                    <div class="report-event" *ngFor="let event of report.last_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                             <span [ngSwitch]="event?.is_done">
                               <ng-container *ngSwitchCase="true">Done</ng-container>
                               <ng-container *ngSwitchCase="false">Not Done</ng-container>
@@ -503,7 +548,13 @@
               <td style="width: 10%" class="text-center bord dark no-padding">
                 <div class="event-item event-type-name" [class.event-item-col]="report.next_events.length > 1">
                   <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
+                    <div class="report-event tesdt" *ngFor="let event of report.next_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       <a [routerLink]="'/crm/events/' + event?.id"
                          target="_blank"
                          [pTooltip]="event ? event.description : 'No Description'"
@@ -518,7 +569,13 @@
               <td style="width: 10%" class="text-center dark no-padding">
                 <div class="event-item">
                   <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
+                    <div class="report-event" *ngFor="let event of report.next_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -527,7 +584,13 @@
               <td style="width: 10%" class="text-center dark border-right no-padding">
                 <div class="event-item">
                   <div>
-                    <div class="report-event" *ngFor="let event of report.next_events">
+                    <div class="report-event" *ngFor="let event of report.next_events"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -808,7 +871,13 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                             <span [ngSwitch]="event?.is_done">
                               <ng-container *ngSwitchCase="true">Done</ng-container>
                               <ng-container *ngSwitchCase="false">Not Done</ng-container>

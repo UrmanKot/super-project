@@ -58,7 +58,16 @@
         <ng-template pTemplate="caption">
           <div class="d-flex">
             <p class="subtitle" *ngIf="!selectedEventCompany">Choose the Company to edit</p>
-            <p-menubar class="ml-auto" [model]="eventCompanyMenuItems"
+            <p-checkbox
+              class="checkbox-big ml-auto event-statuses"
+              name="group1"
+              label="Enable Status Of Result"
+              [binary]="true"
+              inputId="enableColors"
+              [(ngModel)]="enableColors"
+            >
+            </p-checkbox>
+            <p-menubar class="ml-2" [model]="eventCompanyMenuItems"
                        [class.disabled]="!selectedEventCompany"></p-menubar>
             <button (click)="onAddCompanyToEvent()" pButton type="button" icon="pi pi-plus" class="ml-2"
                     label="Add Company"></button>
@@ -73,7 +82,12 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-company let-i="rowIndex">
-          <tr [pSelectableRow]="company">
+          <tr [pSelectableRow]="company"
+              class="eto-test"
+          [class.impression-neutral]="enableColors && company.is_done && company.impression === Impression.NEUTRAL"
+          [class.impression-positive]="enableColors && company.is_done && company.impression === Impression.POSITIVE"
+          [class.impression-negative]="enableColors && company.is_done && company.impression === Impression.NEGATIVE"
+          >
             <td class="text-center">{{ i + 1 }}</td>
             <td>
               <a [routerLink]="'/crm/business-partners/company-page/' + company.company.id">

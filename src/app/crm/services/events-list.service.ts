@@ -14,6 +14,8 @@ import {EditEmployeeEventDateComponent} from '../modals/edit-employee-event-date
 import {ModalActionType} from '@shared/models/modal-action';
 import {CreateEditEventComponent} from '../modals/create-edit-event/create-edit-event.component';
 import {AddEventModalType} from '../models/company';
+import {EventCompany} from '../models/event-company';
+import {EventCompanySetStateComponent} from '../modals/event-company-set-state/event-company-set-state.component';
 
 @Injectable({
   providedIn: 'root'
@@ -142,6 +144,19 @@ export class EventsListService {
         width: '64rem',
         height: 'auto',
         data: {employeeIds, event},
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openEventCompanySetStateModal(eventCompany: EventCompany): Observable<{ eventCompany: EventCompany }> {
+    return this.dialog
+      .open<EventCompanySetStateComponent>(EventCompanySetStateComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: {eventCompany},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

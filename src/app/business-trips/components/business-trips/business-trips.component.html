@@ -91,41 +91,41 @@
             <div class="duration">
               <p>Duration Is Longer Than</p>
               <div class="d-flex">
-<!--                <p-radioButton-->
-<!--                  name="duration"-->
-<!--                  value="hour"-->
-<!--                  label="1 hour"-->
-<!--                  formControlName="duration"-->
-<!--                  (ngModelChange)="onSelectDuration()"-->
-<!--                  class="mr-3"-->
-<!--                >-->
-<!--                </p-radioButton>-->
-<!--                <p-radioButton-->
-<!--                  name="duration"-->
-<!--                  value="day"-->
-<!--                  label="1 day"-->
-<!--                  formControlName="duration"-->
-<!--                  (ngModelChange)="onSelectDuration()"-->
-<!--                  class="mr-3"-->
-<!--                >-->
-<!--                </p-radioButton>-->
-<!--                <p-radioButton-->
-<!--                  name="duration"-->
-<!--                  value="month"-->
-<!--                  label="1 month"-->
-<!--                  class="mr-3"-->
-<!--                  formControlName="duration"-->
-<!--                  (ngModelChange)="onSelectDuration()"-->
-<!--                >-->
-<!--                </p-radioButton>-->
+                <!--                <p-radioButton-->
+                <!--                  name="duration"-->
+                <!--                  value="hour"-->
+                <!--                  label="1 hour"-->
+                <!--                  formControlName="duration"-->
+                <!--                  (ngModelChange)="onSelectDuration()"-->
+                <!--                  class="mr-3"-->
+                <!--                >-->
+                <!--                </p-radioButton>-->
+                <!--                <p-radioButton-->
+                <!--                  name="duration"-->
+                <!--                  value="day"-->
+                <!--                  label="1 day"-->
+                <!--                  formControlName="duration"-->
+                <!--                  (ngModelChange)="onSelectDuration()"-->
+                <!--                  class="mr-3"-->
+                <!--                >-->
+                <!--                </p-radioButton>-->
+                <!--                <p-radioButton-->
+                <!--                  name="duration"-->
+                <!--                  value="month"-->
+                <!--                  label="1 month"-->
+                <!--                  class="mr-3"-->
+                <!--                  formControlName="duration"-->
+                <!--                  (ngModelChange)="onSelectDuration()"-->
+                <!--                >-->
+                <!--                </p-radioButton>-->
                 <div class="other-duration">
-<!--                  <p-radioButton-->
-<!--                    name="duration"-->
-<!--                    value="other"-->
-<!--                    formControlName="duration"-->
-<!--                    (ngModelChange)="onSelectDuration()"-->
-<!--                  >-->
-<!--                  </p-radioButton>-->
+                  <!--                  <p-radioButton-->
+                  <!--                    name="duration"-->
+                  <!--                    value="other"-->
+                  <!--                    formControlName="duration"-->
+                  <!--                    (ngModelChange)="onSelectDuration()"-->
+                  <!--                  >-->
+                  <!--                  </p-radioButton>-->
                   <div class="other-duration-row">
                     <input
                       type="number"
@@ -140,8 +140,8 @@
               </div>
             </div>
           </div>
-<!--          <div class="col-3">-->
-<!--          </div>-->
+          <!--          <div class="col-3">-->
+          <!--          </div>-->
           <div class="col-3 col-actions">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
@@ -171,10 +171,14 @@
           <ng-template pTemplate="body" let-expense let-i="rowIndex">
             <tr [pSelectableRow]="expense">
               <td class="text-center" style="width: 5%">{{(this.currentPage - 1) * 10 + i + 1}}</td>
-              <td class="text-center" style="width: 20%">{{
-                expense.employee ?
-                  expense.employee.first_name + ' ' + expense.employee.last_name :
-                  expense.custom_employee.first_name + ' ' + expense.custom_employee.last_name}}</td>
+              <td class="text-center" style="width: 20%">
+                <span *ngIf="expense.employee || expense.custom_employee">
+                  {{
+                  expense.employee ?
+                    expense.employee.first_name + ' ' + expense.employee.last_name :
+                    expense.custom_employee.first_name + ' ' + expense.custom_employee.last_name}}
+                </span>
+              </td>
               <td class="text-center" style="width: 15%">{{ expense.created_at | date: 'dd/MM/yyyy'}}</td>
               <td class="text-center" style="width: 20%">{{ expense.trip_start  | date: 'dd/MM/yyyy HH:mm'}}</td>
               <td class="text-center" style="width: 20%">{{ expense.trip_end  | date: 'dd/MM/yyyy HH:mm'}}</td>
@@ -240,7 +244,9 @@
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <p-menubar class="ml-auto" *ngIf="!selectedBusinessTrips || selectedBusinessTrips?.length === 1" [model]="menuItems" [class.disabled]="!selectedBusinessTrips"></p-menubar>
-    <p-menubar class="ml-auto" *ngIf="selectedBusinessTrips?.length > 1" [model]="menuItemsMultiple" [class.disabled]="!selectedBusinessTrips"></p-menubar>
+    <p-menubar class="ml-auto" *ngIf="!selectedBusinessTrips || selectedBusinessTrips?.length === 1" [model]="menuItems"
+               [class.disabled]="!selectedBusinessTrips"></p-menubar>
+    <p-menubar class="ml-auto" *ngIf="selectedBusinessTrips?.length > 1" [model]="menuItemsMultiple"
+               [class.disabled]="!selectedBusinessTrips"></p-menubar>
   </div>
 </ng-template>

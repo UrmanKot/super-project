@@ -56,6 +56,7 @@ import { AddEventToContactPersonComponent } from './modals/add-event-to-contact-
 import { CrmPositionsComponent } from './components/crm-positions/crm-positions.component';
 import { CreateUpdateCrmPositionsComponent } from './modals/create-update-crm-positions/create-update-crm-positions.component';
 import {BusinessTripsModule} from '../business-trips/business-trips.module';
+import { EventCompanySetStateComponent } from './modals/event-company-set-state/event-company-set-state.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -107,6 +108,7 @@ FullCalendarModule.registerPlugins([
     AddEventToContactPersonComponent,
     CrmPositionsComponent,
     CreateUpdateCrmPositionsComponent,
+    EventCompanySetStateComponent,
   ],
   imports: [
     CommonModule,

@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {EventCompanyService} from '../../services/event-company.service';
-import {EventCompany} from '../../models/event-company';
+import {EventCompany, Impression} from '../../models/event-company';
 import {EventContactPerson} from '../../models/event-contact-person';
 import {EventContactPersonService} from '../../services/event-contact-person.service';
 
@@ -17,7 +17,7 @@ import {EventContactPersonService} from '../../services/event-contact-person.ser
   styleUrls: ['./crm-event-card.component.scss']
 })
 export class CrmEventCardComponent implements OnInit, OnDestroy {
-
+  Impression = Impression;
   eventCompanyMenuItems: MenuItem[] = [{
     label: 'Selected Company',
     items: [
@@ -78,6 +78,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   isLoading = true;
 
   private destroy$: Subject<any> = new Subject<any>();
+  enableColors: boolean;
 
   constructor(
     private readonly eventListService: EventsListService,
@@ -118,9 +119,10 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   }
 
   onDoneCompany() {
-    this.modalService.confirm('success').subscribe(confirm => {
-      if (confirm) {
-        this.eventCompanyService.update(this.selectedEventCompany.id, {is_done: true}).subscribe(() => this.getEvent());
+    this.eventListService.openEventCompanySetStateModal(this.selectedEventCompany).subscribe(res => {
+      if (res) {
+        this.selectedEventCompany = null;
+        this.getEvent();
       }
     });
   }

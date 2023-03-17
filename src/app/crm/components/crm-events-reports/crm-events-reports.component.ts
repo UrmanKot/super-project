@@ -11,6 +11,7 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
 import {Region} from '@shared/models/region';
+import { Impression } from '../../models/event-company';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -19,6 +20,7 @@ import {Region} from '@shared/models/region';
 })
 export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   @ViewChild('dt') dt: Table;
+  Impression = Impression;
   @ViewChild('paginator') paginator: Paginator;
 
   private destroy$ = new Subject();
@@ -345,6 +347,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     datesFutureFilterType: [null],
     autoEvents: [true],
     groupView: [false],
+    enableColors: [false],
     intersect_last_event: [false],
     intersect_next_event: [false],
   });
@@ -379,6 +382,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     {name: 'ordering', value: '-last_event_start'},
     {name: 'test_method', value: 'true'},
   ];
+  enableColors = false;
 
   constructor(
     private readonly fb: FormBuilder,

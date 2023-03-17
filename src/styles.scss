@@ -268,6 +268,12 @@ body {
   }
 }
 
+p-checkbox.event-statuses {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-style: italic;
+}
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/form';
 @import 'app/shared/styles/table';

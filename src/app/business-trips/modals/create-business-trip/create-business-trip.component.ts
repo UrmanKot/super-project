@@ -6,7 +6,6 @@ import {BusinessTripService} from '../../services/business-trip.service';
 import {take} from 'rxjs/operators';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
-import {BusinessTripEmployee} from '../../models/business-trip-employee';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
@@ -55,6 +54,7 @@ export class CreateBusinessTripComponent implements OnInit, OnDestroy {
   get _employee(): FormGroup {
     return (this.form.get('employee') as FormGroup) as FormGroup;
   }
+
   addBusinessTrip() {
     const employee = this.form.value.employee.id ? this.form.value.employee.id : null;
     this.businessService
