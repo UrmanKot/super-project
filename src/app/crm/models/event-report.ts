@@ -15,6 +15,7 @@ export class EventReport {
 
   groupedLastEvents?: any;
   groupedNextEvents?: any;
+  last_event_impression?: string;
 }
 
 export class EventsReports {

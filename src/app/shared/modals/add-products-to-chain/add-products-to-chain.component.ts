@@ -61,6 +61,7 @@ export class AddProductsToChainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('this.data.products', this.data.products);
   }
 
   prepareForSearch() {

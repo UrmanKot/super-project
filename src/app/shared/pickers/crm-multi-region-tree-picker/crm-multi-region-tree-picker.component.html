@@ -1,14 +1,26 @@
-<div class="multi-categories-picker">
+<div class="multi-categories-picker" [class.show-checkbox]="panelOpened">
   <p-treeSelect
     *ngIf="!isLoading; else spinner"
     [options]="regionsTree"
     selectionMode="checkbox"
     [(ngModel)]="selectedSubRegions"
     [disabled]="isDisabled"
+    (onShow)="showPanel()"
+    (onHide)="hidePanel()"
+    [propagateSelectionUp]="false"
     placeholder="Select Sub Region"
     [filter]="true"
     (ngModelChange)="onChoiceCategories()"
-  ></p-treeSelect>
+  >
+    <ng-template pTemplate="header">
+      <p-checkbox
+        inputId="subRegion"
+        [ngModel]="isAllSelected"
+        (click)="selectionAllChanged($event)"
+        [binary]="true"
+      ></p-checkbox>
+    </ng-template>
+  </p-treeSelect>
 
   <ng-template #spinner>
     <div class="spinner-input">

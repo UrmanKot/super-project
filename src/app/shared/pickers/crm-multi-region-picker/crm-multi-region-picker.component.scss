@@ -1,5 +1,11 @@
 .multi-categories-picker {
+  position: relative;
   &::ng-deep {
+    .p-treeselect-header {
+      .p-treeselect-filter-container {
+        margin-left: 1rem;
+      }
+    }
     .p-treenode-children {
       margin-top: 0.1875rem !important;
     }
@@ -24,5 +30,23 @@
         }
       }
     }
+  }
+}
+
+p-checkbox {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 1.1rem;
+  left: 0.5rem;
+  z-index: 12222;
+  width: 20px;
+  height: 20px;
+}
+
+
+.show-checkbox {
+  p-checkbox {
+    display: block;
   }
 }

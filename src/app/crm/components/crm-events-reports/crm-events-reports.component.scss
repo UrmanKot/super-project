@@ -358,3 +358,24 @@ tr {
 .impression-negative {
   background-color: #fc5a69 !important;
 }
+
+.impression-neutral-text {
+  color: #F59E0B !important;
+    a {
+    color: #F59E0B !important;
+  }
+}
+
+.impression-positive-text {
+  color: #55b157 !important;
+    a {
+    color: #55b157 !important;
+  }
+}
+
+.impression-negative-text {
+  color: #fc5a69 !important;
+  a {
+    color: #fc5a69 !important;
+  }
+}

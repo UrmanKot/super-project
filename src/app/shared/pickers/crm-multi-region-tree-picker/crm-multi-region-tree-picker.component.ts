@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {Region} from '@shared/models/region';
 import {TreeNode} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
@@ -12,7 +21,8 @@ import {Country} from '@shared/models/country';
 @Component({
   selector: 'pek-crm-multi-region-tree-picker',
   templateUrl: './crm-multi-region-tree-picker.component.html',
-  styleUrls: ['./crm-multi-region-tree-picker.component.scss']
+  styleUrls: ['./crm-multi-region-tree-picker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
   @Output() choiceCategories: EventEmitter<string> = new EventEmitter<string>();
@@ -29,11 +39,14 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
 
   private destroy$ = new Subject();
   recreateTree: Subject<void> = new Subject<void>();
+  allSelectedCount = 0;
+  panelOpened = false;
 
   constructor(
     private readonly productCategoriesService: CategoriesService,
     private readonly regionService: RegionService,
     private readonly subRegionService: SubRegionService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -64,7 +77,12 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
     });
   }
 
+  get isAllSelected() {
+    return this.selectedSubRegions?.length === this.allSelectedCount;
+  }
+
   createTree() {
+    this.allSelectedCount = 0;
     const countries = this.regionsSelected.filter((region, index, self) => self.findIndex(innerRegion => innerRegion.country.id === region.country.id) === index).map(region => region.country);
     const treeCountries: TreeNode<any>[] = [];
     countries.forEach(country => {
@@ -102,6 +120,7 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
               children: [],
             };
             this.selectedSubRegions.push(subRegionNode)
+            this.allSelectedCount++;
             regionNode.children.push(subRegionNode);
           });
         }
@@ -124,5 +143,28 @@ export class CrmMultiRegionTreePickerComponent implements OnInit, OnChanges {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+
+  showPanel() {
+    this.panelOpened = true;
+  }
+
+  hidePanel() {
+    this.panelOpened = false;
+  }
+
+  selectionAllChanged($event: any) {
+    if (this.selectedSubRegions?.length === this.allSelectedCount) {
+      // setTimeout(() => {
+        this.selectedSubRegions = null;
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
+      // });
+    } else {
+      this.loadRegions();
+    }
+    this.onChoiceCategories();
+    $event.stopPropagation(); $event.preventDefault();
   }
 }

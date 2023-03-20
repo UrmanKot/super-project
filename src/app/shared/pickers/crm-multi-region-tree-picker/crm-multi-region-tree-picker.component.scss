@@ -1,5 +1,13 @@
 .multi-categories-picker {
+  position: relative;
+
   &::ng-deep {
+    .p-treeselect-header {
+      .p-treeselect-filter-container {
+        margin-left: 1rem;
+      }
+    }
+
     .p-treenode-children {
       margin-top: 0.1875rem !important;
     }
@@ -8,15 +16,17 @@
       button.p-ripple.p-element.p-tree-toggler.p-link {
         display: none;
       }
+
       div.p-checkbox.p-component.p-checkbox-disabled {
         display: none;
       }
     }
 
     .region {
-      >.p-treenode-content:first-child {
+      > .p-treenode-content:first-child {
         font-weight: 500;
         font-size: 14px;
+
         &.p-highlight {
           background-color: unset !important;
           color: unset !important;
@@ -25,14 +35,34 @@
     }
 
     .country {
-      >.p-treenode-content:first-child {
+      > .p-treenode-content:first-child {
         font-weight: 700;
         font-size: 14px;
+
         &.p-highlight {
           background-color: unset !important;
           color: unset !important;
         }
       }
     }
+  }
+}
+
+
+p-checkbox {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 1.1rem;
+  left: 0.5rem;
+  z-index: 12222;
+  width: 20px;
+  height: 20px;
+}
+
+
+.show-checkbox {
+  p-checkbox {
+    display: block;
   }
 }

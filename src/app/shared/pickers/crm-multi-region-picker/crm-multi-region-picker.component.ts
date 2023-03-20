@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {TreeNode} from 'primeng/api';
 import {Category} from '../../../product-structure/models/category';
 import {Subject, takeUntil} from 'rxjs';
@@ -11,7 +20,8 @@ import {debounceTime} from 'rxjs/operators';
 @Component({
   selector: 'pek-crm-multi-region-picker',
   templateUrl: './crm-multi-region-picker.component.html',
-  styleUrls: ['./crm-multi-region-picker.component.scss']
+  styleUrls: ['./crm-multi-region-picker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
   @Output() choiceCategories: EventEmitter<string> = new EventEmitter<string>();
@@ -24,13 +34,16 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
   regionsTree: TreeNode<Category>[] = [];
 
   selectedRegions: TreeNode<Region>[] = [];
+  allSelectedCount = 0;
 
   private destroy$ = new Subject();
   recreateTree: Subject<void> = new Subject<void>();
+  panelOpened = false;
 
   constructor(
     private readonly productCategoriesService: CategoriesService,
     private readonly regionService: RegionService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -60,6 +73,7 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
   }
 
   createTree() {
+    this.allSelectedCount = 0;
     const getChildren = (nodes: TreeNode<Region>[]) => {
       nodes.forEach(node => {
         const children = this.regions.filter(c => c.country.id === node.data.id);
@@ -74,6 +88,7 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
             };
           });
           this.selectedRegions.push(...node.children);
+          this.allSelectedCount += node.children.length;
           getChildren(node.children);
         }
       });
@@ -100,6 +115,10 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
     this.regionsTree = [...tree];
   }
 
+  get isAllSelected() {
+    return this.selectedRegions?.length === this.allSelectedCount;
+  }
+
   onChoiceCategories() {
     if (!this.selectedRegions || this.selectedRegions.length === 0) {
       this.regionsSelected.next(null)
@@ -111,5 +130,27 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  showPanel() {
+    this.panelOpened = true;
+  }
+
+  hidePanel() {
+    this.panelOpened = false;
+  }
+
+  selectionAllChanged($event: any) {
+    if (this.selectedRegions?.length === this.allSelectedCount) {
+      // setTimeout(() => {
+        this.selectedRegions = null;
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
+      // });
+    } else {
+      this.loadRegions();
+    }
+    this.onChoiceCategories();
+    $event.stopPropagation(); $event.preventDefault();
   }
 }

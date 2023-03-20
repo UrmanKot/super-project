@@ -77,6 +77,11 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(response => {
       this.eventsReports = response;
+      // this.eventsReports.forEach(event => {
+      //   if (event.last_events.length > 0) {
+      //     const lastEvent
+      //   }
+      // });
       this.reportsCount = this.eventsReports.length;
 
       if (this.isStartOnePage) {

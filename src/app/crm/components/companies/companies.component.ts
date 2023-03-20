@@ -12,6 +12,7 @@ import {ENomenclatureType} from '@shared/models/nomenclature';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
+import {Region} from '@shared/models/region';
 
 @Component({
   selector: 'pek-companies',
@@ -27,13 +28,16 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
   searchForm: FormGroup = this.fb.group({
     page: [1],
     name: [null],
-    region: [null],
-    country_id: [null],
-    sub_region_id: [null],
+    // region: [null],
+    // country_id: [null],
+    // sub_region_id: [null],
     category: [null],
     nomenclature: [null],
     selectedNomenclature: [null],
-    contains_contact_person: [null]
+    contains_contact_person: [null],
+    countries: [null],
+    regions: [null],
+    sub_regions: [null],
   });
 
   countCompanies = 0;
@@ -172,7 +176,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroy$.next(true);
     this.selectedCompany = null;
 
-    const newQueryKey = `name:${this.searchForm.get('name').value}/category:${this.searchForm.get('category').value}/nomenclature:${this.searchForm.get('nomenclature').value}/region:${this.searchForm.get('region').value}/contains_contact_person:${this.searchForm.get('contains_contact_person').value}`;
+    const newQueryKey = `name:${this.searchForm.get('name').value}/category:${this.searchForm.get('category').value}/nomenclature:${this.searchForm.get('nomenclature').value}/contains_contact_person:${this.searchForm.get('contains_contact_person').value}`;
 
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
@@ -203,22 +207,19 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
       value: this.searchForm.get('contains_contact_person').value
     });
 
-    if (this.searchForm.get('region').value) this.query.push({
-      name: 'region',
-      value: this.searchForm.get('region').value
+    if (this.searchForm.get('countries').value !== null) this.query.push({
+      name: 'countries',
+      value: this.searchForm.get('countries').value.map(country => country.id)
     });
 
-    if (this.searchForm.get('region').value) this.query.push({
-      name: 'region',
-      value: this.searchForm.get('region').value
+    if (this.searchForm.get('regions').value !== null) this.query.push({
+      name: 'regions',
+      value: this.searchForm.get('regions').value.map(region => region.id)
     });
-    if (this.searchForm.get('country_id').value) this.query.push({
-      name: 'country',
-      value: this.searchForm.get('country_id').value
-    });
-    if (this.searchForm.get('sub_region_id').value) this.query.push({
-      name: 'sub_region',
-      value: this.searchForm.get('sub_region_id').value
+
+    if (this.searchForm.get('sub_regions').value !== null) this.query.push({
+      name: 'sub_regions',
+      value: this.searchForm.get('sub_regions').value.map(region => region.id)
     });
 
     if (!this.isShowAll) {
@@ -295,11 +296,11 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchCompanies();
   }
 
-  onSelectRegion(id: number) {
-    this.searchForm.get('region').patchValue(id);
-    this.searchForm.get('sub_region_id').patchValue(null);
-    this.searchCompanies();
-  }
+  // onSelectRegion(id: number) {
+  //   this.searchForm.get('region').patchValue(id);
+  //   this.searchForm.get('sub_region_id').patchValue(null);
+  //   this.searchCompanies();
+  // }
 
   onOpenNomenclaturePickerModal() {
     this.modalService.choiceNomenclatureModal(ENomenclatureType.PURCHASED).subscribe(nomenclature => {
@@ -344,14 +345,46 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  regionSubSelected(subRegion: Partial<SubRegion>) {
-    if (subRegion) {
-      this.searchForm.get('sub_region_id').setValue(subRegion.id);
-    } else {
-      this.searchForm.get('sub_region_id').setValue(null);
-    }
-    this.searchCompanies();
+  // regionSubSelected(subRegion: Partial<SubRegion>) {
+  //   if (subRegion) {
+  //     this.searchForm.get('sub_region_id').setValue(subRegion.id);
+  //   } else {
+  //     this.searchForm.get('sub_region_id').setValue(null);
+  //   }
+  //   this.searchCompanies();
+  //
+  // }
 
+  onSelectCountry(countries: Country[]) {
+    if (countries) {
+      this.searchForm.get('countries').setValue(countries);
+    } else {
+      this.searchForm.get('countries').setValue(null);
+    }
+    this.searchForm.get('sub_regions').setValue(null);
+    this.searchForm.get('regions').setValue(null);
+    this.searchCompanies();
+  }
+
+  onSelectRegion(regions: Region[]) {
+    if (regions) {
+      this.searchForm.get('regions').setValue(regions);
+    } else {
+      this.searchForm.get('regions').setValue(null);
+    }
+    this.searchForm.get('sub_regions').setValue(null);
+
+    this.searchCompanies();
+  }
+
+  regionSubSelected(subRegion: SubRegion[]) {
+    if (subRegion) {
+      this.searchForm.get('sub_regions').setValue(subRegion);
+    } else {
+      this.searchForm.get('sub_regions').setValue(null);
+    }
+
+    this.searchCompanies();
   }
 }
 

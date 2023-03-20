@@ -383,13 +383,25 @@
           <ng-template pTemplate="body" let-report let-i="rowIndex">
             <tr>
               <td style="width: 5%" class="text-center bord-dark">
-                <div class="event-item justify-content-center">
+                <div class="event-item justify-content-center"
+                     [class.impression-neutral-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEUTRAL"
+                     [class.impression-positive-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.POSITIVE"
+                     [class.impression-negative-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEGATIVE">
                   {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
                 </div>
               </td>
               <td style="width: 15%" class="table-comment small-comment bord-dark">
                 <div class="event-item justify-content-center">
-                        <span>
+                        <span
+                          [class.impression-neutral-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEUTRAL"
+                          [class.impression-positive-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.POSITIVE"
+                          [class.impression-negative-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEGATIVE">
                           <a
                             [routerLink]="'/crm/business-partners/company-page/' + report.id"
                             target="_blank"
@@ -717,13 +729,25 @@
         <ng-template pTemplate="body" let-report let-i="rowIndex">
           <tr>
             <td style="width: 5%" class="text-center bord-dark">
-              <div class="event-item justify-content-center">
+              <div class="event-item justify-content-center"
+                   [class.impression-neutral-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEUTRAL"
+                   [class.impression-positive-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.POSITIVE"
+                   [class.impression-negative-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEGATIVE">
                 {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
               </div>
             </td>
             <td style="width: 15%" class="table-comment small-comment bord-dark">
               <div class="event-item justify-content-center">
-                <span>
+                <span
+                  [class.impression-neutral-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEUTRAL"
+                  [class.impression-positive-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.POSITIVE"
+                  [class.impression-negative-text]="searchForm.get('enableColors').value &&
+                           report.last_event_impression === Impression.NEGATIVE">
                   <a [routerLink]="'/crm/business-partners/company-page/' + report.id"
                      target="_blank">{{ report.name }}</a>
                 </span>

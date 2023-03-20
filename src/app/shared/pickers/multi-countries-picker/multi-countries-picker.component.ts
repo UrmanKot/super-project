@@ -57,4 +57,8 @@ export class MultiCountriesPickerComponent implements OnInit {
       });
     }
   }
+
+  panelShow($event: any) {
+    console.log('panelShow', $event);
+  }
 }
