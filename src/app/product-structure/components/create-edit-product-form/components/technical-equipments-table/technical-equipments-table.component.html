@@ -28,9 +28,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th class="index-header text-center" style="width: 5%">#</th>
-        <th style="width: 23.75%">Code</th>
-        <th style="width: 23.75%">Name</th>
-        <th class="text-center" style="width: 23.75%">Quantity</th>
+        <th style="width: 27.5%">Code</th>
+        <th style="width: 27.5%">Name</th>
+        <th style="width: 25%">Technology</th>
+        <th class="text-center" style="width: 15%">Quantity</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
@@ -38,14 +39,17 @@
         <td style="width: 5%" class="text-center">
           {{i + 1}}
         </td>
-        <td style="width: 23.75%">
-          {{technicalEquipment.used_by_nomenclature.code}}
+        <td style="width: 27.5%">
+          {{technicalEquipment.nomenclature_in_use.code}}
         </td>
-        <td style="width: 23.75%">
-          <b *ngIf="technicalEquipment.used_by_nomenclature.bulk_or_serial === '1'">(S)</b>
-          {{technicalEquipment.used_by_nomenclature.name}}
+        <td style="width: 27.5%">
+          <b *ngIf="technicalEquipment.nomenclature_in_use.bulk_or_serial === '1'">(S)</b>
+          {{technicalEquipment.nomenclature_in_use.name}}
         </td>
-        <td style="width: 23.75%" class="text-center">
+        <td style="width: 25%" class="text-center">
+          {{technicalEquipment.technology?.name}}
+        </td>
+        <td style="width: 15%" class="text-center">
           {{technicalEquipment.quantity}}
         </td>
       </tr>

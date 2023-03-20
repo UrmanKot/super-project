@@ -41,7 +41,7 @@ export class CompanyCategoryModulePickerComponent implements OnInit {
     }
   }
 
-  onSelectModule(technologies: Technology[]) {
+  onSelectModule(technologies: CompanyCategoryModule[]) {
     this.selectModule.emit(technologies);
   }
 

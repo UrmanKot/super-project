@@ -181,10 +181,10 @@
               <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
                    class="serial-numbers">
                 <div *ngFor="let serialNumber of product.reserved_serial_numbers">
-                  {{serialNumber.type_with_number}} (R)
+                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.type_with_number.id}} (R)
                 </div>
                 <div *ngFor="let serialNumber of product.future_serial_numbers">
-                  {{serialNumber.type_with_number}} (F)
+                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
                 </div>
               </div>
             </td>
@@ -381,18 +381,17 @@
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
               ) {{rowData.nomenclature.name}}
 
-              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
-                   class="serial-numbers">
+
                 <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0"
                      class="serial-numbers">
                   <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
-                    {{serialNumber.type_with_number}} (R)
+                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (R)
                   </div>
                   <div *ngFor="let serialNumber of rowData.future_serial_numbers">
-                    {{serialNumber.type_with_number}} (F)
+                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
                   </div>
                 </div>
-              </div>
+
             </td>
             <td>{{rowData.technology?.name}}</td>
             <td style="width: 6%" class="text-center">

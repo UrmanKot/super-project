@@ -13,12 +13,14 @@ export class TechnologyPickerComponent implements OnInit {
   @Input() isDisabled: boolean = false;
   @Input() acceptedTechnologyIds: number[] = [];
 
-  selectTechnologyId: number;
+  @Input() selectTechnologyId: number;
 
   isLoading = true;
   technologies: Technology[] = [];
+  @Input() predefinedTechnologies: Technology[];
 
   private destroy$ = new Subject();
+  @Input() showClear = true;
 
   constructor(
     private readonly technologyService: TechnologyService,
@@ -26,7 +28,12 @@ export class TechnologyPickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getTechnologies();
+    if (this.predefinedTechnologies) {
+      this.technologies = this.predefinedTechnologies;
+      this.isLoading = false;
+    } else {
+      this.getTechnologies();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

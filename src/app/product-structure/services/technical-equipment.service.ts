@@ -11,6 +11,7 @@ import {QuerySearch} from '@shared/models/other';
 import {
   EditTechnicalEquipmentComponent
 } from '../components/create-edit-product-form/components/technical-equipments-table/edit-technical-equipment/edit-technical-equipment.component';
+import {Technology} from '../models/technology';
 
 @Injectable({
   providedIn: 'root'
@@ -64,26 +65,26 @@ export class TechnicalEquipmentService {
     return this.httpClient.delete(this.API_URL + this.url + `${id}/`);
   }
 
-  openAddTechnicalEquipment(): Observable<Nomenclature> {
+  openAddTechnicalEquipment(technologies: Technology[]): Observable<{ nomenclature_in_use: Nomenclature, quantity: number, technology: Technology }> {
     return this.dialog
       .open<AddTechnicalEquipmentComponent>(AddTechnicalEquipmentComponent, {
         width: '110rem',
         height: 'auto',
         panelClass: 'modal-overflow-visible',
-        data: null,
+        data: {technologies},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
   }
 
-  openEditTechnicalEquipment(technicalEquipment: TechnicalEquipment): Observable<Nomenclature> {
+  openEditTechnicalEquipment(technicalEquipment: TechnicalEquipment, technologies: Technology[]): Observable<{ nomenclature_in_use: Nomenclature, quantity: number, technology: Technology }> {
     return this.dialog
       .open<EditTechnicalEquipmentComponent>(EditTechnicalEquipmentComponent, {
         width: '50rem',
         height: 'auto',
         panelClass: 'modal-overflow-visible',
-        data: {technicalEquipment: technicalEquipment},
+        data: {technicalEquipment: technicalEquipment, technologies},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

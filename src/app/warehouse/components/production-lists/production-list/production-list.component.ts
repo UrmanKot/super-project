@@ -12,6 +12,7 @@ import {ListProductService} from '../../../services/list-product.service';
 import {ScanResult} from '../../../../qr-code/models/scan-result';
 import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
+import {QrCodeService} from '../../../../qr-code/qr-code.service';
 
 export class TreePrint {
   data: ListProduct;
@@ -27,6 +28,7 @@ export class TreePrint {
 export class ProductionListComponent implements OnInit {
 
   link = environment.link_url + 'dash/';
+  isGenerating = false;
 
   selectedNodeMenuItems: MenuItem[] = [
     {
@@ -51,6 +53,11 @@ export class ProductionListComponent implements OnInit {
           label: 'Make Request',
           icon: 'pi pi-caret-right',
           command: () => this.makeDeficitOne(this.selectedNode),
+        },
+        {
+          label: 'Generate QR Codes',
+          icon: 'pi pi-caret-right',
+          command: () => this.onGenerateQrCodes(this.selectedNode),
         },
       ]
     }
@@ -79,6 +86,11 @@ export class ProductionListComponent implements OnInit {
           label: 'Make Request',
           icon: 'pi pi-caret-right',
           command: () => this.makeDeficitOne(this.selectedNodeTree.data),
+        },
+        {
+          label: 'Generate QR Codes',
+          icon: 'pi pi-caret-right',
+          command: () => this.onGenerateQrCodes(this.selectedNodeTree.data),
         },
       ]
     }
@@ -166,6 +178,7 @@ export class ProductionListComponent implements OnInit {
     public _location: Location,
     private messageService: MessageService,
     public readonly albumService: AlbumService,
+    private readonly qrCodeService: QrCodeService,
   ) {
     this.routerHandler$ = router.events.subscribe(res => {
       if (res instanceof NavigationEnd) {
@@ -694,5 +707,38 @@ export class ProductionListComponent implements OnInit {
 
   goToPlan() {
     window.open(this.link + `production/plan/tasks/${this.list.root_production_plans[0].id}`, '_blank');
+  }
+
+  onGenerateQrCodes(node) {
+    // this.isGenerating = true;
+    console.log('this.selectedNode', node);
+    const send = {
+      by_nomenclatures_list: [],
+    };
+
+    if (node.nomenclature.bulk_or_serial !== '1') {
+      send.by_nomenclatures_list.push({
+        nomenclature_id: node.nomenclature.id,
+        serial_number_ids: [],
+        order_product_ids: [],
+        invoice_product_ids: [],
+      });
+    } else {
+      let serialNumbers = [];
+      if (node.reserved_serial_numbers && node.reserved_serial_numbers.length) {
+        serialNumbers = [...node.reserved_serial_numbers.map(serial => serial.id)];
+      }
+      if (node.future_serial_numbers && node.future_serial_numbers.length) {
+        serialNumbers = [...node.future_serial_numbers.map(serial => serial.id)];
+      }
+      send.by_nomenclatures_list.push({
+        nomenclature_id: node.nomenclature.id,
+        serial_number_ids: serialNumbers,
+        order_product_ids: [],
+        invoice_product_ids: [],
+      });
+    }
+
+    this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
   }
 }

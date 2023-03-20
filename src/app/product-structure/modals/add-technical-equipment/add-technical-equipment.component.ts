@@ -9,6 +9,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime} from 'rxjs/operators';
+import {Technology} from '../../models/technology';
 
 @Component({
   selector: 'pek-add-technical-equipment',
@@ -20,6 +21,7 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
   selectedNomenclature: Nomenclature;
   nomenclatures: Nomenclature[] = [];
   countNomenclatures: number = 0;
+  technologies: Technology[] = [];
 
   tableScrollHeight = '29.75rem';
 
@@ -42,6 +44,7 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
 
   sendForm: FormGroup = this.fb.group({
     quantity: [1, [Validators.min(1), Validators.required]],
+    technology: [null, Validators.required]
   });
 
   private destroy$ = new Subject();
@@ -50,10 +53,12 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private nomenclatureService: NomenclatureService,
     private readonly dialogRef: MatDialogRef<AddTechnicalEquipmentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { nomenclatureId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { nomenclatureId: number, technologies: Technology[] }
   ) { }
 
   ngOnInit(): void {
+    this.technologies = this.data.technologies;
+    console.log('this.technologies', this.technologies);
     this.form.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(50)).subscribe(res => {
       this.searchNomenclature();
     });
@@ -67,8 +72,9 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     }
     const send: any = {
       id: null,
-      used_by_nomenclature: technicalEquipment,
+      nomenclature_in_use: technicalEquipment,
       quantity: this.sendForm.get('quantity').value,
+      technology: {id: this.sendForm.get('technology').value},
     };
     this.dialogRef.close(send);
   }
@@ -185,5 +191,10 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
   }
 
   changedSelection() {
+  }
+
+  technologySelected(technologyId: number) {
+    this.sendForm.get('technology').setValue(technologyId);
+    console.log('technologySelected', technologyId);
   }
 }

@@ -114,6 +114,7 @@
           </div>
           <div *ngIf="form.get('canAddTechnicalEquipment').value">
             <pek-technical-equipments-table
+              [technologies]="this.form.get('technologies').value"
               (isSelectedEquipmentEmitter)="isItemSelected = $event" [technicalEquipments]="technicalEquipments"
               (deleteEquipmentIndex)="equipmentDeleted($event)"
               (equipmentChanged)="equipmentChanged($event)"></pek-technical-equipments-table>

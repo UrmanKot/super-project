@@ -132,7 +132,7 @@ export class QcOrderComponent implements OnInit {
       });
 
       this.isCompletingProducts = true;
-
+      console.log('send', send);
       this.orderProductService.severalUpdatePartly(send).pipe(
         tap(() => this.getOrderProducts()),
         tap(() => this.isCompletingProducts = false)

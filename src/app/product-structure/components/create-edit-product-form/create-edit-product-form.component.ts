@@ -9,6 +9,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {TechnicalEquipmentService} from '../../services/technical-equipment.service';
 import {TechnicalEquipment} from '../../models/technical-equipment';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'pek-create-edit-form',
@@ -54,6 +55,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
   isItemSelected: boolean;
 
   constructor(
+    private readonly messageService: MessageService,
     private readonly fb: FormBuilder,
     private technicalEquipmentService: TechnicalEquipmentService,
     private readonly nomenclatureService: NomenclatureService,
@@ -114,12 +116,13 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
         this.technicalEquipments = res.map(equipment => {
           return {
             id: equipment.id,
-            used_by_nomenclature: {
-              id: equipment.used_by_nomenclature.id,
-              code: equipment.used_by_nomenclature.code,
-              name: equipment.used_by_nomenclature.name,
+            nomenclature_in_use: {
+              id: equipment.nomenclature_in_use.id,
+              code: equipment.nomenclature_in_use.code,
+              name: equipment.nomenclature_in_use.name,
             },
-            quantity: equipment.quantity
+            quantity: equipment.quantity,
+            technology: equipment.technology,
           };
         });
         if (this.technicalEquipments.length > 0) {
@@ -171,7 +174,19 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
   }
 
   addTechnicalEquipment() {
-    this.technicalEquipmentService.openAddTechnicalEquipment().pipe(takeUntil(this.destroy$)).subscribe(res => {
+    console.log('this.form.get(\'technologies\')', this.form.get('technologies').value);
+    const technologies = this.form.get('technologies').value;
+    if (!technologies || technologies.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Add Technologies.',
+        detail: `Add Technologies First!`
+      });
+    }
+    this.technicalEquipmentService.openAddTechnicalEquipment(technologies).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      console.log('res', res);
+      res.technology = technologies.find(el => el.id === res.technology.id);
+
       if (res) {
         (this.form.controls['technical_equipments'] as FormArray).push(this.fb.group({
           ...res

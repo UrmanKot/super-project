@@ -17,6 +17,10 @@
       <label for="quantity">Quantity</label>
       <input type="text" id="quantity" pInputText formControlName="quantity">
     </div>
+    <div  class="form-group">
+      <label for="quantity">Technology (Select Technology of the Product)</label>
+      <pek-technology-picker [showClear]="false" [predefinedTechnologies]="technologies" [selectTechnologyId]="form.get('technology').value" (selectTechnology)="technologySelected($event)"></pek-technology-picker>
+    </div>
   </form>
 </mat-dialog-content>
 

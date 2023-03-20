@@ -92,8 +92,9 @@ export class EditProductComponent implements OnInit {
         updated_created_technical_equipment: technicalEquipments.map(equipment => {
           return {
             id: equipment.id,
-            used_by_nomenclature: equipment.used_by_nomenclature.id,
-            quantity: equipment.quantity
+            nomenclature_in_use: equipment.nomenclature_in_use.id,
+            quantity: equipment.quantity,
+            technology: equipment.technology.id,
           };
         }),
         deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,

@@ -11,3 +11,11 @@ form {
   width: 70%;
   margin-left: 1.75rem;
 }
+
+::ng-deep {
+    p-table.nomenclature-picker {
+      .p-datatable-wrapper {
+        min-height: 30rem;
+      }
+    }
+}
