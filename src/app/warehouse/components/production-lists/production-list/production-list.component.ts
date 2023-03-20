@@ -196,34 +196,227 @@ export class ProductionListComponent implements OnInit {
         list.reserved_quantity = list.reserved_quantity ?? 0;
         list.actual_quantity = list.actual_quantity ?? 0;
 
-        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id)) {
+        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id) && lists.filter(l => l.nomenclature.id === list.nomenclature.id).every(n => n.status === '0')) {
           // list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
-          // list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
           // list.status
 
           list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id);
 
-          list.technologies = list.products.filter(l => l.technology).map(l => l.technology);
+          list.technologies = list.products.filter(l => l.technology).map(l => {
+            return {
+              ...l.technology,
+              task_sort_value: l.task_sort_value,
+            };
+          });
           list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
           list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+          list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
 
           list.has_children = list.products.some(p => p.has_children);
 
           list.groupedProductIds = list.products.map(p => p.id);
           newListProducts.push(list);
         }
+          //   else if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id) && list.status !== '0') {
+          //   list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
+          //   list.has_children = list.products.some(p => p.has_children);
+          //   list.groupedProductIds = list.products.map(p => p.id);
+          //   list.technologies = list.products.filter(l => l.technology).map(l => {
+          //     return {
+          //       ...l.technology,
+          //       task_sort_value: l.task_sort_value,
+          //     }
+          //   });
+          //   list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
+          //   list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+          //   list.status = list.products.some(p => p.status === '1') ? '1' : list.status;
+          //
+          //   let technologies = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level).map(l => {
+          //     return {
+          //       ...l.technology,
+          //       task_sort_value: l.task_sort_value,
+          //     }
+          //   });
+          //   technologies = this.adapterService.removeDuplicates(technologies, x => x.id);
+          //   technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+          //
+          //   const index = technologies.findIndex(t => t.id === list.technology.id);
+          //
+          //   if (index === technologies.length - 1) {
+          //
+          //   }
+          //
+          //   newListProducts.push(list);
+        // }
+
+        else if (list.status !== '0') {
+          const products = lists.filter(p => p.nomenclature.id === list.nomenclature.id && p.level === list.level).filter(p => p.status !== '0');
+          const reservedQuantity = products.reduce((sum, item) => sum += item.reserved_quantity, 0);
+          const total = list.total_required_quantity;
+          const findList = newListProducts.find(p => p.nomenclature.id === list.nomenclature.id && p.level === list.level);
+
+          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
+
+          list.technologies = list.products.filter(l => l.technology).map(l => {
+            return {
+              ...l.technology,
+              task_sort_value: l.task_sort_value,
+            };
+          });
+          list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
+          list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+          list.has_children = list.products.some(p => p.has_children);
+
+          list.groupedProductIds = list.products.map(p => p.id);
+
+          let technologies = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level).map(l => {
+            return {
+              ...l.technology,
+              task_sort_value: l.task_sort_value,
+            };
+          });
+          technologies = this.adapterService.removeDuplicates(technologies, x => x.id);
+          technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+          if (list.nomenclature.name === 'Axle') {
+            // console.log(total);
+            // console.log(reservedQuantity);
+            // // console.log(list.status);
+            // // console.log(lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level).map(p => p.technology.name));
+            // console.log(technologies);
+            // console.log(list.technologies);
+          }
+
+          if (list.technologies.length === 0 && !findList) {
+            list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
+            newListProducts.push(list);
+          } else if (list.technologies.length === 1) {
+            if (total === reservedQuantity && !findList && list.status === '1') {
+              newListProducts.push(list);
+            } else if (reservedQuantity === 0 && !findList && list.status === '2') {
+              newListProducts.push(list);
+            } else if (total !== reservedQuantity && reservedQuantity > 0) {
+              newListProducts.push(list);
+            }
+          } else if (list.technologies.length > 1) {
+            const tt = lists.filter(p => p.nomenclature.id === list.nomenclature.id && p.level === list.level);
+
+            let technologies = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level).map(l => {
+              return {
+                ...l.technology,
+                task_sort_value: l.task_sort_value,
+              };
+            });
+            technologies = this.adapterService.removeDuplicates(technologies, x => x.id);
+            technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+            const index = technologies.findIndex(t => t.id === list.technology.id);
+
+            const isLast = Boolean(index === technologies.length - 1);
+
+            if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
+              // if (tt.reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
+              //
+              // }
+
+              if (isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
+                list.status = '1';
+                newListProducts.push(list);
+              } else if (!isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
+                list.status = '2';
+                newListProducts.push(list);
+              } else {
+                if (total === reservedQuantity && list.reserved_quantity > 0) {
+                  if (isLast) {
+                    list.status = '2';
+                    newListProducts.push(list);
+                  } else {
+                    list.status = '1';
+                    newListProducts.push(list);
+                  }
+                } else if (total !== reservedQuantity) {
+                  if (list.reserved_quantity > 0) {
+                    const newList = {...list};
+                    newList.status = '2';
+                    newListProducts.push(newList);
+                  }
+
+                  if (isLast) {
+                    const newList = {...list};
+                    newList.blockedExpand = true;
+                    newList.status = '2';
+                    newListProducts.push(newList);
+                  }
+                }
+              }
+            }
+
+            // if (tt.filter(p => p.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
+            //   if (isLast && list.status === '1') {
+            //     newListProducts.push(list)
+            //   } else {
+            //
+            //   }
+            // }
+
+            // if (tt.filter(p => p.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total && isLast && list.status === '1' && !findList) {
+            //   newListProducts.push(list)
+            // } else if (tt.filter(p => p.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total && list.status === '1' && !findList) {
+            //   list.status = '2'
+            //   newListProducts.push(list)
+            // } else {
+            // tt.forEach(p => {
+            //
+            // })
+
+            if (total !== reservedQuantity) {
+            }
+
+            // if (!newListProducts.find(p => p.nomenclature.id === list.nomenclature.id && p.level === list.level && p.technology.id === list.technology.id)) {
+            //   if (!isLast) {
+            //     list.status = '1'
+            //     newListProducts.push(list)
+            //   } else {
+            //     list.status = '2'
+            //     newListProducts.push(list)
+            //   }
+            // }
+
+            // technologies.forEach(t => {
+            //   const products = tt.filter(p => p.technology.id === t.id);
+            //
+            //   products.forEach(product => {
+            //     if (!newListProducts.find(p => p.nomenclature.id === product.nomenclature.id && p.level === product.level && p.technology.id === product.technology.id)) {
+            //       newListProducts.push(list)
+            //     }
+            //   })
+            // })
+          }
+
+          if (list.nomenclature.name === 'Bushing') {
+            //   console.log('dsfdsf');
+            //   console.log(tt);
 
 
-        // if (newListProducts.f)
+          }
+          //
+          // if (total === reservedQuantity) {
+          //   const index = technologies.findIndex(t => t.id === list.technology.id);
+          //   if (index === technologies.length - 1) {
+          //     newListProducts.push(list)
+          //   }
+          // }
+        }
       });
 
-      console.log(newListProducts);
+      // console.log(newListProducts);
 
-        // console.log(newListProducts);
-        //
-        // newListProducts.forEach(l => {
-        //   console.log(l.nomenclature.name);
-        // })
+      // console.log(newListProducts);
+      //
+      // newListProducts.forEach(l => {
+      //   console.log(l.nomenclature.name);
+      // })
       // console.log(lists);
       //
       // newListProducts.forEach(list => {
@@ -272,8 +465,8 @@ export class ProductionListComponent implements OnInit {
 
       this.tree = this.tree.map(l => l);
 
-      console.log(this.tree);
-      console.log(this.tree.filter(n => n.data.has_children));
+      // console.log(this.tree);
+      // console.log(this.tree.filter(n => n.data.has_children));
 
       this.isLoading = false;
     });
@@ -707,6 +900,6 @@ export class ProductionListComponent implements OnInit {
       if (response) {
         this.getListProducts();
       }
-    })
+    });
   }
 }

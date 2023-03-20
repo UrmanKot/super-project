@@ -39,7 +39,7 @@ export class ProductionListActualQuantityComponent implements OnInit {
   ngOnInit(): void {
     this.listProduct = Object.assign({}, this.data.listProduct);
 
-    if (!this.listProduct.has_children) {
+    if (this.listProduct.technologies.length === 0) {
       this.form.get('id').patchValue(this.listProduct.id);
       this.form.get('actual_quantity').patchValue(0);
     } else {
@@ -57,13 +57,15 @@ export class ProductionListActualQuantityComponent implements OnInit {
       }
     });
 
+
+    newProducts.sort((a, b) => a.task_sort_value - b.task_sort_value);
     this.listProducts = newProducts;
 
     this.listProducts.forEach(product => this.quantities.push({
       id: product.id,
       products: product.children,
       quantity: 0,
-    }))
+    }));
   }
 
   onEditQuantity(evt: any, listProduct: ListProduct) {
@@ -72,32 +74,54 @@ export class ProductionListActualQuantityComponent implements OnInit {
       if (product.products.find(p => p.id === listProduct.id)) {
         product.quantity = +evt.target.value;
       }
-    })
+    });
   }
 
   onSave() {
+    // const send = [];
+    //
+    // this.quantities.forEach(quantity => {
+    //   send.push({
+    //     id: quantity.id,
+    //     actual_quantity: quantity.quantity,
+    //   });
+    // });
+
     this.isSaving = true;
-    if (!this.listProduct.has_children) {
+    if (this.listProduct.technologies.length === 0) {
       this.listProductService.updatePartly(this.form.value).pipe(
         finalize(() => this.isSaving = false)
       ).subscribe(() => this.dialogRef.close(true));
     } else {
+      // const send = [];
+      //
+      // this.quantities.forEach(product => {
+      //   product.products.forEach((p, idx) => {
+      //     if (idx <= product.quantity - 1) {
+      //       send.push({
+      //         id: p.id,
+      //         actual_quantity: 1,
+      //       })
+      //     }
+      //   })
+      // })
+
       const send = [];
 
-      this.quantities.forEach(product => {
-        product.products.forEach((p, idx) => {
-          if (idx <= product.quantity - 1) {
-            send.push({
-              id: p.id,
-              actual_quantity: 1,
-            })
-          }
-        })
-      })
+      this.quantities.forEach(quantity => {
+        send.push({
+          id: quantity.id,
+          actual_quantity: quantity.quantity,
+        });
+      });
 
       this.listProductService.severalUpdatePartly(send).pipe(
         finalize(() => this.isSaving = false)
       ).subscribe(() => this.dialogRef.close(true));
     }
+  }
+
+  disabled() {
+    return this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.total_required_quantity
   }
 }

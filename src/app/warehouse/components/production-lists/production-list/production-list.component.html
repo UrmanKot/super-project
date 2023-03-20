@@ -141,7 +141,7 @@
                 *ngIf="product.list_url"
                 class="list-parent"
                 [routerLink]="['/warehouse/production-lists/', product.list]"
-                [class.disabled]="product.list_url && (product.status == 1 || product.status == 3)"
+                [class.disabled]="(product.list_url && (product.status == 1 || product.status == 3)) || product.blockedExpand"
               >
                 {{product.nomenclature?.code}}
               </a>
@@ -316,7 +316,7 @@
               Code
             </th>
             <th style="width: 10%">Name</th>
-            <th style="width: 6%">Technology</th>
+            <th style="width: 6%">Technologies</th>
             <th style="width: 8%" class="text-center">Total Req Qty</th>
             <th style="width: 10%" class="text-center">Req Qty Per One</th>
             <th style="width: 8%" class="text-center">Free Wh Qty</th>
@@ -339,9 +339,9 @@
               <h3 class="td-title">Code</h3>
               <div class="toggle-row">
                 <p-treeTableToggler [rowNode]="rowNode"
-                                    [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
+                                    [class.disabled-toggler]="rowData.status == 1 || rowData.blockedExpand"></p-treeTableToggler>
                 <a
-                  [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
+                  [class.disabled]="(rowData.list_url && (rowData.status == 1 || rowData.status == 3)) || rowData.blockedExpand"
                   *ngIf="rowData.has_children"
                   class="list-parent"
                   [routerLink]="['/warehouse/production-lists/', rowData.list]"
@@ -369,8 +369,8 @@
               </div>
             </td>
             <td>
-              <span *ngFor="let technology of rowData?.technologies">
-                {{technology?.name}}
+              <span *ngFor="let technology of rowData?.technologies; let idx = index">
+                {{technology?.name}}<ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
               </span>
             </td>
             <td style="width: 6%" class="text-center">

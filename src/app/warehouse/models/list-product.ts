@@ -26,4 +26,6 @@ export class ListProduct {
   groupedProductIds?: number[];
   technologies: any[];
   children?: ListProduct[]
+  task_sort_value?: number;
+  blockedExpand?: boolean;
 }

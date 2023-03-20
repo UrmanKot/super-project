@@ -10,7 +10,7 @@
 
 <mat-dialog-content>
   <form [formGroup]="form">
-    <ng-container *ngIf="!listProduct.has_children">
+    <ng-container *ngIf="this.listProduct.technologies.length === 0">
       <div class="form-group">
         <label>Actual Quantity*</label>
         <input
@@ -22,7 +22,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="listProduct.has_children">
+    <ng-container *ngIf="this.listProduct.technologies.length > 0">
       <p-table
         selectionMode="single"
         dataKey="id"
@@ -90,5 +90,6 @@
     label="Set"
     class="p-button-success"
     (click)="onSave()"
+    [disabled]="disabled()"
   ></button>
 </mat-dialog-actions>
