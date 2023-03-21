@@ -348,34 +348,40 @@ tr {
 }
 
 .impression-neutral {
-  background-color: #F59E0B !important;
+  background-color: #f9f8bb !important;
 }
 
 .impression-positive {
-  background-color: #55b157 !important;
+  background-color: #d2fad2 !important;
 }
 
 .impression-negative {
-  background-color: #fc5a69 !important;
+  background-color: #fab5bb !important;
 }
 
 .impression-neutral-text {
-  color: #F59E0B !important;
+  color: #f9f8bb !important;
+  text-shadow: 1px 1px 0 #00000052;
     a {
-    color: #F59E0B !important;
+    color: #f9f8bb !important;
+      text-shadow: 1px 1px 0 #00000052;
   }
 }
 
 .impression-positive-text {
-  color: #55b157 !important;
+  color: #d2fad2 !important;
+  text-shadow: 1px 1px 0 #00000052;
     a {
-    color: #55b157 !important;
+    color: #d2fad2 !important;
+      text-shadow: 1px 1px 0 #00000052;
   }
 }
 
 .impression-negative-text {
-  color: #fc5a69 !important;
+  color: #fab5bb !important;
+  text-shadow: 1px 1px 0 #00000052;
   a {
-    color: #fc5a69 !important;
+    color: #fab5bb !important;
+    text-shadow: 1px 1px 0 #00000052;
   }
 }

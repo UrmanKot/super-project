@@ -822,7 +822,13 @@
                         </span>
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event hide">
+                    <div *ngFor="let event of eventGroup.events" class="report-event hide"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
                          target="_blank"
                          [pTooltip]="event ? event.description : 'No Description'"
@@ -841,7 +847,13 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -856,7 +868,13 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -871,7 +889,13 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEUTRAL"
+                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.POSITIVE"
+                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
+                          && event.impression === Impression.NEGATIVE">
                       <div class="small-comment">
                         <span>
                           {{getSmallComment(event?.event_comment)}}
