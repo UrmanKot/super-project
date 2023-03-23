@@ -29,7 +29,7 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     exchange_rate: [1, Validators.required],
     payment_date: [<Date | string>'', Validators.required],
     accountant_number: ['', Validators.required],
-    paid_by_card: [''],
+    paid_by_card: [false],
   });
   isSaving = false;
   serviceInvoices: Invoice[] = [];
