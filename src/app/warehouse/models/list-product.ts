@@ -28,4 +28,5 @@ export class ListProduct {
   children?: ListProduct[]
   task_sort_value?: number;
   blockedExpand?: boolean;
+  breakDown?: boolean;
 }

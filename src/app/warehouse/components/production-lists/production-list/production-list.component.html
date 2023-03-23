@@ -309,22 +309,23 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="padding-left: 16px; width: 19%">
+            <th style="padding-left: 16px; width: 16%">
               <button class="back" (click)="_location.back()">
                 <i class="pi pi-arrow-left"></i>
               </button>
               Code
             </th>
-            <th style="width: 10%">Name</th>
+            <th style="width: 14%">Name</th>
             <th style="width: 6%">Technologies</th>
-            <th style="width: 8%" class="text-center">Total Req Qty</th>
-            <th style="width: 10%" class="text-center">Req Qty Per One</th>
+            <th style="width: 6%">Current Technology</th>
+            <th style="width: 6%" class="text-center">Total Req Qty</th>
+            <th style="width: 8%" class="text-center">Req Qty Per One</th>
             <th style="width: 8%" class="text-center">Free Wh Qty</th>
             <th style="width: 7%" class="text-center">Reserved Qty</th>
             <th style="width: 7%" class="text-center">Actual Qty</th>
             <th style="width: 5%" class="text-center">UOM</th>
-            <th style="width: 10%" class="text-center">Locator</th>
-            <th style="width: 10%" class="d-print-none text-center">Status</th>
+            <th style="width: 9%" class="text-center">Locator</th>
+            <th style="width: 8%" class="d-print-none text-center">Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
@@ -335,7 +336,7 @@
               [id]="'row-' + rowData.id"
               [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
           >
-            <td style="width: 19%">
+            <td style="width: 16%">
               <h3 class="td-title">Code</h3>
               <div class="toggle-row">
                 <p-treeTableToggler [rowNode]="rowNode"
@@ -353,7 +354,7 @@
 <!--                <b>({{rowData.id}})</b>-->
               </div>
             </td>
-            <td style="width: 10%" class="serial-number-cont">
+            <td style="width: 14%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
 <!--              ({{rowData.id}}) -->
@@ -368,16 +369,22 @@
                 </div>
               </div>
             </td>
-            <td>
+            <td  style="width: 6%">
               <span *ngFor="let technology of rowData?.technologies; let idx = index">
                 {{technology?.name}}<ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
               </span>
             </td>
             <td style="width: 6%" class="text-center">
+              <h3 class="td-title">Current Technology</h3>
+              <ng-container *ngIf="rowData.breakDown">
+                {{rowData.technology?.name}}
+              </ng-container>
+            </td>
+            <td style="width: 6%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
               {{rowData.total_required_quantity}}
             </td>
-            <td style="width: 10%" class="text-center">
+            <td style="width: 8%" class="text-center">
               <h3 class="td-title">Req Qty Per One</h3>
               {{rowData.required_quantity_per_one}}
             </td>
@@ -385,7 +392,7 @@
               <h3 class="td-title">Free Wh Qty</h3>
               {{rowData.warehouse_quantity}}
             </td>
-            <td style="width: 8%" class="text-center">
+            <td style="width: 7%" class="text-center">
               <h3 class="td-title">Reserved Qty</h3>
               {{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}
             </td>
@@ -397,11 +404,11 @@
               <h3 class="td-title">UOM</h3>
               {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
-            <td style="width: 10%" class="text-center">
+            <td style="width: 9%" class="text-center">
               <h3 class="td-title">Locator</h3>
               {{rowData.available_on_locator}}
             </td>
-            <td style="width: 10%" class="d-print-none text-center">
+            <td style="width: 8%" class="d-print-none text-center">
               <h3 class="td-title">Status</h3>
               <span
                 class="badge"

@@ -250,6 +250,7 @@ export class ProductionListComponent implements OnInit {
         // }
 
         else if (list.status !== '0') {
+
           const products = lists.filter(p => p.nomenclature.id === list.nomenclature.id && p.level === list.level).filter(p => p.status !== '0');
           const reservedQuantity = products.reduce((sum, item) => sum += item.reserved_quantity, 0);
           const total = list.total_required_quantity;
@@ -278,6 +279,10 @@ export class ProductionListComponent implements OnInit {
           });
           technologies = this.adapterService.removeDuplicates(technologies, x => x.id);
           technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+          if (reservedQuantity > 0) {
+            list.breakDown = true;
+          }
 
           if (list.nomenclature.name === 'Axle') {
             // console.log(total);
@@ -322,9 +327,11 @@ export class ProductionListComponent implements OnInit {
 
               if (isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
                 list.status = '1';
+
                 newListProducts.push(list);
               } else if (!isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
                 list.status = '2';
+                list.blockedExpand = true;
                 newListProducts.push(list);
               } else {
                 if (total === reservedQuantity && list.reserved_quantity > 0) {
@@ -333,6 +340,17 @@ export class ProductionListComponent implements OnInit {
                     newListProducts.push(list);
                   } else {
                     list.status = '1';
+
+                    if (
+                      lists
+                        .filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level)
+                        .filter(l => l.technology.id === technologies[technologies.length - 1].id)
+                        .reduce((sum, l) => sum += l.reserved_quantity, 0) === 0
+                    ) {
+                      list.status = '2';
+                    }
+
+                    list.blockedExpand = true;
                     newListProducts.push(list);
                   }
                 } else if (total !== reservedQuantity) {
@@ -409,6 +427,24 @@ export class ProductionListComponent implements OnInit {
           // }
         }
       });
+
+      const tt: ListProduct[] = [];
+
+      newListProducts.forEach(list => {
+        const filteredLists = newListProducts.filter(l => l.nomenclature.id === list.nomenclature.id);
+
+
+        if (list.nomenclature.name === 'Coupling') {
+          console.log(filteredLists);
+        }
+
+        if (list.reserved_quantity > 0) {
+          list.total_required_quantity = list.reserved_quantity;
+        } else {
+          list.total_required_quantity = +list.total_required_quantity - +filteredLists.reduce((sum, l) => sum += l.reserved_quantity, 0)
+        }
+      })
+
 
       // console.log(newListProducts);
 
