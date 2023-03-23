@@ -12,6 +12,7 @@ import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
 import {Region} from '@shared/models/region';
 import { Impression } from '../../models/event-company';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'pek-crm-events-reports',
@@ -77,11 +78,20 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(response => {
       this.eventsReports = response;
-      // this.eventsReports.forEach(event => {
-      //   if (event.last_events.length > 0) {
-      //     const lastEvent
-      //   }
-      // });
+      this.eventsReports.forEach(event => {
+        if (event.last_events.length > 0) {
+          const lastEvent = event.last_events.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
+            if (a && b) {
+              b.start = new Date(b.start);
+              a.start = new Date(a.start);
+              return a.start.getTime() - b.start.getTime();
+            }
+          });
+          if (lastEvent.length > 0) {
+            event.lastEventImpressionByFilter = lastEvent[0].impression;
+          }
+        }
+      });
       this.reportsCount = this.eventsReports.length;
 
       if (this.isStartOnePage) {
@@ -212,6 +222,20 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(response => {
       this.eventsReports = response.results;
+      this.eventsReports.forEach(event => {
+        if (event.last_events.length > 0) {
+          const lastEvent = event.last_events.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
+            if (a && b) {
+              b.start = new Date(b.start);
+              a.start = new Date(a.start);
+              return b.start.getTime() - a.start.getTime();
+            }
+          });
+          if (lastEvent.length > 0) {
+            event.lastEventImpressionByFilter = lastEvent[0].impression;
+          }
+        }
+      });
       this.reportsCount = response.count;
 
       if (this.isStartOnePage) {

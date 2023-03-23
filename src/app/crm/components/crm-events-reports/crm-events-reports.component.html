@@ -385,11 +385,11 @@
               <td style="width: 5%" class="text-center bord-dark">
                 <div class="event-item justify-content-center"
                      [class.impression-neutral-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEUTRAL"
+                           report?.lastEventImpressionByFilter === Impression.NEUTRAL"
                      [class.impression-positive-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.POSITIVE"
+                           report?.lastEventImpressionByFilter === Impression.POSITIVE"
                      [class.impression-negative-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEGATIVE">
+                           report?.lastEventImpressionByFilter === Impression.NEGATIVE">
                   {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
                 </div>
               </td>
@@ -397,11 +397,11 @@
                 <div class="event-item justify-content-center">
                         <span
                           [class.impression-neutral-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEUTRAL"
+                           report?.lastEventImpressionByFilter === Impression.NEUTRAL"
                           [class.impression-positive-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.POSITIVE"
+                           report?.lastEventImpressionByFilter === Impression.POSITIVE"
                           [class.impression-negative-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEGATIVE">
+                           report?.lastEventImpressionByFilter === Impression.NEGATIVE">
                           <a
                             [routerLink]="'/crm/business-partners/company-page/' + report.id"
                             target="_blank"
@@ -731,11 +731,11 @@
             <td style="width: 5%" class="text-center bord-dark">
               <div class="event-item justify-content-center"
                    [class.impression-neutral-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEUTRAL"
+                           report?.lastEventImpressionByFilter === Impression.NEUTRAL"
                    [class.impression-positive-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.POSITIVE"
+                           report?.lastEventImpressionByFilter === Impression.POSITIVE"
                    [class.impression-negative-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEGATIVE">
+                           report?.lastEventImpressionByFilter === Impression.NEGATIVE">
                 {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
               </div>
             </td>
@@ -743,11 +743,11 @@
               <div class="event-item justify-content-center">
                 <span
                   [class.impression-neutral-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEUTRAL"
+                           report?.lastEventImpressionByFilter === Impression.NEUTRAL"
                   [class.impression-positive-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.POSITIVE"
+                           report?.lastEventImpressionByFilter === Impression.POSITIVE"
                   [class.impression-negative-text]="searchForm.get('enableColors').value &&
-                           report.last_event_impression === Impression.NEGATIVE">
+                           report?.lastEventImpressionByFilter === Impression.NEGATIVE">
                   <a [routerLink]="'/crm/business-partners/company-page/' + report.id"
                      target="_blank">{{ report.name }}</a>
                 </span>

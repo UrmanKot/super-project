@@ -26,4 +26,5 @@ export class EventItem {
   scheduler?: any;
   root?: any;
   is_done?: boolean;
+  impression?: string;
 }
