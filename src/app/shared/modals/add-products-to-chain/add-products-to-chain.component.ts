@@ -56,11 +56,11 @@ export class AddProductsToChainComponent implements OnInit {
           nomenclatureOrderProducts.forEach(orderProduct => {
             if (!order.freeNomenclatureQuantityAtChain) order.freeNomenclatureQuantityAtChain = 0;
             if (orderProduct.request_type === OrderRequestType.MANUALLY) {
-              const quantity = orderProduct.send_to_qc_quantity ? orderProduct.quantity - orderProduct.send_to_qc_quantity : orderProduct.quantity;
+              const quantity = orderProduct.sent_to_qc_quantity ? orderProduct.quantity - orderProduct.sent_to_qc_quantity : orderProduct.quantity;
               order.freeNomenclatureQuantityAtChain += quantity;
             }
             if (orderProduct.request_type === OrderRequestType.AUTOMATICALLY) {
-              const quantity = orderProduct.send_to_qc_quantity ? orderProduct.quantity - orderProduct.send_to_qc_quantity : orderProduct.quantity;
+              const quantity = orderProduct.sent_to_qc_quantity ? orderProduct.quantity - orderProduct.sent_to_qc_quantity : orderProduct.quantity;
               if (orderProduct.initial_quantity < quantity) {
                 order.freeNomenclatureQuantityAtChain += quantity - orderProduct.initial_quantity;
               }

@@ -36,6 +36,7 @@ export class OrderProduct {
   production_list_products?: any[];
   is_technology_ready?: boolean;
   not_ordered_product_id?: number;
+  free_quantity_without_final_status?: number;
   quality_control?: number;
   // details?: OrderDetail;
   isReady?: boolean;

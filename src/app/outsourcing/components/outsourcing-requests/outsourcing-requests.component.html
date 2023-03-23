@@ -127,7 +127,7 @@
               <ng-container *ngIf="product.request_type==1">Auto</ng-container>
               <ng-container *ngIf="product.request_type==0">Manual</ng-container>
             </td>
-            <td style="width: 7%" class="text-center">{{product.free_quantity}}</td>
+            <td style="width: 7%" class="text-center">{{product.free_quantity_without_final_status ? product.free_quantity_without_final_status : 0}}</td>
             <td style="width: 5%" class="text-center">
               <ng-container *ngFor="let order of product.orders; let idx = index;">
                 <a target="blank" *ngIf="order.accounting_type == 1"
