@@ -13,6 +13,7 @@
       <div class="form-group">
         <p-checkbox
           inputId="root"
+          [disabled]="data.products.length > 1"
           formControlName="with_free_product"
           (ngModelChange)="this.search$.next()"
           [binary]="true"
@@ -36,17 +37,20 @@
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 10%" class="index-header text-center">#</th>
-          <th style="width: 20%" class="text-center">ID</th>
+          <th [style.width.px]="this.searchForm.get('with_free_product').value ? 10 : 20" class="text-center">ID</th>
           <th style="width: 20%" class="text-center">Date</th>
-          <th style="width: 50%">Company</th>
+          <th [style.width.px]="this.searchForm.get('with_free_product').value ? 40 : 50" style="width: 40%">Company</th>
+          <th *ngIf="this.searchForm.get('with_free_product').value" style="width: 10%">Free Quantity</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-order let-i="rowIndex" let-expanded="expanded">
-        <tr [pSelectableRow]="order" [pRowToggler]="order">
+        <tr [pSelectableRow]="order" [pRowToggler]="order" [pSelectableRowDisabled]="
+        this.searchForm.get('with_free_product').value && order?.freeNomenclatureQuantityAtChain < data.products[0].initial_quantity">
           <td style="width: 10%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
-          <td style="width: 20%" class="text-center">{{order.id}}</td>
+          <td [style.width.px]="this.searchForm.get('with_free_product').value ? 10 : 20" class="text-center">{{order.id}}</td>
           <td style="width: 20%" class="text-center">{{order.created|date:'dd/MM/yyyy'}}</td>
-          <td style="width: 50%">{{order?.supplier?.name}}</td>
+          <td [style.width.px]="this.searchForm.get('with_free_product').value ? 40 : 50">{{order?.supplier?.name}}</td>
+          <td *ngIf="this.searchForm.get('with_free_product').value" style="width: 15%">{{order?.freeNomenclatureQuantityAtChain}}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">

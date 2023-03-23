@@ -2,7 +2,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {OrderService} from '../../../procurement/services/order.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderProduct, OrderRequestType} from '../../../procurement/models/order-product';
 import {OrderType} from '@shared/components/order-page/order-page.component';
 import {BehaviorSubject, Observable, switchMap} from 'rxjs';
 import {finalize, map, tap} from 'rxjs/operators';
@@ -44,7 +44,33 @@ export class AddProductsToChainComponent implements OnInit {
     tap(() => this.prepareForSearch()),
     switchMap(() => this.orderService.getForPagination(this.query)),
     tap(response => this.productsCount = response.count),
-    map(response => response.results),
+    map(response => {
+      let orders = response.results;
+      if (this.searchForm.get('with_free_product').value) {
+        const requiredNomenclatureId = this.data.products[0].nomenclature.id;
+        orders.forEach(order => {
+          // requiredNomenclatureId
+          const nomenclatureOrderProducts = order.order_products?.filter(orderProduct =>
+            !orderProduct.is_subtracted_from_free_quantity && orderProduct.nomenclature.id == requiredNomenclatureId);
+          // OrderRequestType
+          nomenclatureOrderProducts.forEach(orderProduct => {
+            if (!order.freeNomenclatureQuantityAtChain) order.freeNomenclatureQuantityAtChain = 0;
+            if (orderProduct.request_type === OrderRequestType.MANUALLY) {
+              const quantity = orderProduct.send_to_qc_quantity ? orderProduct.quantity - orderProduct.send_to_qc_quantity : orderProduct.quantity;
+              order.freeNomenclatureQuantityAtChain += quantity;
+            }
+            if (orderProduct.request_type === OrderRequestType.AUTOMATICALLY) {
+              const quantity = orderProduct.send_to_qc_quantity ? orderProduct.quantity - orderProduct.send_to_qc_quantity : orderProduct.quantity;
+              if (orderProduct.initial_quantity < quantity) {
+                order.freeNomenclatureQuantityAtChain += quantity - orderProduct.initial_quantity;
+              }
+            }
+          });
+        });
+        orders = orders.filter(order => order.freeNomenclatureQuantityAtChain > 0);
+      }
+      return orders;
+    }),
     tap(() => this.paginateToFistPage()),
     tap(() => this.isLoading = false),
     untilDestroyed(this)
@@ -107,6 +133,10 @@ export class AddProductsToChainComponent implements OnInit {
 
     if (this.searchForm.get('with_free_product').value) {
       this.query.push({name: 'with_free_product', value: this.data.products[0].nomenclature.id});
+      const catIndex = this.query.findIndex(el => el.name === 'has_purchase_category');
+      if (catIndex > -1) {
+        this.query.splice(catIndex, 1);
+      }
     }
   }
 
@@ -132,8 +162,14 @@ export class AddProductsToChainComponent implements OnInit {
       return {
         id: p.id,
         order: this.selectedOrder.id,
+        is_subtracted_from_free_quantity: false
       };
     });
+
+
+    if (this.searchForm.get('with_free_product').value) {
+      send[0].is_subtracted_from_free_quantity = true;
+    }
 
     this.orderProductService.addToOrder(send).pipe(
       finalize(() => this.isSaving = false)

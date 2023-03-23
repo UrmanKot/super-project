@@ -5,6 +5,11 @@ import {Technology} from '../../product-structure/models/technology';
 import {GroupedRequest} from '../../warehouse/models/grouped-request';
 import {User} from '@shared/models/user';
 
+export enum OrderRequestType {
+  MANUALLY = "0",
+  AUTOMATICALLY = "1"
+}
+
 export class OrderProduct {
   readonly id: number;
   ids?: number[];
@@ -40,6 +45,7 @@ export class OrderProduct {
   checkedForGeneration?: boolean;
   serial_numbers?: { id: number, type_with_number: string, is_passed: boolean }[];
   creator?: User;
+  is_subtracted_from_free_quantity?: boolean;
 }
 
 export class OrderProductGroupedForPrint  extends OrderProduct {

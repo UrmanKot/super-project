@@ -105,7 +105,7 @@
             <td style="width: 10%">{{product.nomenclature.name}}</td>
             <td style="width: 5%" class="text-center">{{product.initial_quantity}}</td>
             <td style="width: 5%" class="text-center">{{product.ordered_quantity}}</td>
-            <td style="width: 7%" class="text-center">{{product.free_quantity}}</td>
+            <td style="width: 7%" class="text-center">{{product.free_quantity ? product.free_quantity : 0}}</td>
             <td style="width: 5%" class="text-center">
               {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
             </td>

@@ -51,6 +51,8 @@ export class Order {
   qc_closed_date?: Date;
   qc_started_date?: Date;
   qc_wh_closed_date?: Date;
+  freeNomenclatureQuantityAtChain?: number;
+  send_to_qc_quantity?: number;
 }
 
 export class Orders {
