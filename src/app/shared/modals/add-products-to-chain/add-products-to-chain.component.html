@@ -47,7 +47,17 @@
         <tr [pSelectableRow]="order" [pRowToggler]="order" [pSelectableRowDisabled]="
         this.searchForm.get('with_free_product').value && order?.freeNomenclatureQuantityAtChain < data.products[0].initial_quantity">
           <td style="width: 10%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
-          <td [style.width.px]="this.searchForm.get('with_free_product').value ? 10 : 20" class="text-center">{{order.id}}</td>
+          <td [style.width.px]="this.searchForm.get('with_free_product').value ? 10 : 20" class="text-center">
+            <a *ngIf="order.accounting_type == 2" [href]="'outsourcing/chains/order/' + order.id"
+               target="_blank">{{order.id}}
+            </a>
+            <a *ngIf="order.accounting_type == 1 && !order.purchase_category" [href]="'procurement/chains/order/' + order.id"
+               target="_blank">{{order.id}}
+            </a>
+            <a *ngIf="order.purchase_category && order.accounting_type == 1" [href]="'purchasing/chains/order/' + order.id"
+               target="_blank">{{order.id}}
+            </a>
+          </td>
           <td style="width: 20%" class="text-center">{{order.created|date:'dd/MM/yyyy'}}</td>
           <td [style.width.px]="this.searchForm.get('with_free_product').value ? 40 : 50">{{order?.supplier?.name}}</td>
           <td *ngIf="this.searchForm.get('with_free_product').value" style="width: 15%">{{order?.freeNomenclatureQuantityAtChain}}</td>
