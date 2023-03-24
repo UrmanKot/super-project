@@ -5,6 +5,7 @@ import {EventItem} from '../../models/event-item';
 import {CalendarOptions, EventInput} from '@fullcalendar/core';
 import {EventsListService} from '../../services/events-list.service';
 import tippy from 'tippy.js';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'pek-crm-full-calendar',
@@ -75,6 +76,7 @@ export class CrmFullCalendarComponent implements OnInit {
     private adapterService: AdapterService,
     private readonly eventS: EventsListService,
     private modalService: ModalService,
+    private router: Router
   ) {
   }
 
@@ -97,7 +99,7 @@ export class CrmFullCalendarComponent implements OnInit {
   }
 
   openCalendarEvent(event) {
-    // this.modalService.openCalendarEvent(event).subscribe();
+    window.open('/crm/events/' + event.id, "_blank");
   }
 
   prepareForView() {
@@ -105,7 +107,7 @@ export class CrmFullCalendarComponent implements OnInit {
       this.events.push({
         // @ts-ignore
         id: eventItem.id,
-        title: eventItem.event_type.name,
+        title: `${eventItem.event_type.name}`,
         allDay: false,
         overlap: false,
         end: eventItem.end,
