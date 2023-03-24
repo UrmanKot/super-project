@@ -356,16 +356,25 @@ export class ProductionListComponent implements OnInit {
                 } else if (total !== reservedQuantity) {
                   if (list.reserved_quantity > 0) {
                     const newList = {...list};
-                    newList.status = '2';
+                    // newList.status = '2';
                     newListProducts.push(newList);
                   }
 
-                  if (isLast) {
-                    const newList = {...list};
-                    newList.blockedExpand = true;
-                    newList.status = '2';
-                    newListProducts.push(newList);
+                  if (total !== reservedQuantity && total > reservedQuantity && list.status === '2' && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.status === '2')) {
+
+                    if (list.reserved_quantity === 0) {
+                      list.breakDown = false;
+                    }
+
+                    newListProducts.push(list);
                   }
+
+                  // if (isLast) {
+                  //   const newList = {...list};
+                  //   newList.blockedExpand = true;
+                  //   newList.status = '2';
+                  //   newListProducts.push(newList);
+                  // }
                 }
               }
             }
