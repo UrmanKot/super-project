@@ -201,6 +201,13 @@ export class ProductionListComponent implements OnInit {
           // list.status
 
           list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id);
+          list.warehouseQuantities = this.adapterService.removeDuplicates(list.products, list => list.technology?.id)
+            .sort((a, b) => a.task_sort_value - b.task_sort_value)
+            .map(l => l.warehouse_quantity);
+
+          if (list.nomenclature.name === 'Coupling') {
+            console.log(list.warehouseQuantities);
+          }
 
           list.technologies = list.products.filter(l => l.technology).map(l => {
             return {
@@ -258,6 +265,10 @@ export class ProductionListComponent implements OnInit {
 
           list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
 
+          list.warehouseQuantities = this.adapterService.removeDuplicates(list.products, list => list.technology?.id)
+            .sort((a, b) => a.task_sort_value - b.task_sort_value)
+            .map(l => l.warehouse_quantity);
+
           list.technologies = list.products.filter(l => l.technology).map(l => {
             return {
               ...l.technology,
@@ -294,6 +305,9 @@ export class ProductionListComponent implements OnInit {
           }
 
           if (list.technologies.length === 0 && !findList) {
+
+            list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
+            list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
             list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
             newListProducts.push(list);
           } else if (list.technologies.length === 1) {
@@ -320,11 +334,12 @@ export class ProductionListComponent implements OnInit {
 
             const isLast = Boolean(index === technologies.length - 1);
 
-            if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
-              // if (tt.reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
-              //
-              // }
+            // if (list.reserved_quantity === 0) {
+            //   // @ts-ignore
+            //   list.technology.id = 0;
+            // }
 
+            if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
               if (isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
                 list.status = '1';
 
@@ -336,10 +351,10 @@ export class ProductionListComponent implements OnInit {
               } else {
                 if (total === reservedQuantity && list.reserved_quantity > 0) {
                   if (isLast) {
-                    list.status = '2';
+                    // list.status = '2';
                     newListProducts.push(list);
                   } else {
-                    list.status = '1';
+                    list.status = '2';
 
                     if (
                       lists
@@ -356,24 +371,56 @@ export class ProductionListComponent implements OnInit {
                 } else if (total !== reservedQuantity) {
                   if (list.reserved_quantity > 0) {
                     const newList = {...list};
-                    // newList.status = '2';
+
+                    if (!isLast) {
+                      newList.status = '2';
+                      newList.blockedExpand = true;
+                    }
+
                     newListProducts.push(newList);
+
+                    console.log('1');
                   }
 
-                  if (total !== reservedQuantity && total > reservedQuantity && list.status === '2' && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.status === '2')) {
+                  else if (total !== reservedQuantity && total > reservedQuantity && list.status === '2' && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.status === '2')) {
 
                     if (list.reserved_quantity === 0) {
                       list.breakDown = false;
                     }
+                    const newList = {...list};
 
-                    newListProducts.push(list);
+                    if (!isLast) {
+                      newList.status = '2';
+                    }
+
+                    console.log('2');
+
+                    newListProducts.push(newList);
                   }
 
-                  // if (isLast) {
+                   else if (reservedQuantity !== 0 && total !== reservedQuantity && total > reservedQuantity && list.status === '2' && isLast && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.status === '1' && l.technology.id === list.technology.id && !isLast)) {
+
+                    if (list.reserved_quantity === 0) {
+                      list.breakDown = false;
+                    }
+                    const newList = {...list};
+
+                    if (!isLast) {
+                      newList.status = '2';
+                    }
+
+                    console.log('3');
+
+                    newListProducts.push(newList);
+                  }
+
+                  // if (isLast && list.status === '1' && total !== reservedQuantity) {
                   //   const newList = {...list};
                   //   newList.blockedExpand = true;
                   //   newList.status = '2';
                   //   newListProducts.push(newList);
+                  //
+                  //   console.log('3');
                   // }
                 }
               }
@@ -437,22 +484,44 @@ export class ProductionListComponent implements OnInit {
         }
       });
 
-      const tt: ListProduct[] = [];
-
       newListProducts.forEach(list => {
-        const filteredLists = newListProducts.filter(l => l.nomenclature.id === list.nomenclature.id);
+
+        if (list.status !== '0' && list.technologies.length > 0) {
+
+          const filteredLists: ListProduct[] = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
+
+          const total = JSON.parse(JSON.stringify(list.total_required_quantity));
+          const reserved = filteredLists.reduce((sum, list) => sum += list.reserved_quantity, 0);
+          const actual = filteredLists.reduce((sum, list) => sum += list.actual_quantity, 0);
+
+          if (total === reserved) {
+
+            const tt = filteredLists.filter(l => l.technology.id === list.technology.id);
+
+            list.total_required_quantity = tt.reduce((sum, list) => sum += list.reserved_quantity, 0);
+            list.actual_quantity = tt.reduce((sum, list) => sum += list.actual_quantity, 0);
+            list.reserved_quantity = tt.reduce((sum, list) => sum += list.reserved_quantity, 0);
+          } else {
+            const tt = filteredLists.filter(l => l.technology.id === list.technology.id);
 
 
-        if (list.nomenclature.name === 'Coupling') {
-          console.log(filteredLists);
+            if (list.reserved_quantity > 0) {
+              list.total_required_quantity = tt.reduce((sum, list) => sum += list.reserved_quantity, 0);
+              list.actual_quantity = tt.reduce((sum, list) => sum += list.actual_quantity, 0);
+              list.reserved_quantity = tt.reduce((sum, list) => sum += list.reserved_quantity, 0);
+            } else {
+              list.total_required_quantity = +list.total_required_quantity - + filteredLists.reduce((sum, l) => sum += l.reserved_quantity, 0)
+            }
+          }
         }
 
-        if (list.reserved_quantity > 0) {
-          list.total_required_quantity = list.reserved_quantity;
-        } else {
-          list.total_required_quantity = +list.total_required_quantity - +filteredLists.reduce((sum, l) => sum += l.reserved_quantity, 0)
-        }
-      })
+
+        // if (list.reserved_quantity > 0) {
+        //   list.total_required_quantity = list.reserved_quantity;
+        // } else {
+        //   list.total_required_quantity = +list.total_required_quantity - +filteredLists.reduce((sum, l) => sum += l.reserved_quantity, 0)
+        // }
+      });
 
 
       // console.log(newListProducts);

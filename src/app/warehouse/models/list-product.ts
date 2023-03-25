@@ -29,4 +29,5 @@ export class ListProduct {
   task_sort_value?: number;
   blockedExpand?: boolean;
   breakDown?: boolean;
+  warehouseQuantities?: number[];
 }

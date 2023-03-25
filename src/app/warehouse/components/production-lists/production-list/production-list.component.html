@@ -156,7 +156,8 @@
               ({{product.id}})
               {{product.nomenclature?.name}}
 
-              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0" class="serial-numbers">
+              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
+                   class="serial-numbers">
                 <div *ngFor="let serialNumber of product.reserved_serial_numbers">
                   {{serialNumber.type_with_number}} (R)
                 </div>
@@ -351,16 +352,17 @@
                 </a>
                 <span *ngIf="!rowData.has_children">{{rowData.nomenclature.code}}</span>
 
-<!--                <b>({{rowData.id}})</b>-->
+                <!--                <b>({{rowData.id}})</b>-->
               </div>
             </td>
             <td style="width: 14%" class="serial-number-cont">
               <h3 class="td-title">Name</h3>
               <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
-<!--              ({{rowData.id}}) -->
+              <!--              ({{rowData.id}}) -->
               {{rowData.nomenclature.name}}
 
-              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0" class="serial-numbers">
+              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
+                   class="serial-numbers">
                 <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
                   {{serialNumber.type_with_number}} (R)
                 </div>
@@ -369,7 +371,7 @@
                 </div>
               </div>
             </td>
-            <td  style="width: 6%">
+            <td style="width: 6%">
               <span *ngFor="let technology of rowData?.technologies; let idx = index">
                 {{technology?.name}}<ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
               </span>
@@ -390,7 +392,20 @@
             </td>
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Free Wh Qty</h3>
-              {{rowData.warehouse_quantity}}
+              <ng-container *ngIf="!rowData.technology">
+                {{rowData.warehouse_quantity}}
+              </ng-container>
+              <ng-container *ngIf="rowData.technologies.length > 0 && !rowData.breakDown">
+                <ng-container *ngFor="let quantity of rowData.warehouseQuantities; let idx = index">
+                  {{quantity}}<ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="rowData.technology && rowData.breakDown">
+                {{rowData.warehouse_quantity}}
+              </ng-container>
+<!--              <ng-container *ngIf="rowData.breakDown">-->
+<!--                {{rowData.warehouse_quantity}}-->
+<!--              </ng-container>-->
             </td>
             <td style="width: 7%" class="text-center">
               <h3 class="td-title">Reserved Qty</h3>
