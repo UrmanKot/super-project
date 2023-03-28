@@ -1,5 +1,5 @@
 export class Technology {
-  readonly id: number;
+  id: number;
   name: string;
   description: string;
   position?: number;

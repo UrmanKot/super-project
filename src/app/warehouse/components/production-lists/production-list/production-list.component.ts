@@ -267,6 +267,7 @@ export class ProductionListComponent implements OnInit {
 
           list.warehouseQuantities = this.adapterService.removeDuplicates(list.products, list => list.technology?.id)
             .sort((a, b) => a.task_sort_value - b.task_sort_value)
+            .filter(l => l.technology?.id !== 0)
             .map(l => l.warehouse_quantity);
 
           list.technologies = list.products.filter(l => l.technology).map(l => {
@@ -334,10 +335,9 @@ export class ProductionListComponent implements OnInit {
 
             const isLast = Boolean(index === technologies.length - 1);
 
-            // if (list.reserved_quantity === 0) {
-            //   // @ts-ignore
-            //   list.technology.id = 0;
-            // }
+            if (list.reserved_quantity === 0) {
+              list.technology.id = 0;
+            }
 
             if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
               if (isLast && tt.filter(t => t.technology.id === list.technology.id).reduce((sum, list) => sum += +list.reserved_quantity, 0) === total) {
@@ -561,8 +561,14 @@ export class ProductionListComponent implements OnInit {
         nodes.filter(n => n.data.products.find(p => p.has_children)).forEach(n => {
           newListProducts.forEach(list => {
             if (n.data.groupedProductIds.includes(list.parent)) {
+              const newList = {
+                ...list,
+                // total_required_quantity: n.data.total_required_quantity * list.total_required_quantity
+                total_required_quantity: n.data.total_required_quantity
+              }
+
               n.children.push({
-                data: list,
+                data: newList,
                 children: [],
                 expanded: false
               });
