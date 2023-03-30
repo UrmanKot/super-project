@@ -209,49 +209,6 @@ a {
 
 .ids-container {
   position: relative;
-
-  .ids {
-    display: none;
-    color: #495057 !important;
-  }
-
-  &:hover {
-    .ids {
-      &.is-absolute {
-        position: absolute;
-        top: 0;
-        left: +100%;
-
-        &.is-last {
-          top: unset;
-          bottom: 0;
-        }
-      }
-      display: block;
-
-      width: 6.25rem;
-      height: auto;
-      padding: .5rem 1rem;
-      background-color: white;
-      color: #495057 !important;
-      border-radius: 0.625rem;
-      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
-      z-index: 100;
-      right: -86%;
-
-      &.is-fixed {
-        position: fixed;
-        transform: translate(80%, -1.5rem);
-        top: unset;
-        left: unset;
-        right: unset;
-      }
-      &.hierarchy {
-        right: unset;
-        left: 10.25rem;
-      }
-    }
-  }
 }
 
 .order-ids-container {

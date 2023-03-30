@@ -274,6 +274,21 @@ p-checkbox.event-statuses {
   font-weight: 500;
   font-style: italic;
 }
+
+.hovered-info {
+  pek-hover-detailed-info-component {
+    display: none;
+  }
+  &:hover {
+    pek-hover-detailed-info-component {
+      display: block;
+    }
+    section {
+      opacity: 1;
+    }
+  }
+}
+
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/form';
 @import 'app/shared/styles/table';

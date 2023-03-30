@@ -21,30 +21,8 @@ a {
     white-space: nowrap;
     .root_list_products {
       display: none;
-
-      &.is-fixed {
-        position: fixed;
-        transform: translate(100%, -1.5rem);
-        top: unset;
-        left: unset;
-      }
-      &.is-absolute {
-        position: absolute;
-        top: 0;
-        left: +100%;
-
-        &.is-last {
-          top: unset;
-          bottom: 0;
-        }
-      }
-
       min-width: 6.25rem;
       height: auto;
-      background: white;
-      padding: .5rem 1rem;
-      border-radius: 0.625rem;
-      box-shadow: 0 0 6px 5px rgb(0 0 0 / 15%);
       z-index: 2;
     }
   }

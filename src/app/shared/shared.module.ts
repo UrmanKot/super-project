@@ -94,6 +94,7 @@ import { AlbumComponent } from './modals/album/album.component';
 import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/multi-countries-picker.component';
 import { CrmMultiRegionPickerComponent } from './pickers/crm-multi-region-picker/crm-multi-region-picker.component';
 import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tree-picker/crm-multi-region-tree-picker.component';
+import { HoverDetailedInfoComponentComponent } from './components/hover-detailed-info-component/hover-detailed-info-component.component';
 
 
 @NgModule({
@@ -167,6 +168,7 @@ import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tr
     MultiCountriesPickerComponent,
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
+    HoverDetailedInfoComponentComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -241,6 +243,7 @@ import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tr
     MultiCountriesPickerComponent,
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
+    HoverDetailedInfoComponentComponent,
   ],
   imports: [
     MultiSelectModule,

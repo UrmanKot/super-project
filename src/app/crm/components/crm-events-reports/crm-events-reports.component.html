@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div class="page__content">
+<div class="page__content" [class.is-all-active]="isShowAll">
   <div class="page__card">
     <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
       <div class="filters-visibility__header">
@@ -39,7 +39,8 @@
           <div class="col-2">
             <div class="form-group">
               <label>Sales Chain Statuses</label>
-              <pek-multi-sales-status-picker (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
+              <pek-multi-sales-status-picker
+                (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
             </div>
           </div>
           <div class="col-2">
@@ -48,29 +49,29 @@
                 <label>Employees</label>
                 <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
               </div>
-<!--              <div class="form-group mr-3">-->
-<!--                <label>Hide Status Events</label>-->
-<!--                <p-checkbox-->
-<!--                  class="checkbox-big"-->
-<!--                  name="group1"-->
-<!--                  [binary]="true"-->
-<!--                  inputId="auto-events"-->
-<!--                  (onChange)="search()"-->
-<!--                  formControlName="autoEvents"-->
-<!--                >-->
-<!--                </p-checkbox>-->
-<!--              </div>-->
-<!--              <div class="form-group">-->
-<!--                <label>Group Linked Events</label>-->
-<!--                <p-checkbox-->
-<!--                  class="checkbox-big"-->
-<!--                  name="group2"-->
-<!--                  [binary]="true"-->
-<!--                  inputId="group-linked-events"-->
-<!--                  formControlName="groupView"-->
-<!--                >-->
-<!--                </p-checkbox>-->
-<!--              </div>-->
+              <!--              <div class="form-group mr-3">-->
+              <!--                <label>Hide Status Events</label>-->
+              <!--                <p-checkbox-->
+              <!--                  class="checkbox-big"-->
+              <!--                  name="group1"-->
+              <!--                  [binary]="true"-->
+              <!--                  inputId="auto-events"-->
+              <!--                  (onChange)="search()"-->
+              <!--                  formControlName="autoEvents"-->
+              <!--                >-->
+              <!--                </p-checkbox>-->
+              <!--              </div>-->
+              <!--              <div class="form-group">-->
+              <!--                <label>Group Linked Events</label>-->
+              <!--                <p-checkbox-->
+              <!--                  class="checkbox-big"-->
+              <!--                  name="group2"-->
+              <!--                  [binary]="true"-->
+              <!--                  inputId="group-linked-events"-->
+              <!--                  formControlName="groupView"-->
+              <!--                >-->
+              <!--                </p-checkbox>-->
+              <!--              </div>-->
             </div>
           </div>
           <div class="col-1">
@@ -106,13 +107,15 @@
           <div class="col-3">
             <div class="form-group">
               <label>Company Category</label>
-              <pek-multi-company-category-picker (selectCompanyCategoriesIds)="onSelectCompanyCategory($event)"></pek-multi-company-category-picker>
+              <pek-multi-company-category-picker
+                (selectCompanyCategoriesIds)="onSelectCompanyCategory($event)"></pek-multi-company-category-picker>
             </div>
           </div>
           <div class="col-3">
             <div class="form-group">
               <label>Country</label>
-              <pek-multi-countries-picker [showClear]="true" (selectCountries)="onSelectCountry($event)"></pek-multi-countries-picker>
+              <pek-multi-countries-picker [showClear]="true"
+                                          (selectCountries)="onSelectCountry($event)"></pek-multi-countries-picker>
             </div>
           </div>
           <div class="col-2">
@@ -294,7 +297,7 @@
            isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen &&
             (!isLastEventStartFilterOpen && isLastEventEndFilterOpen ||
              isLastEventStartFilterOpen && !isLastEventEndFilterOpen )">
-              <label >&nbsp;</label>
+              <label>&nbsp;</label>
               <div style="height: 33px"></div>
             </div>
             <div class="form-group" *ngIf="isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen">
@@ -315,9 +318,14 @@
     </div>
     <div class="page__table" *ngIf="!searchForm.get('groupView').value else groupedView">
       <div class="table-pagination-preloader">
+          <!--
+          [scrollable]="true"
+          scrollHeight="100vh"
+          -->
         <p-table
           #dt
           class="table-full-loading events-reports"
+
           [rows]="10"
           [value]="eventsReports"
           [globalFilterFields]="['name']"
@@ -394,7 +402,7 @@
                 </div>
               </td>
               <td style="width: 15%" class="table-comment small-comment bord-dark">
-                <div class="event-item justify-content-center">
+                <div class="event-item justify-content-center hovered-info">
                         <span
                           [class.impression-neutral-text]="searchForm.get('enableColors').value &&
                            report?.lastEventImpressionByFilter === Impression.NEUTRAL"
@@ -409,53 +417,55 @@
                             {{ report.name }}
                           </a>
                         </span>
-                  <div class="full-comment full-comment_big">
-                    <div class="row">
-                      <div class="col-md-5">
-                        <h4>Name: <i>{{ report.name }}</i></h4>
-                        <h4>
-                          Category:
-                          <i>
-                            <ng-container *ngFor="let item of report.categories"
-                            >{{ item.name }},
-                            </ng-container>
-                          </i>
-                        </h4>
-                        <h4>Address: <i>{{ report.address }}</i></h4>
-                        <h4>Email: <i>{{ report.email }}</i></h4>
-                        <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
-                        <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
-                        <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
-                        <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
-                      </div>
-                      <div class="col-md-7">
-                        <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
-                        <h4>Description: <i>{{ report.comment }}</i></h4>
-                        <h4>
-                          Country:
-                          <span *ngIf="report.country">{{report.country.name}}</span>
-                        </h4>
+                  <pek-hover-detailed-info-component>
+                    <div class="full-comment full-comment_big">
+                      <div class="row">
+                        <div class="col-md-5">
+                          <h4>Name: <i>{{ report.name }}</i></h4>
+                          <h4>
+                            Category:
+                            <i>
+                              <ng-container *ngFor="let item of report.categories"
+                              >{{ item.name }},
+                              </ng-container>
+                            </i>
+                          </h4>
+                          <h4>Address: <i>{{ report.address }}</i></h4>
+                          <h4>Email: <i>{{ report.email }}</i></h4>
+                          <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
+                          <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
+                          <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
+                          <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
+                        </div>
+                        <div class="col-md-7">
+                          <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
+                          <h4>Description: <i>{{ report.comment }}</i></h4>
+                          <h4>
+                            Country:
+                            <span *ngIf="report.country">{{report.country.name}}</span>
+                          </h4>
 
-                        <h4>
-                          Region:
-                          <span *ngIf="report.region">{{report.region.name}}</span>
-                        </h4>
+                          <h4>
+                            Region:
+                            <span *ngIf="report.region">{{report.region.name}}</span>
+                          </h4>
 
-                        <h4>
-                          Sub Region:
-                          <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
-                        </h4>
-                        <h4>Connected Companies</h4>
-                        <p *ngFor="let linked_company of report.linked_companies">
-                          <i>{{ linked_company.name }}</i>
-                        </p>
-                        <h4>Dont have VAT:
-                          <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
-                          <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
-                        </h4>
+                          <h4>
+                            Sub Region:
+                            <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
+                          </h4>
+                          <h4>Connected Companies</h4>
+                          <p *ngFor="let linked_company of report.linked_companies">
+                            <i>{{ linked_company.name }}</i>
+                          </p>
+                          <h4>Dont have VAT:
+                            <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
+                            <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
+                          </h4>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </pek-hover-detailed-info-component>
                 </div>
               </td>
 
@@ -523,16 +533,18 @@
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.NEGATIVE">
-                      <div class="small-comment">
+                      <div class="small-comment hovered-info">
                               <span>
                                 {{getSmallComment(event?.event_comment)}}
                               </span>
-                        <span
+                        <pek-hover-detailed-info-component
+                          [moveLeft]="20"
                           *ngIf="getSmallComment(event?.event_comment)"
-                          class="full-comment"
                         >
-                                {{event?.event_comment}}
-                              </span>
+                          <span class="full-comment description-modal">
+                            {{event?.event_comment}}
+                          </span>
+                        </pek-hover-detailed-info-component>
                       </div>
                     </div>
                   </div>
@@ -740,7 +752,7 @@
               </div>
             </td>
             <td style="width: 15%" class="table-comment small-comment bord-dark">
-              <div class="event-item justify-content-center">
+              <div class="event-item justify-content-center hovered-info">
                 <span
                   [class.impression-neutral-text]="searchForm.get('enableColors').value &&
                            report?.lastEventImpressionByFilter === Impression.NEUTRAL"
@@ -751,53 +763,55 @@
                   <a [routerLink]="'/crm/business-partners/company-page/' + report.id"
                      target="_blank">{{ report.name }}</a>
                 </span>
-                <div class="full-comment full-comment_big">
-                  <div class="row">
-                    <div class="col-md-5">
-                      <h4>Name: <i>{{ report.name }}</i></h4>
-                      <h4>
-                        Category:
-                        <i>
-                          <ng-container *ngFor="let item of report.categories"
-                          >{{ item.name }},
-                          </ng-container>
-                        </i>
-                      </h4>
-                      <h4>Address: <i>{{ report.address }}</i></h4>
-                      <h4>Email: <i>{{ report.email }}</i></h4>
-                      <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
-                      <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
-                      <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
-                      <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
-                    </div>
-                    <div class="col-md-7">
-                      <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
-                      <h4>Description: <i>{{ report.comment }}</i></h4>
-                      <h4>
-                        Country:
-                        <span *ngIf="report.country">{{report.country.name}}</span>
-                      </h4>
+                <pek-hover-detailed-info-component>
+                  <div class="full-comment full-comment_big">
+                    <div class="row">
+                      <div class="col-md-5">
+                        <h4>Name: <i>{{ report.name }}</i></h4>
+                        <h4>
+                          Category:
+                          <i>
+                            <ng-container *ngFor="let item of report.categories"
+                            >{{ item.name }},
+                            </ng-container>
+                          </i>
+                        </h4>
+                        <h4>Address: <i>{{ report.address }}</i></h4>
+                        <h4>Email: <i>{{ report.email }}</i></h4>
+                        <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
+                        <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
+                        <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
+                        <h4>Register Number: <i>{{ report.registration_number }}</i></h4>
+                      </div>
+                      <div class="col-md-7">
+                        <h4>Nomenclature: <i>{{ report.supplier_nomenclature }}</i></h4>
+                        <h4>Description: <i>{{ report.comment }}</i></h4>
+                        <h4>
+                          Country:
+                          <span *ngIf="report.country">{{report.country.name}}</span>
+                        </h4>
 
-                      <h4>
-                        Region:
-                        <span *ngIf="report.region">{{report.region.name}}</span>
-                      </h4>
+                        <h4>
+                          Region:
+                          <span *ngIf="report.region">{{report.region.name}}</span>
+                        </h4>
 
-                      <h4>
-                        Sub Region:
-                        <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
-                      </h4>
-                      <h4>Connected Companies</h4>
-                      <p *ngFor="let linked_company of report.linked_companies">
-                        <i>{{ linked_company.name }}</i>
-                      </p>
-                      <h4>Dont have VAT:
-                        <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
-                        <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
-                      </h4>
+                        <h4>
+                          Sub Region:
+                          <span *ngIf="report.sub_region">{{report.sub_region.name}}</span>
+                        </h4>
+                        <h4>Connected Companies</h4>
+                        <p *ngFor="let linked_company of report.linked_companies">
+                          <i>{{ linked_company.name }}</i>
+                        </p>
+                        <h4>Dont have VAT:
+                          <i class="pi pi-check text-success" *ngIf="report.has_not_vat"></i>
+                          <i class="pi pi-times text-danger" *ngIf="!report.has_not_vat"></i>
+                        </h4>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </pek-hover-detailed-info-component>
               </div>
             </td>
 
@@ -889,7 +903,7 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                    <div *ngFor="let event of eventGroup.events" class="report-event hovered-info"
                          [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.NEUTRAL"
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
@@ -900,10 +914,14 @@
                         <span>
                           {{getSmallComment(event?.event_comment)}}
                         </span>
-                        <span *ngIf="getSmallComment(event?.event_comment)"
-                              class="full-comment">
-                          {{ event?.event_comment}}
-                        </span>
+                        <pek-hover-detailed-info-component
+                          [moveLeft]="20"
+                          *ngIf="getSmallComment(event?.event_comment)"
+                        >
+                          <span class="full-comment description-modal">
+                            {{event?.event_comment}}
+                          </span>
+                        </pek-hover-detailed-info-component>
                       </div>
                     </div>
 
