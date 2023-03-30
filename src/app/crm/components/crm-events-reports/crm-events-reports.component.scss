@@ -355,28 +355,16 @@ tr {
 .impression-neutral-text {
   color: #f9f8bb !important;
   text-shadow: 1px 1px 0 #00000052;
-    a {
-    color: #f9f8bb !important;
-      text-shadow: 1px 1px 0 #00000052;
-  }
 }
 
 .impression-positive-text {
   color: #d2fad2 !important;
   text-shadow: 1px 1px 0 #00000052;
-    a {
-    color: #d2fad2 !important;
-      text-shadow: 1px 1px 0 #00000052;
-  }
 }
 
 .impression-negative-text {
   color: #fab5bb !important;
   text-shadow: 1px 1px 0 #00000052;
-  a {
-    color: #fab5bb !important;
-    text-shadow: 1px 1px 0 #00000052;
-  }
 }
 
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
