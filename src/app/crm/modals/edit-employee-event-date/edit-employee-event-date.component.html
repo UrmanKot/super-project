@@ -2,6 +2,17 @@
   <h2 class="modal-header__title">
     Check Employees Free Time
   </h2>
+
+  <form  [formGroup]="form">
+    <label class="mr-3 p-error">Accept An Overlapping Event</label>
+    <p-checkbox
+      name="group1"
+      [binary]="true"
+      inputId="canOverlap"
+      formControlName="canOverlap"
+    >
+    </p-checkbox>
+  </form>
 </div>
 
 <mat-dialog-content>
