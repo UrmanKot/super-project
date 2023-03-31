@@ -45,6 +45,7 @@ export class CreateEditEventComponent implements OnInit {
     is_locked_by_company: [false],
     is_scheduled: [false],
     parent: [null],
+    canOverlap: [false],
   });
 
   scheduleForm = this.fb.group({
@@ -208,7 +209,7 @@ export class CreateEditEventComponent implements OnInit {
             }
           });
           console.log('this.eventsLists', this.eventsLists);
-          return this.eventsLists.filter(el => el.isDatesColliding).length > 0;
+          return this.eventsLists.filter(el => el.isDatesColliding).length > 0 && !this.form.get('canOverlap').value;
         }));
       return res;
     }

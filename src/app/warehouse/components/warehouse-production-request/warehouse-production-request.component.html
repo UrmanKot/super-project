@@ -246,14 +246,18 @@
                   {{i + 1}}
                 </div>
               </td>
-              <td style="width: 5%;" class="text-center ids-container">
+              <td style="width: 5%;" class="text-center ids-container hovered-info">
                 <h3 class="td-title">ID</h3>
                 {{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span>
-                <span *ngIf="request.ids?.length > 0"
-                      [class.is-fixed]="listRequests.length <= 10"
-                      [class.is-absolute]="listRequests.length > 10"
-                      [class.is-last]="listRequests.length - 10 <= i"
-                      class="ids">
+
+                <pek-hover-detailed-info-component
+                  [moveLeft]="0"
+                  *ngIf="request.ids?.length > 0">
+                <span
+                  [class.is-fixed]="listRequests.length <= 10"
+                  [class.is-absolute]="listRequests.length > 10"
+                  [class.is-last]="listRequests.length - 10 <= i"
+                  class="ids">
                   <div>
                     {{request.id}}
                   </div>
@@ -261,6 +265,8 @@
                     {{id}}
                   </div>
                 </span>
+                </pek-hover-detailed-info-component>
+
               </td>
               <td style="width: 15%;">
                 <h3 class="td-title">Code</h3>
@@ -450,7 +456,7 @@
           >
             <td style="width: 16%;" class="text-center ids-container">
               <h3 class="td-title">ID</h3>
-              <div class="toggle-row">
+              <div class="toggle-row hovered-info">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 <span [class.bold]="rowData.level < 4">
                     {{rowData.name}}
@@ -458,19 +464,19 @@
                 <span *ngIf="rowData.level === 4">
                      {{rowData.request.id}}
                   <span *ngIf="rowData.request.ids?.length > 0">L({{rowData.request.ids?.length + 1}})</span>
-                <span *ngIf="rowData.request.ids?.length > 0"
-                      [class.is-fixed]="listRequests.length <= 10"
-                      [class.is-absolute]="listRequests.length > 10"
-                      [class.is-last]="listRequests.length - 10 <= i"
-                      class="ids hierarchy"
-                >
-                  <div>
-                    {{rowData.request.id}}
-                  </div>
-                  <div *ngFor="let id of rowData.request.ids">
-                    {{id}}
-                  </div>
-                </span>
+
+                   <pek-hover-detailed-info-component
+                     [moveLeft]="0"
+                     *ngIf="rowData.request.ids?.length > 0">
+                                     <span class="ids">
+                    <div>
+                      {{rowData.request.id}}
+                    </div>
+                    <div *ngFor="let id of rowData.request.ids">
+                      {{id}}
+                    </div>
+                  </span>
+                  </pek-hover-detailed-info-component>
                   </span>
               </div>
             </td>

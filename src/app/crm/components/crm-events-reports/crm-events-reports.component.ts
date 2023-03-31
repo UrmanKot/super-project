@@ -80,11 +80,12 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.eventsReports = response;
       this.eventsReports.forEach(event => {
         if (event.last_events.length > 0) {
-          const lastEvent = event.last_events.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
+          const tempEvents = [...event.last_events];
+          const lastEvent = tempEvents.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
             if (a && b) {
               b.start = new Date(b.start);
               a.start = new Date(a.start);
-              return a.start.getTime() - b.start.getTime();
+              return b.start.getTime() - a.start.getTime();
             }
           });
           if (lastEvent.length > 0) {
@@ -101,7 +102,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.isStartOnePage = false;
 
       this.breakForGroupedEvents();
-
+      this.sortEvents();
       this.isLoading = false;
     });
   }
@@ -224,7 +225,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.eventsReports = response.results;
       this.eventsReports.forEach(event => {
         if (event.last_events.length > 0) {
-          const lastEvent = event.last_events.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
+          const tempEvents = [...event.last_events];
+          const lastEvent = tempEvents.filter(ev => ev.is_done && ev.impression).sort((a, b) => {
             if (a && b) {
               b.start = new Date(b.start);
               a.start = new Date(a.start);

@@ -20,3 +20,11 @@ form {
 .paginator-wrapper {
   border-bottom: none;
 }
+
+::ng-deep {
+  p-table.chain-create-table {
+    .p-datatable-wrapper {
+      overflow: inherit;
+    }
+  }
+}

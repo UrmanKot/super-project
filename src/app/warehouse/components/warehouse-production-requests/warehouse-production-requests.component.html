@@ -165,24 +165,34 @@
                   {{order.production_requests_fully_completed | date:'dd/MM/yyyy HH:mm'}}
                 </td>
                 <td style="width: 25%;">
+                  <div class="">
+
+                  </div>
                   <h3 class="td-title">Root Lists</h3>
-                  <div class="root_product" *ngFor="let plan of order.root_production_plans_display">
+                  <div class="root_product hovered-info" *ngFor="let plan of order.root_production_plans_display">
                     <a (click)="goProductionList(plan.root_list.id)">
                       {{plan.root_list.list_product.nomenclature.name}} ({{plan.list.length}})
-                      <div *ngIf="plan.list.length > 1"
-                           class="root_list_products"
-                           [class.is-fixed]="orders.length <= 10"
-                           [class.is-absolute]="orders.length > 10"
-                           [class.is-last]="orders.length - 10 <= i"
+
+                      <pek-hover-detailed-info-component
+                        [moveLeft]="0"
+                        *ngIf="plan.list.length > 1"
                       >
-                        <div class="d-flex flex-column">
-                          <a *ngFor="let list of plan.list" (click)="goProductionList(list.id);
-                         $event.preventDefault();
-                          $event.stopPropagation()">
-                            {{list.list_product.nomenclature.name}}
-                          </a>
+                        <div
+                             class="root_list_products"
+                             [class.is-fixed]="orders.length <= 10"
+                             [class.is-absolute]="orders.length > 10"
+                             [class.is-last]="orders.length - 10 <= i"
+                        >
+                          <div class="d-flex flex-column">
+                            <a *ngFor="let list of plan.list" (click)="goProductionList(list.id);
+                               $event.preventDefault();
+                                $event.stopPropagation()">
+                              {{list.list_product.nomenclature.name}}
+                            </a>
+                          </div>
                         </div>
-                      </div>
+                      </pek-hover-detailed-info-component>
+
                     </a>
 
                   </div>
