@@ -77,6 +77,20 @@
                 </div>
               </div>
 
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Payment Method</label>
+                  <p-dropdown
+                    formControlName="payment_method"
+                    (ngModelChange)="searchPayments()"
+                    [options]="paymentMethod"
+                    [showClear]="true"
+                    placeholder="Choose Payment Method"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+
             </div>
           </form>
           <p-table
@@ -131,6 +145,7 @@
                 <th style="width: 10%" class="text-center">Order ID</th>
                 <th style="width: 10%" class="text-center">Status</th>
                 <th style="width: 10%" class="text-center">Root list</th>
+                <th style="width: 10%" class="text-center">Payment method</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
@@ -179,6 +194,9 @@
                       *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
                     </span>
                   </div>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  {{payment.payment_method}}
                 </td>
               </tr>
             </ng-template>
@@ -270,6 +288,20 @@
                 </div>
               </div>
 
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Payment Method</label>
+                  <p-dropdown
+                    formControlName="payment_method"
+                    (ngModelChange)="searchAuxiliaryPayments()"
+                    [options]="paymentMethod"
+                    [showClear]="true"
+                    placeholder="Choose Payment Method"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+
             </div>
           </form>
 
@@ -324,6 +356,7 @@
                 <th style="width: 10%" class="text-center">Order ID</th>
                 <th style="width: 10%" class="text-center">Status</th>
                 <th style="width: 10%" class="text-center">Root list</th>
+                <th style="width: 10%" class="text-center">Payment method</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-payment let-i="rowIndex">
@@ -372,6 +405,9 @@
                       *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
                     </span>
                   </div>
+                </td>
+                <td style="width: 10%" class="text-center">
+                  {{payment.payment_method}}
                 </td>
               </tr>
             </ng-template>
