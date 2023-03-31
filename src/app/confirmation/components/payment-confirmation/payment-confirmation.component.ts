@@ -143,13 +143,13 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
       let purchaseCategory = null;
 
       if (payment.serviceinvoice) {
-        purchaseCategory = payment.serviceinvoice.order.purchase_category;
+        purchaseCategory = payment.serviceinvoice.order?.purchase_category;
       }
 
       // @ts-ignore
       if (payment.invoice) {
         // @ts-ignore
-        purchaseCategory = payment.invoice.order.purchase_category;
+        purchaseCategory = payment.invoice.order?.purchase_category;
       }
 
       if (purchaseCategory) {
@@ -177,7 +177,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     tree.forEach(node => {
       this.serviceInvoicePayments.forEach(product => {
         if (product.serviceinvoice) {
-          const purchaseCategory = product.serviceinvoice.order.purchase_category;
+          const purchaseCategory = product.serviceinvoice.order?.purchase_category;
           if (purchaseCategory) {
             if (purchaseCategory.id === node.data.id) {
               node.children.push({
@@ -392,7 +392,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     let link = '';
 
     if (payment.invoice.order.accounting_type === 1) {
-      link = `/procurement/chains/order/` + payment.invoice.order.id;
+      link = `/purchasing/chains/order/` + payment.invoice.order.id;
     } else if (payment.invoice.order.accounting_type === 2) {
       link = `/outsourcing/chains/order/` + payment.invoice.order.id;
     }
@@ -404,7 +404,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     let link = '';
 
     if (servicePayment.serviceinvoice.order.accounting_type === 1) {
-      link = `/procurement/chains/order/` + servicePayment.serviceinvoice.order.id;
+      link = `/purchasing/chains/order/` + servicePayment.serviceinvoice.order.id;
     } else if (servicePayment.serviceinvoice.order.accounting_type === 2) {
       link = `/outsourcing/chains/order/` + servicePayment.serviceinvoice.order.id;
     }

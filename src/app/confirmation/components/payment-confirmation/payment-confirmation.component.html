@@ -268,6 +268,7 @@
                     <div class="table-content">
                       <ng-container *ngIf="!payment.serviceinvoice || !payment.invoice">
                         {{payment.name}}
+                        {{payment.id}}
                       </ng-container>
 
                       <ng-container *ngIf="payment.invoice">
@@ -377,7 +378,7 @@
                     <a
                       (click)="onGoToServiceOrder(payment)"
                     >
-                      {{payment.serviceinvoice.order.id}}
+                      {{payment.serviceinvoice.order?.id}}
                     </a>
                   </ng-container>
 
