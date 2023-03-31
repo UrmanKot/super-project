@@ -138,7 +138,7 @@ export class EventsListService {
       .afterClosed();
   }
 
-  openEditEmployeeEventDatesModal(employeeIds: number[], event: EventItem): Observable<{ start: Date, end: Date }> {
+  openEditEmployeeEventDatesModal(employeeIds: number[], event: EventItem): Observable<{ start: Date, end: Date, canOverlap: boolean }> {
     return this.dialog
       .open<EditEmployeeEventDateComponent>(EditEmployeeEventDateComponent, {
         width: '64rem',

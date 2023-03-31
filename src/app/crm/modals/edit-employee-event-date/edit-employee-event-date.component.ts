@@ -40,6 +40,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
     end: [null, [Validators.required]],
     start: [null, [Validators.required]],
     employee_ids: [[]],
+    canOverlap: [false],
   });
 
   destroy$ = new Subject();
@@ -119,7 +120,7 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   disableEmployees() {
     if (this.events.length === 0 && this.form.get('end').value && this.form.get('start').value) return false;
 
-    if (this.events.some(e => e.isDatesColliding) || !this.form.get('end').value || !this.form.get('start').value) {
+    if (this.events.some(e => e.isDatesColliding) && !this.form.get('canOverlap').value || !this.form.get('end').value || !this.form.get('start').value) {
       return true;
     }
 
@@ -141,12 +142,12 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
   }
 
   onAccept() {
-    if (this.events.filter(el => el.isDatesColliding).length > 0) {
+    if (this.events.filter(el => el.isDatesColliding).length > 0 && !this.form.get('canOverlap').value ) {
       this.messageService.add({severity: 'error', summary: 'Dates colliding.', detail: `Check for colliding dates!`});
       return;
     }
 
-    this.dialogRef.close({start: this.form.get('start').value, end: this.form.get('end').value});
+    this.dialogRef.close({start: this.form.get('start').value, end: this.form.get('end').value, canOverlap: this.form.get('canOverlap').value});
   }
 
   ngOnDestroy() {

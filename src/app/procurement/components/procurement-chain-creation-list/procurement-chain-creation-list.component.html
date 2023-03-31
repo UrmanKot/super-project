@@ -66,7 +66,8 @@
         <div class="col-3">
           <div class="form-group">
             <label>Category</label>
-            <pek-multi-product-categories-picker (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
+            <pek-multi-product-categories-picker
+              (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
           </div>
         </div>
         <div class="col-3">
@@ -155,24 +156,35 @@
           <tr [pSelectableRow]="product">
             <td style="width: 2%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
             <td style="width: 3%" class="text-center">{{product.request_id}}</td>
-            <td style="width: 8%">{{product.nomenclature.name}}</td>
+            <td style="width: 8%">
+              {{product.nomenclature.name}}
+            </td>
             <td style="width: 4%" class="text-center">{{product.initial_quantity}}</td>
             <td style="width: 4%" class="text-center">{{product.ordered_quantity}}</td>
-            <td style="width: 6%" class="text-center">{{product.free_quantity_without_final_status ? product.free_quantity_without_final_status : 0}}</td>
+            <td style="width: 6%"
+                class="text-center">{{product.free_quantity_without_final_status ? product.free_quantity_without_final_status : 0}}</td>
             <td style="width: 4%" class="text-center">
               {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
             </td>
             <td style="width: 7%;">{{product.nomenclature.category?.name}}</td>
-            <td style="width: 10%;" class="tooltip-container">
-              <div class="word-break">
-<!--                [pTooltip]="product.nomenclature.description ? product.nomenclature.description : 'No Description'"-->
-                {{getSmallDescription(product.nomenclature.description)}}
-              </div>
-              <div class="description-tooltip" *ngIf="product.nomenclature.description">
-                {{product.nomenclature.description}}
+            <td style="width: 10%;">
+              <div class="hovered-info">
+                <div class="word-break hovered-info">
+                  <!--                [pTooltip]="product.nomenclature.description ? product.nomenclature.description : 'No Description'"-->
+                  {{getSmallDescription(product.nomenclature.description)}}
+                  <pek-hover-detailed-info-component
+                    [moveLeft]="40"
+                    *ngIf="product.nomenclature.description"
+                  >
+                    <div class="description-tooltip">
+                      {{product.nomenclature.description}}
+                    </div>
+                  </pek-hover-detailed-info-component>
+                </div>
               </div>
             </td>
-            <td style="width: 5%;" class="text-center">{{product.request_date | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td style="width: 5%;"
+                class="text-center  hovered-info">{{product.request_date | date:'dd/MM/yyyy HH:mm'}}</td>
             <td class="text-center" style="width: 6%;">
               <ng-container *ngIf="product.request_type==1">Auto</ng-container>
               <ng-container *ngIf="product.request_type==0">Manual</ng-container>

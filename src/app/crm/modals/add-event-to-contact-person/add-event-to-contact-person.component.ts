@@ -25,6 +25,7 @@ export class AddEventToContactPersonComponent implements OnInit {
     company_ids: [[]],
     contact_ids: [[this.data.contactPerson.id]],
     employee_ids: [[]],
+    canOverlap: [false],
   });
 
   constructor(
