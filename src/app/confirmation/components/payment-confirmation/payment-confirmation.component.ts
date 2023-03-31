@@ -392,9 +392,9 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     let link = '';
 
     if (payment.invoice.order.accounting_type === 1) {
-      link = `${this.link}procurement/orders/products/` + payment.invoice.order.id;
+      link = `/procurement/chains/order/` + payment.invoice.order.id;
     } else if (payment.invoice.order.accounting_type === 2) {
-      link = `${this.link}outsource/outsource-chain/products/` + payment.invoice.order.id;
+      link = `/outsourcing/chains/order/` + payment.invoice.order.id;
     }
 
     window.open(link);
@@ -404,9 +404,9 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     let link = '';
 
     if (servicePayment.serviceinvoice.order.accounting_type === 1) {
-      link = `${this.link}procurement/orders/products/` + servicePayment.serviceinvoice.order.id;
+      link = `/procurement/chains/order/` + servicePayment.serviceinvoice.order.id;
     } else if (servicePayment.serviceinvoice.order.accounting_type === 2) {
-      link = `${this.link}outsource/outsource-chain/products/` + servicePayment.serviceinvoice.order.id;
+      link = `/outsourcing/chains/order/` + servicePayment.serviceinvoice.order.id;
     }
 
     window.open(link);
