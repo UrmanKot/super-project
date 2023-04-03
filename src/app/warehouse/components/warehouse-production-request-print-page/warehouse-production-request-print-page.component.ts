@@ -23,9 +23,6 @@ export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('initing');
-    console.log('orderedProducts', this.orderedProducts);
-    console.log('rootList', this.rootList);
   }
 
   getType(type: ENomenclatureType) {

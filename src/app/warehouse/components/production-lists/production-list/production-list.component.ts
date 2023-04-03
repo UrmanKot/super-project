@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -414,8 +414,6 @@ export class ProductionListComponent implements OnInit {
       children: this.products
     });
 
-    console.log(this.productsForPrint);
-
     const getProducts = (products) => {
       const ids = products.filter(p => p.has_children).map(p => p.list) as number[];
 
@@ -449,6 +447,18 @@ export class ProductionListComponent implements OnInit {
 
     getProducts(this.products);
   }
+
+  @HostListener("window:afterprint", [])
+  onWindowAfterPrint() {
+    this.isShowPrint = false;
+    this.isShowPrintSeparated = false;
+  }
+
+  @HostListener('afterprint') printClosed() {
+    this.isShowPrintSeparated = false;
+    this.isShowPrint = false;
+  }
+
 
   setQuantities() {
     if (this.mode === 'list') {
@@ -603,11 +613,11 @@ export class ProductionListComponent implements OnInit {
 
   onSelectTreeNode() {
     if (this.mode === 'list' && this.selectedNode) {
-      this.menuItems[0].items[1].disabled = !this.selectedNode?.list_url;
+      this.menuItems[0].items[2].disabled = !this.selectedNode?.list_url;
     } else if (this.mode === 'hierarchy' && this.selectedNodeTree) {
-      this.menuItems[0].items[1].disabled = !this.selectedNodeTree?.data?.list_url || (this.selectedNodeTree?.data.status === '1' || this.selectedNodeTree.data.status === '3');
+      this.menuItems[0].items[2].disabled = !this.selectedNodeTree?.data?.list_url || (this.selectedNodeTree?.data.status === '1' || this.selectedNodeTree.data.status === '3');
     } else {
-      this.menuItems[0].items[1].disabled = false;
+      this.menuItems[0].items[2].disabled = false;
     }
   }
 

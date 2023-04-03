@@ -700,11 +700,20 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('afterprint') printClosed() {
-    console.log('closed Print');
+    this.isShowPrintGrouped = false;
+    this.isShowPrint = false;
   }
 
   printAlbum() {
-    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => r.list_product?.nomenclature));
+    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => {
+      if (r.material_nomenclature) {
+        return r.material_nomenclature;
+      } else if (r.order_product_nomenclature) {
+        return r.order_product_nomenclature;
+      } else if (!r.material_nomenclature && !r.order_product_nomenclature) {
+        return r.list_product?.nomenclature;
+      }
+    }));
   }
 
   togglePrintAlbumMode() {
