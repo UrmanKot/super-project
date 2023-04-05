@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ListProduct} from '../../../warehouse/models/list-product';
-import {OrderMaterial, OrderProduct} from '../../../procurement/models/order-product';
+import {OrderMaterial, OrderProduct, OrderProducts} from '../../../procurement/models/order-product';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {Invoice} from '../../../procurement/models/invoice';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
@@ -26,6 +26,8 @@ import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 import {AlbumService} from '@shared/services/album.service';
 import {GroupedRequest} from '../../../warehouse/models/grouped-request';
+import {forkJoin} from 'rxjs';
+import {deepCopy} from 'deep-copy-ts';
 
 export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
 
@@ -280,11 +282,19 @@ export class OrderPageComponent implements OnInit {
         product.details = this.order.order_products[idx];
         product.isReady = product.is_technology_ready ? product.is_technology_ready : false;
 
-        if (!this.products.find(p => p.nomenclature.id === product.nomenclature.id)) {
-          product.quantity = products.filter(p => p.nomenclature.id === product.nomenclature.id).reduce((sum, p) => sum + p.quantity, 0);
+        if (!this.products.find(p => p.nomenclature.id === product.nomenclature.id &&
+          p.current_technology?.id  === product.current_technology?.id
+          && p.request_type === product.request_type)) {
+          product.totalQuantity = products.filter(p =>
+            p.nomenclature.id === product.nomenclature.id &&
+            p.current_technology?.id  === product.current_technology?.id &&
+            p.request_type === product.request_type)
+            .reduce((sum, p) => sum + p.quantity, 0);
 
           const rootLists = products
-            .filter(p => p.nomenclature.id === product.nomenclature.id && product.root_production_list_products.length > 0);
+            .filter(p => p.nomenclature.id === product.nomenclature.id && p.request_type === product.request_type &&
+              p.current_technology?.id  === product.current_technology?.id
+              && product.root_production_list_products.length > 0);
           const rootProducts = [];
           rootLists.forEach(roots => {
             if (roots.root_production_list_products.length > 0) {
@@ -293,14 +303,18 @@ export class OrderPageComponent implements OnInit {
               });
             }
           });
+          product.equal_order_products = deepCopy(products.filter(p =>
+            p.nomenclature.id === product.nomenclature.id &&
+            p.current_technology?.id  === product.current_technology?.id &&
+            p.request_type === product.request_type));
 
           if (rootProducts) {
             product.root_production_list_products = rootProducts;
           }
+
           this.products.push(product);
         }
       });
-
       this.products = this.products.map(p => p);
 
       if (this.orderType === 'outsourcing') {
@@ -354,19 +368,24 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
+  getRootLists(products: OrderProduct[]): { list: ListProduct, count?: number }[] {
     const lists: { list: ListProduct, count?: number }[] = [];
-    rootLists.forEach((res: ListProduct) => {
-      if (res) {
-        const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
-        if (found) {
-          found.count++;
-        } else {
-          lists.push({list: res, count: 1});
-        }
-      }
 
+    // root_production_list_products
+    products.forEach(prod => {
+      prod.root_production_list_products.forEach((res: ListProduct) => {
+        if (res) {
+          const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
+          if (found) {
+            found.count++;
+          } else {
+            lists.push({list: res, count: 1});
+          }
+        }
+
+      });
     });
+
     return lists;
   }
 
@@ -380,7 +399,7 @@ export class OrderPageComponent implements OnInit {
   onEditOrderProductQuantity() {
     this.orderProductService.editOrderProductQuantity(<OrderProduct>this.selectedProduct).subscribe(orderProduct => {
       if (orderProduct) {
-        this.selectedProduct.quantity = orderProduct.quantity;
+        this.selectedProduct.totalQuantity = orderProduct.totalQuantity;
       }
     });
   }
@@ -396,7 +415,11 @@ export class OrderPageComponent implements OnInit {
   onRemoveOrderProduct() {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
-        this.orderProductService.removeFromOrder(this.selectedProduct).subscribe(() => {
+        const deleteCall = [];
+        this.selectedProduct.equal_order_products.forEach(product => {
+          deleteCall.push(this.orderProductService.removeFromOrder(product));
+        });
+        forkJoin([...deleteCall]).subscribe(res => {
           this.products = this.products.filter(p => p.id !== this.selectedProduct.id);
           this.selectedProduct = null;
         });

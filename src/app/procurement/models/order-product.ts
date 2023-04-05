@@ -19,6 +19,7 @@ export class OrderProduct {
   accepted_quantity: number;
   initial_quantity: number;
   quantity: number;
+  totalQuantity?: number;
   ordered_quantity: number;
   passed_quantity?: number;
   not_passed_quantity?: number;
@@ -32,6 +33,7 @@ export class OrderProduct {
   details?: OrderDetail;
   root_lists?;
   root_production_list_products?: any[];
+  equal_order_products?: OrderProduct[];
   exists_on_locators?: Locator[];
   production_list_products?: any[];
   is_technology_ready?: boolean;
@@ -47,6 +49,8 @@ export class OrderProduct {
   serial_numbers?: { id: number, type_with_number: string, is_passed: boolean }[];
   creator?: User;
   is_subtracted_from_free_quantity?: boolean;
+  invoice_quantity?: number;
+  proforma_invoice_quantity?: number;
 }
 
 export class OrderProductGroupedForPrint  extends OrderProduct {
