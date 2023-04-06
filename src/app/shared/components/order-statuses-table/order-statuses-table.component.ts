@@ -1,8 +1,13 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {ListProduct} from '../../../warehouse/models/list-product';
-import {Order} from '../../../procurement/models/order';
+import {Order, Orders} from '../../../procurement/models/order';
 import {Table} from 'primeng/table';
 import {OrderService} from '../../../procurement/services/order.service';
+import {QuerySearch} from '@shared/models/other';
+import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject, switchMap} from 'rxjs';
+import {untilDestroyed} from '@ngneat/until-destroy';
+import {Paginator} from 'primeng/paginator';
 
 @Component({
   selector: 'pek-order-statuses-table',
@@ -16,7 +21,10 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
   @Input() isLoading = true;
   @Input() orders: Order[] = [];
   @Input() isChart: boolean = false;
-
+  @Input() isPaginatedOutside: boolean = false;
+  @Input() isPaginated = true;
+  @Input() searchQueryParams: QuerySearch[];
+  isShowAll = false;
   dateWidth = '150px';
 
   dates: any = [];
@@ -25,28 +33,62 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
   isExpandChart = false;
   selectedOrder: Order;
 
+  countOrders;
+  isStartOnePage;
+
   constructor(
     private readonly orderService: OrderService,
   ) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if ('orders' in changes) {
-      if (!this.isChart) {
-        this.modifyOrders();
+    if (this.searchQueryParams) {
+
+    } else {
+      if ('orders' in changes) {
+        if (!this.isChart) {
+          this.modifyOrders();
+        }
       }
     }
   }
-
+  search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  @ViewChild('paginator') paginator: Paginator;
   ngOnInit(): void {
     if (this.isChart) {
       setTimeout(() => {
         this.renderDates();
       }, 0);
     }
+
+    this.search$.pipe(
+      tap(() => this.prepareForSearch()),
+      switchMap(() => this.isShowAll ? this.orderService.getForPagination(this.searchQueryParams) : this.orderService.get(this.searchQueryParams)),
+      map(orders => {
+        if (!this.isShowAll) {
+          this.countOrders = (orders as Orders).count;
+        } else {
+          this.countOrders = (orders as Order[]).length;
+        }
+        if (this.isStartOnePage) {
+          this.paginator?.changePage(0);
+        }
+
+        this.isStartOnePage = false;
+        return this.orderService.modifyOrders(this.isShowAll ? (orders as Order[]) : (orders as Orders).results);
+      }),
+      tap(orders => this.orders = orders),
+      // tap(() => this.generateNomenclaturesListAndRootLists()),
+      // tap(() => this.collectOrderedProductsTechnologies()),
+      tap(() => {
+        this.isLoading = false;
+      }),
+      untilDestroyed(this)
+    ).subscribe();
   }
 
   modifyOrders() {
+    // this.isShowAll = this.orders.length > 0;
     this.orders.forEach(order => {
       order.statuses.forEach((stat, index) => {
         stat.estimated_date = new Date(stat.estimated_date);
@@ -193,17 +235,27 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
   }
 
   onOpenChartInWindow() {
+    if (!this.isPaginatedOutside) {
+      localStorage.removeItem('queryParamsForInWindowView');
+    }
     const orders = JSON.parse(JSON.stringify(this.orders));
     console.log(orders);
     this.orderService.openOrderStatusesChartWindow(orders);
   }
 
-  onShowAll(value: boolean) {
-    this.st.paginator = value;
+  public onShowAll(value: boolean) {
+    console.log('onShowAll', value);
+    this.isPaginated = value;
+    // this.st.paginator = value;
     if (!value) {
       this.showAllDates();
     } else {
       this.renderDates({first: this.first});
     }
+  }
+
+
+  private prepareForSearch() {
+
   }
 }

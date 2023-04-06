@@ -49,7 +49,7 @@
     rowGroupMode="rowspan"
     [scrollable]="true"
     scrollHeight="calc(100vh - 32.25rem)"
-    [paginator]="orders.length > 0"
+    [paginator]="!isPaginatedOutside && isPaginated"
     [(selection)]="selectedOrder"
     (onPage)="renderDates($event)"
     [rows]="10"
@@ -258,7 +258,7 @@
       </tr>
     </ng-template>
   </p-table>
-  <div *ngIf="!st.paginator && !isLoading && orders.length > 0" class="paginator-return-pagination">
+  <div *ngIf="!st.paginator && !isLoading && !isPaginatedOutside && !isPaginated" class="paginator-return-pagination">
     <p-button
       type="button"
       (click)="onShowAll(true)"

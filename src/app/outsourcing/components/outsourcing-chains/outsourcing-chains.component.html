@@ -49,7 +49,7 @@
                 optionValue="id"
                 optionLabel="name"
                 placeholder="No Nomenclature Selected"
-                (ngModelChange)="search$.next()"
+                (ngModelChange)="resetPage()"
               ></p-dropdown>
             </div>
           </div>
@@ -67,7 +67,7 @@
                 [showClear]="true"
                 [options]="rootLists"
                 formControlName="order_root_list_id"
-                (ngModelChange)="search$.next()"
+                (ngModelChange)="resetPage()"
                 optionValue="list.id"
                 optionLabel="fullName"
                 placeholder="No List Selected"
@@ -93,7 +93,7 @@
                 [showButtonBar]="true"
                 dateFormat="dd/mm/yy"
                 [readonlyInput]="true"
-                (ngModelChange)="search$.next()"
+                (ngModelChange)="resetPage()"
               >
               </p-calendar>
             </div>
@@ -107,7 +107,7 @@
                 [showButtonBar]="true"
                 dateFormat="dd/mm/yy"
                 [readonlyInput]="true"
-                (ngModelChange)="search$.next()"
+                (ngModelChange)="resetPage()"
               >
               </p-calendar>
             </div>
@@ -117,7 +117,7 @@
               <label>Declined</label>
               <p-triStateCheckbox
                 formControlName="contains_declined_payment"
-                (ngModelChange)="search$.next()"
+                (ngModelChange)="resetPage()"
               ></p-triStateCheckbox>
             </div>
           </div>
@@ -131,14 +131,16 @@
     <div class="page__table">
         <div [ngClass]="{'d-none': !isShowStatuses}">
           <pek-order-statuses-table
+            #orderTable
+            [isPaginated]="isShowAll"
+            [isPaginatedOutside]="true"
             [orders]="orders"
             [isLoading]="isLoading"
             (changePage)="onChangePage($event)"
             (selectOrder)="onSelectionOrder($event)"
           ></pek-order-statuses-table>
         </div>
-
-        <div [ngClass]="{'d-none': isShowStatuses}">
+        <div [ngClass]="{'d-none': isShowStatuses}" class="table-pagination-preloader">
           <p-table
             #dt
             selectionMode="single"
@@ -146,11 +148,11 @@
             [scrollable]="true"
             dataKey="id"
             [(first)]="firstPage"
-            [paginator]="orders.length > 0"
+            [paginator]="false"
             [rows]="10"
             [(selection)]="selectedOrder"
             [value]="orders"
-            (onPage)="onPage($event)"
+            [totalRecords]="countOrders"
             (selectionChange)="onSelectOrder()"
           >
             <ng-template pTemplate="header">
@@ -168,7 +170,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-order let-i="rowIndex">
               <tr [pSelectableRow]="order">
-                <td class="text-center" style="width: 3%;">{{i + 1}}</td>
+                <td class="text-center" style="width: 3%;">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
                 <td class="text-center" style="width: 10%;">{{order.created | date:'dd/MM/yyyy'}}</td>
                 <td class="text-center" style="width: 7%;">{{order.id}}</td>
                 <td class="text-center" style="width: 15%;">{{order.supplier?.name}}</td>
@@ -176,7 +178,6 @@
                   <span *ngFor="let tech of order.ordered_products_unique_technologies; let last=last">
                     {{tech.name}}<span *ngIf="!last">,</span>
                   </span>
-<!--                  {{order.supplier?.supplier_nomenclature}}-->
                 </td>
                 <td style="width: 15%;">
                   <div class="word-break">
@@ -201,30 +202,47 @@
                 </td>
               </tr>
             </ng-template>
-            <ng-template pTemplate="paginatorright">
-              <p-button
-                type="button"
-                (click)="onShowAll(false)"
-                styleClass="p-button-text"
-              >
-                All
-              </p-button>
-            </ng-template>
           </p-table>
-          <div *ngIf="!dt.paginator && !isLoading && orders.length > 0" class="paginator-return-pagination">
-            <p-button
-              type="button"
-              (click)="onShowAll(true)"
-              styleClass="p-button-text"
-            >
-              Return pagination
-            </p-button>
+          <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
           </div>
         </div>
+      <div
+        class="paginator-wrapper"
+        *ngIf="!isShowAll"
+        [class.paginator-wrapper_hide]="orders.length === 0"
+      >
+        <p-paginator
+          #paginator
+          [rows]="10"
+          [totalRecords]="countOrders"
+          (onPageChange)="onPage($event)"
+        >
+        </p-paginator>
+        <p-button
+          (click)="onShowAll()"
+          class="paginator-all"
+          type="button"
+          styleClass="p-button-text"
+        >
+          All
+        </p-button>
+      </div>
+
+      <div *ngIf="isShowAll" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="onShowPartial()"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
     </div>
   </div>
 </div>
-
+<button (click)="testShowAll(true)">test True</button>
+<button (click)="testShowAll(false)">test False</button>
 
 <ng-template #actionButtons>
   <div class="action-buttons">
