@@ -1,0 +1,6 @@
+.procurement-order-page,
+.page {
+  @media print {
+    display: none;
+  }
+}

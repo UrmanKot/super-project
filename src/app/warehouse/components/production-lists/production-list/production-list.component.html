@@ -452,9 +452,11 @@
 
 <div class="print-list-product" *ngIf="isShowPrint">
   <div class="print-list-product__list">
-    <div class="print-list-product__item" [class.break]="isShowPrintSeparated"  *ngFor="let product of productsForPrint; let last=last">
-      <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
-    </div>
+    <ng-template ngFor [ngForOf]="productsForPrint" let-product let-index=index let-last=last>
+      <div class="print-list-product__item" [class.break]="isShowPrintSeparated"  *ngIf="product.children.length > 0">
+          <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
+      </div>
+    </ng-template>
   </div>
 </div>
 

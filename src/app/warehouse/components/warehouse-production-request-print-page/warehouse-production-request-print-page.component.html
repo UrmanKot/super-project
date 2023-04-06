@@ -193,7 +193,7 @@
         <h3 >{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}} Quantity:  {{orderProduct.quantity}}</h3>
     <div class="warehouse-production-request-print-page__table">
       <div
-        *ngFor="let request of orderProduct.children"
+        *ngFor="let request of orderProduct.children; let index=index"
         class="warehouse-production-request-print-page__row">
         <div class="warehouse-production-request-print-page__box">
           <div class="warehouse-production-request-print-page__col">
