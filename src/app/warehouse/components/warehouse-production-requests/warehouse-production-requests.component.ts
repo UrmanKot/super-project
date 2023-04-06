@@ -45,6 +45,8 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     page: 1,
     created_after: [null],
     created_before: [null],
+    closing_after: [null],
+    closing_before: [null],
     category__in: [null],
     root_categories: [null],
     accounting_type: [null],
@@ -52,7 +54,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     is_production_requests_fully_completed: [null],
   });
 
-  queryKey = 'created_after:null/created_before:null/category__in:null/root_categories:null/accounting_type:null/is_production_requests_fully_completed:null';
+  queryKey = 'created_after:null/created_before:null/closing_after:null/closing_before:null/category__in:null/root_categories:null/accounting_type:null/is_production_requests_fully_completed:null';
 
   query: QuerySearch[] = [
     {name: 'accounting_type__in', value: '2,3'},
@@ -151,7 +153,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
     this.selectedOrder = null;
 
-    const newQueryKey = `created_after:${this.searchForm.get('created_after').value}/created_before:${this.searchForm.get('created_before').value}/category__in:${this.searchForm.get('category__in').value}/root_categories:${this.searchForm.get('root_categories').value}/accounting_type:${this.searchForm.get('accounting_type').value}/is_production_requests_fully_completed:${this.searchForm.get('is_production_requests_fully_completed').value}`;
+    const newQueryKey = `created_after:${this.searchForm.get('created_after').value}/created_before:${this.searchForm.get('created_before').value}/closing_after:${this.searchForm.get('closing_after').value}/closing_before:${this.searchForm.get('closing_before').value}/category__in:${this.searchForm.get('category__in').value}/root_categories:${this.searchForm.get('root_categories').value}/accounting_type:${this.searchForm.get('accounting_type').value}/is_production_requests_fully_completed:${this.searchForm.get('is_production_requests_fully_completed').value}`;
 
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
@@ -207,6 +209,22 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
         name: 'created_before',
         value: this.adapterService.dateAdapter(this.searchForm.get('created_before').value)
       });
+    }
+
+    if (this.searchForm.get('closing_after').value) {
+      this.query.push({
+        name: 'closing_after',
+        value: this.adapterService.dateAdapter(this.searchForm.get('closing_after').value)
+      });
+      this.query.push({name: 'is_prepared', value: true});
+    }
+
+    if (this.searchForm.get('closing_before').value) {
+      this.query.push({
+        name: 'closing_before',
+        value: this.adapterService.dateAdapter(this.searchForm.get('closing_before').value)
+      });
+      this.query.push({name: 'is_prepared', value: true});
     }
 
     if (!this.isShowAll) {
