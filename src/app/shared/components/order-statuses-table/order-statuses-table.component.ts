@@ -6,15 +6,21 @@ import {OrderService} from '../../../procurement/services/order.service';
 import {QuerySearch} from '@shared/models/other';
 import {map, tap} from 'rxjs/operators';
 import {BehaviorSubject, switchMap} from 'rxjs';
-import {untilDestroyed} from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Paginator} from 'primeng/paginator';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {deepCopy} from 'deep-copy-ts';
+import {Nomenclature} from '@shared/models/nomenclature';
+import {AdapterService} from '@shared/services/adapter.service';
 
+@UntilDestroy()
 @Component({
   selector: 'pek-order-statuses-table',
   templateUrl: './order-statuses-table.component.html',
   styleUrls: ['./order-statuses-table.component.scss']
 })
 export class OrderStatusesTableComponent implements OnInit, OnChanges {
+  @ViewChild('paginator') paginator: Paginator;
   @ViewChild('st') st: Table;
   @Output() changePage: EventEmitter<number> = new EventEmitter<number>();
   @Output() selectOrder: EventEmitter<Order> = new EventEmitter<Order>();
@@ -26,7 +32,8 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
   @Input() searchQueryParams: QuerySearch[];
   isShowAll = false;
   dateWidth = '150px';
-
+  nomenclaturesList: Nomenclature[] = [];
+  rootLists: any[] = [];
   dates: any = [];
   first = 0;
 
@@ -36,8 +43,18 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
   countOrders;
   isStartOnePage;
 
+  query: QuerySearch[] = [];
+  searchForm: FormGroup = this.fb.group({
+    page: [1],
+  });
+
+  firstPage: number = 0;
+  search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+
   constructor(
     private readonly orderService: OrderService,
+    private readonly fb: FormBuilder,
+    private readonly adapterService: AdapterService,
   ) {
   }
 
@@ -52,8 +69,7 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
       }
     }
   }
-  search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
-  @ViewChild('paginator') paginator: Paginator;
+
   ngOnInit(): void {
     if (this.isChart) {
       setTimeout(() => {
@@ -61,30 +77,87 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
       }, 0);
     }
 
-    this.search$.pipe(
-      tap(() => this.prepareForSearch()),
-      switchMap(() => this.isShowAll ? this.orderService.getForPagination(this.searchQueryParams) : this.orderService.get(this.searchQueryParams)),
-      map(orders => {
-        if (!this.isShowAll) {
-          this.countOrders = (orders as Orders).count;
-        } else {
-          this.countOrders = (orders as Order[]).length;
-        }
-        if (this.isStartOnePage) {
-          this.paginator?.changePage(0);
-        }
 
-        this.isStartOnePage = false;
-        return this.orderService.modifyOrders(this.isShowAll ? (orders as Order[]) : (orders as Orders).results);
-      }),
-      tap(orders => this.orders = orders),
-      // tap(() => this.generateNomenclaturesListAndRootLists()),
-      // tap(() => this.collectOrderedProductsTechnologies()),
-      tap(() => {
-        this.isLoading = false;
-      }),
-      untilDestroyed(this)
-    ).subscribe();
+
+    if (this.searchQueryParams) {
+      this.search$.pipe(
+        tap(() => this.prepareForSearch()),
+        switchMap(() => this.isShowAll ? this.orderService.getForPagination(this.query) : this.orderService.get(this.query)),
+        map(orders => {
+          if (!this.isShowAll) {
+            this.countOrders = (orders as Orders).count;
+          } else {
+            this.countOrders = (orders as Order[]).length;
+          }
+          if (this.isStartOnePage) {
+            this.paginator?.changePage(0);
+          }
+
+          this.isStartOnePage = false;
+          return this.orderService.modifyOrders(this.isShowAll ? (orders as Order[]) : (orders as Orders).results);
+        }),
+        tap(orders => this.orders = orders),
+        tap(() => this.generateNomenclaturesListAndRootLists()),
+        tap(() => this.collectOrderedProductsTechnologies()),
+        tap(() => {
+          this.isLoading = false;
+          this.renderDates();
+        }),
+        untilDestroyed(this)
+      ).subscribe();
+
+      this.search$.next();
+    }
+  }
+
+  generateNomenclaturesListAndRootLists() {
+    this.orders.forEach(order => {
+      if (order.activeStatusDate) {
+        order.activeStatusDate = new Date(order.activeStatusDate);
+      }
+
+      order.order_products.forEach(orderProduct => {
+        if (!this.nomenclaturesList.includes(orderProduct.nomenclature)) {
+          this.nomenclaturesList.push(orderProduct.nomenclature);
+        }
+      });
+
+      order.root_production_list_products.forEach(root => this.rootLists.push(root));
+
+      this.rootLists = this.rootLists.map(root => {
+        return {
+          ...root,
+          fullName: `(${root.id}) ${root.nomenclature.code}~${root.nomenclature.name}`
+        };
+      });
+    });
+
+    this.nomenclaturesList = this.adapterService.removeDuplicates(this.nomenclaturesList, x => x.id);
+    this.rootLists = this.adapterService.removeDuplicates(this.rootLists, x => x.id);
+
+    this.nomenclaturesList.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+
+    this.rootLists.sort((a, b) => {
+      if (a.fullName < b.fullName) return -1;
+      if (a.fullName > b.fullName) return 1;
+      return 0;
+    });
+  }
+
+  collectOrderedProductsTechnologies() {
+    this.orders.forEach(order => {
+      order.ordered_products_unique_technologies = [];
+      order.order_products?.forEach(product => {
+        const needToAdd = order.ordered_products_unique_technologies.findIndex(tech => tech.id === product?.current_technology.id) < 0;
+        if (needToAdd) {
+          order.ordered_products_unique_technologies.push(product?.current_technology);
+        }
+      });
+    });
   }
 
   modifyOrders() {
@@ -243,10 +316,8 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
     this.orderService.openOrderStatusesChartWindow(orders);
   }
 
-  public onShowAll(value: boolean) {
-    console.log('onShowAll', value);
+  onShowAll(value: boolean) {
     this.isPaginated = value;
-    // this.st.paginator = value;
     if (!value) {
       this.showAllDates();
     } else {
@@ -254,8 +325,40 @@ export class OrderStatusesTableComponent implements OnInit, OnChanges {
     }
   }
 
-
   private prepareForSearch() {
+    this.isLoading = true;
+    this.selectedOrder = null;
+    this.orders = [];
+    this.query = [];
+    this.query = deepCopy(this.searchQueryParams);
 
+    if (!this.isShowAll) {
+      this.query.push(
+        {name: 'paginated', value: true},
+        {name: 'page', value: this.searchForm.get('page').value},
+      );
+    } else {
+      this.searchForm.get('page').patchValue(1);
+    }
+    this.firstPage = 0;
+    this.renderDates({first: 0});
+    this.orders = this.orders.map(o => o);
+  }
+
+  onPage(evt: any) {
+    if (!this.isStartOnePage) {
+      this.searchForm.get('page').patchValue(evt.page + 1);
+      this.search$.next();
+    }
+  }
+
+  onShowPartialOnSelfPaginate() {
+    this.isShowAll = false;
+    this.search$.next();
+  }
+
+  onShowAllSelfPaginate() {
+    this.isShowAll = true;
+    this.search$.next();
   }
 }

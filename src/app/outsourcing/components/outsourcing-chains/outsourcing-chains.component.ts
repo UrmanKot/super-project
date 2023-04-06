@@ -305,17 +305,11 @@ export class OutsourcingChainsComponent implements OnInit {
 
   onShowAll() {
     this.isShowAll = true;
-    requestAnimationFrame(() => {
-      // this.orderTable.onShowAll(this.isShowAll);
-    });
     this.search$.next();
   }
 
   onShowPartial() {
     this.isShowAll = false;
-    requestAnimationFrame(() => {
-      // this.orderTable.onShowAll(this.isShowAll);
-    });
     this.search$.next();
   }
 
