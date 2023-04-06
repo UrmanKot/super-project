@@ -284,11 +284,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         request.unique_locators = [...request.locators];
         if (request.is_reserved && request.requests
           .every(req => req.is_reserved)) {
-          request.available_quantity_sum = request.requests.map(req => req.warehouse_quantity)
-            .reduce((sum, quantity) => sum + quantity, request.warehouse_quantity);
+          request.available_quantity_sum = request.requests.map(req => req.required_quantity)
+            .reduce((sum, quantity) => sum + quantity, request.required_quantity);
         } else {
           if (request.ids.length === 0) {
-            request.available_quantity_sum = request.warehouse_quantity;
+            if (!request.is_reserved) {
+              request.available_quantity_sum = request.warehouse_quantity;
+            } else {
+              request.available_quantity_sum = request.required_quantity;
+            }
           } else {
             if (!request.is_reserved) {
               request.available_quantity_sum = request.warehouse_quantity;
@@ -337,11 +341,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         hierRequest.for_order_ids.push(...hierRequest.requests.filter(req => req.for_order_product).map(req => req.for_order_product?.id));
         if (hierRequest.is_reserved && hierRequest.requests
           .every(req => req.is_reserved)) {
-          hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.warehouse_quantity)
-            .reduce((sum, quantity) => sum + quantity, hierRequest.warehouse_quantity);
+          hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.required_quantity)
+            .reduce((sum, quantity) => sum + quantity, hierRequest.required_quantity);
         } else {
           if (hierRequest.ids.length === 0) {
-            hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+            if (!hierRequest.is_reserved) {
+              hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+            } else {
+              hierRequest.available_quantity_sum = hierRequest.required_quantity;
+            }
           } else {
             if (!hierRequest.is_reserved) {
               hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
