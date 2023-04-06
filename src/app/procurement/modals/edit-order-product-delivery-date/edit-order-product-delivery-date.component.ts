@@ -5,6 +5,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {OrderProduct} from '../../models/order-product';
 import {finalize} from 'rxjs/operators';
 import {ModalService} from '@shared/services/modal.service';
+import {forkJoin, Observable} from 'rxjs';
 
 @Component({
   selector: 'pek-edit-order-product-delivery-date',
@@ -53,13 +54,23 @@ export class EditOrderProductDeliveryDateComponent implements OnInit {
   }
 
   save() {
-    this.orderProductService.updatePartly(this.form.value).pipe(
+    let productsToUpdateCalls: Observable<OrderProduct>[] = [];
+    this.orderProduct.equal_order_products.forEach(product => {
+      const dataToSend = {
+        id: product.id,
+        reception_date: this.form.get('reception_date').value
+      };
+      productsToUpdateCalls.push(
+        this.orderProductService.updatePartly(dataToSend as OrderProduct)
+      );
+    });
+    forkJoin([...productsToUpdateCalls]).pipe(
       finalize(() => {
         this.isSaving = false;
         this.isReset = false;
       })
     ).subscribe(orderProduct => {
-      this.dialogRef.close(orderProduct);
+      this.dialogRef.close(orderProduct[0]);
     });
   }
 }
