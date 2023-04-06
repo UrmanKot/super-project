@@ -377,9 +377,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         this.rootList = haveRootProduction.root_production_list_products[0];
         this.currentReqDate = haveRootProduction.created;
       }
-      this.listRequests.sort((a, b) => b.id - a.id);
-      this.hierarchyRequests.sort((a, b) => b.id - a.id);
-
+      const material = this.listRequests.filter(el => el.material_nomenclature).sort((a, b) => {
+        return b.id - a.id;
+      });
+      const non_material = this.listRequests.filter(el => !el.material_nomenclature).sort((a, b) => {
+        return b.id - a.id;
+      });
+      this.listRequests = [...material, ...non_material];
     });
   }
 
@@ -488,6 +492,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           });
         }
       });
+    });
+    this.requestTree.forEach(node => {
+      const materialChild = node.children.filter(child => child.data.request.material_nomenclature).sort((a, b) => {
+        return b.data.request.id - a.data.request.id;
+      });
+      const nonMaterialChild = node.children.filter(child => !child.data.request.material_nomenclature).sort((a, b) => {
+        return b.data.request.id - a.data.request.id;
+      });
+      node.children = [...materialChild, ...nonMaterialChild]
     });
   }
 
