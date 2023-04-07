@@ -1,0 +1,97 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Set Actual Quantity (Required Quantity: {{totalRequiredQuantity}})
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <ng-container *ngIf="this.listProduct.technologies.length === 0">
+      <div class="form-group">
+        <label>Actual Quantity*</label>
+        <input
+          (ngModelChange)="onSetDeficitQuantity()"
+          formControlName="actual_quantity"
+          pInputText
+          class="form-control"
+          type="number"
+        >
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="this.listProduct.technologies.length > 0">
+      <p-table
+        selectionMode="single"
+        dataKey="id"
+        rowExpandMode="multiple"
+        [value]="listProducts"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="text-center">#</th>
+            <th style="width: 20%">Code</th>
+            <th style="width: 20%">Name</th>
+            <th style="width: 20%" class="text-center">Technology</th>
+            <th style="width: 15%" class="text-center">Free Wh Qty</th>
+            <th style="width: 15%" class="text-center">Reserved Qty</th>
+          </tr>
+        </ng-template>
+        <ng-template let-product let-i="rowIndex" pTemplate="body">
+          <tr
+            [pRowToggler]="product"
+          >
+            <td>{{i + 1}}</td>
+            <td>{{product.nomenclature.code}}</td>
+            <td>{{product.nomenclature.name}}</td>
+            <td class="text-center">{{product.technology?.name}}</td>
+            <td class="text-center">{{product.warehouse_quantity}}</td>
+            <td class="text-center">{{product.reserved_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-product>
+          <tr>
+            <td colspan="7">
+              <div class="form-group">
+                <label>Quantity*</label>
+                <input
+                  pInputText
+                  min="1"
+                  class="form-control"
+                  type="number"
+                  (input)="onEditQuantity($event, product)"
+                >
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </ng-container>
+    <p class="deficit mt-3">
+      Deficit Products Quantity: {{deficitQuantity}}</p>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    [loading]="isSaving"
+    pButton
+    type="button"
+    label="Set"
+    class="p-button-success"
+    (click)="onSave()"
+    [disabled]="disabled()"
+  ></button>
+</mat-dialog-actions>

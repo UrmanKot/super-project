@@ -1,10 +1,10 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {ListService} from '../../../services/list.service';
-import {take} from 'rxjs/operators';
+import {filter, take} from 'rxjs/operators';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
@@ -13,6 +13,7 @@ import {ScanResult} from '../../../../qr-code/models/scan-result';
 import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
+import {AdapterService} from '@shared/services/adapter.service';
 
 export class TreePrint {
   data: ListProduct;
@@ -42,7 +43,7 @@ export class ProductionListComponent implements OnInit {
         {
           label: 'Set Actual Quantity',
           icon: 'pi pi-angle-double-right',
-          command: () => this.editQuantity(this.selectedNode),
+          command: () => this.onSetActualQuantity(),
         },
         {
           label: 'Cancel Actual Quantities',
@@ -75,12 +76,12 @@ export class ProductionListComponent implements OnInit {
         {
           label: 'Set Actual Quantity',
           icon: 'pi pi-angle-double-right',
-          command: () => this.editQuantity(this.selectedNodeTree.data),
+          command: () => this.onSetActualQuantity(),
         },
         {
           label: 'Cancel Actual Quantities',
           icon: 'pi pi-times',
-          command: () => this.cancelQuantities(this.selectedNodeTree.data),
+          command: () => this.onCancelActualQuantity(),
         },
         {
           label: 'Make Request',
@@ -104,11 +105,11 @@ export class ProductionListComponent implements OnInit {
   isSetAllActualQuantities = false;
   products: ListProduct[];
   selectedNode;
-  selectedNodeTree;
+  selectedNodeTree: TreeNode<ListProduct>;
   isLoading = true;
   list: List = null;
   listId = this.route.snapshot.paramMap.get('id');
-  statuses = {'0': 'Not Processed', '1': 'Completed', '2': 'Deficit', '3': 'Reserved'};
+  statuses = {'Not processed': 'Not Processed', 'Completed': 'Completed', 'Deficit': 'Deficit', 'Reserved': 'Reserved'};
   showComplete = false;
   routerHandler$;
 
@@ -169,6 +170,8 @@ export class ProductionListComponent implements OnInit {
   scanningEnd = true;
   elementsRowsIds: string[] = [];
 
+  listProducts: ListProduct[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private modalService: ModalService,
@@ -178,98 +181,327 @@ export class ProductionListComponent implements OnInit {
     public _location: Location,
     private messageService: MessageService,
     public readonly albumService: AlbumService,
+    private readonly adapterService: AdapterService,
     private readonly qrCodeService: QrCodeService,
   ) {
-    this.routerHandler$ = router.events.subscribe(res => {
-      if (res instanceof NavigationEnd) {
-        this.listId = this.route.snapshot.paramMap.get('id');
-        this.getAll();
-      }
-    });
+
   }
 
   ngOnInit(): void {
-    // this.getList();
-    // this.getListProducts();
+    this.getList();
+    this.getListProducts();
   }
 
   getList() {
     this.listService.getById(+this.listId).subscribe(list => this.list = list);
   }
 
+  createListProductsGroups(lists: ListProduct[]): ListProduct[] {
+    const firstListProducts = lists.filter(p => p.task_sort_value === 1);
+
+    let groupId = 0;
+
+    firstListProducts.forEach(product => {
+      groupId++;
+
+      let currentProduct: ListProduct = product;
+
+      while (currentProduct?.next_technology_list_product) {
+        currentProduct.groupId = groupId;
+        currentProduct = lists.find(p => p.id === currentProduct.next_technology_list_product);
+      }
+
+      currentProduct.groupId = groupId;
+
+    });
+
+    lists.forEach(list => {
+      list.groupKey = '';
+
+      list.groupedProducts = lists.filter(p => p.groupId === list.groupId).sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+      const filteredTasks = lists.filter(t => t.nomenclature.id === list.nomenclature.id && t.level === list.level);
+      const firstLists = filteredTasks.filter(p => p.task_sort_value === 1);
+
+      const newListProducts: ListProduct[] = [];
+
+      firstLists.forEach(firstList => {
+        const uiParent = firstList.id;
+
+        let currentListProduct = firstList;
+
+        while (currentListProduct?.next_technology_list_product) {
+          currentListProduct.uiParent = uiParent;
+          newListProducts.push(currentListProduct);
+          currentListProduct = lists.find(l => l.id === currentListProduct.next_technology_list_product);
+        }
+
+        currentListProduct.uiParent = uiParent;
+        newListProducts.push(currentListProduct);
+      });
+
+      newListProducts.filter(listProduct => listProduct.groupId === list.groupId).forEach(l => {
+        list.groupKey += `${l.technology?.id}/${l.status}/`;
+        const childrenListProducts = lists.filter(p => p.parent === list.uiParent);
+
+        childrenListProducts.forEach(l => {
+          list.groupKey += `${l.technology?.id}/${l.status}`;
+        });
+      });
+    });
+
+    return lists;
+  }
+
+  sortingListProducts(lists: ListProduct[]) {
+    let nomenclaturesTypes = {'0': 3, '1': 1, '2': 2};
+    lists.sort((a, b) => nomenclaturesTypes[a.nomenclature.type] - nomenclaturesTypes[b.nomenclature.type] || a.nomenclature.id - b.nomenclature.id);
+  }
+
+  createListProductsTree(newListProducts: ListProduct[], lists: ListProduct[]) {
+    newListProducts.filter(l => l.level === 1).forEach(list => {
+      this.tree.push({
+        parent: null,
+        data: list,
+        children: [],
+        expanded: false
+      });
+    });
+
+    const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
+      level++;
+
+      const parentNodes = nodes.filter(n => n.data.products?.find(p => p.has_children));
+
+      parentNodes.forEach(parentNode => {
+
+        if (!parentNode.data.blockedExpand) {
+          const filteredLists = lists.filter(l => parentNode.data.filteredProducts.map(p => p.id).includes(l.parent));
+
+          const newLiftProducts: ListProduct[] = [];
+
+          filteredLists.forEach(list => {
+            if (!newLiftProducts.find(p => p.groupId === list.groupId)) {
+
+              if (!newLiftProducts.find(l => l.groupKey === list.groupKey)) {
+
+                const totalActualQuantity = filteredLists
+                  .filter(p => p.actual_quantity > 0 && list.nomenclature.id === p.nomenclature.id)
+                  .reduce((sum, p) => sum += p.actual_quantity, 0);
+
+                const reservedQuantity = filteredLists
+                  .filter(p => p.reserved_quantity > 0 && list.nomenclature.id === p.nomenclature.id)
+                  .reduce((sum, p) => sum += p.reserved_quantity, 0);
+
+                switch (list.groupedProducts[list.groupedProducts.length - 1].status) {
+                  case 'Deficit':
+                    list.status = 'Deficit';
+                    break;
+                  case 'Completed':
+                    list.status = 'Completed';
+                    break;
+                }
+
+                const newList = {
+                  ...list,
+                  total_required_quantity: list.status === 'Completed' ? totalActualQuantity : parentNode.data.total_required_quantity,
+                  actual_quantity: totalActualQuantity,
+                  reserved_quantity: reservedQuantity,
+                };
+
+                newLiftProducts.push(newList);
+              }
+            }
+          });
+
+          newLiftProducts.forEach(newListProduct => {
+            parentNode.children.push({
+              parent: parentNode,
+              data: newListProduct,
+              children: [],
+              expanded: false
+            });
+          });
+
+          if (parentNode.children.length > 0) {
+            fillTree(parentNode.children, level);
+          }
+        }
+      });
+    };
+
+    fillTree(this.tree, 1);
+
+    this.tree = this.tree.map(l => l);
+  }
+
+  generateListProducts(lists: ListProduct[]) {
+    this.tree = [];
+    this.selectedNodeTree = null;
+
+    lists.forEach(list => list.pureTotalRequiredQuantity = list.total_required_quantity);
+
+    lists = this.createListProductsGroups(lists);
+
+    const newListProducts: ListProduct[] = [];
+
+    let uid = 1;
+
+    lists.forEach(list => {
+      list.uid = uid;
+
+      uid++;
+
+      list.reserved_quantity = list.reserved_quantity ?? 0;
+      list.actual_quantity = list.actual_quantity ?? 0;
+
+      list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
+
+      list.warehouseQuantities = this.adapterService.removeDuplicates(list.products, list => list.technology?.id)
+        .sort((a, b) => a.task_sort_value - b.task_sort_value)
+        .map(l => l.warehouse_quantity);
+
+      list.technologies = list.products.filter(l => l.technology).map(l => {
+        return {
+          ...l.technology,
+          task_sort_value: l.task_sort_value,
+        };
+      });
+
+      list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
+      list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
+
+      list.blockedExpand = list.groupedProducts.some(p => p.status === 'Completed');
+      list.currentTechnology = list.groupedProducts.find(p => p.status === 'Completed')?.technology;
+
+      const findEl = list.groupedProducts.find(p => p.status === 'Completed');
+      list.warehouse_quantity = findEl ? findEl.warehouse_quantity : list.warehouse_quantity;
+
+      list.has_children = list.products.some(p => p.has_children);
+      list.groupedProductIds = list.products.map(p => p.id);
+
+      if (
+        !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id) &&
+        lists
+          .filter(l => l.nomenclature.id === list.nomenclature.id)
+          .every(n => n.status === 'Not processed')
+      ) {
+
+        list.status = list.products.some(p => p.status === 'Deficit') ? 'Deficit' : list.status;
+        newListProducts.push(list);
+
+      } else if (lists.filter(l => l.nomenclature.id === list.nomenclature.id).some(n => n.status !== 'Not processed')) {
+        if (list.status !== 'Not processed') {
+
+          if (list.technologies.length === 0 && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level)) {
+            let totalQuantityDeficit = 0;
+            let totalQuantityCompleted = 0;
+
+            list.products.forEach(product => {
+              if (product.status === 'Completed') {
+                totalQuantityCompleted++;
+              } else if (product.status === 'Deficit') {
+                totalQuantityDeficit++;
+              }
+            });
+
+            const newListCompleted: ListProduct = {
+              ...list,
+              total_required_quantity: totalQuantityCompleted,
+              actual_quantity: totalQuantityCompleted,
+              reserved_quantity: totalQuantityCompleted,
+              status: 'Completed'
+            };
+
+            uid++;
+
+            const newListDeficit: ListProduct = {
+              ...list,
+              uid: uid,
+              total_required_quantity: totalQuantityDeficit,
+              actual_quantity: 0,
+              reserved_quantity: 0,
+              status: 'Deficit'
+            };
+
+            newListProducts.push(newListCompleted);
+            newListProducts.push(newListDeficit);
+          } else if (list.technologies.length > 0) {
+            if (!newListProducts.find(p => p.groupId === list.groupId)) {
+
+              if (!newListProducts.find(l => l.groupKey === list.groupKey)) {
+
+                switch (list.groupedProducts[list.groupedProducts.length - 1].status) {
+                  case 'Deficit':
+                    list.status = 'Deficit';
+                    break;
+                  case 'Completed':
+                    list.status = 'Completed';
+                    break;
+                }
+
+                newListProducts.push(list);
+              }
+            }
+          }
+        }
+      }
+    });
+
+    this.sortingListProducts(newListProducts);
+
+    newListProducts.forEach(list => {
+      list.filteredProducts = lists.filter(p => p.groupKey === list.groupKey);
+
+      if (list.level === 1 && list.technologies.length > 0) {
+
+        if (list.status !== 'Not processed' && list.technologies.length > 0 && list.currentTechnology) {
+          list.total_required_quantity = list.actual_quantity = list.filteredProducts
+            .filter(p => p.actual_quantity > 0)
+            .reduce((sum, p) => sum += p.actual_quantity, 0);
+
+          list.reserved_quantity = list.filteredProducts
+            .filter(p => p.reserved_quantity > 0)
+            .reduce((sum, p) => sum += p.reserved_quantity, 0);
+
+        } else if (!list.currentTechnology) {
+          let count = 0;
+
+          const filteredGroupsIds = this.adapterService.removeDuplicates(list.filteredProducts, list => list.groupId)
+            .map(l => l.groupId);
+
+          const groupsIds = this.adapterService.removeDuplicates(list.products, list => list.groupId)
+            .map(l => l.groupId);
+
+          groupsIds.forEach(t => {
+            if (filteredGroupsIds.includes(t)) {
+              count++;
+            }
+          });
+
+          list.total_required_quantity = count;
+        }
+      }
+    });
+
+    this.createListProductsTree(newListProducts, lists);
+  }
+
   getListProducts() {
     this.tree = [];
     this.isLoading = true;
 
-    this.listService.getFullList(+this.listId).subscribe(lists => {
-      const newListProducts: ListProduct[] = [];
+    this.listService.getListProducts(+this.listId).subscribe(lists => {
+      this.listProducts = JSON.parse(JSON.stringify(lists));
 
-      lists.forEach(list => {
-        list.reserved_quantity = list.reserved_quantity ?? 0;
-        list.actual_quantity = list.actual_quantity ?? 0;
-
-        if (!newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id)) {
-          list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && l.technology?.id === list.technology?.id);
-          list.groupedProductIds = list.products.map(p => p.id);
-          list.status = list.products.some(p => p.status === '2') ? '2' : list.status;
-          // list.status
-          newListProducts.push(list);
-        }
-      });
-
-      newListProducts.forEach(list => {
-        // list.total_required_quantity = list.products.reduce((sum, list) => sum += +list.total_required_quantity, 0)
-        list.required_quantity_per_one = list.products.filter(l => l.list === list.list).reduce((sum, list) => sum += +list.required_quantity_per_one, 0);
-        list.reserved_quantity = list.products.reduce((sum, list) => sum += +list.reserved_quantity, 0);
-        list.actual_quantity = list.products.reduce((sum, list) => sum += +list.actual_quantity, 0);
-      });
-
-      newListProducts.filter(l => l.level === 1).forEach(list => {
-        this.tree.push({
-          data: list,
-          children: [],
-          expanded: false
-        });
-      });
-
-      const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
-        const newListProducts: ListProduct[] = [];
-        level++;
-
-        lists.filter(l => l.level === level).forEach(list => {
-          if (!newListProducts.find((l) => l.nomenclature.id === list.nomenclature.id && list.technology?.id === l.technology?.id)) {
-            newListProducts.push(list);
-          }
-        });
-
-        nodes.filter(n => n.data.has_children).forEach(n => {
-          newListProducts.forEach(list => {
-            if (n.data.groupedProductIds.includes(list.parent)) {
-
-              n.children.push({
-                data: list,
-                children: [],
-                expanded: false
-              });
-            }
-          });
-
-          if (n.children.length > 0) {
-            fillTree(n.children, level);
-          }
-        });
-      };
-
-      fillTree(this.tree, 1);
-
-      this.tree = this.tree.map(l => l);
+      this.generateListProducts(lists);
 
       this.isLoading = false;
     });
   }
 
   togglePrintAlbumMode() {
-    this.selectedNodeTree = [];
+    this.selectedNodeTree = null;
     this.isAlbumPrint = !this.isAlbumPrint;
   }
 
@@ -448,7 +680,7 @@ export class ProductionListComponent implements OnInit {
     getProducts(this.products);
   }
 
-  @HostListener("window:afterprint", [])
+  @HostListener('window:afterprint', [])
   onWindowAfterPrint() {
     this.isShowPrint = false;
     this.isShowPrintSeparated = false;
@@ -470,6 +702,7 @@ export class ProductionListComponent implements OnInit {
         });
       } else {
         if (this.selectedNodeTree.data.list_url) {
+          // @ts-ignore
           this.listService.setQuantities(this.selectedNodeTree.data.list).subscribe(() => {
             this.getListProducts();
           });
@@ -750,5 +983,45 @@ export class ProductionListComponent implements OnInit {
     }
 
     this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
+  }
+
+  onSetActualQuantity() {
+    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}, this.selectedNodeTree.parent?.data).subscribe(listProducts => {
+      if (listProducts) {
+
+        listProducts.forEach(listProduct => {
+          const index = this.listProducts.findIndex(l => l.id === listProduct.id);
+          this.listProducts[index] = listProduct;
+        });
+
+        this.generateListProducts(this.listProducts);
+      }
+    });
+  }
+
+  onCancelActualQuantity() {
+    this.modalService.confirm('success').pipe(
+      filter(confirm => confirm)
+    ).subscribe(() => {
+      this.isLoading = true;
+      this.tree = [];
+
+      const send = {
+        ids: this.selectedNodeTree.data.filteredProducts.map(p => p.id)
+      }
+
+      this.listProductService
+        .cancelActualQuantity(send)
+        .subscribe(listProducts => {
+          listProducts.forEach(listProduct => {
+            const index = this.listProducts.findIndex(l => l.id === listProduct.id);
+            this.listProducts[index] = listProduct;
+          });
+
+          this.generateListProducts(this.listProducts);
+        });
+
+      this.selectedNodeTree = null;
+    });
   }
 }

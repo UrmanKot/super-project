@@ -664,17 +664,21 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   onSetListLocator() {
-    this.listService.openSetProductionListLocatorModal(this.selectedList.id).subscribe(response => {
-      if (response) {
-        this.searchLists();
+    this.listService.openSetProductionListLocatorModal(this.selectedList.id).subscribe(list => {
+      if (list) {
+        const index = this.lists.findIndex(l => l.id === list.id);
+        // @ts-ignore
+        this.lists[index].locator = list?.locator;
       }
     });
   }
 
   onSetListLocatorNode() {
-    this.listService.openSetProductionListLocatorModal(this.selectedOrderNode.data?.list?.id).subscribe(response => {
-      if (response) {
-        this.searchLists();
+    this.listService.openSetProductionListLocatorModal(this.selectedOrderNode.data?.list?.id).subscribe(list => {
+      if (list) {
+        const index = this.lists.findIndex(l => l.id === list.id);
+        // @ts-ignore
+        this.lists[index].locator = list?.locator;
       }
     });
   }

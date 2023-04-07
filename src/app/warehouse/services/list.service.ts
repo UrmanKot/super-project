@@ -19,6 +19,9 @@ import {
   ProductionListChainsStatisticsComponent
 } from '../modals/production-list-chains-statistics/production-list-chains-statistics.component';
 import {ListProduct} from '../models/list-product';
+import {
+  ProductionListSetActualQuantityDialogComponent
+} from '../modals/production-list-set-actual-quantity-dialog/production-list-set-actual-quantity-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +49,12 @@ export class ListService {
     }
 
     return this.httpClient.get<{ data: List[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getListProducts(id: number): Observable<ListProduct[]> {
+    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + `${id}/with_descendant_list_products/`).pipe(
       map(response => response.data)
     );
   }
@@ -135,7 +144,7 @@ export class ListService {
     );
   }
 
-  openSetProductionListLocatorModal(id: number): Observable<any> {
+  openSetProductionListLocatorModal(id: number): Observable<List> {
     return this.dialog
       .open<SetProductionListLocatorComponent>(SetProductionListLocatorComponent, {
         width: '40rem',
@@ -181,6 +190,19 @@ export class ListService {
         height: 'auto',
         panelClass: '',
         data: {id, send},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  setActualQuantityDialog(listProduct: ListProduct, parent: ListProduct): Observable<ListProduct[]> {
+    return this.dialog
+      .open<ProductionListSetActualQuantityDialogComponent>(ProductionListSetActualQuantityDialogComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {listProduct, parent},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
