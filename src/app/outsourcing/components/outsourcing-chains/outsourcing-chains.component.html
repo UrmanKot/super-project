@@ -41,16 +41,10 @@
           <div class="col-3">
             <div class="form-group">
               <label>Nomenclature</label>
-              <p-dropdown
-                [filter]="true"
-                [showClear]="true"
-                [options]="nomenclaturesList"
-                formControlName="contains_nomenclature"
-                optionValue="id"
-                optionLabel="name"
-                placeholder="No Nomenclature Selected"
-                (ngModelChange)="resetPage()"
-              ></p-dropdown>
+              <pek-product-lists-nomenclature-picker
+                [query]="queryNomenclatureList"
+                (selectRootList)="setOrderNomenclature($event)"
+              ></pek-product-lists-nomenclature-picker>
             </div>
           </div>
           <div class="col-3">
@@ -62,16 +56,10 @@
           <div class="col-3">
             <div class="form-group">
               <label>Root List</label>
-              <p-dropdown
-                [filter]="true"
-                [showClear]="true"
-                [options]="rootLists"
-                formControlName="order_root_list_id"
-                (ngModelChange)="resetPage()"
-                optionValue="list.id"
-                optionLabel="fullName"
-                placeholder="No List Selected"
-              ></p-dropdown>
+              <pek-root-list-picker-by-order-type
+                [query]="queryProdList"
+              (selectRootList)="setOrderProduct($event)"
+              ></pek-root-list-picker-by-order-type>
             </div>
           </div>
           <div class="col-3">

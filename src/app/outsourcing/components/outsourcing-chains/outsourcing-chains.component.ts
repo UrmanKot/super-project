@@ -74,13 +74,16 @@ export class OutsourcingChainsComponent implements OnInit {
   rootLists: any[] = [];
 
   query: QuerySearch[] = [];
-
+  queryProdList: QuerySearch[] = [];
+  queryNomenclatureList: QuerySearch[] = [];
   tableScrollHeight = '29.625rem';
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   isShowAll = false;
   isStartOnePage = false;
   countOrders: any;
+
+  loadedIdsQuery: QuerySearch[];
 
   constructor(
     private readonly fb: FormBuilder,
@@ -94,6 +97,7 @@ export class OutsourcingChainsComponent implements OnInit {
   ngOnInit(): void {
     this.search$.pipe(
       tap(() => this.prepareForSearch()),
+      tap(() => this.getOrdersIds()),
       switchMap(() => this.isShowAll ? this.orderService.getForPagination(this.query) : this.orderService.get(this.query)),
       map(orders => {
         if (!this.isShowAll) {
@@ -113,9 +117,14 @@ export class OutsourcingChainsComponent implements OnInit {
       tap(() => this.collectOrderedProductsTechnologies()),
       tap(() => {
         this.isLoading = false;
+
       }),
       untilDestroyed(this)
-    ).subscribe();
+    ).subscribe(() => {
+    });
+
+    this.prepareForSearch();
+    this.getOrdersIds();
   }
 
   generateNomenclaturesListAndRootLists() {
@@ -263,6 +272,55 @@ export class OutsourcingChainsComponent implements OnInit {
     this.orders = this.orders.map(o => o);
   }
 
+  getOrdersIds() {
+    const tempQuery = deepCopy(this.query);
+
+    const listIndex = tempQuery.findIndex(el => el.name === 'order_root_list_id');
+    if (listIndex >= 0) {
+      tempQuery.splice(listIndex, 1);
+    }
+    const nomenclatureIndex = tempQuery.findIndex(el => el.name === 'contains_nomenclature');
+    if (nomenclatureIndex >= 0) {
+      tempQuery.splice(nomenclatureIndex, 1);
+    }
+    const pageIndex = tempQuery.findIndex(el => el.name === 'page');
+    if (pageIndex >= 0) {
+      tempQuery.splice(pageIndex, 1);
+    }
+
+    if (JSON.stringify(this.loadedIdsQuery) !== JSON.stringify(tempQuery)) {
+      this.loadedIdsQuery = tempQuery;
+      return this.orderService.getFilteredOrderIds(tempQuery).subscribe(orderIds => {
+        if (orderIds.ids.length > 0) {
+          this.queryProdList = [
+            {
+              name: 'level',
+              value: 0,
+            },
+            {
+              name: 'order_accounting_type',
+              value: 2
+            },
+            {
+              name: 'order_id__in',
+              value: orderIds.ids
+            }
+          ];
+          this.queryNomenclatureList = [
+            {
+              name: 'order_accounting_type',
+              value: 2
+            },
+            {
+              name: 'order_id__in',
+              value: orderIds.ids
+            }
+          ];
+        }
+      });
+    }
+  }
+
   onSelectCompany(id: number) {
     this.resetPage();
     this.searchForm.get('supplier').patchValue(id);
@@ -277,11 +335,6 @@ export class OutsourcingChainsComponent implements OnInit {
 
   onToggleStatuses() {
     this.isShowStatuses = !this.isShowStatuses;
-    if (this.isShowStatuses) {
-      requestAnimationFrame(() => {
-        // this.orderTable.onShowAll(this.isShowAll);
-      });
-    }
   }
 
   onChangePage(page: number) {
@@ -318,7 +371,14 @@ export class OutsourcingChainsComponent implements OnInit {
     this.search$.next();
   }
 
-  testShowAll(value: boolean) {
-    // this.orderTable.onShowAll(value);
+
+  setOrderProduct($event: number) {
+    this.searchForm.get('order_root_list_id').setValue($event);
+    this.resetPage();
+  }
+
+  setOrderNomenclature($event: number) {
+    this.searchForm.get('contains_nomenclature').setValue($event);
+    this.resetPage();
   }
 }

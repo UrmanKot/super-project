@@ -22,6 +22,7 @@ import {
   AddMaterialToOrderComponent
 } from '../../outsourcing/modals/add-material-to-order/add-material-to-order.component';
 import {OrderTechnicalEquipment} from '../../warehouse/models/order-technical-equipment';
+import {ListProduct} from '../../warehouse/models/list-product';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,25 @@ export class OrderProductService {
     return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + 'orders/' + id + '/products_to_qc/').pipe(
       map(response => response.data)
     );
+  }
+
+
+  getFiltered(query?: QuerySearch[]): Observable<OrderProduct[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'get_minimal_order_products/' + queryParams).pipe(map(response => {
+      return response.data;
+    }));
   }
 
   getGroupedPurchasedForPagination(query?: { name: string, value: any }[]): Observable<OrderProducts> {

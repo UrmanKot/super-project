@@ -95,6 +95,8 @@ import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/
 import { CrmMultiRegionPickerComponent } from './pickers/crm-multi-region-picker/crm-multi-region-picker.component';
 import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tree-picker/crm-multi-region-tree-picker.component';
 import { HoverDetailedInfoComponentComponent } from './components/hover-detailed-info-component/hover-detailed-info-component.component';
+import { RootListPickerByOrderTypeComponent } from './pickers/root-list-picker-by-order-type/root-list-picker-by-order-type.component';
+import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists-nomenclature-picker/product-lists-nomenclature-picker.component';
 
 
 @NgModule({
@@ -169,6 +171,8 @@ import { HoverDetailedInfoComponentComponent } from './components/hover-detailed
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
     HoverDetailedInfoComponentComponent,
+    RootListPickerByOrderTypeComponent,
+    ProductListsNomenclaturePickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -244,6 +248,8 @@ import { HoverDetailedInfoComponentComponent } from './components/hover-detailed
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
     HoverDetailedInfoComponentComponent,
+    RootListPickerByOrderTypeComponent,
+    ProductListsNomenclaturePickerComponent,
   ],
   imports: [
     MultiSelectModule,
