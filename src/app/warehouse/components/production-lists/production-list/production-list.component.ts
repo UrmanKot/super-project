@@ -241,7 +241,7 @@ export class ProductionListComponent implements OnInit {
       });
 
       newListProducts.filter(listProduct => listProduct.groupId === list.groupId).forEach(l => {
-        list.groupKey += `${l.technology?.id}/${l.status}/`;
+        list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}`;
         const childrenListProducts = lists.filter(p => p.parent === list.uiParent);
 
         childrenListProducts.forEach(l => {
@@ -339,7 +339,7 @@ export class ProductionListComponent implements OnInit {
     this.tree = [];
     this.selectedNodeTree = null;
 
-    lists.forEach(list => list.pureTotalRequiredQuantity = list.total_required_quantity);
+    lists.forEach(list => list.pureTotalRequiredQuantity = JSON.parse(JSON.stringify(list.total_required_quantity)));
 
     lists = this.createListProductsGroups(lists);
 
@@ -424,8 +424,13 @@ export class ProductionListComponent implements OnInit {
               status: 'Deficit'
             };
 
-            newListProducts.push(newListCompleted);
-            newListProducts.push(newListDeficit);
+            if (totalQuantityCompleted > 0) {
+              newListProducts.push(newListCompleted);
+            }
+
+            if (totalQuantityCompleted !== list.pureTotalRequiredQuantity || totalQuantityCompleted === 0) {
+              newListProducts.push(newListDeficit);
+            }
           } else if (list.technologies.length > 0) {
             if (!newListProducts.find(p => p.groupId === list.groupId)) {
 
@@ -485,6 +490,7 @@ export class ProductionListComponent implements OnInit {
     });
 
     this.createListProductsTree(newListProducts, lists);
+    console.log(this.tree);
   }
 
   getListProducts() {
@@ -1008,7 +1014,7 @@ export class ProductionListComponent implements OnInit {
 
       const send = {
         ids: this.selectedNodeTree.data.filteredProducts.map(p => p.id)
-      }
+      };
 
       this.listProductService
         .cancelActualQuantity(send)
