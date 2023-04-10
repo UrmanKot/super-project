@@ -409,9 +409,6 @@ export class ProductionListComponent implements OnInit {
           .filter(l => l.nomenclature.id === list.nomenclature.id)
           .every(n => n.status === 'Not processed')
       ) {
-        if (list.nomenclature.name === 'Coupling') {
-          console.log(list);
-        }
         list.status = list.products.some(p => p.status === 'Deficit') ? 'Deficit' : list.status;
         newListProducts.push(list);
 
@@ -904,8 +901,6 @@ export class ProductionListComponent implements OnInit {
     } else {
       this.menuItems[0].items[2].disabled = false;
     }
-
-    this.selectedNodeTreeMenuItems[0].items[1].disabled = this.selectedNodeTree.data?.blockedExpand && this.selectedNodeTree?.data?.has_children;
   }
 
   scanForListProduct(data: ScanResult = null) {
