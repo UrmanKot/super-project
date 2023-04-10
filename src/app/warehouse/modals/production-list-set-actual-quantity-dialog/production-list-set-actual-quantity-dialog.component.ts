@@ -45,10 +45,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.listProduct = Object.assign({}, this.data.listProduct);
-    // if (this.data.parent) {
-    // } else {
-    //   this.totalRequiredQuantity = JSON.parse(JSON.stringify(this.data.listProduct.pureTotalRequiredQuantity));
-    // }
 
     this.totalRequiredQuantity = JSON.parse(JSON.stringify(this.data.listProduct.total_required_quantity));
 
@@ -64,10 +60,10 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   }
 
   generateListProducts() {
-    const products: ListProduct[] = this.data.listProduct.products.map(p => p);
+    const products: ListProduct[] = this.data.listProduct.filteredProducts.map(p => p);
     this.products = [...products];
 
-    const firstListProducts = this.listProduct.products.filter(p => p.task_sort_value === 1);
+    const firstListProducts = this.listProduct.filteredProducts.filter(p => p.task_sort_value === 1);
 
     let groupId = 0;
 
@@ -385,25 +381,44 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
           actual_quantity: s.actual_quantity,
         };
       });
-
-      console.log(send);
-
     }
 
+    const notProcessedSend = {
+      ids: []
+    }
 
-    // forkJoin({
-    //   processedListProducts: this.listProductService.setActualQuantity(send),
-    //   notProcessedListProducts: this.listProductService.setActualQuantity(send)
-    // }).pipe(
-    //   finalize(() => this.isSaving = false)
-    // ).subscribe(({processedListProducts, notProcessedListProducts}) => {
-    //   const newListProducts = [];
-    // })
+    // if (!this.data.parent) {
+      const processedIds = send.map(s => s.id);
+
+      this.products.forEach(p => {
+        if (!processedIds.includes(p.id) && p.status !== 'Not processed') {
+          notProcessedSend.ids.push(p.id)
+        }
+      })
+    // }
+
+    // console.log(send.map(s => s.id));
+    // console.log(this.products.map(p => p.id));
+    // console.log(notProcessedSend.ids);
+
+    // console.log(this.products);
+    // console.log(send);
 
 
-    this.listProductService.setActualQuantity(send).pipe(
+    forkJoin({
+      processedListProducts: this.listProductService.setActualQuantity(send),
+      notProcessedListProducts: this.listProductService.cancelActualQuantity(notProcessedSend)
+    }).pipe(
       finalize(() => this.isSaving = false)
-    ).subscribe(listProducts => this.dialogRef.close(listProducts));
+    ).subscribe(({processedListProducts, notProcessedListProducts}) => {
+      const listProducts = [...processedListProducts, ...notProcessedListProducts];
+      this.dialogRef.close(listProducts)
+    })
+
+
+    // this.listProductService.setActualQuantity(send).pipe(
+    //   finalize(() => this.isSaving = false)
+    // ).subscribe(listProducts => this.dialogRef.close(listProducts));
   }
 
   disabled() {

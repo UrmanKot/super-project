@@ -14,6 +14,7 @@ import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
 import {AdapterService} from '@shared/services/adapter.service';
+import {J} from '@angular/cdk/keycodes';
 
 export class TreePrint {
   data: ListProduct;
@@ -245,9 +246,14 @@ export class ProductionListComponent implements OnInit {
         const childrenListProducts = lists.filter(p => p.parent === list.uiParent);
 
         childrenListProducts.forEach(l => {
-          list.groupKey += `${l.technology?.id}/${l.status}`;
+          list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}`;
         });
       });
+    });
+
+
+    lists.forEach(list => {
+      list.filteredProducts = lists.filter(p => p.groupKey === list.groupKey);
     });
 
     return lists;
@@ -289,7 +295,7 @@ export class ProductionListComponent implements OnInit {
                   .filter(p => p.actual_quantity > 0 && list.nomenclature.id === p.nomenclature.id)
                   .reduce((sum, p) => sum += p.actual_quantity, 0);
 
-                const reservedQuantity = filteredLists
+                const reservedQuantity = list.groupedProducts
                   .filter(p => p.reserved_quantity > 0 && list.nomenclature.id === p.nomenclature.id)
                   .reduce((sum, p) => sum += p.reserved_quantity, 0);
 
@@ -302,12 +308,29 @@ export class ProductionListComponent implements OnInit {
                     break;
                 }
 
+                let totalCount = 0;
+                list.products.forEach(product => {
+
+                  parentNode.data.filteredProducts.forEach(p => {
+                    if (p.id === product.parent) {
+                      totalCount++;
+                    }
+                  });
+                });
+
+                totalCount = totalCount / list.technologies.length;
+
                 const newList = {
                   ...list,
-                  total_required_quantity: list.status === 'Completed' ? totalActualQuantity : parentNode.data.total_required_quantity,
+                  total_required_quantity: list.status !== 'Not processed' && totalActualQuantity ? totalActualQuantity : totalCount,
                   actual_quantity: totalActualQuantity,
                   reserved_quantity: reservedQuantity,
                 };
+
+                if (list.nomenclature.name === 'Bushing') {
+                  console.log(list);
+                  console.log(totalActualQuantity);
+                }
 
                 newLiftProducts.push(newList);
               }
@@ -381,17 +404,19 @@ export class ProductionListComponent implements OnInit {
       list.groupedProductIds = list.products.map(p => p.id);
 
       if (
-        !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id) &&
+        !newListProducts.find(l => l.groupKey === list.groupKey) &&
         lists
           .filter(l => l.nomenclature.id === list.nomenclature.id)
           .every(n => n.status === 'Not processed')
       ) {
-
+        if (list.nomenclature.name === 'Coupling') {
+          console.log(list);
+        }
         list.status = list.products.some(p => p.status === 'Deficit') ? 'Deficit' : list.status;
         newListProducts.push(list);
 
       } else if (lists.filter(l => l.nomenclature.id === list.nomenclature.id).some(n => n.status !== 'Not processed')) {
-        if (list.status !== 'Not processed') {
+        if (!newListProducts.find(p => list.groupKey === p.groupKey)) {
 
           if (list.technologies.length === 0 && !newListProducts.find(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level)) {
             let totalQuantityDeficit = 0;
@@ -424,12 +449,30 @@ export class ProductionListComponent implements OnInit {
               status: 'Deficit'
             };
 
+            uid++;
+
+            const notProcessedCount = list.products.filter(p => p.status === 'Not processed').length;
+
+            const newListNotProcessed: ListProduct = {
+              ...list,
+              uid: uid,
+              total_required_quantity: notProcessedCount,
+              actual_quantity: 0,
+              reserved_quantity: 0,
+              status: 'Not processed'
+            };
+
+
             if (totalQuantityCompleted > 0) {
               newListProducts.push(newListCompleted);
             }
 
-            if (totalQuantityCompleted !== list.pureTotalRequiredQuantity || totalQuantityCompleted === 0) {
+            if (((totalQuantityCompleted !== list.pureTotalRequiredQuantity && !notProcessedCount) || totalQuantityCompleted === 0) || (notProcessedCount && totalQuantityCompleted === 0)) {
               newListProducts.push(newListDeficit);
+            }
+
+            if (notProcessedCount) {
+              newListProducts.push(newListNotProcessed);
             }
           } else if (list.technologies.length > 0) {
             if (!newListProducts.find(p => p.groupId === list.groupId)) {
@@ -491,6 +534,7 @@ export class ProductionListComponent implements OnInit {
 
     this.createListProductsTree(newListProducts, lists);
     console.log(this.tree);
+    console.log(lists);
   }
 
   getListProducts() {
@@ -500,7 +544,9 @@ export class ProductionListComponent implements OnInit {
     this.listService.getListProducts(+this.listId).subscribe(lists => {
       this.listProducts = JSON.parse(JSON.stringify(lists));
 
-      this.generateListProducts(lists);
+      const newLists = JSON.parse(JSON.stringify(lists));
+
+      this.generateListProducts(newLists);
 
       this.isLoading = false;
     });
@@ -997,10 +1043,12 @@ export class ProductionListComponent implements OnInit {
 
         listProducts.forEach(listProduct => {
           const index = this.listProducts.findIndex(l => l.id === listProduct.id);
-          this.listProducts[index] = listProduct;
+          this.listProducts[index] = {...listProduct};
         });
 
-        this.generateListProducts(this.listProducts);
+        const lists = JSON.parse(JSON.stringify(this.listProducts))
+
+        this.generateListProducts(lists);
       }
     });
   }
@@ -1013,18 +1061,28 @@ export class ProductionListComponent implements OnInit {
       this.tree = [];
 
       const send = {
-        ids: this.selectedNodeTree.data.filteredProducts.map(p => p.id)
+        ids: [],
       };
+
+      const selectedListProduct = this.selectedNodeTree.data;
+
+      if (selectedListProduct.technologies.length === 0) {
+        send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
+      } else {
+        send.ids = selectedListProduct.filteredProducts.map(p => p.id)
+      }
 
       this.listProductService
         .cancelActualQuantity(send)
         .subscribe(listProducts => {
           listProducts.forEach(listProduct => {
             const index = this.listProducts.findIndex(l => l.id === listProduct.id);
-            this.listProducts[index] = listProduct;
+            this.listProducts[index] = {...listProduct};
           });
 
-          this.generateListProducts(this.listProducts);
+          const lists = JSON.parse(JSON.stringify(this.listProducts))
+
+          this.generateListProducts(lists);
         });
 
       this.selectedNodeTree = null;
