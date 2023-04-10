@@ -904,6 +904,8 @@ export class ProductionListComponent implements OnInit {
     } else {
       this.menuItems[0].items[2].disabled = false;
     }
+
+    this.selectedNodeTreeMenuItems[0].items[1].disabled = this.selectedNodeTree.data?.blockedExpand;
   }
 
   scanForListProduct(data: ScanResult = null) {
