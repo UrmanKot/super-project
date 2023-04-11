@@ -6,6 +6,7 @@ import {Order} from '../../../procurement/models/order';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {OrderPageComponent} from '@shared/components/order-page/order-page.component';
 import {MessageService} from 'primeng/api';
+import {ModalService} from '@shared/services/modal.service';
 
 @Component({
   selector: 'pek-outsourcing-order-page',
@@ -26,7 +27,8 @@ export class OutsourcingOrderPageComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private readonly modalService: ModalService,
   ) { }
 
   ngOnInit(): void {
@@ -57,18 +59,24 @@ export class OutsourcingOrderPageComponent implements OnInit {
   }
 
   tenderToggle($event: any) {
-    const isBlocked = this.orderPage.checkIfIsBlockedToTenderTransform();
-    if (isBlocked) {
-        this.messageService.add({severity: 'error', summary: `Existing Invoice or Proforma Invoices`,
-          detail: `Can't turn to tender with existing Invoice or Proforma Invoices!\n Remove before turning to tender`});
-      this.form.get('can_select_supplier').setValue(false);
-    } else {
+    this.modalService.confirm('danger', 'confirm').subscribe(confirm => {
+      if (confirm) {
+        const isBlocked = this.orderPage.checkIfIsBlockedToTenderTransform();
+        if (isBlocked) {
+          this.messageService.add({severity: 'error', summary: `Existing Invoice or Proforma Invoices`,
+            detail: `Can't turn to tender with existing Invoice or Proforma Invoices!\n Remove before turning to tender`});
+          this.form.get('can_select_supplier').setValue(false);
+        } else {
 
-      this.orderService.activateTenderSuppliers(this.orderId).subscribe(() => {
-        this.orderPage.clearSupplierRelatedFields();
-        this.form.get('can_select_supplier').setValue(true);
-        this.form.get('can_select_supplier').disable();
-      });
-    }
+          this.orderService.activateTenderSuppliers(this.orderId).subscribe(() => {
+            this.orderPage.clearSupplierRelatedFields();
+            this.form.get('can_select_supplier').setValue(true);
+            this.form.get('can_select_supplier').disable();
+          });
+        }
+      } else {
+        this.form.get('can_select_supplier').setValue(false);
+      }
+    });
   }
 }
