@@ -6,6 +6,16 @@
         <h1>Order {{orderId}}</h1>
       </div>
       <div class="page__tools">
+        <form class="align-items-center d-flex" [formGroup]="form">
+          <p-checkbox
+            inputId="binary"
+            formControlName="can_select_supplier"
+            [binary]="true"
+            (onChange)="tenderToggle($event)"
+          >
+          </p-checkbox>
+          <label class="capitalize ml-2 mr-3">enable tender supplier required</label>
+        </form>
         <button
           pButton
           type="button"
@@ -31,7 +41,8 @@
 
   <div class="page__content">
     <pek-order-page
-      (loaded)="loaded()"
+      #orderPage
+      (loaded)="loaded($event)"
       [orderId]="orderId"
       [orderType]="'outsourcing'"
     ></pek-order-page>
