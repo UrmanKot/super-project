@@ -14,7 +14,7 @@ import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../../qr-code/qr-code.service';
 import {AdapterService} from '@shared/services/adapter.service';
-import {J} from '@angular/cdk/keycodes';
+import {ENomenclatureType} from '@shared/models/nomenclature';
 
 export class TreePrint {
   data: ListProduct;
@@ -320,9 +320,22 @@ export class ProductionListComponent implements OnInit {
 
                 totalCount = totalCount / list.technologies.length;
 
+
+                let isShowOldRequiredQuantity = false;
+
+                if (list.nomenclature.type === ENomenclatureType.PURCHASED && !list.parent_technology_list_product) {
+                  isShowOldRequiredQuantity = true;
+                } else {
+                  if (!list.next_technology_list_product && !list.parent_technology_list_product) {
+                    isShowOldRequiredQuantity = true;
+                  }
+                }
+
+
+
                 const newList = {
                   ...list,
-                  total_required_quantity: list.status !== 'Not processed' && totalActualQuantity ? totalActualQuantity : totalCount,
+                  total_required_quantity: isShowOldRequiredQuantity ? list.total_required_quantity : (list.status !== 'Not processed' && totalActualQuantity ? totalActualQuantity : totalCount),
                   actual_quantity: totalActualQuantity,
                   reserved_quantity: reservedQuantity,
                 };
