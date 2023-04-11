@@ -106,7 +106,7 @@ export class ProductionListComponent implements OnInit {
   isSetAllActualQuantities = false;
   products: ListProduct[];
   selectedNode;
-  selectedNodeTree: TreeNode<ListProduct>;
+  selectedNodeTree: TreeNode<ListProduct> & TreeNode<ListProduct>[];
   isLoading = true;
   list: List = null;
   listId = this.route.snapshot.paramMap.get('id');
@@ -123,7 +123,7 @@ export class ProductionListComponent implements OnInit {
   isShowPrintSeparated = false;
 
   isLoadingListsForPrint = false;
-  productsForPrint: TreePrint[];
+  productsForPrint: TreeNode<Partial<ListProduct>>[];
 
   menuItems: MenuItem[] = [
     {
@@ -320,18 +320,13 @@ export class ProductionListComponent implements OnInit {
 
                 totalCount = totalCount / list.technologies.length;
 
-
                 let isShowOldRequiredQuantity = false;
 
                 if (list.nomenclature.type === ENomenclatureType.PURCHASED && !list.parent_technology_list_product) {
                   isShowOldRequiredQuantity = true;
-                } else {
-                  if (!list.next_technology_list_product && !list.parent_technology_list_product) {
-                    isShowOldRequiredQuantity = true;
-                  }
+                } else if (!list.next_technology_list_product && !list.parent_technology_list_product) {
+                  isShowOldRequiredQuantity = true;
                 }
-
-
 
                 const newList = {
                   ...list,
@@ -558,13 +553,18 @@ export class ProductionListComponent implements OnInit {
 
       this.generateListProducts(newLists);
 
+      this.menuItems[0].items[0].disabled = false;
+      this.menuItems[0].items[1].disabled = false;
+
       this.isLoading = false;
     });
   }
 
   togglePrintAlbumMode() {
-    this.selectedNodeTree = null;
+    // @ts-ignore
+    // @ts-ignore
     this.isAlbumPrint = !this.isAlbumPrint;
+    this.selectedNodeTree = [];
   }
 
   printAlbum() {
@@ -606,8 +606,8 @@ export class ProductionListComponent implements OnInit {
 
         this.getTree();
 
-        this.menuItems[0].items[0].disabled = false;
-        this.menuItems[0].items[1].disabled = false;
+        // this.menuItems[0].items[0].disabled = false;
+        // this.menuItems[0].items[1].disabled = false;
 
         this.isLoading = false;
       }
@@ -690,56 +690,30 @@ export class ProductionListComponent implements OnInit {
   }
 
   printPage(isShowPrintSeparated = false) {
-    this.productsForPrint = [];
-    this.isLoadingListsForPrint = true;
-    // const ids = this.products.filter(p => p.list_url).map(p => p.list) as number[Ск];
-
-    this.productsForPrint = this.products.map(p => {
-      return {
-        children: [],
-        data: p,
-      };
-    });
-
-    this.list.list = this.listId as any;
-
+    this.productsForPrint = this.tree.map(p => p);
     this.productsForPrint.unshift({
-      data: this.list as any,
-      children: this.products
+      data: {
+        nomenclature: {
+          name: this.list.nomenclature.name,
+          code: this.list.nomenclature.code
+        },
+        list: +this.listId
+      },
+      children: this.tree.filter(n => n.data.level === 1).map(n => {
+        return {
+          ...n,
+          children: []
+        };
+      })
     });
 
-    const getProducts = (products) => {
-      const ids = products.filter(p => p.has_children).map(p => p.list) as number[];
+    this.isShowPrint = true;
+    this.isShowPrintSeparated = isShowPrintSeparated;
 
-      if (ids.length > 0) {
-        this.listProductService.getPartly(ids).subscribe(response => {
-          // @ts-ignore
-          const newProducts = response.flat();
 
-          newProducts.forEach(product => {
-            if (product.list_url) {
-              this.productsForPrint.push({
-                data: product,
-                children: [],
-              });
-            }
-
-            const index = this.productsForPrint.findIndex(p => p.data.id === product.parent);
-            this.productsForPrint[index]?.children.push(product);
-          });
-
-          getProducts(newProducts.filter(p => p.list_url));
-        });
-      } else {
-        this.isShowPrint = true;
-        this.isShowPrintSeparated = isShowPrintSeparated;
-        setTimeout(() => {
-          window.print();
-        });
-      }
-    };
-
-    getProducts(this.products);
+    setTimeout(() => {
+      window.print();
+    });
   }
 
   @HostListener('window:afterprint', [])
@@ -1056,7 +1030,7 @@ export class ProductionListComponent implements OnInit {
           this.listProducts[index] = {...listProduct};
         });
 
-        const lists = JSON.parse(JSON.stringify(this.listProducts))
+        const lists = JSON.parse(JSON.stringify(this.listProducts));
 
         this.generateListProducts(lists);
       }
@@ -1079,7 +1053,7 @@ export class ProductionListComponent implements OnInit {
       if (selectedListProduct.technologies.length === 0) {
         send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
       } else {
-        send.ids = selectedListProduct.filteredProducts.map(p => p.id)
+        send.ids = selectedListProduct.filteredProducts.map(p => p.id);
       }
 
       this.listProductService
@@ -1090,7 +1064,7 @@ export class ProductionListComponent implements OnInit {
             this.listProducts[index] = {...listProduct};
           });
 
-          const lists = JSON.parse(JSON.stringify(this.listProducts))
+          const lists = JSON.parse(JSON.stringify(this.listProducts));
 
           this.generateListProducts(lists);
         });

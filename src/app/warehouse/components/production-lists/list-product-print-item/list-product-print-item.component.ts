@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TreePrint} from '../production-list/production-list.component';
+import {TreeNode} from 'primeng/api';
+import {ListProduct} from '../../../models/list-product';
 
 @Component({
   selector: 'app-list-product-print-item',
@@ -7,9 +9,9 @@ import {TreePrint} from '../production-list/production-list.component';
   styleUrls: ['./list-product-print-item.component.scss']
 })
 export class ListProductPrintItemComponent implements OnInit {
-  @Input() product: TreePrint;
+  @Input() product: TreeNode<Partial<ListProduct>>;
   @Input() last: boolean;
-  statuses = {'0': 'Not Processed', '1': 'Completed', '2': 'Deficit', '3': 'Reserved'};
+  statuses = {'Not processed': 'Not Processed', 'Completed': 'Completed', 'Deficit': 'Deficit', 'Reserved': 'Reserved'};
 
   constructor() { }
 
