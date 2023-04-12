@@ -437,16 +437,21 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     // console.log(this.products);
     // console.log(send);
 
-
-    forkJoin({
-      processedListProducts: this.listProductService.setActualQuantity(send),
-      notProcessedListProducts: this.listProductService.cancelActualQuantity(notProcessedSend)
-    }).pipe(
-      finalize(() => this.isSaving = false)
-    ).subscribe(({processedListProducts, notProcessedListProducts}) => {
-      const listProducts = [...processedListProducts, ...notProcessedListProducts];
-      this.dialogRef.close(listProducts);
-    });
+    if (notProcessedSend.ids.length > 0) {
+      forkJoin({
+        processedListProducts: this.listProductService.setActualQuantity(send),
+        notProcessedListProducts: this.listProductService.cancelActualQuantity(notProcessedSend)
+      }).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(({processedListProducts, notProcessedListProducts}) => {
+        const listProducts = [...processedListProducts, ...notProcessedListProducts];
+        this.dialogRef.close(listProducts);
+      });
+    } else {
+      this.listProductService.setActualQuantity(send).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(listProducts => this.dialogRef.close(listProducts));
+    }
 
 
     // this.listProductService.setActualQuantity(send).pipe(

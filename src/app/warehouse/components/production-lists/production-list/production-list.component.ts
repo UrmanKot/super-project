@@ -80,6 +80,7 @@ export class ProductionListComponent implements OnInit {
           label: 'Set Actual Quantity',
           icon: 'pi pi-angle-double-right',
           command: () => this.onSetActualQuantity(),
+          // command: () => this.editQuantity(this.selectedNodeTree.data),
         },
         {
           label: 'Cancel Actual Quantities',
