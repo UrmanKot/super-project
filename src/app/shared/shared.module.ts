@@ -97,6 +97,8 @@ import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tr
 import { HoverDetailedInfoComponentComponent } from './components/hover-detailed-info-component/hover-detailed-info-component.component';
 import { RootListPickerByOrderTypeComponent } from './pickers/root-list-picker-by-order-type/root-list-picker-by-order-type.component';
 import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists-nomenclature-picker/product-lists-nomenclature-picker.component';
+import {MiddleMouseClickDirective} from '@shared/directives/middle-mouse-click.directive';
+import { OrderTenderSupplierComponent } from './components/order-page/order-tender-supplier/order-tender-supplier.component';
 
 
 @NgModule({
@@ -171,6 +173,8 @@ import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
     HoverDetailedInfoComponentComponent,
+    MiddleMouseClickDirective,
+    OrderTenderSupplierComponent,
     RootListPickerByOrderTypeComponent,
     ProductListsNomenclaturePickerComponent,
   ],
@@ -250,6 +254,7 @@ import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists
     HoverDetailedInfoComponentComponent,
     RootListPickerByOrderTypeComponent,
     ProductListsNomenclaturePickerComponent,
+    MiddleMouseClickDirective,
   ],
   imports: [
     MultiSelectModule,

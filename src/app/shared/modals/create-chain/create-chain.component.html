@@ -11,13 +11,13 @@
 </div>
 
 <div class="row">
-  <div class="col-6">
+  <div [class.col-4]="data.orderType === 'purchase'" [class.col-6]="data.orderType !== 'purchase'">
     <div class="form-group">
       <label>Company*</label>
-      <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+      <pek-company-picker [isDisabled]="canSelectSupplier" [currentCompanyId]="form.get('supplier').value" (selectCompany)="onSelectCompany($event)"></pek-company-picker>
     </div>
   </div>
-  <div class="col-6" *ngIf="data.orderType === 'purchase'">
+  <div class="col-4" *ngIf="data.orderType === 'purchase'">
     <div class="form-group">
       <label>Purchase Category</label>
       <p-dropdown
@@ -30,6 +30,18 @@
         placeholder="Choice Purchase Category"
       >
       </p-dropdown>
+    </div>
+  </div>
+  <div  [class.col-4]="data.orderType === 'purchase'" [class.col-6]="data.orderType !== 'purchase'">
+    <div class="form-group">
+      <label class="capitalize">enable tender supplier required</label>
+      <p-checkbox
+        class="mt-2"
+        id="other"
+        [value]="canSelectSupplier"
+        [binary]="true"
+        (onChange)="tenderToggle($event)"
+      ></p-checkbox>
     </div>
   </div>
 </div>

@@ -156,6 +156,10 @@ export class OrderService {
     return this.httpClient.post(this.API_URL + 'order_file_delete/' + id + '/', null);
   }
 
+  activateTenderSuppliers(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + id + '/order_create_supplier_confirmation_list/', null);
+  }
+
   create(data: any): Observable<Order> {
     return this.httpClient.post<{ data: Order }>(this.API_URL + this.url, data).pipe(
       map(response => response.data)

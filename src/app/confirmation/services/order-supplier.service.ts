@@ -9,6 +9,7 @@ import {
   AddSupplierToOrderComponent
 } from '../../outsourcing/modals/add-supplier-to-order/add-supplier-to-order.component';
 import {EditOrderSupplierComponent} from '../../outsourcing/modals/edit-order-supplier/edit-order-supplier.component';
+import {QuerySearch} from '@shared/models/other';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,19 @@ export class OrderSupplierService {
   ) {
   }
 
-  getConfirmations(): Observable<OrderSupplierConfirmation[]> {
-    return this.httpClient.get<{ data: OrderSupplierConfirmation[] }>(this.API_URL + `${this.url}?sent_to_confirmation=true`).pipe(
+  getConfirmations(query: QuerySearch[] = []): Observable<OrderSupplierConfirmation[]> {
+    let qString = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          qString += '&' + element.name + '=' + element.value;
+        } else {
+          qString += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: OrderSupplierConfirmation[] }>(this.API_URL + `${this.url}${qString}`).pipe(
       map(response => response.data)
     );
   }
