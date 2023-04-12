@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ListProduct} from '../../../warehouse/models/list-product';
-import {OrderMaterial, OrderProduct, OrderProducts} from '../../../procurement/models/order-product';
+import {OrderMaterial, OrderProduct} from '../../../procurement/models/order-product';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {Invoice} from '../../../procurement/models/invoice';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
@@ -17,7 +17,7 @@ import {environment} from '@env/environment';
 import {AdapterService} from '@shared/services/adapter.service';
 import {finalize} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {OrderSupplier, OrderSupplierConfirmation} from '../../../confirmation/models/order-supplier';
+import {OrderSupplierConfirmation} from '../../../confirmation/models/order-supplier';
 import {OrderSupplierService} from '../../../confirmation/services/order-supplier.service';
 import {RequestService} from '../../../warehouse/services/request.service';
 import {OrderTechnicalEquipment} from '../../../warehouse/models/order-technical-equipment';
@@ -25,7 +25,6 @@ import {OrderTechnicalEquipmentsService} from '../../../warehouse/services/order
 import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 import {AlbumService} from '@shared/services/album.service';
-import {GroupedRequest} from '../../../warehouse/models/grouped-request';
 import {forkJoin} from 'rxjs';
 import {deepCopy} from 'deep-copy-ts';
 
@@ -40,12 +39,9 @@ export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
 export class OrderPageComponent implements OnInit {
   @Input() orderId: number;
   @Input() orderType: OrderType;
-  @Output() loaded: EventEmitter<void> = new EventEmitter<void>();
+  @Output() loaded: EventEmitter<Order> = new EventEmitter<Order>();
 
   isPurchaseOrderNonMaterial = false;
-
-  orderSuppliers: OrderSupplier[] = [];
-  selectedOrderSupplier: OrderSupplier = null;
 
   link = environment.link_url + 'dash/';
 
@@ -133,21 +129,6 @@ export class OrderPageComponent implements OnInit {
     ]
   }];
 
-  orderSupplierMenuItems: MenuItem[] = [{
-    label: 'Selected Supplier',
-    items: [
-      {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => this.onEditOrderSupplier()
-      },
-      {
-        label: 'Remove',
-        icon: 'pi pi-trash',
-        command: () => this.onRemoveOrderSupplier()
-      }
-    ]
-  }];
 
   readonly deletion = new Set<number>();
   readonly addition = new Set<number>();
@@ -161,7 +142,6 @@ export class OrderPageComponent implements OnInit {
   isLoadingServiceInvoices = true;
   isLoadingServicePayments = true;
   isLoadingFiles = true;
-  isLoadingSuppliers = true;
   isLoadingTechnicalEquipments = true;
   isLoadingPurchasingCategories = true;
 
@@ -218,7 +198,6 @@ export class OrderPageComponent implements OnInit {
     this.getFiles();
 
     if (this.orderType === 'outsourcing') {
-      this.getOrderSuppliers();
       this.getOrderTechnicalEquipments();
     }
 
@@ -241,24 +220,13 @@ export class OrderPageComponent implements OnInit {
     this.isAlbumPrint = !this.isAlbumPrint;
   }
 
-  getOrderSuppliers() {
-    this.orderSupplierService.getOrderSupplierListForOrder(this.orderId).subscribe(orderSuppliers => {
-      this.orderSuppliers = orderSuppliers;
-      this.isSuppliersConfirmed = orderSuppliers.some(c => c.confirm_status === 2);
-      this.isLoadingSuppliers = false;
-    });
-
-    this.orderSupplierService.getOrderSupplierConfirmation(this.orderId).subscribe(orderSuppliers => {
-      this.orderSupplierConfirmation = orderSuppliers[0];
-    });
-  }
 
   getOrder() {
     this.orderService.getById(this.orderId).subscribe(order => {
       order.statuses.map(x => x.estimated_date_sort = new Date(x.estimated_date));
       order.statuses.sort((a, b) => a.estimated_date_sort - b.estimated_date_sort || a.is_active - b.is_active);
       this.order = order;
-      this.loaded.next();
+      this.loaded.next(this.order);
       this.isLoading = false;
 
       this.getProducts();
@@ -592,17 +560,6 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
-  getConfirmStatus(status: number) {
-    switch (status) {
-      case 0:
-        return 'Untached';
-      case 1:
-        return 'Declined';
-      case 2:
-        return 'Confirmed';
-    }
-  }
-
   onRemoveFile(id: number) {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
@@ -613,45 +570,6 @@ export class OrderPageComponent implements OnInit {
         ).subscribe(() => {
           const index = this.files.findIndex(f => f.id === id);
           this.files.splice(index, 1);
-        });
-      }
-    });
-  }
-
-  openAddSupplier() {
-    this.orderSupplierService.openAddSupplierToOrderModal(this.orderSupplierConfirmation.id).subscribe(orderSupplier => {
-      if (orderSupplier) {
-        this.getOrderSuppliers();
-        this.selectedOrderSupplier = null;
-      }
-    });
-  }
-
-  onOrderSupplierConfirm() {
-    this.modalService.confirm('success').subscribe(confirm => {
-      if (confirm) {
-        this.orderSupplierService.orderSupplierConfirm(this.orderSupplierConfirmation.id).subscribe();
-        this.selectedOrderSupplier = null;
-        this.orderSupplierConfirmation.sent_to_confirmation = true;
-      }
-    });
-  }
-
-  onEditOrderSupplier() {
-    this.orderSupplierService.openEditSupplierModal(this.selectedOrderSupplier).subscribe(orderSupplier => {
-      if (orderSupplier) {
-        this.getOrderSuppliers();
-        this.selectedOrderSupplier = null;
-      }
-    });
-  }
-
-  onRemoveOrderSupplier() {
-    this.modalService.confirm('danger').subscribe(confirm => {
-      if (confirm) {
-        this.orderSupplierService.deleteSupplier(this.selectedOrderSupplier.id).subscribe(() => {
-          this.getOrderSuppliers();
-          this.selectedOrderSupplier = null;
         });
       }
     });
@@ -697,5 +615,14 @@ export class OrderPageComponent implements OnInit {
         this.getOrder();
       }
     })
+  }
+
+  public checkIfIsBlockedToTenderTransform(): boolean {
+    return this.proformaInvoices.length > 0 || this.invoices.length > 0;
+  }
+
+  public clearSupplierRelatedFields() {
+    this.order.supplier = null;
+    this.order.can_select_supplier = true;
   }
 }

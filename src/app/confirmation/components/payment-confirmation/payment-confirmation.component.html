@@ -118,6 +118,8 @@
                     <!--                    </a>-->
 
                     <a
+                      appMiddleMouseClick
+                      (middleclick)="onGoToPaymentInvoice(payment)"
                       (click)="onGoToPaymentInvoice(payment)"
                     >
                       {{payment.invoice.self_serial_number}}
@@ -169,6 +171,8 @@
                     <!--                    </a>-->
 
                     <a
+                      appMiddleMouseClick
+                      (middleclick)="onGoToPaymentOrder(payment)"
                       (click)="onGoToPaymentOrder(payment)"
                     >
                       {{payment.invoice.order.id}}
@@ -298,9 +302,10 @@
                     <!--                    >-->
                     <!--                      {{payment.invoice.self_serial_number}}-->
                     <!--                    </a>-->
-
                     <a
                       *ngIf="payment.serviceinvoice"
+                      appMiddleMouseClick
+                      (middleclick)="onGoToServicePaymentInvoice(payment)"
                       (click)="onGoToServicePaymentInvoice(payment)"
                     >
                       {{payment.serviceinvoice.self_serial_number}}
@@ -308,7 +313,9 @@
 
                     <a
                       *ngIf="payment.invoice"
-                      (click)="onGoToPaymentServiceInvoice(payment)"
+                      appMiddleMouseClick
+                      (middleclick)="onGoToPaymentInvoice(payment)"
+                      (click)="onGoToPaymentInvoice(payment)"
                     >
                       {{payment.invoice.self_serial_number}}
                     </a>
@@ -376,6 +383,8 @@
                     <!--                    </a>-->
 
                     <a
+                      appMiddleMouseClick
+                      (middleclick)="onGoToServiceOrder(payment)"
                       (click)="onGoToServiceOrder(payment)"
                     >
                       {{payment.serviceinvoice.order?.id}}
@@ -401,6 +410,8 @@
                     <!--                    </a>-->
 
                     <a
+                      appMiddleMouseClick
+                      (middleclick)="onGoToPaymentOrder(payment)"
                       (click)="onGoToPaymentOrder(payment)"
                     >
                       {{payment.invoice.order.id}}

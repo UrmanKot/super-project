@@ -21,12 +21,14 @@ export class CreateChainComponent implements OnInit {
   form: FormGroup = this.fb.group({
     supplier: [null, Validators.required],
     order_products_id: this.fb.array([]),
+    can_select_supplier: [false]
   });
 
   selectedProducts = {};
 
   purchasingCategories: PurchaseCategory[] = [];
   selectedPurchasingCategoryId: number;
+  canSelectSupplier: boolean;
 
   orderProducts: OrderProduct[] = [];
 
@@ -79,7 +81,7 @@ export class CreateChainComponent implements OnInit {
         accounting_type: 1
       });
     }
-
+    console.log('send', send);
     this.orderService.createChain(send).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(order => {
@@ -116,5 +118,22 @@ export class CreateChainComponent implements OnInit {
       this.selectedProducts[product.id] = product;
       item.patchValue(product.id);
     });
+  }
+
+  tenderToggle(value: any) {
+    this.canSelectSupplier = value.checked;
+    this.form.get('can_select_supplier').setValue(this.canSelectSupplier);
+    if (this.canSelectSupplier) {
+      this.form.get('supplier').setValue(null);
+      this.form.get('supplier').clearValidators();
+      this.form.get('supplier').updateValueAndValidity();
+      this.form.get('supplier').setErrors(null);
+      console.log('remove requirements', this.form);
+
+    } else {
+      this.form.get('supplier').addValidators(Validators.required);
+      this.form.get('supplier').updateValueAndValidity();
+    }
+    console.log('tenderToggle value', this.canSelectSupplier);
   }
 }

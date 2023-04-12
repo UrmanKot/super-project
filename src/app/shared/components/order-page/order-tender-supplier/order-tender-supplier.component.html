@@ -1,0 +1,80 @@
+<h2 class="mb-4">
+    Suppliers
+    <span *ngIf="orderSupplierConfirmation?.sent_to_confirmation">
+      (On The Confirmation)
+      </span>
+    <span *ngIf="!isLoadingSuppliers && !orderSupplierConfirmation?.sent_to_confirmation && isSuppliersConfirmed">
+        (Confirmed)
+      </span>
+</h2>
+
+<div class="page__card mb-4" >
+    <div class="page__table">
+        <p-table
+                selectionMode="single"
+                scrollHeight="calc(100vh - 18.8rem)"
+                [scrollable]="true"
+                [paginator]="orderSuppliers?.length > 0"
+                [rows]="10"
+                [(selection)]="selectedOrderSupplier"
+                [value]="orderSuppliers"
+        >
+            <ng-template pTemplate="caption">
+                <div class="d-flex">
+                    <p class="subtitle" *ngIf="!selectedOrderSupplier">Choose the Supplier to edit</p>
+                    <p-menubar
+                            class="ml-auto mr-2"
+                            [model]="orderSupplierMenuItems"
+                            [class.disabled]="!selectedOrderSupplier">
+                    </p-menubar>
+                    <button
+                            (click)="openAddSupplier()"
+                            [disabled]="isLoadingSuppliers || orderSupplierConfirmation?.sent_to_confirmation || isSuppliersConfirmed"
+                            icon="pi pi-plus"
+                            label="Add Supplier"
+                            class="mr-2"
+                            pButton
+                            type="button"
+                    ></button>
+                    <button
+                            (click)="onOrderSupplierConfirm()"
+                            [disabled]="isLoadingSuppliers || orderSupplierConfirmation?.sent_to_confirmation || isSuppliersConfirmed"
+                            icon="pi pi-angle-double-right"
+                            label="Send To Confirm"
+                            pButton
+                            type="button"
+                    ></button>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%" class="index-header text-center">#</th>
+                    <th style="width: 30%" class="text-center">Supplier</th>
+                    <th style="width: 10%" class="text-center">Price</th>
+                    <th style="width: 10%" class="text-center">Delivery Date</th>
+                    <th style="width: 35%" class="text-center">Comment</th>
+                    <th style="width: 10%" class="text-center">Confirm Status</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+                <tr
+                        [pSelectableRow]="(!isLoadingSuppliers && !orderSupplierConfirmation?.sent_to_confirmation && !isSuppliersConfirmed) ? item : null">
+                    <td style="width: 5%" class="text-center">{{i + 1}}</td>
+                    <td style="width: 30%" class="text-center">{{item.supplier}}</td>
+                    <td style="width: 10%" class="text-center">{{item.price | moneyFormat}} €</td>
+                    <td style="width: 10%" class="text-center">{{item.delivery_date | date: 'dd/MM/yyyy'}}</td>
+                    <td style="width: 35%" class="text-center">{{item.comment}}</td>
+                    <td style="width: 10%" class="text-center">{{getConfirmStatus(item.confirm_status)}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="text-center p-4" [attr.colspan]="6">
+                        <i *ngIf="isLoadingSuppliers" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                        <span *ngIf="!isLoadingSuppliers">No Records Found</span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
