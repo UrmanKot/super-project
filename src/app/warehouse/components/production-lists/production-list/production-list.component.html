@@ -257,13 +257,14 @@
         [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
         [(selection)]="selectedNodeTree"
         scrollHeight="calc(100vh - 19.125rem)"
+        dataKey="uid"
         [scrollable]="true"
         (selectionChange)="onSelectTreeNode()"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex table-caption">
             <p-menubar
-              [class.disabled]="!selectedNodeTree"
+              [class.disabled]="!selectedNodeTree || this.isAlbumPrint"
               class="production-list-bar ml-auto mr-2"
               [model]="selectedNodeTreeMenuItems"
             ></p-menubar>
