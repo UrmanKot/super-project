@@ -29,6 +29,8 @@ export class TreePrint {
 
 export class ProductionListComponent implements OnInit {
 
+  expanseMap = {};
+
   link = environment.link_url + 'dash/';
   isGenerating = false;
 
@@ -195,6 +197,20 @@ export class ProductionListComponent implements OnInit {
     this.getListProducts();
   }
 
+  createExpanseMap(node: TreeNode<ListProduct>) {
+    if (node.expanded) {
+      this.expanseMap[node.data.uid] = node.expanded;
+    } else {
+      this.expanseMap[node.data.uid] = false;
+    }
+    if (node.children) {
+      node.children.forEach(element => {
+        this.createExpanseMap(element);
+      });
+    }
+  }
+
+
   getList() {
     this.listService.getById(+this.listId).subscribe(list => this.list = list);
   }
@@ -272,7 +288,7 @@ export class ProductionListComponent implements OnInit {
         parent: null,
         data: list,
         children: [],
-        expanded: false
+        expanded: list.blockedExpand ? false : this.expanseMap[list.uid]
       });
     });
 
@@ -329,11 +345,6 @@ export class ProductionListComponent implements OnInit {
                   reserved_quantity: reservedQuantity,
                 };
 
-                if (list.nomenclature.name === 'Bushing') {
-                  console.log(list);
-                  console.log(totalActualQuantity);
-                }
-
                 newLiftProducts.push(newList);
               }
             }
@@ -344,7 +355,7 @@ export class ProductionListComponent implements OnInit {
               parent: parentNode,
               data: newListProduct,
               children: [],
-              expanded: false
+              expanded: newListProduct.blockedExpand ? false : this.expanseMap[newListProduct.uid]
             });
           });
 
@@ -361,6 +372,8 @@ export class ProductionListComponent implements OnInit {
   }
 
   generateOldListProducts(listProducts: ListProduct[]) {
+    this.tree = [];
+    this.selectedNodeTree = null;
 
     this.sortingListProducts(listProducts);
 
@@ -370,8 +383,8 @@ export class ProductionListComponent implements OnInit {
         products: [],
         technologies: [],
         uid: list.id
-      }
-    })
+      };
+    });
 
     const parentListProducts = listProducts.filter(l => l.level === 1);
 
@@ -380,12 +393,13 @@ export class ProductionListComponent implements OnInit {
         parent: null,
         data: list,
         children: [],
-        expanded: false
+        expanded: this.expanseMap[list.uid]
       });
     });
 
     const fillTree = (nodes: TreeNode<ListProduct>[]) => {
       nodes.forEach(node => {
+
         const findListProducts = listProducts.filter(l => l.parent === node.data.id);
 
         findListProducts.forEach(listProduct => {
@@ -393,7 +407,7 @@ export class ProductionListComponent implements OnInit {
             parent: null,
             data: listProduct,
             children: [],
-            expanded: false
+            expanded: this.expanseMap[listProduct.uid]
           });
         });
 
@@ -611,6 +625,12 @@ export class ProductionListComponent implements OnInit {
       this.menuItems[0].items[1].disabled = false;
 
       this.isLoading = false;
+    });
+  }
+
+  mapExpansion() {
+    this.tree.forEach(element => {
+      this.createExpanseMap(element);
     });
   }
 
@@ -1086,8 +1106,9 @@ export class ProductionListComponent implements OnInit {
   }
 
   onSetActualQuantity() {
-    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}, this.selectedNodeTree.parent?.data).subscribe(listProducts => {
+    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}, this.selectedNodeTree.parent?.data, this.isOldList).subscribe(listProducts => {
       if (listProducts) {
+        this.mapExpansion();
 
         listProducts.forEach(listProduct => {
           const index = this.listProducts.findIndex(l => l.id === listProduct.id);
@@ -1096,7 +1117,11 @@ export class ProductionListComponent implements OnInit {
 
         const lists = JSON.parse(JSON.stringify(this.listProducts));
 
-        this.generateListProducts(lists);
+        if (this.isOldList) {
+          this.generateOldListProducts(lists);
+        } else {
+          this.generateListProducts(lists);
+        }
       }
     });
   }
@@ -1105,6 +1130,8 @@ export class ProductionListComponent implements OnInit {
     this.modalService.confirm('success').pipe(
       filter(confirm => confirm)
     ).subscribe(() => {
+      this.mapExpansion();
+
       this.isLoading = true;
       this.tree = [];
 
@@ -1112,12 +1139,16 @@ export class ProductionListComponent implements OnInit {
         ids: [],
       };
 
-      const selectedListProduct = this.selectedNodeTree.data;
-
-      if (selectedListProduct.technologies.length === 0) {
-        send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
+      if (this.isOldList) {
+        send.ids = [this.selectedNodeTree.data.id]
       } else {
-        send.ids = selectedListProduct.filteredProducts.map(p => p.id);
+        const selectedListProduct = this.selectedNodeTree.data;
+
+        if (selectedListProduct.technologies.length === 0) {
+          send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
+        } else {
+          send.ids = selectedListProduct.filteredProducts.map(p => p.id);
+        }
       }
 
       this.listProductService
