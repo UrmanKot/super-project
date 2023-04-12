@@ -43,6 +43,26 @@ export class ListProductService {
     }));
   }
 
+
+
+  getFiltered(query?: QuerySearch[]): Observable<ListProduct[]> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+
+    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + 'get_minimal_product_lists/' + queryParams).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
   updatePartly(listProduct: ListProduct): Observable<ListProduct> {
     return this.httpClient.patch<{ data: ListProduct }>(this.API_URL + this.url + listProduct.id + '/', listProduct).pipe(
       map(response => response.data)

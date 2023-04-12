@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Order} from '../../../procurement/models/order';
+import {Order, Orders} from '../../../procurement/models/order';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {QuerySearch} from '@shared/models/other';
 import {OrderService} from '../../../procurement/services/order.service';
@@ -14,6 +14,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {MenuItem} from 'primeng/api';
 import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
 import {Table} from 'primeng/table';
+import {Paginator} from 'primeng/paginator';
+import {deepCopy} from 'deep-copy-ts';
 
 @UntilDestroy()
 @Component({
@@ -22,6 +24,8 @@ import {Table} from 'primeng/table';
   styleUrls: ['./outsourcing-chains.component.scss']
 })
 export class OutsourcingChainsComponent implements OnInit {
+  @ViewChild('paginator') paginator: Paginator;
+  @ViewChild('orderTable') orderTable: OrderStatusesTableComponent;
   @ViewChild('dt') dt: Table;
   @ViewChild(OrderStatusesTableComponent)
   orderStatusTableComponent: OrderStatusesTableComponent;
@@ -57,6 +61,7 @@ export class OutsourcingChainsComponent implements OnInit {
     created_after: [null],
     created_before: [null],
     contains_declined_payment: [null],
+    page: [1],
   });
 
   orders: Order[] = [];
@@ -69,10 +74,16 @@ export class OutsourcingChainsComponent implements OnInit {
   rootLists: any[] = [];
 
   query: QuerySearch[] = [];
-
+  queryProdList: QuerySearch[] = [];
+  queryNomenclatureList: QuerySearch[] = [];
   tableScrollHeight = '29.625rem';
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  isShowAll = false;
+  isStartOnePage = false;
+  countOrders: any;
+
+  loadedIdsQuery: QuerySearch[];
 
   constructor(
     private readonly fb: FormBuilder,
@@ -86,14 +97,34 @@ export class OutsourcingChainsComponent implements OnInit {
   ngOnInit(): void {
     this.search$.pipe(
       tap(() => this.prepareForSearch()),
-      switchMap(() => this.orderService.get(this.query)),
-      map(orders => this.orderService.modifyOrders(orders)),
+      tap(() => this.getOrdersIds()),
+      switchMap(() => this.isShowAll ? this.orderService.getForPagination(this.query) : this.orderService.get(this.query)),
+      map(orders => {
+        if (!this.isShowAll) {
+          this.countOrders = (orders as Orders).count;
+        } else {
+          this.countOrders = (orders as Order[]).length;
+        }
+        if (this.isStartOnePage) {
+          this.paginator?.changePage(0);
+        }
+
+        this.isStartOnePage = false;
+        return this.orderService.modifyOrders(this.isShowAll ? (orders as Order[]) : (orders as Orders).results);
+      }),
       tap(orders => this.orders = orders),
       tap(() => this.generateNomenclaturesListAndRootLists()),
       tap(() => this.collectOrderedProductsTechnologies()),
-      tap(() => this.isLoading = false),
+      tap(() => {
+        this.isLoading = false;
+
+      }),
       untilDestroyed(this)
-    ).subscribe();
+    ).subscribe(() => {
+    });
+
+    this.prepareForSearch();
+    this.getOrdersIds();
   }
 
   generateNomenclaturesListAndRootLists() {
@@ -142,7 +173,7 @@ export class OutsourcingChainsComponent implements OnInit {
         if (needToAdd) {
           order.ordered_products_unique_technologies.push(product?.current_technology);
         }
-      })
+      });
     });
   }
 
@@ -197,8 +228,17 @@ export class OutsourcingChainsComponent implements OnInit {
 
     this.query = [
       {name: 'accounting_type', value: 2},
-      {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
+      {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected},
     ];
+
+    if (!this.isShowAll) {
+      this.query.push(
+        {name: 'paginated', value: true}
+      );
+    } else {
+      this.searchForm.get('page').patchValue(1);
+    }
+
 
     for (const key in this.searchForm.controls) {
       if (this.searchForm.controls[key].value !== null) {
@@ -216,18 +256,79 @@ export class OutsourcingChainsComponent implements OnInit {
         }
       }
     }
+    const queryToLocalStorage = deepCopy(this.query);
+    const pagePosIndex = this.query.findIndex(el => el.name === 'page');
+    const paginatedPosIndex = this.query.findIndex(el => el.name === 'paginated');
+    if (pagePosIndex >= 0) {
+      queryToLocalStorage.splice(pagePosIndex, 1);
+    }
+    if (paginatedPosIndex >= 0) {
+      queryToLocalStorage.splice(paginatedPosIndex, 1);
+    }
 
+    localStorage.setItem('queryParamsForInWindowView', JSON.stringify(queryToLocalStorage));
     this.firstPage = 0;
     this.orderStatusTableComponent?.renderDates({first: 0});
     this.orders = this.orders.map(o => o);
   }
 
+  getOrdersIds() {
+    const tempQuery = deepCopy(this.query);
+
+    const listIndex = tempQuery.findIndex(el => el.name === 'order_root_list_id');
+    if (listIndex >= 0) {
+      tempQuery.splice(listIndex, 1);
+    }
+    const nomenclatureIndex = tempQuery.findIndex(el => el.name === 'contains_nomenclature');
+    if (nomenclatureIndex >= 0) {
+      tempQuery.splice(nomenclatureIndex, 1);
+    }
+    const pageIndex = tempQuery.findIndex(el => el.name === 'page');
+    if (pageIndex >= 0) {
+      tempQuery.splice(pageIndex, 1);
+    }
+
+    if (JSON.stringify(this.loadedIdsQuery) !== JSON.stringify(tempQuery)) {
+      this.loadedIdsQuery = tempQuery;
+      return this.orderService.getFilteredOrderIds(tempQuery).subscribe(orderIds => {
+        if (orderIds.ids.length > 0) {
+          this.queryProdList = [
+            {
+              name: 'level',
+              value: 0,
+            },
+            {
+              name: 'order_accounting_type',
+              value: 2
+            },
+            {
+              name: 'order_id__in',
+              value: orderIds.ids
+            }
+          ];
+          this.queryNomenclatureList = [
+            {
+              name: 'order_accounting_type',
+              value: 2
+            },
+            {
+              name: 'order_id__in',
+              value: orderIds.ids
+            }
+          ];
+        }
+      });
+    }
+  }
+
   onSelectCompany(id: number) {
+    this.resetPage();
     this.searchForm.get('supplier').patchValue(id);
     this.search$.next();
   }
 
   onSelectStatuses(ids: number[]) {
+    this.resetPage();
     this.searchForm.get('active_status__in').patchValue(ids?.join(',') || null);
     this.search$.next();
   }
@@ -241,7 +342,10 @@ export class OutsourcingChainsComponent implements OnInit {
   }
 
   onPage(evt: any) {
-    this.orderStatusTableComponent.renderDates(evt);
+    if (!this.isStartOnePage) {
+      this.searchForm.get('page').patchValue(evt.page + 1);
+      this.search$.next();
+    }
   }
 
   onSelectOrder() {
@@ -252,7 +356,29 @@ export class OutsourcingChainsComponent implements OnInit {
     this.selectedOrder = order;
   }
 
-  onShowAll(value: boolean) {
-    this.dt.paginator = value;
+  onShowAll() {
+    this.isShowAll = true;
+    this.search$.next();
+  }
+
+  onShowPartial() {
+    this.isShowAll = false;
+    this.search$.next();
+  }
+
+  resetPage() {
+    this.searchForm.get('page').patchValue(1);
+    this.search$.next();
+  }
+
+
+  setOrderProduct($event: number) {
+    this.searchForm.get('order_root_list_id').setValue($event);
+    this.resetPage();
+  }
+
+  setOrderNomenclature($event: number) {
+    this.searchForm.get('contains_nomenclature').setValue($event);
+    this.resetPage();
   }
 }

@@ -95,6 +95,8 @@ import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/
 import { CrmMultiRegionPickerComponent } from './pickers/crm-multi-region-picker/crm-multi-region-picker.component';
 import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tree-picker/crm-multi-region-tree-picker.component';
 import { HoverDetailedInfoComponentComponent } from './components/hover-detailed-info-component/hover-detailed-info-component.component';
+import { RootListPickerByOrderTypeComponent } from './pickers/root-list-picker-by-order-type/root-list-picker-by-order-type.component';
+import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists-nomenclature-picker/product-lists-nomenclature-picker.component';
 import {MiddleMouseClickDirective} from '@shared/directives/middle-mouse-click.directive';
 import { OrderTenderSupplierComponent } from './components/order-page/order-tender-supplier/order-tender-supplier.component';
 
@@ -173,6 +175,8 @@ import { OrderTenderSupplierComponent } from './components/order-page/order-tend
     HoverDetailedInfoComponentComponent,
     MiddleMouseClickDirective,
     OrderTenderSupplierComponent,
+    RootListPickerByOrderTypeComponent,
+    ProductListsNomenclaturePickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -248,6 +252,8 @@ import { OrderTenderSupplierComponent } from './components/order-page/order-tend
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
     HoverDetailedInfoComponentComponent,
+    RootListPickerByOrderTypeComponent,
+    ProductListsNomenclaturePickerComponent,
     MiddleMouseClickDirective,
   ],
   imports: [
