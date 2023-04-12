@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div class="page__content" [class.is-all-active]="isShowAll">
+<div class="page__content  " [class.is-all-active]="isShowAll">
   <div class="page__card">
     <div class="filters-visibility" [class.filters-visibility_hide]="isHideFilters">
       <div class="filters-visibility__header">
@@ -316,7 +316,7 @@
         </div>
       </form>
     </div>
-    <div class="page__table" *ngIf="!searchForm.get('groupView').value else groupedView">
+    <div class="page__table events-reports-page" *ngIf="!searchForm.get('groupView').value else groupedView">
       <div class="table-pagination-preloader">
           <!--
           [scrollable]="true"
@@ -673,7 +673,7 @@
 
 
 <ng-template #groupedView>
-  <div class="page__table">
+  <div class="page__table events-reports-page">
     <div class="table-pagination-preloader">
       <p-table
         #dt
