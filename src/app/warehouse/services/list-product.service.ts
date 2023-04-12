@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {ListProduct} from '../models/list-product';
+import {ActualQuantityPayload, ListProduct} from '../models/list-product';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
@@ -65,6 +65,18 @@ export class ListProductService {
 
   updatePartly(listProduct: ListProduct): Observable<ListProduct> {
     return this.httpClient.patch<{ data: ListProduct }>(this.API_URL + this.url + listProduct.id + '/', listProduct).pipe(
+      map(response => response.data)
+    );
+  }
+
+  setActualQuantity(send: ActualQuantityPayload[]): Observable<ListProduct[]> {
+    return this.httpClient.post<{ data: ListProduct[] }>(this.API_URL + this.url + `set_actual_quantities/`, send).pipe(
+      map(response => response.data)
+    );
+  }
+
+  cancelActualQuantity(send: any): Observable<ListProduct[]> {
+    return this.httpClient.post<{ data: ListProduct[] }>(this.API_URL + this.url + `set_actual_quantities_null/`, send).pipe(
       map(response => response.data)
     );
   }

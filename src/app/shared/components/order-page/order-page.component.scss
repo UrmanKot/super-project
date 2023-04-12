@@ -1,3 +1,10 @@
+.order-page,
+.page__card {
+  @media print {
+    display: none;
+  }
+}
+
 .row-toggler {
   display: flex;
   align-items: center;

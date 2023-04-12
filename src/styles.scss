@@ -289,6 +289,9 @@ p-checkbox.event-statuses {
   }
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
 @import 'app/shared/styles/page';
 @import 'app/shared/styles/form';
 @import 'app/shared/styles/table';

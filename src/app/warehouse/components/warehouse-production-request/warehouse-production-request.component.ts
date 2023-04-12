@@ -284,11 +284,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         request.unique_locators = [...request.locators];
         if (request.is_reserved && request.requests
           .every(req => req.is_reserved)) {
-          request.available_quantity_sum = request.requests.map(req => req.warehouse_quantity)
-            .reduce((sum, quantity) => sum + quantity, request.warehouse_quantity);
+          request.available_quantity_sum = request.requests.map(req => req.required_quantity)
+            .reduce((sum, quantity) => sum + quantity, request.required_quantity);
         } else {
           if (request.ids.length === 0) {
-            request.available_quantity_sum = request.warehouse_quantity;
+            if (!request.is_reserved) {
+              request.available_quantity_sum = request.warehouse_quantity;
+            } else {
+              request.available_quantity_sum = request.required_quantity;
+            }
           } else {
             if (!request.is_reserved) {
               request.available_quantity_sum = request.warehouse_quantity;
@@ -337,11 +341,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         hierRequest.for_order_ids.push(...hierRequest.requests.filter(req => req.for_order_product).map(req => req.for_order_product?.id));
         if (hierRequest.is_reserved && hierRequest.requests
           .every(req => req.is_reserved)) {
-          hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.warehouse_quantity)
-            .reduce((sum, quantity) => sum + quantity, hierRequest.warehouse_quantity);
+          hierRequest.available_quantity_sum = hierRequest.requests.map(req => req.required_quantity)
+            .reduce((sum, quantity) => sum + quantity, hierRequest.required_quantity);
         } else {
           if (hierRequest.ids.length === 0) {
-            hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+            if (!hierRequest.is_reserved) {
+              hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
+            } else {
+              hierRequest.available_quantity_sum = hierRequest.required_quantity;
+            }
           } else {
             if (!hierRequest.is_reserved) {
               hierRequest.available_quantity_sum = hierRequest.warehouse_quantity;
@@ -377,9 +385,13 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
         this.rootList = haveRootProduction.root_production_list_products[0];
         this.currentReqDate = haveRootProduction.created;
       }
-      this.listRequests.sort((a, b) => b.id - a.id);
-      this.hierarchyRequests.sort((a, b) => b.id - a.id);
-
+      const material = this.listRequests.filter(el => el.material_nomenclature).sort((a, b) => {
+        return b.id - a.id;
+      });
+      const non_material = this.listRequests.filter(el => !el.material_nomenclature).sort((a, b) => {
+        return b.id - a.id;
+      });
+      this.listRequests = [...material, ...non_material];
     });
   }
 
@@ -488,6 +500,15 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
           });
         }
       });
+    });
+    this.requestTree.forEach(node => {
+      const materialChild = node.children.filter(child => child.data.request.material_nomenclature).sort((a, b) => {
+        return b.data.request.id - a.data.request.id;
+      });
+      const nonMaterialChild = node.children.filter(child => !child.data.request.material_nomenclature).sort((a, b) => {
+        return b.data.request.id - a.data.request.id;
+      });
+      node.children = [...materialChild, ...nonMaterialChild]
     });
   }
 
@@ -700,11 +721,20 @@ export class WarehouseProductionRequestComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('afterprint') printClosed() {
-    console.log('closed Print');
+    this.isShowPrintGrouped = false;
+    this.isShowPrint = false;
   }
 
   printAlbum() {
-    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => r.list_product?.nomenclature));
+    this.albumService.getNomenclaturesImages((<GroupedRequest[]>this.selectedRequest).map(r => {
+      if (r.material_nomenclature) {
+        return r.material_nomenclature;
+      } else if (r.order_product_nomenclature) {
+        return r.order_product_nomenclature;
+      } else if (!r.material_nomenclature && !r.order_product_nomenclature) {
+        return r.list_product?.nomenclature;
+      }
+    }));
   }
 
   togglePrintAlbumMode() {

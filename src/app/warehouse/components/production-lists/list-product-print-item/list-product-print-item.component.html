@@ -15,13 +15,13 @@
 
   <div *ngFor="let product of product.children; let idx = index" class="list-product-print-item__row">
     <div class="list-product-print-item__col list-product-print-item__col_body">{{idx + 1}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.nomenclature.code}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.nomenclature.name}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.nomenclature?.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.total_required_quantity}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.warehouse_quantity}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.available_on_locator}}</div>
-    <div class="list-product-print-item__col list-product-print-item__col_body">{{statuses[product.status]}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body" [class.list-product-print-item__col_bold]="product.data?.has_children > 0">{{product.data.nomenclature.code}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.data.nomenclature.name}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.data.nomenclature?.category?.unit_of_measure?.symbol ? product.data.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.data.total_required_quantity}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.data.warehouse_quantity}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{product.data.available_on_locator}}</div>
+    <div class="list-product-print-item__col list-product-print-item__col_body">{{statuses[product.data.status]}}</div>
   </div>
 </div>
 <!--</section>-->

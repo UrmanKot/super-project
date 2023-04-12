@@ -90,6 +90,12 @@
   }
 
   .p-menuitem {
+    & > .p-menuitem-link {
+      .p-menuitem-text {
+        line-height: 1.3;
+      }
+    }
+
     &.p-menuitem-active {
       .p-submenu-icon {
         color: var(--theme-color-primary) !important;

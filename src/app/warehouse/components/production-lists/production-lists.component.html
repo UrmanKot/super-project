@@ -286,7 +286,7 @@
               </td>
               <td style="width: 15%">
                   <span *ngIf="rowData.level === 4">
-                      <div *ngIf="rowData.list.locator" class="d-flex justify-content-center">
+                      <div *ngIf="rowData.list.locator">
                         {{rowData.list.locator.name + ' '}} R: {{rowData.list.locator.row}} Col:
                         {{rowData.list.locator.column}} Sh: {{rowData.list.locator.shelf}} Pl:
                         {{rowData.list.locator.place}}

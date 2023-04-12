@@ -30,6 +30,7 @@
         *ngIf="isAlbumPrint"
         class="p-button-success mr-2"
         type="button"
+        icon="pi pi-print"
         label="Print Album"
         (click)="printAlbum()"
         [disabled]="selectedNodeTree?.length === 0"
@@ -181,7 +182,8 @@
               <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
                    class="serial-numbers">
                 <div *ngFor="let serialNumber of product.reserved_serial_numbers">
-                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.type_with_number.id}} (R)
+                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.type_with_number.id}}
+                  (R)
                 </div>
                 <div *ngFor="let serialNumber of product.future_serial_numbers">
                   {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
@@ -250,9 +252,10 @@
     <ng-container *ngIf="mode === 'hierarchy'">
       <p-treeTable
         class="categories-tree"
+        [dataKey]="isAlbumPrint ? 'id' : 'uid'"
         [value]="tree"
-        [(selection)]="selectedNodeTree"
         [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
+        [(selection)]="selectedNodeTree"
         scrollHeight="calc(100vh - 19.125rem)"
         [scrollable]="true"
         (selectionChange)="onSelectTreeNode()"
@@ -285,7 +288,6 @@
             <button
               pButton
               type="button"
-              class="mr-3"
               label="Collapse All"
               icon="pi pi-angle-up"
               (click)="collapseAll()"
@@ -323,10 +325,10 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="padding-left: 16px; width: 19%">
+            <th style="width: 16%">
               <div class="row-checkbox">
-                <div class="toggle" style="left: -4px">
-                  <p-treeTableHeaderCheckbox *ngIf="isAlbumPrint"></p-treeTableHeaderCheckbox>
+                <div class="toggle" *ngIf="isAlbumPrint">
+                  <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
                 </div>
                 <button class="back" (click)="_location.back()">
                   <i class="pi pi-arrow-left"></i>
@@ -334,79 +336,100 @@
                 Code
               </div>
             </th>
-            <th style="width: 10%">Name</th>
-            <th style="width: 6%">Technology</th>
-            <th style="width: 8%" class="text-center">Total Req Qty</th>
-            <th style="width: 10%" class="text-center">Req Qty Per One</th>
+            <th style="width: 14%">Name</th>
+            <th style="width: 6%" class="text-center">Technologies</th>
+            <th style="width: 6%" class="text-center">Current Technology</th>
+            <th style="width: 6%" class="text-center">Total Req Qty</th>
+            <th style="width: 8%" class="text-center">Req Qty Per One</th>
             <th style="width: 8%" class="text-center">Free Wh Qty</th>
             <th style="width: 7%" class="text-center">Reserved Qty</th>
             <th style="width: 7%" class="text-center">Actual Qty</th>
             <th style="width: 5%" class="text-center">UOM</th>
-            <th style="width: 10%" class="text-center">Locator</th>
-            <th style="width: 10%" class="d-print-none text-center">Status</th>
+            <th style="width: 9%" class="text-center">Locator</th>
+            <th style="width: 8%" class="d-print-none text-center">Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-          <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
-              [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
-              [class.is-found-row]="isFoundRow(rowData.id)"
-              [class.selected-for-change]="rowData.id === currentDisplayRowId"
-              [id]="'row-' + rowData.id"
-              [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
+          <tr
+            [ttRow]="rowNode"
+            [ttSelectableRow]="rowNode"
+            [ttSelectableRowDisabled]="isAlbumPrint"
+            [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
+            [class.is-found-row]="isFoundRow(rowData.id)"
+            [class.selected-for-change]="rowData.id === currentDisplayRowId"
+            [id]="'row-' + rowData.id"
+            [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
           >
-            <td style="width: 19%">
-              <div class="row-checkbox">
-                <h3 class="td-title">Code</h3>
+            <td style="width: 16%">
+              <h3 class="td-title">Code</h3>
+              <div class="toggle-row">
                 <div class="toggle">
-                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [class.disabled-toggler]="rowData.status == 1"
-                                       [value]="rowNode"></p-treeTableCheckbox>
+                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [value]="rowNode"></p-treeTableCheckbox>
                 </div>
-                <div class="toggle-row">
-                  <p-treeTableToggler [rowNode]="rowNode"
-                                      [class.disabled-toggler]="rowData.status == 1"></p-treeTableToggler>
-                  <a
-                    [class.disabled]="rowData.list_url && (rowData.status == 1 || rowData.status == 3)"
-                    *ngIf="rowData.has_children"
-                    class="list-parent"
-                    [routerLink]="['/warehouse/production-lists/', rowData.list]"
-                  >
-                    {{rowData.nomenclature.code}}
-                  </a>
-                  <span *ngIf="!rowData.has_children">{{rowData.nomenclature.code}}</span>
+                <p-treeTableToggler
+                  [rowNode]="rowNode"
+                  [class.disabled-toggler]="rowData.status === 'Completed' || rowData.blockedExpand"></p-treeTableToggler>
+                <a
+                  [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
+                  *ngIf="rowData.has_children"
+                  class="list-parent"
+                  [routerLink]="['/warehouse/production-lists/', rowData.list]"
+                >
+                  {{rowData.nomenclature.code}}
+                </a>
+                <span *ngIf="!rowData.has_children">{{rowData.nomenclature.code}}</span>
+              </div>
+            </td>
+            <td style="width: 14%" class="serial-number-cont">
+              <h3 class="td-title">Name</h3>
+              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
+              <!--              ({{rowData.id}}) -->
+              {{rowData.nomenclature.name}}
+
+              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
+                   class="serial-numbers">
+                <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
+                  {{serialNumber.type_with_number}} (R)
+                </div>
+                <div *ngFor="let serialNumber of rowData.future_serial_numbers">
+                  {{serialNumber.type_with_number}} (F)
                 </div>
               </div>
             </td>
-            <td style="width: 10%" class="serial-number-cont">
-              <h3 class="td-title">Name</h3>
-              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b> ({{rowData.id}}
-              ) {{rowData.nomenclature.name}}
-
-
-                <div *ngIf="rowData.reserved_serial_numbers.length > 0 || rowData.future_serial_numbers.length > 0"
-                     class="serial-numbers">
-                  <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
-                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (R)
-                  </div>
-                  <div *ngFor="let serialNumber of rowData.future_serial_numbers">
-                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
-                  </div>
-                </div>
-
+            <td style="width: 6%" class="text-center">
+              <span *ngFor="let technology of rowData?.technologies; let idx = index">
+                {{technology?.name}}
+                <ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
+              </span>
             </td>
-            <td>{{rowData.technology?.name}}</td>
+            <td style="width: 6%" class="text-center">
+              <h3 class="td-title">Current Technology</h3>
+              <ng-container *ngIf="rowData.blockedExpand">
+                {{rowData.currentTechnology?.name}}
+              </ng-container>
+            </td>
             <td style="width: 6%" class="text-center">
               <h3 class="td-title">Total Req Qty</h3>
               {{rowData.total_required_quantity}}
             </td>
-            <td style="width: 10%" class="text-center">
+            <td style="width: 8%" class="text-center">
               <h3 class="td-title">Req Qty Per One</h3>
               {{rowData.required_quantity_per_one}}
             </td>
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Free Wh Qty</h3>
-              {{rowData.warehouse_quantity}}
+              <ng-container
+                *ngIf="(rowData.currentTechnology && rowData.blockedExpand) || rowData.technologies?.length === 0">
+                {{rowData.warehouse_quantity}}
+              </ng-container>
+              <ng-container *ngIf="rowData.technologies?.length > 0 && !rowData.blockedExpand">
+                <ng-container *ngFor="let quantity of rowData.warehouseQuantities; let idx = index">
+                  {{quantity}}
+                  <ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
+                </ng-container>
+              </ng-container>
             </td>
-            <td style="width: 8%" class="text-center">
+            <td style="width: 7%" class="text-center">
               <h3 class="td-title">Reserved Qty</h3>
               {{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}
             </td>
@@ -418,19 +441,20 @@
               <h3 class="td-title">UOM</h3>
               {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
-            <td style="width: 10%" class="text-center">
+            <td style="width: 9%" class="text-center">
               <h3 class="td-title">Locator</h3>
               {{rowData.available_on_locator}}
             </td>
-            <td style="width: 10%" class="d-print-none text-center">
+            <td style="width: 8%" class="d-print-none text-center">
               <h3 class="td-title">Status</h3>
               <span
                 class="badge"
                 [ngClass]="{
-                'badge_secondary': rowData.status == 0,
-                'badge_success': rowData.status == 1,
-                'badge_danger': rowData.status == 2,
-                'badge_reserved': rowData.status == 3}"
+                'badge_secondary': rowData.status === 'Not processed',
+                'badge_success': rowData.status === 'Completed',
+                'badge_danger': rowData.status === 'Deficit',
+                'badge_reserved': rowData.status === 'Reserved'
+                }"
               >
                 {{statuses[rowData.status]}}
               </span>
@@ -452,9 +476,11 @@
 
 <div class="print-list-product" *ngIf="isShowPrint">
   <div class="print-list-product__list">
-    <div class="print-list-product__item" [class.break]="isShowPrintSeparated"  *ngFor="let product of productsForPrint; let last=last">
-      <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
-    </div>
+    <ng-template ngFor [ngForOf]="productsForPrint" let-product let-index=index let-last=last>
+      <div class="print-list-product__item" [class.break]="isShowPrintSeparated" *ngIf="product.children.length > 0">
+        <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
+      </div>
+    </ng-template>
   </div>
 </div>
 

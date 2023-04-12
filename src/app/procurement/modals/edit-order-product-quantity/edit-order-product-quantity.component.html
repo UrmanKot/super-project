@@ -7,14 +7,20 @@
 <mat-dialog-content>
   <form [formGroup]="form">
     <div class="form-group">
-      <label for="quantity">Quantity*</label>
+      <label for="totalQuantity">Quantity*</label>
       <input
         pInputText
-        formControlName="quantity"
+        formControlName="totalQuantity"
+        [min]="0"
         class="form-control"
         type="number"
-        id="quantity"
+        id="totalQuantity"
       />
+    </div>
+
+    <div class="text-danger mt-3 capitalize" *ngIf="form.get('totalQuantity').value < proformaInvoiceQuantity || form.get('totalQuantity').value < invoiceQuantity">
+      Quantity can't be Lower than sent to invoice\proforma invoice:
+      {{proformaInvoiceQuantity > invoiceQuantity ? proformaInvoiceQuantity : invoiceQuantity}}
     </div>
   </form>
 </mat-dialog-content>
@@ -27,7 +33,7 @@
     class="p-button-success"
     label="Change"
     [loading]="isSaving"
-    [disabled]="form.invalid"
+    [disabled]="form.invalid || form.get('totalQuantity').value < proformaInvoiceQuantity || form.get('totalQuantity').value < invoiceQuantity"
     (click)="onSave()"
   ></button>
 </mat-dialog-actions>

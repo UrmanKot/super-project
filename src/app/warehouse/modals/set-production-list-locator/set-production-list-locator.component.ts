@@ -33,9 +33,9 @@ export class SetProductionListLocatorComponent implements OnInit {
     this.isSaving = true;
     this.listService.updatePartly(this.form.value).pipe(
       finalize(() => this.isSaving = false)
-    ).subscribe(response => {
-      if (response) {
-        this.dialogRef.close(true);
+    ).subscribe(list => {
+      if (list) {
+        this.dialogRef.close(list);
       }
     });
   }

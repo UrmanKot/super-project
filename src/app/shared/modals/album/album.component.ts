@@ -1,6 +1,7 @@
-import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, Inject, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AlbumItem} from '@shared/services/album.service';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'pek-album',
@@ -8,11 +9,12 @@ import {AlbumItem} from '@shared/services/album.service';
   styleUrls: ['./album.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AlbumComponent implements OnInit {
+export class AlbumComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<AlbumComponent>,
-    @Inject(MAT_DIALOG_DATA) public album: AlbumItem[]
+    @Inject(MAT_DIALOG_DATA) public album: AlbumItem[],
+    @Inject(DOCUMENT) private document: Document
   ) {
   }
 
@@ -21,6 +23,18 @@ export class AlbumComponent implements OnInit {
   }
 
   print() {
-    window.print()
+    this.document.documentElement.classList.remove('cdk-global-scrollblock');
+    this.document.documentElement.classList.add('print-album-page');
+    window.print();
+  }
+
+  @HostListener('window:afterprint', [])
+  onWindowAfterPrint() {
+    this.document.documentElement.classList.remove('print-album-page');
+    this.document.documentElement.classList.add('cdk-global-scrollblock');
+  }
+
+  ngOnDestroy(): void {
+    this.document.documentElement.classList.remove('cdk-global-scrollblock');
   }
 }
