@@ -14,6 +14,9 @@ import {MenuItem} from 'primeng/api';
 import {CRMEmployee} from '../../models/crm-employee';
 import {EventType} from '../../models/event-type';
 import {AddEventModalType} from '../../models/company';
+import {
+  logExperimentalWarnings
+} from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
 
 @Component({
   selector: 'pek-crm-events',
@@ -355,7 +358,7 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (event) {
         this.search();
       }
-    })
+    });
   }
 
   private onEditEvent() {
@@ -364,8 +367,35 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       isWithEventWithEmployee ? 'withEmployee' : 'withoutEmployee',
       this.selectedEventItem).subscribe(event => {
       if (event) {
-        this.search();
+        const typesIds = this.searchForm.get('events').value;
+        const canShowByEventTypeFiltered = typesIds.length > 0 ? this.searchForm.get('events').value.some(el => el === event.event_type.id): true;
+        if (canShowByEventTypeFiltered) {
+          this.getUpdatedEvent(event.id);
+        } else {
+          this.search();
+        }
+        this.selectedEventItem = null;
       }
-    })
+    });
+  }
+
+  getUpdatedEvent(id: number) {
+    const query: QuerySearch[] = [
+      {
+        name: 'id',
+        value: id
+      }
+    ];
+    this.eventsListService.get(query).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(events => {
+      if (events.length === 1) {
+        const eventIndex = this.eventsList.findIndex(ev => ev.id === id);
+        if (eventIndex >= 0) {
+          this.eventsList[eventIndex] = events[0];
+          this.eventsList = [...this.eventsList];
+        }
+      }
+    });
   }
 }

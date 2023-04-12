@@ -4,6 +4,18 @@
       <pek-module-icon [module]="'contacts-events'" [isActive]="true"></pek-module-icon>
       <h1>Event Card</h1>
     </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-pencil"
+        label="Edit"
+        class="mr-2"
+        (click)="onEditEvent()"
+        [disabled]="isLoading"
+      >
+      </button>
+    </div>
   </div>
 </div>
 
