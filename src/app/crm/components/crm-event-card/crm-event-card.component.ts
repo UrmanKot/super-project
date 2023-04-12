@@ -87,6 +87,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
     private readonly modalService: ModalService,
     private readonly eventCompanyService: EventCompanyService,
     private readonly eventContactPersonService: EventContactPersonService,
+    private eventsListService: EventsListService,
   ) {
   }
 
@@ -212,5 +213,23 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
 
   private onViewCompany() {
     this.router.navigate(['/crm/business-partners/company-page/', this.selectedEventCompany.company.id]);
+  }
+
+  onEditEvent() {
+    const isWithEventWithEmployee = this.event.employee && this.event.employee.length > 0;
+    console.log('this.event', this.event);
+    this.event.on_companies.forEach(el => {
+      el.company_id = el.company.id;
+    });
+    this.event.on_contacts.forEach(el => {
+      el.contact_person_id = el.contact_person.id;
+    });
+    this.eventsListService.openCreateEventEventModal('edit',
+      isWithEventWithEmployee ? 'withEmployee' : 'withoutEmployee',
+      this.event).subscribe(event => {
+      if (event) {
+        this.getEvent();
+      }
+    });
   }
 }
