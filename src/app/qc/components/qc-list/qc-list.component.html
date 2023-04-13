@@ -70,7 +70,6 @@
                     *ngIf="!selectedInvoiceItem">
                     Choose the Production Lists Procurement or Outsourcing Invoice to view Items
                   </p>
-
                   <a
                     pButton
                     type="button"
@@ -79,6 +78,7 @@
                     class="ml-auto mr-2"
                     [class.disabled]="!selectedInvoiceItem"
                     [routerLink]="['../', 'invoice', selectedInvoiceItem?.id]"
+                    target="_blank"
                   ></a>
                   <button
                     [disabled]="invoicesViewType === 'list'"
@@ -359,6 +359,7 @@
                     class="ml-auto mr-2"
                     [class.disabled]="!selectedOrderItem"
                     [routerLink]="['../', 'order', selectedOrderItem?.id]"
+                    target="_blank"
                   ></a>
                   <button
                     [disabled]="invoicesOrderType === 'list'"
@@ -588,6 +589,7 @@
                     class="ml-auto mr-2"
                     [class.disabled]="!selectedInvoicePurchaseItem"
                     [routerLink]="['../', 'invoice', selectedInvoicePurchaseItem?.id]"
+                    target="_blank"
                   ></a>
                   <button
                     [disabled]="invoicesPurchasedType=== 'list'"
