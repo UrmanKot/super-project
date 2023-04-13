@@ -45,7 +45,7 @@ export class ActualQuantityPayload {
   id: number;
   actual_quantity: number;
   serial_product_ids?: number[];
-  root_serial_numbers_in_production?: number;
+  root_serial_numbers_in_production?: number[];
   group?: number;
 }
 
