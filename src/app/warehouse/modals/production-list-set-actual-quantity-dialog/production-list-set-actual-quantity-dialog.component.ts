@@ -7,6 +7,7 @@ import {ListProductService} from '../../services/list-product.service';
 import {finalize} from 'rxjs/operators';
 import {AdapterService} from '@shared/services/adapter.service';
 import {forkJoin} from 'rxjs';
+import {Impression} from '../../../crm/models/event-company';
 
 @Component({
   selector: 'pek-production-list-set-actual-quantity-dialog',
@@ -17,6 +18,11 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   isSaving = false;
 
   quantities: ListProductQuantity[] = [];
+
+  isSerial = false;
+  isLoading = false;
+
+  error: string;
 
   listProducts: ListProduct[] = [];
   listProduct: ListProduct;
@@ -32,6 +38,9 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     id: [<number>null],
     actual_quantity: [<number>null, [Validators.required, Validators.min(1)]],
   });
+
+  serialsWarehouse: { id: number, label: string }[] = [];
+  serialsProduction: { id: number, label: string }[] = [];
 
   constructor(
     private readonly dialogRef: MatDialogRef<ProductionListSetActualQuantityDialogComponent>,
@@ -64,7 +73,45 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
       this.deficitQuantity = this.totalRequiredQuantity;
       this.form.get('id').patchValue(this.listProduct.id);
       this.form.get('actual_quantity').patchValue(0);
+
+      if (this.listProduct.nomenclature.bulk_or_serial === '1') {
+        this.form.addControl('serial_product_ids', this.fb.control([]));
+        this.form.addControl('root_serial_numbers_in_production', this.fb.control([]));
+        this.form.addControl('ownProduction', this.fb.control(0));
+        this.loadSerialInfo();
+      }
+
     }
+  }
+
+  loadSerialInfo() {
+    this.isSerial = true;
+    this.isLoading = true;
+    this.listService.getNomenclatureInfo(this.data.listProduct.nomenclature.id).pipe(
+      finalize(() => this.isLoading = false),
+    ).subscribe({
+      next: response => {
+        if (response) {
+          response.warehouse_products.forEach(item => {
+            this.serialsWarehouse.push(
+              {
+                id: item.id,
+                label: item.serial_number.type_with_number ? item.serial_number.type_with_number : item.serial_number.id
+              }
+            );
+          });
+
+          response.serial_numbers_in_production.forEach(item => {
+            this.serialsProduction.push(
+              {id: item.id, label: item.type_with_number ? item.type_with_number : item.id}
+            );
+          });
+        }
+      },
+      error: () => {
+        this.error = 'There are no warehouse products on stock and in production';
+      }
+    });
   }
 
   generateListProducts() {
@@ -144,25 +191,41 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   }
 
   onSave() {
-    if (this.data.isOldList) {
-      this.saveOldProductionList();
+    if (this.data.listProduct.nomenclature.bulk_or_serial === '1') {
+      if (this.data.isOldList) {
+        this.saveOldProductionListSerial();
+      } else {
+      }
     } else {
-      this.saveNewProductionList();
+      if (this.data.isOldList) {
+        this.saveOldProductionList();
+      } else {
+        this.saveNewProductionList();
+      }
     }
+
   }
 
   disabled() {
     let disabled = false;
 
-    if (this.listProduct.technologies.length === 0) {
-      disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
+    if (this.data.listProduct.nomenclature.bulk_or_serial === '1') {
+      if (this.form.get('ownProduction').value === 0 && this.form.get('serial_product_ids').value.length > this.data.listProduct.total_required_quantity) {
+        disabled = true;
+      } else if (this.form.get('ownProduction').value === 1 && this.form.get('root_serial_numbers_in_production').value.length > this.data.listProduct.total_required_quantity) {
+        disabled = true;
+      }
     } else {
-      // if (this.data.parent) {
-      // } else {
-      //   disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.pureTotalRequiredQuantity;
-      // }
+      if (this.listProduct.technologies.length === 0) {
+        disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
+      } else {
+        // if (this.data.parent) {
+        // } else {
+        //   disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.pureTotalRequiredQuantity;
+        // }
 
-      disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.total_required_quantity;
+        disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.total_required_quantity;
+      }
     }
 
     return disabled;
@@ -420,7 +483,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
       ids: []
     };
 
-    // if (!this.data.parent) {
     const processedIds = send.map(s => s.id);
 
     this.products.forEach(p => {
@@ -428,14 +490,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
         notProcessedSend.ids.push(p.id);
       }
     });
-    // }
-
-    // console.log(send.map(s => s.id));
-    // console.log(this.products.map(p => p.id));
-    // console.log(notProcessedSend.ids);
-
-    // console.log(this.products);
-    // console.log(send);
 
     if (notProcessedSend.ids.length > 0) {
       forkJoin({
@@ -462,7 +516,7 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   saveOldProductionList() {
     this.isSaving = true;
 
-    const send:ActualQuantityPayload[] = [{
+    const send: ActualQuantityPayload[] = [{
       id: this.listProduct.id,
       actual_quantity: +this.form.get('actual_quantity').value,
     }];
@@ -471,7 +525,7 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
       finalize(() => this.isSaving = false)
     ).subscribe(listProducts => {
       this.dialogRef.close(listProducts);
-    })
+    });
   }
 
   onSetDeficitQuantity() {
@@ -482,4 +536,28 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     }
   }
 
+  private saveOldProductionListSerial() {
+    this.isSaving = true;
+
+    const send = this.form.value;
+
+    if (send.ownProduction === 0) {
+      delete send.root_serial_numbers_in_production;
+      send.actual_quantity = this.form.value.serial_product_ids.length;
+      send.serial_product_ids = this.form.get('serial_product_ids').value;
+    } else if (send.ownProduction === 1) {
+      delete send.serial_product_ids;
+      send.actual_quantity = this.form.value.root_serial_numbers_in_production.length;
+      send.root_serial_numbers_in_production = this.form.get('root_serial_numbers_in_production').value;
+      send.root_serial_numbers_in_production = send.root_serial_numbers_in_production.map(val => +val);
+    }
+
+    delete send.ownProduction;
+
+    this.listProductService.setActualQuantity([send]).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(listProducts => {
+      this.dialogRef.close(listProducts);
+    });
+  }
 }

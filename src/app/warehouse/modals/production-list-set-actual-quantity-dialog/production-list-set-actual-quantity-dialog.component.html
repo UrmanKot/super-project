@@ -10,70 +10,127 @@
 
 <mat-dialog-content>
   <form [formGroup]="form">
-    <ng-container *ngIf="this.listProduct.technologies.length === 0">
-      <div class="form-group">
-        <label>Actual Quantity*</label>
-        <input
-          (ngModelChange)="onSetDeficitQuantity()"
-          formControlName="actual_quantity"
-          pInputText
-          class="form-control"
-          type="number"
-        >
-      </div>
-    </ng-container>
+    <ng-container *ngIf="!isSerial; else serialTemplate">
 
-    <ng-container *ngIf="this.listProduct.technologies.length > 0">
-      <p-table
-        selectionMode="single"
-        dataKey="id"
-        rowExpandMode="multiple"
-        [value]="listProducts"
-      >
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 5%" class="text-center">#</th>
-            <th style="width: 20%">Code</th>
-            <th style="width: 20%">Name</th>
-            <th style="width: 20%" class="text-center">Technology</th>
-            <th style="width: 15%" class="text-center">Free Wh Qty</th>
-            <th style="width: 15%" class="text-center">Reserved Qty</th>
-          </tr>
-        </ng-template>
-        <ng-template let-product let-i="rowIndex" pTemplate="body">
-          <tr
-            [pRowToggler]="product"
+      <ng-container *ngIf="this.listProduct.technologies.length === 0">
+        <div class="form-group">
+          <label>Actual Quantity*</label>
+          <input
+            (ngModelChange)="onSetDeficitQuantity()"
+            formControlName="actual_quantity"
+            pInputText
+            class="form-control"
+            type="number"
           >
-            <td>{{i + 1}}</td>
-            <td>{{product.nomenclature.code}}</td>
-            <td>{{product.nomenclature.name}}</td>
-            <td class="text-center">{{product.technology?.name}}</td>
-            <td class="text-center">{{product.warehouse_quantity}}</td>
-            <td class="text-center">{{product.reserved_quantity}}</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="rowexpansion" let-product>
-          <tr>
-            <td colspan="7">
-              <div class="form-group">
-                <label>Quantity*</label>
-                <input
-                  pInputText
-                  min="1"
-                  class="form-control"
-                  type="number"
-                  (input)="onEditQuantity($event, product)"
-                >
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="this.listProduct.technologies.length > 0">
+        <p-table
+          selectionMode="single"
+          dataKey="id"
+          rowExpandMode="multiple"
+          [value]="listProducts"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="text-center">#</th>
+              <th style="width: 20%">Code</th>
+              <th style="width: 20%">Name</th>
+              <th style="width: 20%" class="text-center">Technology</th>
+              <th style="width: 15%" class="text-center">Free Wh Qty</th>
+              <th style="width: 15%" class="text-center">Reserved Qty</th>
+            </tr>
+          </ng-template>
+          <ng-template let-product let-i="rowIndex" pTemplate="body">
+            <tr
+              [pRowToggler]="product"
+            >
+              <td>{{i + 1}}</td>
+              <td>{{product.nomenclature.code}}</td>
+              <td>{{product.nomenclature.name}}</td>
+              <td class="text-center">{{product.technology?.name}}</td>
+              <td class="text-center">{{product.warehouse_quantity}}</td>
+              <td class="text-center">{{product.reserved_quantity}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="rowexpansion" let-product>
+            <tr>
+              <td colspan="7">
+                <div class="form-group">
+                  <label>Quantity*</label>
+                  <input
+                    pInputText
+                    min="1"
+                    class="form-control"
+                    type="number"
+                    (input)="onEditQuantity($event, product)"
+                  >
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </ng-container>
+      <p class="deficit mt-3">
+        Deficit Products Quantity: {{deficitQuantity}}
+      </p>
 
     </ng-container>
-    <p class="deficit mt-3">
-      Deficit Products Quantity: {{deficitQuantity}}</p>
+
+    <ng-template #serialTemplate>
+      <div class="radio mt-2 mb-3">
+        <p-radioButton
+          class="mr-3"
+          name="ownProduction"
+          label="Warehouses"
+          [value]="0"
+          formControlName="ownProduction"
+        >
+        </p-radioButton>
+        <p-radioButton
+          class=""
+          name="ownProduction"
+          label="Production"
+          [value]="1"
+          formControlName="ownProduction"
+        >
+        </p-radioButton>
+      </div>
+
+      <div class="form-group" *ngIf="form.get('ownProduction').value === 0">
+        <label>Warehouses Serial Numbers</label>
+        <p-multiSelect
+          placeholder="Select Warehouses Serial Numbers"
+          *ngIf="!isLoading; else spinner"
+          formControlName="serial_product_ids"
+          [options]="serialsWarehouse"
+          optionLabel="label"
+          optionValue="id"
+        >
+        </p-multiSelect>
+      </div>
+
+      <div class="form-group" *ngIf="form.get('ownProduction').value === 1">
+        <label>Production Serial Numbers</label>
+        <p-multiSelect
+          *ngIf="!isLoading; else spinner"
+          placeholder="Select Production Serial Numbers"
+          formControlName="root_serial_numbers_in_production"
+          [options]="serialsProduction"
+          optionLabel="label"
+          optionValue="id"
+        ></p-multiSelect>
+      </div>
+    </ng-template>
   </form>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
 
 </mat-dialog-content>
 
