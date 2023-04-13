@@ -4,7 +4,6 @@ import {Invoice} from '../../../procurement/models/invoice';
 import {TreeNode} from 'primeng/api';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
 import {Order} from '../../../procurement/models/order';
-import {tap} from 'rxjs/operators';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {Category} from '../../../product-structure/models/category';
@@ -12,7 +11,6 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {Subject, takeUntil} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
 import * as cloneDeep from 'lodash/cloneDeep';
-import {forkJoin} from 'rxjs';
 
 type ViewType = 'list' | 'hierarchy'
 
