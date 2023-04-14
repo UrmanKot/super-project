@@ -15,6 +15,7 @@ export class ConfirmationLayoutComponent implements OnInit {
     {label: 'Production Lists Confirmation', commands: ['production-lists']},
     {label: 'Suppliers Confirmation', commands: ['suppliers']},
     {label: 'Reservations Confirmation', commands: ['reservations']},
+    {label: 'Planning Confirmation', commands: ['planning']},
   ]
 
   constructor() { }

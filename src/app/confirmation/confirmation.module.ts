@@ -12,6 +12,9 @@ import { ProductionListConfirmationComponent } from './components/production-lis
 import { SupplierConfirmationComponent } from './components/supplier-confirmation/supplier-confirmation.component';
 import { ReservationConfirmationComponent } from './components/reservation-confirmation/reservation-confirmation.component';
 import { PaymentConfirmationLimitComponent } from './modals/payment-confirmation-limit/payment-confirmation-limit.component';
+import { PlanningListConfirmationComponent } from './components/planning-list-confirmation/planning-list-confirmation.component';
+import { CorrectionsListComponent } from './components/planning-list-confirmation/components/corrections-list/corrections-list.component';
+import { ConfirmationsListComponent } from './components/planning-list-confirmation/components/confirmations-list/confirmations-list.component';
 
 @NgModule({
     declarations: [
@@ -23,6 +26,9 @@ import { PaymentConfirmationLimitComponent } from './modals/payment-confirmation
         SupplierConfirmationComponent,
         ReservationConfirmationComponent,
         PaymentConfirmationLimitComponent,
+        PlanningListConfirmationComponent,
+        CorrectionsListComponent,
+        ConfirmationsListComponent,
     ],
     exports: [
         SupplierConfirmationComponent

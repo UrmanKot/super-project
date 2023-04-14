@@ -1,6 +1,7 @@
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Product} from '../../product-structure/models/product';
 import {Employee} from '@shared/models/employee';
+import {SerialNumber} from '../../procurement/models/invoice';
 
 export type TechnologyName = string;
 export type TaskStatus = string;
@@ -11,6 +12,14 @@ export class RootTask {
   quantity: number;
   nomenclature: Nomenclature;
 }
+
+export enum PlanningStatus {
+  WAITING_CONFIRMATION = '0',
+  REQUIRES_PLANNING = '1',
+  PLANNED = '2',
+  ON_STOCK = '3',
+}
+
 
 export class Task {
   readonly id: number;
@@ -39,6 +48,7 @@ export class Task {
   root_nomenclature?: Nomenclature;
   // serial_numbers?: SerialNumber[];
   serial_products?: any[];
+  serial_numbers?: SerialNumber[];
   label?: string;
   child?: Task[];
   /** @deprecated */
