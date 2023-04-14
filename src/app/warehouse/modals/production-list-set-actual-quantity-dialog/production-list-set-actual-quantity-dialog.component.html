@@ -10,9 +10,8 @@
 
 <mat-dialog-content>
   <form [formGroup]="form">
-    <ng-container *ngIf="!isSerial; else serialTemplate">
 
-      <ng-container *ngIf="this.listProduct.technologies.length === 0">
+      <ng-container *ngIf="this.listProduct.technologies.length === 0 && !isSerial">
         <div class="form-group">
           <label>Actual Quantity*</label>
           <input
@@ -73,13 +72,15 @@
         </p-table>
 
       </ng-container>
-      <p class="deficit mt-3">
+      <p
+        class="deficit mt-3"
+        *ngIf="(!isSerial && listProduct.technologies.length === 0) || !data.isOldList"
+        [class.mb-3]="isSerial && listProduct.technologies.length > 0"
+      >
         Deficit Products Quantity: {{deficitQuantity}}
       </p>
 
-    </ng-container>
-
-    <ng-template #serialTemplate>
+    <ng-container *ngIf="isSerial">
       <div class="radio mt-2 mb-3">
         <p-radioButton
           class="mr-3"
@@ -123,7 +124,11 @@
           optionValue="id"
         ></p-multiSelect>
       </div>
-    </ng-template>
+    </ng-container>
+
+    <div class="error mt-3" *ngIf="showError()">
+      {{showError()}}
+    </div>
   </form>
 
   <ng-template #spinner>
