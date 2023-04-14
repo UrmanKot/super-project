@@ -232,7 +232,6 @@ export class OrderPageComponent implements OnInit {
   }
 
   printAlbum() {
-    console.log(this.selectedProduct);
     this.albumService.getNomenclaturesImages((<OrderProduct[]>this.selectedProduct).map(p => p.nomenclature));
   }
 
@@ -323,7 +322,41 @@ export class OrderPageComponent implements OnInit {
         products.forEach(product => {
           if (product.details?.task_materials.length > 0) {
             product.details?.task_materials.forEach(m => {
-              materials.push(m);
+              let nomenclatureId: number;
+              let currentTechnology: string;
+              if (m.material_nomenclature) {
+                nomenclatureId = m.material_nomenclature.id;
+                currentTechnology = m.technology;
+              }
+              if (m.order_product_nomenclature) {
+                nomenclatureId = m.order_product_nomenclature.id;
+                currentTechnology = m.technology;
+              }
+              if (m.list_product) {
+                nomenclatureId = m.list_product.nomenclature.id;
+                currentTechnology = m.technology;
+              }
+              const inMaterials = materials.find(material => {
+                if (material.material_nomenclature) {
+                  return material.material_nomenclature.id === nomenclatureId && material.technology === currentTechnology;
+                }
+                if (material.order_product_nomenclature) {
+                  return material.order_product_nomenclature.id === nomenclatureId && material.technology === currentTechnology;
+                }
+                if (material.list_product) {
+                  return material.list_product.nomenclature.id === nomenclatureId && material.technology === currentTechnology;
+                }
+              });
+              if (inMaterials) {
+                inMaterials.allIds.push(m.id);
+                inMaterials.totalInitialQuantity += m.initial_quantity;
+                inMaterials.totalRequiredQuantity += m.required_quantity;
+              } else {
+                m.allIds = [m.id];
+                m.totalInitialQuantity = m.initial_quantity;
+                m.totalRequiredQuantity = m.required_quantity;
+                materials.push(m);
+              }
             });
           }
         });
