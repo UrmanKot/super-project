@@ -357,10 +357,10 @@
               <td style="width: 10%" class="text-center">
                 {{material.technology ? material.technology : null}}
               </td>
-              <td style="width: 20%" class="text-center">{{material?.initial_quantity}}</td>
+              <td style="width: 20%" class="text-center">{{material?.totalInitialQuantity}}</td>
               <td style="width: 10%" class="text-center">
-                <i *ngIf="material?.required_quantity === 0" class="pi pi-check-circle"></i>
-                <i *ngIf="material?.required_quantity > 0" class="pi pi-times"></i>
+                <i *ngIf="material?.totalRequiredQuantity === 0" class="pi pi-check-circle"></i>
+                <i *ngIf="material?.totalRequiredQuantity > 0" class="pi pi-times"></i>
               </td>
             </tr>
           </ng-template>

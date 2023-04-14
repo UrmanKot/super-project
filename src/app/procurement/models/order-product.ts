@@ -65,6 +65,13 @@ export class OrderMaterial {
   code: string;
   required_quantity: number;
   list_product: ListProduct;
+  technology?: string;
+  material_nomenclature?: Nomenclature;
+  order_product_nomenclature?: Nomenclature;
+  allIds?: number[];
+  totalInitialQuantity?: number;
+  totalRequiredQuantity?: number;
+  initial_quantity?: number;
 }
 
 export class OrderDetail {
