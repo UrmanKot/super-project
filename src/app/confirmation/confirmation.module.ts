@@ -23,28 +23,34 @@ import {
 import {
   TenderSuppliersListComponent
 } from './components/supplier-confirmation/components/tender-suppliers-list/tender-suppliers-list.component';
+import { PlanningListConfirmationComponent } from './components/planning-list-confirmation/planning-list-confirmation.component';
+import { CorrectionsListComponent } from './components/planning-list-confirmation/components/corrections-list/corrections-list.component';
+import { ConfirmationsListComponent } from './components/planning-list-confirmation/components/confirmations-list/confirmations-list.component';
 
 @NgModule({
-  declarations: [
-    NomenclatureConfirmationComponent,
-    PaymentConfirmationComponent,
-    ConfirmationLayoutComponent,
-    WriteOffConfirmationComponent,
-    ProductionListConfirmationComponent,
-    SupplierConfirmationComponent,
-    ReservationConfirmationComponent,
-    PaymentConfirmationLimitComponent,
-    TenderSuppliersListComponent,
-  ],
-  exports: [
-    SupplierConfirmationComponent
-  ],
-  imports: [
-    CommonModule,
-    ConfirmationRouting,
-    SharedModule,
-    LayoutModule,
-  ]
+    declarations: [
+        NomenclatureConfirmationComponent,
+        PaymentConfirmationComponent,
+        ConfirmationLayoutComponent,
+        WriteOffConfirmationComponent,
+        ProductionListConfirmationComponent,
+        SupplierConfirmationComponent,
+        ReservationConfirmationComponent,
+        PaymentConfirmationLimitComponent,
+        PlanningListConfirmationComponent,
+        CorrectionsListComponent,
+        ConfirmationsListComponent,
+        TenderSuppliersListComponent,
+    ],
+    exports: [
+        SupplierConfirmationComponent
+    ],
+    imports: [
+        CommonModule,
+        ConfirmationRouting,
+        SharedModule,
+        LayoutModule,
+    ]
 })
 export class ConfirmationModule {
 }

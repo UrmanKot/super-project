@@ -13,6 +13,9 @@ import {SupplierConfirmationComponent} from './components/supplier-confirmation/
 import {
   ReservationConfirmationComponent
 } from './components/reservation-confirmation/reservation-confirmation.component';
+import {
+  PlanningListConfirmationComponent
+} from './components/planning-list-confirmation/planning-list-confirmation.component';
 
 const routes: Routes = [
   {
@@ -25,6 +28,7 @@ const routes: Routes = [
       {path: 'production-lists', title: 'Production Lists Confirmation', component: ProductionListConfirmationComponent},
       {path: 'suppliers', title: 'Suppliers Confirmation', component: SupplierConfirmationComponent},
       {path: 'reservations', title: 'Reservations Confirmation', component: ReservationConfirmationComponent},
+      {path: 'planning', title: 'Planning Confirmation', component: PlanningListConfirmationComponent},
     ]
   }
 ];

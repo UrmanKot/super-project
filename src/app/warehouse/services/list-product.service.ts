@@ -58,7 +58,7 @@ export class ListProductService {
       });
     }
 
-    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + 'get_minimal_product_lists/' + queryParams).pipe(map(response => {
+    return this.httpClient.get<{ data: ListProduct[] }>(this.API_URL + this.url + 'minimal_product_lists/' + queryParams).pipe(map(response => {
       return response.data;
     }));
   }

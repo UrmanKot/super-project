@@ -1,0 +1,34 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'confirmation'" [isActive]="true"></pek-module-icon>
+      <h1>Planning Confirmation</h1>
+    </div>
+    <div class="page__tools">
+    </div>
+  </div>
+</div>
+
+
+<div class="page__content">
+  <div class="page__tabs">
+    <p-tabView class="custom-tabs">
+      <p-tabPanel
+        [header]="'Request For Planing Corrections (' + (!correctionsListCount ? '...' : correctionsListCount ) + ')'"
+        [selected]="true"
+      >
+        <div class="page__table">
+          <pek-corrections-list (tasksCount)="correctionsListCount = $event"></pek-corrections-list>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel
+        [header]="'Request For Planing Confirmations (' + (!confirmationListCount ?  '...' : confirmationListCount) + ')'"
+      >
+        <div class="page__table">
+          <pek-confirmations-list
+            (tasksCount)="confirmationListCount = $event"></pek-confirmations-list>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

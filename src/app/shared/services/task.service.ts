@@ -5,7 +5,7 @@ import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Task} from '@shared/models/task';
+import {PlanningStatus, Task, Tasks} from '@shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,30 @@ export class TaskService {
     }
 
     return this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getTaskConfirmationList(): Observable<Task[]> {
+    return this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + 'confirmation_list/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  approvePlan(data: {planning_status: PlanningStatus, family_id: number}) {
+    return this.httpClient.post(this.API_URL + this.url + 'planning_confirmation/', data).pipe(
+      map(response => response)
+    );
+  }
+
+  approveDeclineEditDatesPlan(data: {planning_status?: PlanningStatus, family_id: number}) {
+    return this.httpClient.post(this.API_URL + this.url + 'confirmation_request_to_edit_date/', data).pipe(
+      map(response => response)
+    );
+  }
+
+  getTaskRequestToEditDate(): Observable<Task[]> {
+    return this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + 'list_of_requests_to_edit_date/').pipe(
       map(response => response.data)
     );
   }
