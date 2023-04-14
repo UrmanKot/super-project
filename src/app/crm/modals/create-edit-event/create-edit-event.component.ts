@@ -89,7 +89,8 @@ export class CreateEditEventComponent implements OnInit {
       this.form.get('start').patchValue(new Date(this.data.event.start));
       this.form.get('end').patchValue(new Date(this.data.event.end));
       this.form.get('employee_ids').patchValue(this.data.event.employee?.map(e => e.id));
-
+      console.log('this.form.get(\'company_ids\')', this.form.get('company_ids').value);
+      console.log('this.form.get(\'contact_ids\')', this.form.get('contact_ids').value);
       if (this.data.event.scheduler) {
         this.scheduleForm.get('schedule_values').patchValue(this.data.event.scheduler.values);
         this.scheduleForm.get('schedule_id').patchValue(this.data.event.scheduler.id);

@@ -39,23 +39,31 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     private readonly listProductService: ListProductService,
     private readonly adapterService: AdapterService,
     private readonly fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: { listProduct: ListProduct, parent: ListProduct },
+    @Inject(MAT_DIALOG_DATA) public data: { listProduct: ListProduct, parent: ListProduct, isOldList: boolean },
   ) {
   }
 
   ngOnInit(): void {
-    this.listProduct = Object.assign({}, this.data.listProduct);
+    if (!this.data.isOldList) {
+      this.listProduct = Object.assign({}, this.data.listProduct);
 
-    this.totalRequiredQuantity = JSON.parse(JSON.stringify(this.data.listProduct.total_required_quantity));
+      this.totalRequiredQuantity = JSON.parse(JSON.stringify(this.data.listProduct.total_required_quantity));
 
-    this.deficitQuantity = this.totalRequiredQuantity;
+      this.deficitQuantity = this.totalRequiredQuantity;
 
-    if (this.listProduct.technologies.length === 0) {
-      this.products = this.data.listProduct.products.map(p => p);
+      if (this.listProduct.technologies.length === 0) {
+        this.products = this.data.listProduct.products.map(p => p);
+        this.form.get('id').patchValue(this.listProduct.id);
+        this.form.get('actual_quantity').patchValue(0);
+      } else {
+        this.generateListProducts();
+      }
+    } else {
+      this.listProduct = {...this.data.listProduct};
+      this.totalRequiredQuantity = JSON.parse(JSON.stringify(this.data.listProduct.total_required_quantity));
+      this.deficitQuantity = this.totalRequiredQuantity;
       this.form.get('id').patchValue(this.listProduct.id);
       this.form.get('actual_quantity').patchValue(0);
-    } else {
-      this.generateListProducts();
     }
   }
 
@@ -136,6 +144,31 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   }
 
   onSave() {
+    if (this.data.isOldList) {
+      this.saveOldProductionList();
+    } else {
+      this.saveNewProductionList();
+    }
+  }
+
+  disabled() {
+    let disabled = false;
+
+    if (this.listProduct.technologies.length === 0) {
+      disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
+    } else {
+      // if (this.data.parent) {
+      // } else {
+      //   disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.pureTotalRequiredQuantity;
+      // }
+
+      disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.total_required_quantity;
+    }
+
+    return disabled;
+  }
+
+  saveNewProductionList() {
     this.isSaving = true;
 
     const totalRequired = this.data.listProduct.pureTotalRequiredQuantity;
@@ -385,16 +418,16 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
 
     const notProcessedSend = {
       ids: []
-    }
+    };
 
     // if (!this.data.parent) {
-      const processedIds = send.map(s => s.id);
+    const processedIds = send.map(s => s.id);
 
-      this.products.forEach(p => {
-        if (!processedIds.includes(p.id) && p.status !== 'Not processed') {
-          notProcessedSend.ids.push(p.id)
-        }
-      })
+    this.products.forEach(p => {
+      if (!processedIds.includes(p.id) && p.status !== 'Not processed') {
+        notProcessedSend.ids.push(p.id);
+      }
+    });
     // }
 
     // console.log(send.map(s => s.id));
@@ -404,16 +437,21 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     // console.log(this.products);
     // console.log(send);
 
-
-    forkJoin({
-      processedListProducts: this.listProductService.setActualQuantity(send),
-      notProcessedListProducts: this.listProductService.cancelActualQuantity(notProcessedSend)
-    }).pipe(
-      finalize(() => this.isSaving = false)
-    ).subscribe(({processedListProducts, notProcessedListProducts}) => {
-      const listProducts = [...processedListProducts, ...notProcessedListProducts];
-      this.dialogRef.close(listProducts)
-    })
+    if (notProcessedSend.ids.length > 0) {
+      forkJoin({
+        processedListProducts: this.listProductService.setActualQuantity(send),
+        notProcessedListProducts: this.listProductService.cancelActualQuantity(notProcessedSend)
+      }).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(({processedListProducts, notProcessedListProducts}) => {
+        const listProducts = [...processedListProducts, ...notProcessedListProducts];
+        this.dialogRef.close(listProducts);
+      });
+    } else {
+      this.listProductService.setActualQuantity(send).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(listProducts => this.dialogRef.close(listProducts));
+    }
 
 
     // this.listProductService.setActualQuantity(send).pipe(
@@ -421,21 +459,19 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     // ).subscribe(listProducts => this.dialogRef.close(listProducts));
   }
 
-  disabled() {
-    let disabled = false;
+  saveOldProductionList() {
+    this.isSaving = true;
 
-    if (this.listProduct.technologies.length === 0) {
-      disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
-    } else {
-      // if (this.data.parent) {
-      // } else {
-      //   disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.pureTotalRequiredQuantity;
-      // }
+    const send:ActualQuantityPayload[] = [{
+      id: this.listProduct.id,
+      actual_quantity: +this.form.get('actual_quantity').value,
+    }];
 
-      disabled = this.quantities.reduce((sum, q) => sum += q.quantity, 0) > this.data.listProduct.total_required_quantity;
-    }
-
-    return disabled;
+    this.listProductService.setActualQuantity(send).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(listProducts => {
+      this.dialogRef.close(listProducts);
+    })
   }
 
   onSetDeficitQuantity() {

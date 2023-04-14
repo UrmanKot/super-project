@@ -209,132 +209,142 @@ h4 {
   border-right: 1px solid #c3cbd3 !important;
 }
 
-::ng-deep {
-  table, tbody, tr, td, .event-item {
-    height: 100%;
-  }
+//.events-reports {
+  ::ng-deep {
+    table, tbody, tr, td, .event-item {
+      height: 100%;
+    }
 
-  .event-item-col {
+    .event-item-col {
+      .report-event {
+        border-bottom: 1px solid #c3cbd3;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    .event-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .event-type-name {
+      white-space: nowrap;
+    }
+
+    .small-comment, .info-line {
+      min-height: 1.25rem;
+    }
+
+    .info-line {
+      margin-top: 1rem;
+    }
+
     .report-event {
-      border-bottom: 1px solid #c3cbd3;
+      min-height: 1.975rem;
+      padding: .2rem .2rem;
 
-      &:last-child {
-        border-bottom: none;
+      &:nth-child(2n) {
+        background-color: #e1e1e1;
       }
     }
-  }
 
-  .event-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+    .report-event-group {
+      min-height: 1.875rem;
 
-  .event-type-name {
-    white-space: nowrap;
-  }
+      .row-0 {
+        background-color: $first-group !important;
 
-  .small-comment, .info-line {
-    min-height: 1.25rem;
-  }
+        .report-event {
+          &:nth-child(2n) {
+            background-color: $first-group !important;
+          }
+        }
+      }
 
-  .info-line {
-    margin-top: 1rem;
-  }
+      .row-1 {
+        background-color: $second-group !important;
 
-  .report-event {
-    min-height: 1.975rem;
-    padding: .2rem .2rem;
+        .report-event {
+          &:nth-child(2n) {
+            background-color: $second-group !important;
+          }
+        }
+      }
 
-    &:nth-child(2n) {
-      background-color: #e1e1e1;
-    }
-  }
+      .row-2 {
+        background-color: $third-group !important;
 
-  .report-event-group {
-    min-height: 1.875rem;
+        .report-event {
+          &:nth-child(2n) {
+            background-color: $third-group !important;
+          }
+        }
+      }
 
-    .row-0 {
-      background-color: $first-group !important;
+      .row-3 {
+        background-color: $fifth-group !important;
 
-      .report-event {
-        &:nth-child(2n) {
-          background-color: $first-group !important;
+        .report-event {
+          &:nth-child(2n) {
+            background-color: $fifth-group !important;
+          }
+        }
+      }
+
+      .row-4 {
+        background-color: $sixth-group !important;
+
+        .report-event {
+          &:nth-child(2n) {
+            background-color: $sixth-group !important;
+          }
         }
       }
     }
 
-    .row-1 {
-      background-color: $second-group !important;
+    .empty-cell {
+      min-height: 1.25rem;
+    }
 
-      .report-event {
-        &:nth-child(2n) {
-          background-color: $second-group !important;
-        }
+    .hide {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .unhide {
+      z-index: 1;
+      position: relative;
+    }
+
+    .no-padding {
+      padding: 0 !important;
+    }
+
+    .event-type-name {
+      > a {
+        padding: 0 0.5rem;
       }
     }
 
-    .row-2 {
-      background-color: $third-group !important;
-
-      .report-event {
-        &:nth-child(2n) {
-          background-color: $third-group !important;
-        }
-      }
-    }
-
-    .row-3 {
-      background-color: $fifth-group !important;
-
-      .report-event {
-        &:nth-child(2n) {
-          background-color: $fifth-group !important;
-        }
-      }
-    }
-
-    .row-4 {
-      background-color: $sixth-group !important;
-
-      .report-event {
-        &:nth-child(2n) {
-          background-color: $sixth-group !important;
-        }
+    p-radiobutton {
+      label {
+        margin-bottom: 0 !important;
       }
     }
   }
+//}
 
-  .empty-cell {
-    min-height: 1.25rem;
-  }
-
-  .hide {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .unhide {
-    z-index: 1;
-    position: relative;
-  }
-
-  .no-padding {
-    padding: 0 !important;
-  }
-
-  .event-type-name {
-    > a {
-      padding: 0 0.5rem;
-    }
-  }
-
-  p-radiobutton {
-    label {
-      margin-bottom: 0 !important;
-    }
-  }
-}
+//.events-reports-page {
+//  ::ng-deep {
+//    tr {
+//      border-bottom: 0.1875rem solid #495057;
+//    }
+//  }
+//}
 
 tr {
   border-bottom: 0.1875rem solid #495057;
@@ -366,40 +376,49 @@ tr {
   color: #fab5bb !important;
   text-shadow: 1px 1px 0 #00000052;
 }
+//.events-reports-page {
+  :host ::ng-deep {
+    .events-reports-page {
+      .p-datatable .p-datatable-thead > tr > th {
+        &::before {
+          content: "";
+          background-color: #e9ecef;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          z-index: -1;
+          left: 0;
+          top: 0;
+        }
+      }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-  &::before {
-    content: "";
-    background-color: #e9ecef;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: -1;
-    left: 0;
-    top: 0;
+      .p-datatable .p-datatable-thead {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
   }
-}
 
-:host ::ng-deep .p-datatable .p-datatable-thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
+    ::ng-deep {
+      .events-reports-page {
+        .p-datatable-wrapper {
+          overflow: unset !important;
+        }
 
-::ng-deep {
-    .p-datatable-wrapper {
-     overflow: unset !important;
-    }
+        :host ::ng-deep .p-datatable .p-datatable-thead {
+          position: relative;
 
-    :host ::ng-deep .p-datatable .p-datatable-thead  {
-      position: relative;
-      &::after {
-        content: '';
-        background-color: #002e72;
-      }
-      &::before {
-        content: '';
-        background-color: #002e72;
+          &::after {
+            content: '';
+            background-color: #002e72;
+          }
+
+          &::before {
+            content: '';
+            background-color: #002e72;
+          }
+        }
       }
     }
-}
+  }
+//}

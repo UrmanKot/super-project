@@ -1,5 +1,5 @@
 .list-product-print-item {
-  margin-bottom: 24px;
+  //margin-bottom: 24px;
 
   h2 {
     font-weight: 500;
@@ -10,12 +10,19 @@
   &__row {
     width: 100%;
     display: flex;
-    border: 1px solid #000;
+    border: 2px solid #000;
 
     border-bottom: none;
 
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+      page-break-inside: avoid;
+    }
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
     &:last-child {
-      border-bottom: 1px solid #000;
+      border-bottom: 2px solid #000;
     }
   }
 

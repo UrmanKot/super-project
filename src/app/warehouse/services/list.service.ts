@@ -196,13 +196,13 @@ export class ListService {
       .afterClosed();
   }
 
-  setActualQuantityDialog(listProduct: ListProduct, parent: ListProduct): Observable<ListProduct[]> {
+  setActualQuantityDialog(listProduct: ListProduct, parent: ListProduct, isOldList: boolean): Observable<ListProduct[]> {
     return this.dialog
       .open<ProductionListSetActualQuantityDialogComponent>(ProductionListSetActualQuantityDialogComponent, {
         width: '50rem',
         height: 'auto',
         panelClass: 'modal-overflow-visible',
-        data: {listProduct, parent},
+        data: {listProduct, parent, isOldList},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

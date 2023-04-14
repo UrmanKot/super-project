@@ -29,6 +29,8 @@ export class TreePrint {
 
 export class ProductionListComponent implements OnInit {
 
+  expanseMap = {};
+
   link = environment.link_url + 'dash/';
   isGenerating = false;
 
@@ -78,6 +80,7 @@ export class ProductionListComponent implements OnInit {
           label: 'Set Actual Quantity',
           icon: 'pi pi-angle-double-right',
           command: () => this.onSetActualQuantity(),
+          // command: () => this.editQuantity(this.selectedNodeTree.data),
         },
         {
           label: 'Cancel Actual Quantities',
@@ -113,6 +116,8 @@ export class ProductionListComponent implements OnInit {
   statuses = {'Not processed': 'Not Processed', 'Completed': 'Completed', 'Deficit': 'Deficit', 'Reserved': 'Reserved'};
   showComplete = false;
   routerHandler$;
+
+  isOldList = false;
 
   copyProducts: ListProduct[];
   isLoadingTree = true;
@@ -193,6 +198,20 @@ export class ProductionListComponent implements OnInit {
     this.getListProducts();
   }
 
+  createExpanseMap(node: TreeNode<ListProduct>) {
+    if (node.expanded) {
+      this.expanseMap[node.data.uid] = node.expanded;
+    } else {
+      this.expanseMap[node.data.uid] = false;
+    }
+    if (node.children) {
+      node.children.forEach(element => {
+        this.createExpanseMap(element);
+      });
+    }
+  }
+
+
   getList() {
     this.listService.getById(+this.listId).subscribe(list => this.list = list);
   }
@@ -270,7 +289,7 @@ export class ProductionListComponent implements OnInit {
         parent: null,
         data: list,
         children: [],
-        expanded: false
+        expanded: list.blockedExpand ? false : this.expanseMap[list.uid]
       });
     });
 
@@ -320,25 +339,12 @@ export class ProductionListComponent implements OnInit {
 
                 totalCount = totalCount / list.technologies.length;
 
-                let isShowOldRequiredQuantity = false;
-
-                if (list.nomenclature.type === ENomenclatureType.PURCHASED && !list.parent_technology_list_product) {
-                  isShowOldRequiredQuantity = true;
-                } else if (!list.next_technology_list_product && !list.parent_technology_list_product) {
-                  isShowOldRequiredQuantity = true;
-                }
-
                 const newList = {
                   ...list,
-                  total_required_quantity: isShowOldRequiredQuantity ? list.total_required_quantity : (list.status !== 'Not processed' && totalActualQuantity ? totalActualQuantity : totalCount),
+                  total_required_quantity: (list.status !== 'Not processed' && totalActualQuantity ? totalActualQuantity : totalCount),
                   actual_quantity: totalActualQuantity,
                   reserved_quantity: reservedQuantity,
                 };
-
-                if (list.nomenclature.name === 'Bushing') {
-                  console.log(list);
-                  console.log(totalActualQuantity);
-                }
 
                 newLiftProducts.push(newList);
               }
@@ -350,7 +356,7 @@ export class ProductionListComponent implements OnInit {
               parent: parentNode,
               data: newListProduct,
               children: [],
-              expanded: false
+              expanded: newListProduct.blockedExpand ? false : this.expanseMap[newListProduct.uid]
             });
           });
 
@@ -362,6 +368,58 @@ export class ProductionListComponent implements OnInit {
     };
 
     fillTree(this.tree, 1);
+
+    this.tree = this.tree.map(l => l);
+  }
+
+  generateOldListProducts(listProducts: ListProduct[]) {
+    this.tree = [];
+    this.selectedNodeTree = null;
+
+    this.sortingListProducts(listProducts);
+
+    listProducts = listProducts.map(list => {
+      return {
+        ...list,
+        products: [],
+        technologies: [],
+        uid: list.id
+      };
+    });
+
+    const parentListProducts = listProducts.filter(l => l.level === 1);
+
+    parentListProducts.forEach(list => {
+      this.tree.push({
+        parent: null,
+        data: list,
+        children: [],
+        expanded: this.expanseMap[list.uid]
+      });
+    });
+
+    const fillTree = (nodes: TreeNode<ListProduct>[]) => {
+      nodes.forEach(node => {
+
+        const findListProducts = listProducts.filter(l => l.parent === node.data.id);
+
+        findListProducts.forEach(listProduct => {
+          node.children.push({
+            parent: null,
+            data: listProduct,
+            children: [],
+            expanded: this.expanseMap[listProduct.uid]
+          });
+        });
+
+        if (node.children.length > 0) {
+          fillTree(node.children);
+        }
+
+      });
+    };
+
+    fillTree(this.tree);
 
     this.tree = this.tree.map(l => l);
   }
@@ -538,8 +596,6 @@ export class ProductionListComponent implements OnInit {
     });
 
     this.createListProductsTree(newListProducts, lists);
-    console.log(this.tree);
-    console.log(lists);
   }
 
   getListProducts() {
@@ -547,11 +603,24 @@ export class ProductionListComponent implements OnInit {
     this.isLoading = true;
 
     this.listService.getListProducts(+this.listId).subscribe(lists => {
-      this.listProducts = JSON.parse(JSON.stringify(lists));
 
+      const firstListProduct: ListProduct = {...lists[0]};
+
+      if (firstListProduct.nomenclature.type === ENomenclatureType.PURCHASED && !firstListProduct.parent_technology_list_product) {
+        this.isOldList = true;
+      } else if (!firstListProduct.next_technology_list_product && !firstListProduct.parent_technology_list_product) {
+        this.isOldList = true;
+      }
+
+      this.listProducts = JSON.parse(JSON.stringify(lists));
       const newLists = JSON.parse(JSON.stringify(lists));
 
-      this.generateListProducts(newLists);
+      if (this.isOldList) {
+        this.generateOldListProducts(newLists);
+      } else {
+        this.generateListProducts(newLists);
+      }
+
 
       this.menuItems[0].items[0].disabled = false;
       this.menuItems[0].items[1].disabled = false;
@@ -560,11 +629,15 @@ export class ProductionListComponent implements OnInit {
     });
   }
 
+  mapExpansion() {
+    this.tree.forEach(element => {
+      this.createExpanseMap(element);
+    });
+  }
+
   togglePrintAlbumMode() {
-    // @ts-ignore
-    // @ts-ignore
     this.isAlbumPrint = !this.isAlbumPrint;
-    this.selectedNodeTree = [];
+    this.selectedNodeTree = null;
   }
 
   printAlbum() {
@@ -690,7 +763,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   printPage(isShowPrintSeparated = false) {
-    this.productsForPrint = this.tree.map(p => p);
+    this.productsForPrint = [];
     this.productsForPrint.unshift({
       data: {
         nomenclature: {
@@ -706,6 +779,18 @@ export class ProductionListComponent implements OnInit {
         };
       })
     });
+
+    const fillTree = (nodes: TreeNode<ListProduct>[]) => {
+      nodes.forEach(node => {
+        this.productsForPrint.push(node);
+
+        if (node.children.length > 0) {
+          fillTree(node.children);
+        }
+      });
+    };
+
+    fillTree(this.tree);
 
     this.isShowPrint = true;
     this.isShowPrintSeparated = isShowPrintSeparated;
@@ -1022,8 +1107,9 @@ export class ProductionListComponent implements OnInit {
   }
 
   onSetActualQuantity() {
-    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}, this.selectedNodeTree.parent?.data).subscribe(listProducts => {
+    this.listService.setActualQuantityDialog({...this.selectedNodeTree.data}, this.selectedNodeTree.parent?.data, this.isOldList).subscribe(listProducts => {
       if (listProducts) {
+        this.mapExpansion();
 
         listProducts.forEach(listProduct => {
           const index = this.listProducts.findIndex(l => l.id === listProduct.id);
@@ -1032,7 +1118,11 @@ export class ProductionListComponent implements OnInit {
 
         const lists = JSON.parse(JSON.stringify(this.listProducts));
 
-        this.generateListProducts(lists);
+        if (this.isOldList) {
+          this.generateOldListProducts(lists);
+        } else {
+          this.generateListProducts(lists);
+        }
       }
     });
   }
@@ -1041,6 +1131,8 @@ export class ProductionListComponent implements OnInit {
     this.modalService.confirm('success').pipe(
       filter(confirm => confirm)
     ).subscribe(() => {
+      this.mapExpansion();
+
       this.isLoading = true;
       this.tree = [];
 
@@ -1048,12 +1140,16 @@ export class ProductionListComponent implements OnInit {
         ids: [],
       };
 
-      const selectedListProduct = this.selectedNodeTree.data;
-
-      if (selectedListProduct.technologies.length === 0) {
-        send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
+      if (this.isOldList) {
+        send.ids = [this.selectedNodeTree.data.id]
       } else {
-        send.ids = selectedListProduct.filteredProducts.map(p => p.id);
+        const selectedListProduct = this.selectedNodeTree.data;
+
+        if (selectedListProduct.technologies.length === 0) {
+          send.ids = selectedListProduct.products.filter(p => p.status === selectedListProduct.status).map(p => p.id);
+        } else {
+          send.ids = selectedListProduct.filteredProducts.map(p => p.id);
+        }
       }
 
       this.listProductService

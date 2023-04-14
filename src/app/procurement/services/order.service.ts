@@ -66,6 +66,24 @@ export class OrderService {
     );
   }
 
+  getFilteredOrderIds(query?: QuerySearch[]): Observable<{ ids: number[] }> {
+    let queryParams = '';
+
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: { ids: number[] } }>(this.API_URL + this.url + 'get_filtered_orders_ids' + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
   getForPagination(query?: QuerySearch[]): Observable<Orders> {
     let queryParams = '';
 
@@ -136,6 +154,10 @@ export class OrderService {
 
   deleteFile(id: number): Observable<any> {
     return this.httpClient.post(this.API_URL + 'order_file_delete/' + id + '/', null);
+  }
+
+  activateTenderSuppliers(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + id + '/order_create_supplier_confirmation_list/', null);
   }
 
   create(data: any): Observable<Order> {

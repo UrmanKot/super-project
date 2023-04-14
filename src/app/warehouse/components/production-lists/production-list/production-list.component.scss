@@ -229,9 +229,18 @@
 }
 
 @media print {
-  .print-list-product__item.break {
-    display: block;
-    page-break-after: always;
-    break-after: page;
+  .print-list-product__item {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.break {
+      margin-bottom: 0;
+      display: block;
+      page-break-after: always;
+      break-after: page;
+    }
   }
 }
