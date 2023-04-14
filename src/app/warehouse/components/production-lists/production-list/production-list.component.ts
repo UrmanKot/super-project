@@ -337,7 +337,9 @@ export class ProductionListComponent implements OnInit {
                   });
                 });
 
-                totalCount = totalCount / list.technologies.length;
+                if (list.technologies.length > 0) {
+                  totalCount = totalCount / list.technologies.length;
+                }
 
                 const newList = {
                   ...list,
@@ -1141,7 +1143,7 @@ export class ProductionListComponent implements OnInit {
       };
 
       if (this.isOldList) {
-        send.ids = [this.selectedNodeTree.data.id]
+        send.ids = [this.selectedNodeTree.data.id];
       } else {
         const selectedListProduct = this.selectedNodeTree.data;
 
