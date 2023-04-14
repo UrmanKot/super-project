@@ -76,7 +76,7 @@ export class OrderProductService {
       });
     }
 
-    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'get_minimal_order_products/' + queryParams).pipe(map(response => {
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'minimal_order_products/' + queryParams).pipe(map(response => {
       return response.data;
     }));
   }

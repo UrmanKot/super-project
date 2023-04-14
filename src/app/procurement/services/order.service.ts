@@ -79,7 +79,7 @@ export class OrderService {
       });
     }
 
-    return this.httpClient.get<{ data: { ids: number[] } }>(this.API_URL + this.url + 'get_filtered_orders_ids' + queryParams).pipe(
+    return this.httpClient.get<{ data: { ids: number[] } }>(this.API_URL + this.url + 'filtered_order_ids' + queryParams).pipe(
       map(response => response.data)
     );
   }
