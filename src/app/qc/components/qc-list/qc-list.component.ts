@@ -41,6 +41,9 @@ export class QcListComponent implements OnInit {
   isLoadingInvoices = true;
   isLoadingOrders = true;
 
+  showClosedInvoices = false;
+  showClosedOrders = false;
+
   categories: TreeNode<Category>[];
 
   invoicesList: Invoice[] = [];
@@ -103,9 +106,18 @@ export class QcListComponent implements OnInit {
     this.invoices = [];
     this.selectedInvoice = null;
     this.invoicesQuery = [
-      {name: 'needs_qc', value: true},
       {name: 'by_qc_module_permission', value: true}
     ];
+
+    if (!this.searchForm.get('qc_closed_date_after').value 
+        && !this.searchForm.get('qc_closed_date_before').value) {
+      this.invoicesQuery.push({
+        name: 'needs_qc', value: true
+      })
+      this.showClosedInvoices = false;
+    } else {
+      this.showClosedInvoices = true;
+    }
 
     if (this.searchForm.get('qc_closed_date_after').value) {
       this.invoicesQuery.push({
@@ -129,9 +141,18 @@ export class QcListComponent implements OnInit {
     this.orders = [];
     this.selectedOrderItem = null;
     this.ordersQuery = [
-      {name: 'needs_qc', value: true},
       {name: 'by_qc_module_permission', value: true}
     ];
+
+    if (!this.searchForm.get('qc_closed_date_after').value 
+        && !this.searchForm.get('qc_closed_date_before').value) {
+      this.ordersQuery.push({
+        name: 'needs_qc', value: true
+      })
+      this.showClosedOrders = false;
+    } else {
+      this.showClosedOrders = true;
+    }
 
     if (this.searchForm.get('qc_closed_date_after').value) {
       this.ordersQuery.push({
