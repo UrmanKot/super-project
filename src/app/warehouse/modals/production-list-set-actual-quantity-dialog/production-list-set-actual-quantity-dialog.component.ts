@@ -218,42 +218,42 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     let disabled = false;
 
     const selectedQuantity = this.quantities.reduce((sum, q) => sum += q.quantity, 0);
-
-    if (this.data.listProduct.nomenclature.bulk_or_serial === '1') {
-      if (this.listProduct.technologies.length === 0) {
-        if (
-          this.form.get('ownProduction').value === 0 &&
-          this.form.get('serial_product_ids').value.length > this.data.listProduct.total_required_quantity
-        ) {
-          disabled = true;
-        } else if (
-          this.form.get('ownProduction').value === 1 &&
-          this.form.get('root_serial_numbers_in_production').value.length > this.data.listProduct.total_required_quantity
-        ) {
-          disabled = true;
-        }
-      } else {
-        if (
-          selectedQuantity > this.data.listProduct.total_required_quantity ||
-          (
-            this.form.get('ownProduction').value === 0 &&
-            this.form.get('serial_product_ids').value.length !== selectedQuantity
-          ) ||
-          (
-            this.form.get('ownProduction').value === 1 &&
-            this.form.get('root_serial_numbers_in_production').value.length !== selectedQuantity
-          )
-        ) {
-          disabled = true;
-        }
-      }
-    } else {
+    //
+    // if (this.data.listProduct.nomenclature.bulk_or_serial === '1') {
+    //   if (this.listProduct.technologies.length === 0) {
+    //     if (
+    //       this.form.get('ownProduction').value === 0 &&
+    //       this.form.get('serial_product_ids').value.length > this.data.listProduct.total_required_quantity
+    //     ) {
+    //       disabled = true;
+    //     } else if (
+    //       this.form.get('ownProduction').value === 1 &&
+    //       this.form.get('root_serial_numbers_in_production').value.length > this.data.listProduct.total_required_quantity
+    //     ) {
+    //       disabled = true;
+    //     }
+    //   } else {
+    //     if (
+    //       selectedQuantity > this.data.listProduct.total_required_quantity ||
+    //       (
+    //         this.form.get('ownProduction').value === 0 &&
+    //         this.form.get('serial_product_ids').value.length !== selectedQuantity
+    //       ) ||
+    //       (
+    //         this.form.get('ownProduction').value === 1 &&
+    //         this.form.get('root_serial_numbers_in_production').value.length !== selectedQuantity
+    //       )
+    //     ) {
+    //       disabled = true;
+    //     }
+    //   }
+    // } else {
       if (this.listProduct.technologies.length === 0) {
         disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
       } else {
         disabled = selectedQuantity > this.data.listProduct.total_required_quantity;
       }
-    }
+    // }
 
     return disabled;
   }
