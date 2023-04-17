@@ -372,13 +372,13 @@
                   [class.disabled-toggler]="rowData.status === 'Completed' || rowData.blockedExpand"></p-treeTableToggler>
                 <a
                   [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
-                  *ngIf="rowData.has_children"
+                  *ngIf="rowData.nomenclature.type === '1'"
                   class="list-parent"
                   [routerLink]="['/warehouse/production-lists/', rowData.list]"
                 >
                   {{rowData.nomenclature.code}}
                 </a>
-                <span *ngIf="!rowData.has_children">{{rowData.nomenclature.code}}</span>
+                <span *ngIf="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.code}}</span>
               </div>
             </td>
             <td style="width: 14%" class="serial-number-cont">
@@ -425,8 +425,7 @@
               </ng-container>
               <ng-container *ngIf="rowData.technologies?.length > 0 && !rowData.blockedExpand">
                 <ng-container *ngFor="let quantity of rowData.warehouseQuantities; let idx = index">
-                  {{quantity}}
-                  <ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
+                  {{quantity}}<ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
                 </ng-container>
               </ng-container>
             </td>

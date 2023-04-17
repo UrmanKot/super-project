@@ -296,7 +296,7 @@ export class ProductionListComponent implements OnInit {
     const fillTree = (nodes: TreeNode<ListProduct>[], level: number) => {
       level++;
 
-      const parentNodes = nodes.filter(n => n.data.products?.find(p => p.has_children));
+      const parentNodes = nodes.filter(n => n.data.products?.find(p => p.nomenclature.type === ENomenclatureType.ASSEMBLY));
 
       parentNodes.forEach(parentNode => {
 
@@ -468,7 +468,7 @@ export class ProductionListComponent implements OnInit {
       const findEl = list.groupedProducts.find(p => p.status === 'Completed');
       list.warehouse_quantity = findEl ? findEl.warehouse_quantity : list.warehouse_quantity;
 
-      list.has_children = list.products.some(p => p.has_children);
+      // list.has_children = list.products.some(p => p.has_children);
       list.groupedProductIds = list.products.map(p => p.id);
 
       if (
