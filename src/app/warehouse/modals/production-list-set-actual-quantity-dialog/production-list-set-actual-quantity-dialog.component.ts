@@ -202,7 +202,7 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
       if (this.data.isOldList) {
         this.saveOldProductionListSerial();
       } else {
-        this.saveNewProductionList();
+        this.saveNewProductionListSerial();
       }
     } else {
       if (this.data.isOldList) {
@@ -248,12 +248,25 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     //     }
     //   }
     // } else {
+    if (this.data.listProduct.nomenclature.bulk_or_serial === '0') {
       if (this.listProduct.technologies.length === 0) {
-        disabled = this.form.get('actual_quantity').value > this.data.listProduct.pureTotalRequiredQuantity;
+        disabled = this.form.get('actual_quantity').value > this.data.listProduct.total_required_quantity;
       } else {
         disabled = selectedQuantity > this.data.listProduct.total_required_quantity;
       }
-    // }
+    } else {
+      if (
+        this.form.get('ownProduction').value === 0 &&
+        this.form.get('serial_product_ids').value.length > this.data.listProduct.total_required_quantity
+      ) {
+        disabled = true;
+      } else if (
+        this.form.get('ownProduction').value === 1 &&
+        this.form.get('root_serial_numbers_in_production').value.length > this.data.listProduct.total_required_quantity
+      ) {
+        disabled = true;
+      }
+    }
 
     return disabled;
   }
@@ -448,9 +461,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
         }
       }
 
-
-      console.log(send);
-
       if (!this.data.parent) {
         send.forEach(s => {
           const newFindProduct = this.products.find(p => p.id === s.id);
@@ -518,27 +528,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
       }
     });
 
-
-    if (this.data.listProduct.nomenclature.bulk_or_serial === '1') {
-      let serialIdx = 0;
-
-      if (this.form.get('ownProduction').value === 0) {
-        send.forEach(s => {
-          if (s.actual_quantity > 0) {
-            s.serial_product_ids = [this.form.get('serial_product_ids').value[serialIdx]];
-            serialIdx++;
-          }
-        });
-      } else if (this.form.get('ownProduction').value === 1) {
-        send.forEach(s => {
-          if (s.actual_quantity > 0) {
-            s.root_serial_numbers_in_production = [+this.form.get('root_serial_numbers_in_production').value[serialIdx]];
-            serialIdx++;
-          }
-        });
-      }
-    }
-
     if (notProcessedSend.ids.length > 0) {
       forkJoin({
         processedListProducts: this.listProductService.setActualQuantity(send),
@@ -554,11 +543,6 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
         finalize(() => this.isSaving = false)
       ).subscribe(listProducts => this.dialogRef.close(listProducts));
     }
-
-
-    // this.listProductService.setActualQuantity(send).pipe(
-    //   finalize(() => this.isSaving = false)
-    // ).subscribe(listProducts => this.dialogRef.close(listProducts));
   }
 
   saveOldProductionList() {
@@ -632,5 +616,36 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     }
 
     return error;
+  }
+
+  private saveNewProductionListSerial() {
+    this.isSaving = true;
+    const send = [];
+
+    console.log(this.listProduct.products);
+
+    if (this.form.get('ownProduction').value === 0) {
+      this.form.get('serial_product_ids').value.forEach((id, idx) => {
+        send.push({
+          id: this.listProduct.products[idx].id,
+          actual_quantity: 1,
+          serial_product_ids: [id]
+        })
+      })
+    } else {
+      this.form.get('root_serial_numbers_in_production').value.forEach((id, idx) => {
+        send.push({
+          id: this.listProduct.products[idx].id,
+          actual_quantity: 1,
+          root_serial_numbers_in_production: [+id]
+        })
+      })
+    }
+
+    this.listProductService.setActualQuantity(send).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(listProducts => {
+      this.dialogRef.close(listProducts);
+    });
   }
 }

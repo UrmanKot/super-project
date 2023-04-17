@@ -24,7 +24,7 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="this.listProduct.technologies.length > 0">
+      <ng-container *ngIf="this.listProduct.technologies.length > 0 && !isSerial">
         <p-table
           selectionMode="single"
           dataKey="id"
@@ -74,7 +74,7 @@
       </ng-container>
       <p
         class="deficit mt-3"
-        *ngIf="(!isSerial && listProduct.technologies.length === 0) || !data.isOldList"
+        *ngIf="!isSerial"
         [class.mb-3]="isSerial && listProduct.technologies.length > 0"
       >
         Deficit Products Quantity: {{deficitQuantity}}
