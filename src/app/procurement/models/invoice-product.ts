@@ -1,6 +1,7 @@
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Invoice} from './invoice';
 import {Locator} from '../../warehouse/models/locator';
+import {Technology} from '../../product-structure/models/technology';
 
 export class InvoiceProduct {
   readonly id: number;
@@ -22,6 +23,12 @@ export class InvoiceProduct {
   products: InvoiceProduct[];
   serial_numbers: any;
   exists_on_locators: Locator[];
+  invoiceProducts?: InvoiceProduct[];
+  current_technology?: Technology;
+  totalQuantity?: number;
+  totalQuantityPassed?: number;
+  totalQuantityNotPassed?: number;
+  totalSerialNumbers: any[];
 }
 
 export enum EInvoiceProductQualityControl {
