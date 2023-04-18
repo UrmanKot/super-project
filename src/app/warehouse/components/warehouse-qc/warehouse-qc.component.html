@@ -38,6 +38,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedInvoiceItem"
                     [routerLink]="['invoice', selectedInvoiceItem?.id]"
                   ></a>
@@ -148,6 +149,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedInvoiceNode"
                     [routerLink]="['invoice', selectedInvoiceNode?.data.order ? selectedInvoiceNode?.data.order.id : selectedInvoiceNode?.data.id]"
                     (click)="expandCollapseAllInvoices()"
@@ -301,6 +303,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedOrderItem"
                     [routerLink]="['order', selectedOrderItem?.id]"
                   ></a>
@@ -404,6 +407,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedOrderNode"
                     [routerLink]="['order', selectedOrderNode?.data.order.id]"
                   ></a>
@@ -533,6 +537,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedInvoicePurchaseItem"
                     [routerLink]="['invoice', selectedInvoicePurchaseItem?.id]"
                   ></a>
@@ -645,6 +650,7 @@
                     icon="pi pi-bars"
                     label="Items"
                     class="ml-auto mr-2"
+                    target="_blank"
                     [class.disabled]="!selectedPurchasedInvoiceNode"
                     [routerLink]="['invoice', selectedPurchasedInvoiceNode?.data.invoice ? selectedPurchasedInvoiceNode?.data.invoice.id :selectedPurchasedInvoiceNode?.data.id]"
                   ></a>
