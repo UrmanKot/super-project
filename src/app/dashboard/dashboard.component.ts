@@ -64,7 +64,8 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Manufacturing',
     icon: 'icon-manufacturing',
-    routerLink: ['/external', `${environment.link_url}dash/production/plan`],
+    // routerLink: ['/external', `${environment.link_url}dash/production/plan`],
+    routerLink: ['/manufacturing'],
     requiredModulePermission: 'can_edit_manufacturing'
   }, {
     label: 'Sales',

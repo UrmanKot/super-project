@@ -5,7 +5,7 @@ import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Task} from '@shared/models/task';
+import {Task, TasksResponse} from '@shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,23 @@ export class TaskService {
     }
 
     return this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + queryParams).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getForPagination(query?: QuerySearch[]): Observable<TasksResponse> {
+    let queryParams = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          queryParams += '&' + element.name + '=' + element.value;
+        } else {
+          queryParams += '?' + element.name + '=' + element.value;
+        }
+      });
+    }
+
+    return this.httpClient.get<{ data: TasksResponse }>(this.API_URL + this.url + queryParams).pipe(
       map(response => response.data)
     );
   }

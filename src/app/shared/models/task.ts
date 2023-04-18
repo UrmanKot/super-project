@@ -12,6 +12,13 @@ export class RootTask {
   nomenclature: Nomenclature;
 }
 
+export class TasksResponse {
+  prev: string;
+  next: string;
+  count: number;
+  results: Task[];
+}
+
 export class Task {
   readonly id: number;
   family_id?: number;
