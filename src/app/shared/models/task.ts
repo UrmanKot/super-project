@@ -1,6 +1,7 @@
 import {Nomenclature} from '@shared/models/nomenclature';
 import {Product} from '../../product-structure/models/product';
 import {Employee} from '@shared/models/employee';
+import {SerialNumber} from '../../procurement/models/invoice';
 
 export type TechnologyName = string;
 export type TaskStatus = string;
@@ -42,9 +43,9 @@ export class Task {
   list_product: Product;
   required_quantity?: number;
   parent_task?: number;
-  // serials?: SerialNumber[];
+  serials?: SerialNumber[];
   root_nomenclature?: Nomenclature;
-  // serial_numbers?: SerialNumber[];
+  serial_numbers?: SerialNumber[];
   serial_products?: any[];
   label?: string;
   child?: Task[];

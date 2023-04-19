@@ -3,8 +3,6 @@ import {BehaviorSubject, Observable, switchMap} from 'rxjs';
 import {Task} from '@shared/models/task';
 import {map, tap} from 'rxjs/operators';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {OrderProductService} from '../../../procurement/services/order-product.service';
-import {OrderService} from '../../../procurement/services/order.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {QuerySearch} from '@shared/models/other';
 import {TaskService} from '@shared/services/task.service';
@@ -27,6 +25,8 @@ export class ManufacturingPlanListComponent implements OnInit {
     technologies_ids: [null],
   });
 
+  tasks: Task[] = [];
+
   currentPage = 1;
   queryKey: string = this.adapterService.generateQueryKey(this.searchForm);
 
@@ -43,11 +43,11 @@ export class ManufacturingPlanListComponent implements OnInit {
     tap(() => this.prepareForSearch()),
     switchMap(() => this.taskService.getForPagination(this.query)),
     tap(response => this.tasksCount = response.count),
-    map(response => response.results),
+    map(response => this.filterTasks(response.results)),
     tap(() => this.paginateToFistPage()),
     tap(() => this.isLoading = false),
     untilDestroyed(this)
-  )
+  );
 
   tasksCount = 0;
 
@@ -55,9 +55,45 @@ export class ManufacturingPlanListComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly adapterService: AdapterService,
     private readonly taskService: TaskService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
+  }
+
+  filterTasks(tasks: Task[]) {
+    let newTasks: Task[] = [];
+
+    tasks.forEach(task => {
+      if (!newTasks.find(t => t.family_id === task.family_id && t.list_product.nomenclature.id === task.list_product.nomenclature.id
+        && t.technology === task.technology)) {
+        const count = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id === task.list_product.nomenclature.id
+          && t.technology === task.technology).length;
+        task.required_quantity = task.required_quantity * count;
+        task.serials = [];
+
+        const filteredTasks = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id
+          === task.list_product.nomenclature.id && t.technology === task.technology);
+
+        filteredTasks.forEach(t => {
+          if (task.serial_numbers.length > 0) {
+            t.serial_numbers.forEach(serial => {
+              task.serials.push(serial);
+            });
+          } else if (task.serial_products.length > 0) {
+            t.serial_products.forEach(serial => {
+              task.serials.push(serial.serial_number);
+            });
+          }
+        });
+
+        newTasks.push(task);
+      }
+    })
+
+    newTasks.sort((a, b) => new Date(a.created).getTime() > new Date(b.created).getTime() ? -1 : 1);
+
+    return newTasks;
   }
 
   paginateToFistPage() {
@@ -87,7 +123,7 @@ export class ManufacturingPlanListComponent implements OnInit {
     ];
 
     if (!this.isShowAll) {
-      this.query.push({name: 'paginated', value: true},)
+      this.query.push({name: 'paginated', value: true},);
     }
 
     for (const key in this.searchForm.controls) {
@@ -105,6 +141,21 @@ export class ManufacturingPlanListComponent implements OnInit {
           });
         }
       }
+    }
+  }
+
+  getStatus(status: string): string {
+    switch (status) {
+      case '0':
+        return 'Not processed';
+      case '1':
+        return 'Deficit';
+      case '2':
+        return 'Rework';
+      case '3':
+        return 'Ordered';
+      case '4':
+        return 'On stock';
     }
   }
 

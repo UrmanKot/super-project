@@ -78,73 +78,53 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th class="index-header text-center" style="width: 3%">#</th>
-            <th style="width: 11%">Code</th>
-            <th style="width: 10%" pSortableColumn="nomenclature.name">Name</th>
-            <th style="width: 5%" class="text-center">Request Quantity</th>
-            <th style="width: 5%" class="text-center">Ordered Quantity</th>
-            <th style="width: 5%" class="text-center">UOM</th>
-            <th style="width: 10%">Description</th>
-            <th style="width: 6%" class="text-center">Date</th>
-            <th style="width: 5%" class="text-center">Request Type</th>
-            <th style="width: 7%" class="text-center">Free Ordered Quantity</th>
-            <th style="width: 5%" class="text-center">Chains</th>
-            <th style="width: 11%">Root Lists</th>
-            <th style="width: 10%">Production Lists</th>
-            <th style="width: 7%" class="text-center">Status</th>
+            <th class="text-center" style="width: 5%;">#</th>
+            <th class="text-center" style="width: 20%;">Serial Numbers</th>
+            <th class="text-center" style="width: 10%;">List ID</th>
+            <th style="width: 15%;"> Code</th>
+            <th style="width: 25%;">Name</th>
+            <th style="width: 10%;">Created</th>
+            <th style="width: 10%;" class="text-center">Status</th>
+            <th style="width: 10%;" class="text-center">Quantity</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr>
-            <td style="width: 3%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
-            <td style="width: 11%">{{product.nomenclature.code}}</td>
-            <td style="width: 10%">{{product.nomenclature.name}}</td>
-            <td style="width: 5%" class="text-center">{{product.initial_quantity}}</td>
-            <td style="width: 5%" class="text-center">{{product.ordered_quantity}}</td>
-            <td
-              style="width: 5%" class="text-center">{{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+        <ng-template pTemplate="body" let-task let-i="rowIndex">
+          <tr [pSelectableRow]="task">
+            <td style="width: 5%;" class="text-center">{{i + 1 }}</td>
+            <td style="width: 20%;" class="text-center serials">
+              <ul>
+                <li *ngIf="task.serials.length > 1">
+                  <div>
+                    {{1}}
+                    . {{task.serials[0].type_with_number ? task.serials[0].type_with_number : task.serials.serial.id}}
+                  </div>
+                  <div>...</div>
+                </li>
+                <li *ngIf="task.serials.length === 1">
+                  {{1}}
+                  . {{task.serials[0].type_with_number ? task.serials[0].type_with_number : task.serials.serial.id}}
+                </li>
+              </ul>
+
+              <ul class="hidden-ul" *ngIf="task.serials.length > 1">
+                <li *ngFor="let serial of task.serials; let idx = index">
+                  {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                </li>
+              </ul>
             </td>
-            <td style="width: 10%">
-              <div class="word-break">
-              </div>
+            <td class="text-center" style="width: 10%">{{task.production_list_id}}</td>
+            <td style="width: 15%;"><a rel="noopener noreferrer" [routerLink]="['tasks', task.id]"
+                                       routerLinkActive="router-link-active"
+                                       target="_blank">{{task.list_product.nomenclature.code}}</a>
             </td>
-            <td style="width: 6%" class="text-center">{{product.request_date|date:'dd/MM/yyyy'}}</td>
-            <td style="width: 5%" class="text-center">
-              <ng-container *ngIf="product.request_type==1">Auto</ng-container>
-              <ng-container *ngIf="product.request_type==0">Manual</ng-container>
+            <td style="width: 25%;">
+              <b *ngIf="task.list_product.nomenclature.bulk_or_serial === '1'">(S) </b>
+              <b *ngIf="task.list_product.nomenclature.has_technical_equipment">(T) </b>
+              {{task.list_product.nomenclature.name}}
             </td>
-            <td style="width: 7%" class="text-center">{{product.free_quantity}}</td>
-            <td style="width: 5%" class="text-center">
-              <ng-container *ngFor="let order of product.orders; let idx = index;">
-                <a target="blank" *ngIf="order.accounting_type == 1"
-                   [routerLink]="['/dash/procurement/orders/products',order.id]">
-                  {{order.id}}</a>
-                <a target="blank" *ngIf="order.accounting_type == 2"
-                   [routerLink]="['/dash/outsource/outsource-chain/products', order.id]">
-                  {{order.id}}<span *ngIf="idx !== product.orders.length - 1">,</span>
-                </a>
-              </ng-container>
-            </td>
-            <td style="width: 11%">
-              <ng-container *ngFor="let list of product.root_production_list_products; let idx = index">
-                {{list}}<span *ngIf="idx !== product.root_production_list_products.length - 1">,</span>
-              </ng-container>
-            </td>
-            <td style="width: 10%">
-              <ng-container *ngFor="let list of product.production_list_products; let idx = index">
-                {{list}}<span *ngIf="idx !== product.production_list_products.length - 1">,</span>
-              </ng-container>
-            </td>
-            <td style="width: 7%" class="text-center">
-              <ng-container *ngIf="product.ordered_quantity>=product.initial_quantity"><span
-                class="badge badge_success">ORDERED</span></ng-container>
-              <ng-container
-                *ngIf="product.ordered_quantity < product.initial_quantity && product.ordered_quantity > 0">
-                <span class="badge badge_warning">PARTLY ORDERED </span>
-              </ng-container>
-              <ng-container *ngIf="product.ordered_quantity==0"><span class="badge badge_danger">NOT
-                                        ORDERED</span></ng-container>
-            </td>
+            <td style="width: 10%;">{{task.created | date: 'dd/MM/y' }}</td>
+            <td style="width: 10%;" class="text-center">{{getStatus(task.status)}}</td>
+            <td style="width: 10%;" class="text-center">{{task.required_quantity}}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
