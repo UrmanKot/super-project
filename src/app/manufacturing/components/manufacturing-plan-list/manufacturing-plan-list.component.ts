@@ -41,9 +41,9 @@ export class ManufacturingPlanListComponent implements OnInit {
 
   tasks$: Observable<Task[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
-    switchMap(() => this.taskService.getForPagination(this.query)),
-    tap(response => this.tasksCount = response.count),
-    map(response => this.filterTasks(response.results)),
+    switchMap(() => this.taskService.get(this.query)),
+    tap(response => this.tasksCount = response.length),
+    map(response => this.filterTasks(response)),
     tap(() => this.paginateToFistPage()),
     tap(() => this.isLoading = false),
     untilDestroyed(this)
@@ -59,6 +59,7 @@ export class ManufacturingPlanListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.tasks$.subscribe()
   }
 
   filterTasks(tasks: Task[]) {
@@ -91,7 +92,9 @@ export class ManufacturingPlanListComponent implements OnInit {
       }
     })
 
-    newTasks.sort((a, b) => new Date(a.created).getTime() > new Date(b.created).getTime() ? -1 : 1);
+
+    newTasks.sort((a, b) => new Date(a.created) > new Date(b.created) ? -1 : 1);
+    this.tasks = newTasks;
 
     return newTasks;
   }
@@ -107,6 +110,7 @@ export class ManufacturingPlanListComponent implements OnInit {
   prepareForSearch() {
     this.isLoading = true;
     this.selectedTasks = [];
+    this.tasks = [];
 
     const newQueryKey = this.adapterService.generateQueryKey(this.searchForm);
 
@@ -118,13 +122,13 @@ export class ManufacturingPlanListComponent implements OnInit {
 
     this.query = [
       {name: 'is_root', value: true},
-      {name: 'page', value: this.currentPage},
+      // {name: 'page', value: this.currentPage},
       {name: 'statuses', value: [0, 1, 2, 3]}
     ];
 
-    if (!this.isShowAll) {
-      this.query.push({name: 'paginated', value: true},);
-    }
+    // if (!this.isShowAll) {
+    //   this.query.push({name: 'paginated', value: true},);
+    // }
 
     for (const key in this.searchForm.controls) {
       if (this.searchForm.controls[key].value !== null) {
