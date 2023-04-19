@@ -1,0 +1,45 @@
+.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.tools {
+  white-space: nowrap;
+}
+
+.column-filter-box {
+  button {
+    width: 2.375rem;
+    height: 2.375rem;
+    border: 0.0625rem solid #ced4da;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.1875rem;
+    cursor: pointer;
+    color: #fff;
+
+    &:hover {
+      border-color: #2196F3;
+    }
+
+    &.active {
+      background: #2196F3;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem #a6d5fa;
+      }
+    }
+
+    &:disabled {
+      cursor: default;
+      border: 0.0625rem solid #ced4da !important;
+
+      &.active {
+        opacity: 0.8;
+      }
+    }
+  }
+}

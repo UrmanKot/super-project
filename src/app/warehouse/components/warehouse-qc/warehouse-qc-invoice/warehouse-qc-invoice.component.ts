@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {InvoiceProduct} from '../../../../procurement/models/invoice-product';
+import {EInvoiceProductQualityControl, InvoiceProduct} from '../../../../procurement/models/invoice-product';
 import {InvoiceService} from '../../../../procurement/services/invoice.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {map, switchMap, tap} from 'rxjs/operators';
@@ -11,6 +11,7 @@ import {WarehouseProduct} from '../../../models/warehouse-product';
 import {OrderService} from '../../../../procurement/services/order.service';
 import {TechnicalEquipmentsInUseService} from '../../../services/technical-equipments-in-use.service';
 import {OrderTechnicalEquipment} from '../../../models/order-technical-equipment';
+import {deepCopy} from 'deep-copy-ts';
 
 @Component({
   selector: 'pek-warehouse-qc-invoice',
@@ -64,7 +65,29 @@ export class WarehouseQcInvoiceComponent implements OnInit, OnDestroy {
       switchMap(() => this.invoiceService.getProductsToAccept(this.invoiceId)),
       takeUntil(this.destroy$)
     ).subscribe(invoiceProducts => {
-      this.invoiceProducts = invoiceProducts;
+      invoiceProducts.forEach(product => {
+        const technologyId = product.current_technology?.id;
+        const nomenclatureId = product.nomenclature.id;
+        const existing = this.invoiceProducts.find(el =>
+          el.nomenclature.id === nomenclatureId &&
+          el.current_technology?.id === technologyId);
+        if (existing) {
+          existing.totalQuantity = existing.totalQuantity += product.quantity;
+          existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
+          existing.totalQuantityNotPassed = existing.totalQuantityNotPassed += product.not_passed_quantity;
+          // existing.totalSerialNumbers.push(...product.serial_numbers);
+          existing.invoiceProducts.push(product);
+        } else {
+          product.invoiceProducts = [deepCopy(product)];
+          product.totalQuantity = product.quantity;
+          product.totalQuantityPassed = product.passed_quantity;
+          product.totalQuantityNotPassed = product.not_passed_quantity;
+          // product.totalSerialNumbers = [...product.serial_numbers];
+          this.invoiceProducts.push(product);
+        }
+      });
+
+      // this.invoiceProducts = invoiceProducts;
       this.isLoading = false;
       this.getInvoiceInfo();
     });

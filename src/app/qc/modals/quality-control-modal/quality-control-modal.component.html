@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    Quality Control (Name: {{data.entity.nomenclature.name}}, Quantity: {{data.entity.quantity}})
+    Quality Control (Name: {{data.entity.nomenclature.name}}, Quantity: {{data.entity.totalQuantity}})
   </h2>
 </div>
 
@@ -13,7 +13,7 @@
         formControlName="passed_quantity"
         class="form-control"
         min="0"
-        max="{{data.entity.quantity}}"
+        max="{{data.entity.totalQuantity}}"
         type="number"
         id="passed"
       >
@@ -25,7 +25,7 @@
         formControlName="not_passed_quantity"
         class="form-control"
         min="0"
-        max="{{data.entity.quantity}}"
+        max="{{data.entity.totalQuantity}}"
         type="number"
         id="np"
       >

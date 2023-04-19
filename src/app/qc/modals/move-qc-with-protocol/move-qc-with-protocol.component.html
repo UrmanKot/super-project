@@ -1,0 +1,105 @@
+<div class="modal-header-container align-items-start d-flex justify-content-between">
+  <h2 class="modal-heading" mat-dialog-title>
+    Quality Control with Protocol &laquo;{{isLoading ? '...' : protocol.name}}&raquo;
+    (Name: {{data.product.nomenclature.name}}) ({{data.currentCount}}/{{data.count}})
+  </h2>
+  <div class="tools">
+    <button pButton (click)="generateQrCode()">Generate QR-code</button>
+    <button  pButton type="button" class="p-button-icon ml-3" size="s" icon="pi pi-arrow-left" (click)="prevSerial()"
+             [disabled]="data.currentCount <= 1">
+    </button>
+    <button  pButton type="button" class="p-button-icon ml-3" icon="pi pi-arrow-right" (click)="nextSerial()"
+             [disabled]="data.currentCount >= this.data.count">
+    </button>
+  </div>
+</div>
+<mat-dialog-content>
+  <div *ngIf="!isLoading else loading">
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label for="serial"> Serial Number </label>
+        <div class="serial">
+          <input pInputText formControlName="serial" class="form-control disabled" type="text" id="serial">
+        </div>
+      </div>
+
+      <div formArrayName="paragraphs" *ngIf="answerParagraphs.length > 0; else empty">
+        <label>Protocol Paragraph</label>
+        <div class="paragraphs__row" *ngFor="let paragraph of answerParagraphs.controls; let idx = index"
+             [formGroupName]="idx">
+          <div class="paragraph-row">
+            <label style="font-weight: 500; font-size: 16px">
+              {{getParagraphName(paragraph.get('qc_protocol_paragraph').value)}}
+            </label>
+            <div class="row">
+              <div class="col-9">
+                <div class="form-group form-group_text">
+                  <label [for]="'p-name-' + idx">Comment</label>
+                  <input pInputText formControlName="comment" class="form-control" type="text" [id]="'p-name-' + idx">
+                </div>
+              </div>
+              <div class="col-1">
+                <div class="form-group passing">
+                  <label for="serial">Passed</label>
+                  <div class="column-filter-box">
+                    <button type="button" [class.active]="paragraph.value.is_passed === true"
+                            (click)="changePassedTrue(paragraph)">
+                      <i class="pi pi-check"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-1">
+                <div class="passing form-group">
+                  <label for="serial">To Isolator</label>
+                  <div class="column-filter-box">
+                    <button type="button" [class.active]="paragraph.value.is_passed === false"
+                            (click)="changePassedFalse(paragraph)">
+                      <i class="pi pi-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #empty>
+        <div class="empty-text">
+          There are no paragraphs of the protocol
+        </div>
+      </ng-template>
+    </form>
+
+    <div class="upload-header">
+      <h4>Protocol Files:</h4>
+    </div>
+    <div class="files-list" *ngIf="files.length > 0; else emptyFiles">
+      <a class="file" *ngFor="let file of files; let idx = index" [href]="link + file.file">
+        {{idx + 1}}. {{getFileName(file?.file)}}
+      </a>
+    </div>
+
+    <ng-template #emptyFiles>
+      <div class="empty-text">
+        There are no files of the protocol
+      </div>
+    </ng-template>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class=" d-flex justify-content-between">
+  <button pButton label="Cancel" type="button" class="p-button-danger" (click)="close()"></button>
+  <button pButton type="button" label="Complete" class="p-button-secondary" (click)="complete()" [disabled]="!hasComplete" *ngIf="showButtonSave()"></button>
+  <button pButton type="button" label="Save" class="p-button-secondary" (click)="save()" [disabled]="!hasComplete" *ngIf="!showButtonSave()"></button>
+</mat-dialog-actions>
+
+<ng-template #createBtn>
+  <!--  <button type="button" class="btn btn-primary" (click)="create()" [disabled]="form.invalid"> Create</button>-->
+</ng-template>
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center">
+    <i class="fas fa-circle-notch fa-spin fa-3x "></i>
+  </div>
+</ng-template>

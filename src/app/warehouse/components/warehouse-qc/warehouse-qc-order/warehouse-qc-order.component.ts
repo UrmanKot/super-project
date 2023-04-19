@@ -6,11 +6,11 @@ import {map, switchMap, tap} from 'rxjs/operators';
 import {OrderProduct} from '../../../../procurement/models/order-product';
 import {OrderService} from '../../../../procurement/services/order.service';
 import {QcListModalService} from '../../../services/qc-list-modal.service';
-import {OrderTechnicalEquipmentsService} from '../../../services/order-technical-equipments.service';
 import {OrderTechnicalEquipment} from '../../../models/order-technical-equipment';
 import {TechnicalEquipmentsInUseService} from '../../../services/technical-equipments-in-use.service';
 import {WarehouseProduct} from '../../../models/warehouse-product';
 import {Nomenclature} from '@shared/models/nomenclature';
+import {deepCopy} from 'deep-copy-ts';
 
 @Component({
   selector: 'pek-warehouse-qc-order',
@@ -73,7 +73,29 @@ export class WarehouseQcOrderComponent implements OnInit {
       switchMap(() => this.orderService.getProductsToAccept(this.orderId)),
       takeUntil(this.destroy$)
     ).subscribe(orderProducts => {
-      this.orderProducts = orderProducts;
+      orderProducts.forEach(product => {
+        const technologyId = product.current_technology?.id;
+        const nomenclatureId = product.nomenclature.id;
+        const existing = this.orderProducts.find(el =>
+          el.nomenclature.id === nomenclatureId &&
+          el.current_technology?.id === technologyId);
+        if (existing) {
+          existing.totalQuantity = existing.totalQuantity += product.quantity;
+          existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
+          existing.totalQuantityNotPassed = existing.totalQuantityNotPassed += product.not_passed_quantity;
+          // existing.totalSerialNumbers.push(...product.serial_numbers);
+          existing.orderProducts.push(product);
+        } else {
+          product.orderProducts = [deepCopy(product)];
+          product.totalQuantity = product.quantity;
+          product.totalQuantityPassed = product.passed_quantity;
+          product.totalQuantityNotPassed = product.not_passed_quantity;
+          // product.totalSerialNumbers = [...product.serial_numbers];
+          this.orderProducts.push(product);
+        }
+      });
+      this.orderProducts = [...this.orderProducts];
+
       this.isLoading = false;
       this.loadTechnicalEquipments();
     });
