@@ -150,13 +150,13 @@
               {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
             </td>
             <td style="width: 10%" class="text-center">
-              {{product.quantity}}
+              {{product.totalQuantity}}
             </td>
             <td style="width: 10%" class="text-center">
-              {{product.passed_quantity}}
+              {{product.totalQuantityPassed}}
             </td>
             <td style="width: 10%" class="text-center">
-              {{product.not_passed_quantity}}
+              {{product.totalQuantityNotPassed}}
             </td>
             <td style="width: 10%" class="text-center">
               <span *ngIf="product.quality_control == 1" class="badge badge_success">PASSED</span>

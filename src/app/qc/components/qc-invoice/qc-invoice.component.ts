@@ -13,7 +13,6 @@ import {QcService} from '../../services/qc.service';
 import {AlbumService} from '@shared/services/album.service';
 import {environment} from '@env/environment';
 import {deepCopy} from 'deep-copy-ts';
-import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'pek-qc-invoice',
@@ -110,8 +109,6 @@ export class QcInvoiceComponent implements OnInit {
           }
         });
         this.invoiceProducts = [...this.invoiceProducts];
-
-        console.log('this.invoiceProducts', this.invoiceProducts);
       }),
       tap(products => this.invoiceCanBeCompleted = Boolean(products.find(p => p.quality_control))),
       tap(() => this.isLoadingProducts = false)
@@ -139,17 +136,29 @@ export class QcInvoiceComponent implements OnInit {
 
     this.selectedInvoiceProducts.forEach(invoiceProduct => {
       invoiceProduct.invoiceProducts.forEach(p => {
-        send.by_nomenclatures_list.push({
-          nomenclature_id: p.nomenclature.id,
-          serial_number_ids:
-            p.nomenclature.bulk_or_serial === '1' ?
-              p.serial_numbers.map(s => +s.id) : [],
-          order_product_ids: [p.id],
-          invoice_product_ids: [],
-        });
+        if (p.nomenclature.bulk_or_serial === '1') {
+          send.by_nomenclatures_list.push({
+            nomenclature_id: p.nomenclature.id,
+            serial_number_ids:
+              p.nomenclature.bulk_or_serial === '1' ?
+                p.serial_numbers.map(s => +s.id) : [],
+            order_product_ids: [p.id],
+            invoice_product_ids: [],
+          });
+        } else {
+          const exists = send.by_nomenclatures_list.findIndex(el => el.nomenclature_id === p.nomenclature.id) >= 0;
+          if (!exists) {
+            send.by_nomenclatures_list.push({
+              nomenclature_id: p.nomenclature.id,
+              serial_number_ids: [],
+              order_product_ids: [p.id],
+              invoice_product_ids: [],
+            });
+          }
+        }
+
       })
     });
-
     this.qrCodeService.generateQrCodes(send, this.invoice.order.id, this.invoice.self_serial_number).subscribe(() => this.isGenerating = false);
   }
 
@@ -198,8 +207,6 @@ export class QcInvoiceComponent implements OnInit {
         });
       });
 
-      console.log('sendProducts', sendProducts);
-
       this.isCompletingProducts = true;
 
       this.invoiceProductService.severalUpdatePartly(send).pipe(
@@ -217,27 +224,27 @@ export class QcInvoiceComponent implements OnInit {
     if (this.selectedInvoiceProducts[0].nomenclature.qc_protocol && this.selectedInvoiceProducts[0].nomenclature.bulk_or_serial === '1') {
       let currentCount = 1;
 
-      if (this.selectedInvoiceProducts[0].passed_quantity) currentCount += this.selectedInvoiceProducts[0].passed_quantity;
-      if (this.selectedInvoiceProducts[0].not_passed_quantity) currentCount += this.selectedInvoiceProducts[0].not_passed_quantity;
+      if (this.selectedInvoiceProducts[0].passed_quantity) currentCount += this.selectedInvoiceProducts[0].totalQuantityPassed;
+      if (this.selectedInvoiceProducts[0].not_passed_quantity) currentCount += this.selectedInvoiceProducts[0].totalQuantityNotPassed;
 
-      // this.modalService.protocolControlProduct(this.selectedInvoiceProducts[0], currentCount, this.selectedInvoiceProducts[0].quantity, 'invoice').subscribe(res => {
-      //   if (res) {
-      //     this.selectedInvoiceProducts = [];
-      //     this.getInvoiceProducts();
-      //   }
-      // });
+      this.qcService.withProtocolControlProduct(this.selectedInvoiceProducts[0], currentCount, this.selectedInvoiceProducts[0].totalQuantity, 'invoice').subscribe(res => {
+        if (res) {
+          this.selectedInvoiceProducts = [];
+          this.getInvoiceProducts();
+        }
+      });
     } else if (!this.selectedInvoiceProducts[0].nomenclature.qc_protocol && this.selectedInvoiceProducts[0].nomenclature.bulk_or_serial === '1') {
       let currentCount = 1;
 
-      if (this.selectedInvoiceProducts[0].passed_quantity) currentCount += this.selectedInvoiceProducts[0].passed_quantity;
-      if (this.selectedInvoiceProducts[0].not_passed_quantity) currentCount += this.selectedInvoiceProducts[0].not_passed_quantity;
+      if (this.selectedInvoiceProducts[0].passed_quantity) currentCount += this.selectedInvoiceProducts[0].totalQuantityPassed;
+      if (this.selectedInvoiceProducts[0].not_passed_quantity) currentCount += this.selectedInvoiceProducts[0].totalQuantityNotPassed;
 
-      // this.modalService.serialControlProduct(this.selectedInvoiceProducts[0], currentCount, this.selectedInvoiceProducts[0].quantity, 'invoice').subscribe(res => {
-      //   if (res) {
-      //     this.selectedInvoiceProducts = [];
-      //     this.getInvoiceProducts();
-      //   }
-      // });
+      this.qcService.serializedControlProduct(this.selectedInvoiceProducts[0], currentCount, this.selectedInvoiceProducts[0].totalQuantity, 'invoice').subscribe(res => {
+        if (res) {
+          this.selectedInvoiceProducts = [];
+          this.getInvoiceProducts();
+        }
+      });
     } else {
       this.qcService.controlProduct(this.selectedInvoiceProducts[0]).subscribe(res => {
         if (res) {

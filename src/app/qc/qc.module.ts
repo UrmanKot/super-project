@@ -13,6 +13,8 @@ import { ProtocolsComponent } from './components/protocols/protocols.component';
 import { CreateEditProtocolComponent } from './modals/create-edit-protocol/create-edit-protocol.component';
 import { NomenclatureProtocolPickerComponent } from './modals/nomenclature-protocol-picker/nomenclature-protocol-picker.component';
 import { QualityControlTechnicalEquipmentComponent } from './modals/quality-control-technical-equipment/quality-control-technical-equipment.component';
+import { MoveQcWithSerialComponent } from './modals/move-qc-with-serial/move-qc-with-serial.component';
+import { MoveQcWithProtocolComponent } from './modals/move-qc-with-protocol/move-qc-with-protocol.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { QualityControlTechnicalEquipmentComponent } from './modals/quality-cont
     ProtocolsComponent,
     CreateEditProtocolComponent,
     NomenclatureProtocolPickerComponent,
-    QualityControlTechnicalEquipmentComponent
+    QualityControlTechnicalEquipmentComponent,
+    MoveQcWithSerialComponent,
+    MoveQcWithProtocolComponent
   ],
   imports: [
     CommonModule,

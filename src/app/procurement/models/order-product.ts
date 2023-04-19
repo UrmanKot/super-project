@@ -51,6 +51,10 @@ export class OrderProduct {
   is_subtracted_from_free_quantity?: boolean;
   invoice_quantity?: number;
   proforma_invoice_quantity?: number;
+  orderProducts?: OrderProduct[];
+  totalQuantityPassed?: number;
+  totalQuantityNotPassed?: number;
+  totalSerialNumbers: any[];
 }
 
 export class OrderProductGroupedForPrint  extends OrderProduct {

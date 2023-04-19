@@ -51,13 +51,15 @@ export class QcAcceptToWarehouseComponent implements OnInit {
 
   acceptOrderProducts() {
     this.isSaving = true;
-
-    const send = this.items.map(item => {
-      return {
-        order_product_id: item.id,
-        quantity: item.quantity - item.accepted_quantity,
-        locator: this.form.get('locator').value
-      };
+    let send = [];
+    (this.items as OrderProduct[]).forEach(item => {
+      item.orderProducts.forEach(product => {
+        send.push({
+          order_product_id: product.id,
+          quantity: product.quantity - product.accepted_quantity,
+          locator: this.form.get('locator').value
+        });
+      });
     });
 
     this.orderProductService.acceptSeveral(send).pipe(
@@ -67,15 +69,16 @@ export class QcAcceptToWarehouseComponent implements OnInit {
 
   acceptInvoiceProducts() {
     this.isSaving = true;
-
-    const send = this.items.map(item => {
-      return {
-        invoice_product_id: item.id,
-        quantity: item.quantity - item.accepted_quantity,
-        locator: this.form.get('locator').value
-      };
+    let send = [];
+    (this.items as InvoiceProduct[]).forEach(item => {
+      item.invoiceProducts.forEach(product => {
+        send.push({
+          invoice_product_id: product.id,
+          quantity: product.quantity - product.accepted_quantity,
+          locator: this.form.get('locator').value
+        });
+      });
     });
-
     this.invoiceProductService.acceptSeveral(send).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(() => this.dialogRef.close(true));

@@ -11,6 +11,9 @@ import {ModalService} from '@shared/services/modal.service';
 import {AlbumService} from '@shared/services/album.service';
 import {QrCodeService} from '../../../qr-code/qr-code.service';
 import {QcService} from '../../services/qc.service';
+import {deepCopy} from 'deep-copy-ts';
+import {EInvoiceProductQualityControl} from '../../../procurement/models/invoice-product';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'pek-qc-order',
@@ -85,7 +88,39 @@ export class QcOrderComponent implements OnInit {
     this.isLoadingProducts = true;
 
     this.orderProductService.getQc(this.orderId).pipe(
-      tap(products => this.orderProducts = products),
+      tap(products => {
+        products.forEach(product => {
+          const technologyId = product.current_technology?.id;
+          const nomenclatureId = product.nomenclature.id;
+          const existing = this.orderProducts.find(el =>
+            el.nomenclature.id === nomenclatureId &&
+            el.current_technology?.id === technologyId);
+          if (existing) {
+            existing.totalQuantity = existing.totalQuantity += product.quantity;
+            existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
+            existing.totalQuantityNotPassed = existing.totalQuantityNotPassed += product.not_passed_quantity;
+            existing.totalSerialNumbers.push(...product.serial_numbers);
+            existing.orderProducts.push(product);
+          } else {
+            product.orderProducts = [deepCopy(product)];
+            product.totalQuantity = product.quantity;
+            product.totalQuantityPassed = product.passed_quantity;
+            product.totalQuantityNotPassed = product.not_passed_quantity;
+            product.totalSerialNumbers = [...product.serial_numbers];
+            this.orderProducts.push(product);
+          }
+        });
+        this.orderProducts.forEach(product => {
+          if (product.totalQuantityPassed === product.totalQuantity) {
+            product.quality_control = EInvoiceProductQualityControl.PASSED;
+          } else if (product.totalQuantityNotPassed === product.totalQuantity) {
+            product.quality_control = EInvoiceProductQualityControl.NOT_PASSED;
+          } else if (product.totalQuantityNotPassed + product.totalQuantityPassed === product.totalQuantity) {
+            product.quality_control = EInvoiceProductQualityControl.PARTLY_PASSED;
+          }
+        });
+        this.orderProducts = [...this.orderProducts];
+      }),
       tap(products => this.orderCanBeCompleted = Boolean(products.find(p => p.quality_control))),
       tap(() => this.isLoadingProducts = false)
     ).subscribe();
@@ -120,7 +155,11 @@ export class QcOrderComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       const send = [];
-      const sendProducts = this.selectedOrderProducts.filter(p => !p.nomenclature.qc_protocol && p.nomenclature.bulk_or_serial === '0');
+      const sendProducts = [];
+      this.selectedOrderProducts.forEach(product => {
+        const products = product.orderProducts.filter(p => !p.nomenclature.qc_protocol && p.nomenclature.bulk_or_serial === '0');
+        sendProducts.push(...products);
+      });
 
       sendProducts.forEach(product => {
         send.push({
@@ -132,7 +171,6 @@ export class QcOrderComponent implements OnInit {
       });
 
       this.isCompletingProducts = true;
-      console.log('send', send);
       this.orderProductService.severalUpdatePartly(send).pipe(
         tap(() => this.getOrderProducts()),
         tap(() => this.isCompletingProducts = false)
@@ -160,17 +198,30 @@ export class QcOrderComponent implements OnInit {
       by_nomenclatures_list: [],
     };
 
-    this.selectedOrderProducts.forEach(p => {
-      send.by_nomenclatures_list.push({
-        nomenclature_id: p.nomenclature.id,
-        serial_number_ids:
-          p.nomenclature.bulk_or_serial === '1' ?
-            p.serial_numbers.map(s => +s.id) : [],
-        order_product_ids: [p.id],
-        invoice_product_ids: [],
+    this.selectedOrderProducts.forEach(product => {
+      product.orderProducts.forEach(p => {
+        if (p.nomenclature.bulk_or_serial === '1') {
+          send.by_nomenclatures_list.push({
+            nomenclature_id: p.nomenclature.id,
+            serial_number_ids:
+              p.nomenclature.bulk_or_serial === '1' ?
+                p.serial_numbers.map(s => +s.id) : [],
+            order_product_ids: [p.id],
+            invoice_product_ids: [],
+          });
+        } else {
+          const exists = send.by_nomenclatures_list.findIndex(el => el.nomenclature_id === p.nomenclature.id) >= 0;
+          if (!exists) {
+            send.by_nomenclatures_list.push({
+              nomenclature_id: p.nomenclature.id,
+              serial_number_ids: [],
+              order_product_ids: [p.id],
+              invoice_product_ids: [],
+            });
+          }
+        }
       });
     });
-
     this.qrCodeService.generateQrCodes(send, this.order.id).subscribe(() => this.isGenerating = false);
   }
 
@@ -182,27 +233,27 @@ export class QcOrderComponent implements OnInit {
     if (this.selectedOrderProducts[0].nomenclature.qc_protocol && this.selectedOrderProducts[0].nomenclature.bulk_or_serial === '1') {
       let currentCount = 1;
 
-      if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].passed_quantity;
-      if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].not_passed_quantity;
+      if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityPassed;
+      if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityNotPassed;
 
-      // this.modalService.protocolControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].quantity, 'order').subscribe(res => {
-      //   if (res) {
-      //     this.getOrderProducts();
-      //     this.selectedOrderProducts = [];
-      //   }
-      // });
+      this.qcService.withProtocolControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order').subscribe(res => {
+        if (res) {
+          this.selectedOrderProducts = [];
+          this.getOrderProducts();
+        }
+      });
     } else if (!this.selectedOrderProducts[0].nomenclature.qc_protocol && this.selectedOrderProducts[0].nomenclature.bulk_or_serial === '1') {
       let currentCount = 1;
 
-      if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].passed_quantity;
-      if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].not_passed_quantity;
+      if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityPassed;
+      if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityNotPassed;
 
-      // this.modalService.serialControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].quantity, 'order').subscribe(res => {
-      //   if (res) {
-      //     this.getOrderProducts();
-      //     this.selectedOrderProducts = [];
-      //   }
-      // });
+      this.qcService.serializedControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order').subscribe(res => {
+        if (res) {
+          this.selectedOrderProducts = [];
+          this.getOrderProducts();
+        }
+      });
     } else {
       this.qcService.controlProduct(this.selectedOrderProducts[0], true).subscribe((res) => {
         if (res) {
@@ -218,7 +269,11 @@ export class QcOrderComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       this.isReworking = true;
-      const ids = this.orderProducts.map(p => p.id);
+      const ids = []
+      this.orderProducts.forEach(p => {
+        ids.push(...p.orderProducts.map(order => order.id))
+      });
+
       this.orderProductService.reworkOrder(ids).subscribe(() => {
         this.isReworking = false;
         this.router.navigate(['../../'], {relativeTo: this.route});
@@ -231,16 +286,41 @@ export class QcOrderComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       this.isReworkingProduct = true;
-      this.orderProductService.reworkOrderProduct(this.selectedOrderProducts[0].id).subscribe(() => {
-        const index = this.orderProducts.findIndex(o => o.id === this.selectedOrderProducts[0].id);
-        this.orderProducts.splice(index, 1);
+      const ids = [];
+      const productsIds = [];
+      const calls = [];
+      this.orderProducts.forEach(p => {
+        productsIds.push(p.id)
+        ids.push(...p.orderProducts.map(order => order.id));
+      });
+
+      ids.forEach(id => {
+        calls.push(this.orderProductService.reworkOrderProduct(id))
+      });
+
+      forkJoin([...calls]).subscribe(() => {
+        productsIds.forEach(id => {
+          const index = this.orderProducts.findIndex(o => o.id === id);
+          this.orderProducts.splice(index, 1);
+        });
         if (this.orderProducts.length === 0) {
           this.router.navigate(['../../'], {relativeTo: this.route});
           return;
         }
         this.selectedOrderProducts = [];
         this.isReworkingProduct = false;
-      });
+      })
+
+      // this.orderProductService.reworkOrderProduct(this.selectedOrderProducts[0].id).subscribe(() => {
+      //   const index = this.orderProducts.findIndex(o => o.id === this.selectedOrderProducts[0].id);
+      //   this.orderProducts.splice(index, 1);
+      //   if (this.orderProducts.length === 0) {
+      //     this.router.navigate(['../../'], {relativeTo: this.route});
+      //     return;
+      //   }
+      //   this.selectedOrderProducts = [];
+      //   this.isReworkingProduct = false;
+      // });
     });
   }
 

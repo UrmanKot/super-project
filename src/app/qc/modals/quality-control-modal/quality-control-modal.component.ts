@@ -32,7 +32,6 @@ export class QualityControlModalComponent implements OnInit {
       passed_quantity: [this.data.entity.totalQuantityPassed, [Validators.max(this.data.entity.totalQuantity), Validators.min(0), Validators.required]],
       not_passed_quantity: [this.data.entity.totalQuantityNotPassed, [Validators.max(this.data.entity.totalQuantity), Validators.min(0), Validators.required]],
     });
-    console.log('this.data.entity', this.data.entity);
     this.quantity = this.data.entity.totalQuantity;
   }
 
@@ -41,52 +40,55 @@ export class QualityControlModalComponent implements OnInit {
       let totalPassedQuantity = this.form.get('passed_quantity').value;
       let totalNotPassedQuantity = this.form.get('not_passed_quantity').value;
       const totalQuantity = this.quantity;
-
+      let products;
+      if (this.data.isOwnProduction) {
+        products = this.data.entity.orderProducts;
+      } else {
+        products = this.data.entity.invoiceProducts;
+      }
       const dataToSendCalls: Observable<any>[] = [];
-      console.log('passedQuantity', totalPassedQuantity);
-      console.log('notPassedQuantity', totalNotPassedQuantity);
-      console.log('totalQuantity', totalQuantity);
-      this.data.entity.invoiceProducts.forEach(prod => {
-        let passedQuantity = 0;
-        let notPassedQuantity = 0;
-        let canFillQuantity = prod.quantity;
+      products.sort((a, b) => {
+        return a.id - b.id;
+      })
+        .forEach(prod => {
+          let passedQuantity = 0;
+          let notPassedQuantity = 0;
+          let canFillQuantity = prod.quantity;
 
-        // Update accepted quantities
-        if (totalPassedQuantity <= canFillQuantity) {
-          canFillQuantity -= totalPassedQuantity;
-          passedQuantity += totalPassedQuantity;
-          totalPassedQuantity = 0;
-          console.log('Passed <', totalPassedQuantity);
-        } else {
-          totalPassedQuantity -= canFillQuantity;
-          passedQuantity += canFillQuantity;
-          canFillQuantity = 0;
-          console.log('else');
-        }
+          // Update accepted quantities
+          if (totalPassedQuantity <= canFillQuantity) {
+            canFillQuantity -= totalPassedQuantity;
+            passedQuantity += totalPassedQuantity;
+            totalPassedQuantity = 0;
+          } else {
+            totalPassedQuantity -= canFillQuantity;
+            passedQuantity += canFillQuantity;
+            canFillQuantity = 0;
+          }
 
-        // Update NOT accepted quantities
-        if (totalNotPassedQuantity <= canFillQuantity) {
-          canFillQuantity -= totalNotPassedQuantity;
-          notPassedQuantity += totalNotPassedQuantity;
-          totalNotPassedQuantity = 0;
-        } else {
-          totalNotPassedQuantity -= canFillQuantity;
-          notPassedQuantity += canFillQuantity;
-          canFillQuantity = 0;
-        }
+          // Update NOT accepted quantities
+          if (totalNotPassedQuantity <= canFillQuantity) {
+            canFillQuantity -= totalNotPassedQuantity;
+            notPassedQuantity += totalNotPassedQuantity;
+            totalNotPassedQuantity = 0;
+          } else {
+            totalNotPassedQuantity -= canFillQuantity;
+            notPassedQuantity += canFillQuantity;
+            canFillQuantity = 0;
+          }
 
-        const updateProduct = {
-          id: prod.id,
-          passed_quantity: passedQuantity,
-          not_passed_quantity: notPassedQuantity
-        }
-        if (this.data.isOwnProduction) {
-          dataToSendCalls.push(this.orderProductService.updatePartly(updateProduct as OrderProduct));
-        } else {
-          dataToSendCalls.push(this.invoiceProductService.updatePartly(updateProduct));
-        }
-        // dataToSend.push(updateProduct);
-      });
+          const updateProduct = {
+            id: prod.id,
+            passed_quantity: passedQuantity,
+            not_passed_quantity: notPassedQuantity
+          };
+          if (this.data.isOwnProduction) {
+            dataToSendCalls.push(this.orderProductService.updatePartly(updateProduct as OrderProduct));
+          } else {
+            dataToSendCalls.push(this.invoiceProductService.updatePartly(updateProduct));
+          }
+          // dataToSend.push(updateProduct);
+        });
 
       if (this.form.value.passed_quantity + this.form.value.not_passed_quantity === this.data.entity.totalQuantity) {
         if (this.form.value.passed_quantity === this.data.entity.totalQuantity) {
