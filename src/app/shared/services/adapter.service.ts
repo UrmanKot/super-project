@@ -55,4 +55,14 @@ export class AdapterService {
     document.body.appendChild(downloadLink);
     downloadLink.click();
   }
+
+  msToTime(duration: any): string {
+    let minutes: any = parseInt(`${(duration / (1000 * 60)) % 60}`, 10);
+    let hours: any = parseInt(`${(duration / (1000 * 60 * 60)) % 24}`, 10) + 3;
+
+    hours = (hours < 10) ? '0' + hours : hours;
+    minutes = (minutes < 10) ? '0' + minutes : minutes;
+
+    return hours + ':' + minutes + ':' + '00';
+  }
 }

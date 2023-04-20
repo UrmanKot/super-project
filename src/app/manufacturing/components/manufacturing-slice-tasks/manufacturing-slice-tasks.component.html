@@ -1,0 +1,182 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'manufacturing'" [isActive]="true"></pek-module-icon>
+      <h1>
+        <ng-container *ngIf="!isPeriod; else period">
+          Slice of Tasks on {{currentDate | date: 'dd/MM/yyyy'}}
+        </ng-container>
+
+        <ng-template #period>
+          Slice of tasks from {{startDate| date: 'dd/MM/y'}} to {{endDate| date: 'dd/MM/y'}}
+        </ng-template>
+      </h1>
+    </div>
+    <div class="page__tools">
+      <button
+        class="mr-2"
+        pButton
+        type="button"
+        icon="pi pi-calendar"
+        label="Choice Date"
+        (click)="onChoiceDate()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-calendar"
+        label="Choice Period"
+        (click)="onChoicePeriod()"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <form
+      [formGroup]="searchForm"
+      class="form mb-3"
+    >
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label>Employees</label>
+            <p-multiSelect
+              *ngIf="!isLoading || isLoadingFilters; else spinner"
+              [options]="employees"
+              (onChange)="onSelectEmployees($event)"
+              (onClear)="onSelectEmployees($event)"
+              optionValue="id"
+              optionLabel="fullName"
+              placeholder="Choose Employees"
+              [showClear]="true"
+            >
+            </p-multiSelect>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Status</label>
+            <p-dropdown
+              [showClear]="true"
+              [options]="taskStatuses"
+              formControlName="status"
+              (ngModelChange)="search$.next()"
+              optionValue="id"
+              optionLabel="name"
+              placeholder="Choose status"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Technologies</label>
+            <pek-technology-picker></pek-technology-picker>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Production List Origin</label>
+            <p-dropdown
+              *ngIf="!isLoading || isLoadingFilters; else spinner"
+              formControlName="product_list_origin_id"
+              [showClear]="true"
+              [options]="lists"
+              optionValue="id"
+              optionLabel="fullName"
+              placeholder="Choose List"
+              (ngModelChange)="search$.next()"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="table-pagination-preloader">
+      <p-table
+        #dt
+        selectionMode="multiple"
+        [rows]="10"
+        [paginator]="tasks.length > 0"
+        [scrollable]="true"
+        scrollHeight="calc(100vh - 22rem)"
+        [value]="tasks"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%;">#</th>
+            <th style="width: 13%;"> Code</th>
+            <th style="width: 13%;">Name</th>
+            <th style="width: 12%;" class="text-center">Start Date</th>
+            <th style="width: 12%;" class="text-center">End Date</th>
+            <th style="width: 10%;" class="text-center">Technology</th>
+            <th style="width: 7%;" class="text-center">Qnty</th>
+            <th style="width: 10%;" pSortableColumn="searchFieldEmployee">Employees
+              <p-sortIcon field="searchFieldEmployee"></p-sortIcon>
+            </th>
+            <th style="width: 8%;">Machines</th>
+            <th style="width: 10%" class="text-center" pSortableColumn="status">Status
+              <p-sortIcon field="status"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-task let-i="rowIndex">
+          <tr>
+            <td style="width: 5%;" class="text-center">{{i + 1}}</td>
+            <td style="width: 13%;">{{task.list_product.nomenclature.code}}</td>
+            <td style="width: 13%;">{{task.list_product.nomenclature.name}}</td>
+            <td style="width: 12%;" class="text-center">{{task.start_date | date: 'dd/MM/yyyy, HH:mm'}}</td>
+            <td style="width: 12%;" class="text-center">{{task.end_date| date: 'dd/MM/yyyy, HH:mm'}}</td>
+            <td style="width: 10%;" class="text-center">{{task.technology ? task.technology : 'Purchased'}}</td>
+            <td style="width: 7%;" class="text-center">{{task.list_product.required_quantity}}</td>
+            <td style="width: 10%;">
+              <div *ngFor="let employee of task.employees">
+                {{employee.employee.first_name + ' ' + employee.employee.last_name}}
+              </div>
+            </td>
+            <td style="width: 8%;">
+              <div *ngFor="let machine of task.machines">
+                {{machine.machine.name}}
+              </div>
+            </td>
+            <td style="width: 10%;" class="text-center">{{task.status}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="16">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && tasks.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

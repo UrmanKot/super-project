@@ -94,6 +94,10 @@ import { AlbumComponent } from './modals/album/album.component';
 import { MultiCountriesPickerComponent } from './pickers/multi-countries-picker/multi-countries-picker.component';
 import { CrmMultiRegionPickerComponent } from './pickers/crm-multi-region-picker/crm-multi-region-picker.component';
 import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tree-picker/crm-multi-region-tree-picker.component';
+import { TippyDirective } from './directives/tippy.directive';
+import { ChoiceDateComponent } from './modals/choice-date/choice-date.component';
+import { ChoicePeriodDateComponent } from './modals/choice-period-date/choice-period-date.component';
+import { EmployeePositionPickerComponent } from './pickers/employee-position-picker/employee-position-picker.component';
 
 
 @NgModule({
@@ -167,6 +171,10 @@ import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tr
     MultiCountriesPickerComponent,
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
+    TippyDirective,
+    ChoiceDateComponent,
+    ChoicePeriodDateComponent,
+    EmployeePositionPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -241,6 +249,9 @@ import { CrmMultiRegionTreePickerComponent } from './pickers/crm-multi-region-tr
     MultiCountriesPickerComponent,
     CrmMultiRegionPickerComponent,
     CrmMultiRegionTreePickerComponent,
+    TippyDirective,
+    StatusesPickerComponent,
+    EmployeePositionPickerComponent,
   ],
   imports: [
     MultiSelectModule,

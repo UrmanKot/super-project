@@ -5,6 +5,11 @@ import {QuerySearch} from '@shared/models/other';
 import {map} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {Employee} from '@shared/models/employee';
+import {ModalActionType} from '@shared/models/modal-action';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  CreateEditEmployeeComponent
+} from '../../manufacturing/modals/create-edit-employee/create-edit-employee.component';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +22,8 @@ export class EmployeeService {
   employees: Employee[];
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private readonly dialog: MatDialog,
   ) {
 
   }
@@ -52,5 +58,34 @@ export class EmployeeService {
         return employees;
       })
     );
+  }
+
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.API_URL + this.url + id + '/');
+  }
+
+  create(employee: Partial<Employee>): Observable<Employee> {
+    return this.httpClient.post<{ data: Employee }>(this.API_URL + this.url, employee).pipe(
+      map(response => response.data)
+    );
+  }
+
+  update(employee: Partial<Employee>): Observable<Employee> {
+    return this.httpClient.put<{ data: Employee }>(this.API_URL + this.url + employee.id + '/', employee).pipe(
+      map(response => response.data)
+    );
+  }
+
+  createEditEmployeeModal(type: ModalActionType, employee?: Employee): Observable<Employee> {
+    return this.dialog
+      .open<CreateEditEmployeeComponent>(CreateEditEmployeeComponent, {
+        width: '35rem',
+        height: 'auto',
+        data: {type, employee},
+        autoFocus: false,
+        enterAnimationDuration: '250ms',
+        panelClass: 'modal-overflow-visible',
+      })
+      .afterClosed();
   }
 }

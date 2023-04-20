@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Choice Period
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group mb-0">
+        <label>Start Date</label>
+        <p-calendar
+          [(ngModel)]="startDate"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          [maxDate]="endDate"
+          placeholder="Choice Start Date"
+        ></p-calendar>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group mb-0">
+        <label>End Date</label>
+        <p-calendar
+          [(ngModel)]="endDate"
+          [minDate]="startDate"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          placeholder="Choice Start Date"
+        ></p-calendar>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    (click)="onChoice()"
+    pButton
+    type="button"
+    label="Choice"
+    class="p-button-success"
+    [disabled]="showError() || !startDate || !endDate"
+  ></button>
+</mat-dialog-actions>

@@ -59,7 +59,7 @@ export class ManufacturingPlanListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tasks$.subscribe()
+    this.tasks$.subscribe();
   }
 
   filterTasks(tasks: Task[]) {
@@ -90,11 +90,12 @@ export class ManufacturingPlanListComponent implements OnInit {
 
         newTasks.push(task);
       }
-    })
+    });
 
 
     newTasks.sort((a, b) => new Date(a.created) > new Date(b.created) ? -1 : 1);
     this.tasks = newTasks;
+    this.tasks = this.tasks.map(t => t);
 
     return newTasks;
   }
@@ -169,5 +170,16 @@ export class ManufacturingPlanListComponent implements OnInit {
 
   onShowAll(b: boolean) {
 
+  }
+
+  getTippyContent(task: Task): string {
+    let childContent = '';
+    task.serials.forEach((serial, idx) => {
+      childContent += `
+          <li>${idx + 1}. ${serial.type_with_number ? serial.type_with_number : serial.id}</li>
+      `;
+    });
+
+    return `<ul class="test">${childContent}</ul>`;
   }
 }

@@ -6,12 +6,18 @@ import {ManufacturingLayoutComponent} from './components/manufacturing-layout/ma
 import {LayoutModule} from '../layout/layout.module';
 import {SharedModule} from '@shared/shared.module';
 import {ManufacturingPlanListComponent} from './components/manufacturing-plan-list/manufacturing-plan-list.component';
+import { ManufacturingSliceTasksComponent } from './components/manufacturing-slice-tasks/manufacturing-slice-tasks.component';
+import { ManufacturingEmployeesComponent } from './components/manufacturing-employees/manufacturing-employees.component';
+import { CreateEditEmployeeComponent } from './modals/create-edit-employee/create-edit-employee.component';
 
 
 @NgModule({
   declarations: [
     ManufacturingLayoutComponent,
     ManufacturingPlanListComponent,
+    ManufacturingSliceTasksComponent,
+    ManufacturingEmployeesComponent,
+    CreateEditEmployeeComponent,
   ],
   imports: [
     SharedModule,
