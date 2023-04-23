@@ -98,6 +98,7 @@ import { TippyDirective } from './directives/tippy.directive';
 import { ChoiceDateComponent } from './modals/choice-date/choice-date.component';
 import { ChoicePeriodDateComponent } from './modals/choice-period-date/choice-period-date.component';
 import { EmployeePositionPickerComponent } from './pickers/employee-position-picker/employee-position-picker.component';
+import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-list-picker.component';
 
 
 @NgModule({
@@ -175,6 +176,7 @@ import { EmployeePositionPickerComponent } from './pickers/employee-position-pic
     ChoiceDateComponent,
     ChoicePeriodDateComponent,
     EmployeePositionPickerComponent,
+    RootListPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -252,6 +254,7 @@ import { EmployeePositionPickerComponent } from './pickers/employee-position-pic
     TippyDirective,
     StatusesPickerComponent,
     EmployeePositionPickerComponent,
+    RootListPickerComponent,
   ],
   imports: [
     MultiSelectModule,

@@ -1,0 +1,430 @@
+<div class="manufacturing-order-page">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'manufacturing'" [isActive]="true"></pek-module-icon>
+        <h1>
+          Order {{orderId}}
+          <ng-container *ngIf="isOrderLoading">(...)</ng-container>
+          <ng-container
+            *ngIf="!isOrderLoading && order.root_production_list_products[0]?.nomenclature"
+          >
+            ({{order.root_production_list_products[0].nomenclature.code}} {{order.root_production_list_products[0].nomenclature.name}}
+            )
+          </ng-container>
+        </h1>
+      </div>
+      <div class="page__tools">
+        <div class="page__tools">
+          <button
+            pButton
+            type="button"
+            class="mr-2"
+            icon="pi pi-pencil"
+            label="Lead Date & Status"
+            (click)="onEditOrder()"
+            [disabled]="isOrderLoading"
+          >
+          </button>
+          <button
+            pButton
+            type="button"
+            class="mr-2 p-button-icon"
+            icon="pi pi-angle-double-right"
+            label="Move To QC"
+            [disabled]="isOrderLoading"
+            [loading]="isMovingToQC"
+            (click)="moveToQc()"
+          >
+          </button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-print"
+            label="Print"
+            (click)="onPrintPage()"
+            [disabled]="isOrderLoading || isLoadingProducts"
+          >
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <h2 class="mb-4">Ordered Items</h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #dt
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="products.length > 0"
+          [rows]="10"
+          [(selection)]="selectedProduct"
+          [value]="products"
+          selectionMode="single"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="productMenuItems"
+                [class.disabled]="!selectedProduct">
+              </p-menubar>
+              <button
+                (click)="onAddProduct()"
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Item"
+                [disabled]="isLoadingProducts"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 15%">Code</th>
+              <th style="width: 20%">Name</th>
+              <th style="width: 10%">Technology</th>
+              <th style="width: 10%" class="text-center">Quantity</th>
+              <th style="width: 20%">Employees</th>
+              <th style="width: 10%;" class="text-center">
+                <label class="all-checked">
+                  <p-checkbox
+                    (onChange)="toggleAllReady($event)"
+                    inputId="ready"
+                    [binary]="true"
+                  ></p-checkbox>
+                  <span class="ml-2">Ready</span>
+                </label>
+              </th>
+              <th class="text-center" style="width: 10%">QC Pass</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr [pSelectableRow]="product" class="table-row">
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 15%">{{product.nomenclature.code}} </td>
+              <td style="width: 20%">{{product.nomenclature.name}} </td>
+              <td style="width: 10%">
+                {{product.current_technology?.name}}
+              </td>
+              <td style="width: 10%" class="text-center">{{product.quantity}}</td>
+              <td style="width: 20%">
+                <div class="d-flex" *ngFor="let empl of product?.details.task_employees">
+                  <span class="mr-2">{{empl.employee.first_name}} {{empl.employee.last_name}}</span>
+                  <span>({{empl.duration}})</span>
+                </div>
+              </td>
+              <td style="width: 10%">
+                <div class="d-flex align-items-center justify-content-center">
+                  <p-checkbox
+                    [(ngModel)]="product.isReady"
+                    [disabled]="product.quality_control || product.is_technology_ready"
+                    [binary]="true"
+                  ></p-checkbox>
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div *ngIf="!product.quality_control && !product.is_technology_ready">—</div>
+                <div *ngIf="product.is_technology_ready && !product.quality_control">In QC</div>
+                <div *ngIf="product.quality_control">{{product.passed_quantity}}/{{product.initial_quantity}}
+                  <span *ngIf="product.quality_control === '0'">(Not passed)</span>
+                  <span *ngIf="product.quality_control === '1'">(Passed)</span>
+                  <span *ngIf="product.quality_control === '2'">(Partly passed)</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="10">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoadingProducts && products.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">
+      Parts/Materials List
+    </h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #mt
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="orderMaterials.length > 0"
+          [rows]="10"
+          [value]="orderMaterials"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                *ngIf="orderMaterials.length > 0"
+                (click)="onCancelOrderMaterials()"
+                pButton
+                [loading]="isCancellation"
+                type="button"
+                label="Cancelation"
+                icon="pi pi-times"
+                class="ml-auto p-button-danger p-button-icon"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 15%">Code</th>
+              <th style="width: 35%">Name</th>
+              <th style="width: 20%">Technology</th>
+              <th style="width: 15%" class="text-center">Required Quantity</th>
+              <th style="width: 10%" class="text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-material let-i="rowIndex">
+            <tr>
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 15%">
+                <div *ngIf="material.material_nomenclature">
+                  {{material.material_nomenclature.code}}
+                </div>
+                <div *ngIf="material.order_product_nomenclature">
+                  {{material.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="material.list_product">
+                  {{material.list_product.nomenclature.code}}
+                </div>
+              </td>
+              <td style="width: 35%">
+                <div *ngIf="material.material_nomenclature">
+                  {{material.material_nomenclature.name}}
+                </div>
+                <div *ngIf="material.order_product_nomenclature">
+                  {{material.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="material.list_product">
+                  {{material.list_product.nomenclature.name}}
+                </div>
+              </td>
+              <td style="width: 20%">
+                <span *ngIf="material.technology">{{material.technology}}</span>
+              </td>
+              <td style="width: 15%" class="text-center">
+                {{material?.totalInitialQuantity}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <i *ngIf="material?.totalRequiredQuantity === 0" class="pi pi-check-circle"></i>
+                <i *ngIf="material?.totalRequiredQuantity > 0" class="pi pi-times"></i>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="mt.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!mt.paginator && !isLoadingProducts && orderMaterials.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="mt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">
+      Machines
+    </h2>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #ht
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="machines.length > 0"
+          [rows]="10"
+          [value]="machines"
+        >
+          <ng-template pTemplate="caption">
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 35%">Name</th>
+              <th style="width: 30%">Description</th>
+              <th style="width: 30%" class="text-center">Duration</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-machine let-i="rowIndex">
+            <tr>
+              <td class="text-center">{{i + 1}}</td>
+              <td>{{machine.machine.name}}</td>
+              <td>{{machine.machine.description}}</td>
+              <td class="text-center">{{machine.duration}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="ht.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!ht.paginator && !isLoadingProducts && machines.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="ht.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">
+      Technical Equipments
+    </h2>
+
+    <div class="page__card">
+      <div class="page__table">
+        <p-table
+          #et
+          selectionMode="single"
+          scrollHeight="calc(100vh - 24rem)"
+          [scrollable]="true"
+          [paginator]="technicalEquipments.length > 0"
+          [rows]="10"
+          [value]="technicalEquipments"
+        >
+          <ng-template pTemplate="caption">
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 25%">Code</th>
+              <th style="width: 25%">Name</th>
+              <th style="width: 15%" class="text-center">Locator</th>
+              <th style="width: 15%" class="text-center">Quantity</th>
+              <th style="width: 15%" class="text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
+            <tr [pSelectableRow]="technicalEquipment" class="table-row">
+              <td class="text-center">{{i + 1}}</td>
+              <td>{{technicalEquipment.nomenclature.code}}</td>
+              <td>{{technicalEquipment.nomenclature.name}}</td>
+              <td class="text-center">
+                <span *ngFor="let locator of technicalEquipment.locators">
+                  {{locator.name}}
+                </span>
+              </td>
+              <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
+              <td class="text-center"
+                  [class.text-danger]="!technicalEquipment.in_use || technicalEquipment.in_use && technicalEquipment.locators.length < 1"
+                  [class.text-success]="technicalEquipment.in_use && technicalEquipment.locators.length > 0"
+              >{{technicalEquipment.in_use && technicalEquipment.locators.length > 0 ? 'Received' : 'Not Received'}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="6">
+                <i *ngIf="isLoadingTechnicalEquipments " class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingTechnicalEquipments ">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="et.paginator=false"
+              styleClass="p-button-text"
+            >
+              All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!et.paginator && !isLoadingTechnicalEquipments && technicalEquipments.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="et.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="manufacturing-order-page-print" *ngIf="isShowPrint">
+  <pek-manufacturing-order-page-print
+    [machines]="machines"
+    [materials]="orderMaterials"
+    [order]="order"
+    [orderId]="orderId"
+    [products]="products"
+  >
+  </pek-manufacturing-order-page-print>
+</div>

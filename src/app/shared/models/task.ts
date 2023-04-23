@@ -47,6 +47,7 @@ export class Task {
   root_nomenclature?: Nomenclature;
   serial_numbers?: SerialNumber[];
   serial_products?: any[];
+  production_list_id?: number;
   label?: string;
   child?: Task[];
   /** @deprecated */

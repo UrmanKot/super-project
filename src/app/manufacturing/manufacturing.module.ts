@@ -9,6 +9,15 @@ import {ManufacturingPlanListComponent} from './components/manufacturing-plan-li
 import { ManufacturingSliceTasksComponent } from './components/manufacturing-slice-tasks/manufacturing-slice-tasks.component';
 import { ManufacturingEmployeesComponent } from './components/manufacturing-employees/manufacturing-employees.component';
 import { CreateEditEmployeeComponent } from './modals/create-edit-employee/create-edit-employee.component';
+import { ManufacturingPositionsComponent } from './components/manufacturing-positions/manufacturing-positions.component';
+import { CreateEditPositionComponent } from './modals/create-edit-position/create-edit-position.component';
+import { ManufacturingMachinesComponent } from './components/manufacturing-machines/manufacturing-machines.component';
+import { CreateEditMachineComponent } from './modals/create-edit-machine/create-edit-machine.component';
+import { ManufacturingOrderStatusesComponent } from './components/manufacturing-order-statuses/manufacturing-order-statuses.component';
+import { ManufacturingOrdersComponent } from './components/manufacturing-orders/manufacturing-orders.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import { ManufacturingOrderPageComponent } from './components/manufacturing-order-page/manufacturing-order-page.component';
+import { ManufacturingOrderPagePrintComponent } from './components/manufacturing-order-page/manufacturing-order-page-print/manufacturing-order-page-print.component';
 
 
 @NgModule({
@@ -18,12 +27,21 @@ import { CreateEditEmployeeComponent } from './modals/create-edit-employee/creat
     ManufacturingSliceTasksComponent,
     ManufacturingEmployeesComponent,
     CreateEditEmployeeComponent,
+    ManufacturingPositionsComponent,
+    CreateEditPositionComponent,
+    ManufacturingMachinesComponent,
+    CreateEditMachineComponent,
+    ManufacturingOrderStatusesComponent,
+    ManufacturingOrdersComponent,
+    ManufacturingOrderPageComponent,
+    ManufacturingOrderPagePrintComponent,
   ],
   imports: [
     SharedModule,
     CommonModule,
     ManufacturingRouting,
-    LayoutModule
+    LayoutModule,
+    TriStateCheckboxModule
   ]
 })
 export class ManufacturingModule { }

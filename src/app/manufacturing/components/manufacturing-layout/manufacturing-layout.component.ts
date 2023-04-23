@@ -10,13 +10,15 @@ export class ManufacturingLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Plans', commands: ['plans']},
-    {label: 'Orders to Own Production', commands: ['order-products']},
+    {label: 'Orders To Own Production', commands: ['orders']},
     {label: 'Slice Tasks', commands: ['slice-tasks']},
-    {label: 'Employees', commands: ['employees']},
   ];
 
   settingsRoutes: NavigationLink[] = [
-    {label: 'Order Statuses', commands: ['statuses']},
+    {label: 'Employees', commands: ['employees']},
+    {label: 'Positions', commands: ['positions']},
+    {label: 'Machines', commands: ['machines']},
+    {label: 'Order Statuses', commands: ['order-statuses']},
   ];
 
   constructor() { }

@@ -186,7 +186,9 @@ export class ManufacturingSliceTasksComponent implements OnInit {
 
     this.tasks.forEach(task => {
       if (task.root_nomenclature && !this.lists.find(l => l.id === task.root_nomenclature.id)) {
-        task.root_nomenclature.fullName = `${task.root_nomenclature.name}`
+        task.root_nomenclature.fullName = `(${task.production_list_id}) ${task.root_nomenclature.name}`
+        // @ts-ignore
+        task.root_nomenclature.production_list_id = task.production_list_id;
         this.lists.push(task.root_nomenclature);
       }
     });

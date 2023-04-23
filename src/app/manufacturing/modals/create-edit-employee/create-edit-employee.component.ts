@@ -33,7 +33,7 @@ export class CreateEditEmployeeComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data.type === 'edit') {
-      this.form.addControl('id' as any, new FormControl(this.data.employee.id));
+      this.form.addControl('id' as any, this.fb.control(this.data.employee.id));
       this.form.patchValue(<any>this.data.employee);
       this.form.get('position').patchValue(<any>this.data.employee.position.id);
       this.form.get('max_working_time').patchValue(<any>parseInt(this.data.employee.max_working_time, 10));

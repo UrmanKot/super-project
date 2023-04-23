@@ -24,9 +24,10 @@ export class HeaderComponent implements OnInit {
     '/warehouse/categories',
     '/procurement/services',
     '/procurement/statuses',
-    '/production/employees',
-    '/production/positions',
-    '/production/machines',
+    '/manufacturing/employees',
+    '/manufacturing/positions',
+    '/manufacturing/machines',
+    '/manufacturing/order-statuses',
     '/production/instruments-tools',
     '/production/areas',
     '/production/tool-orders',
@@ -65,6 +66,7 @@ export class HeaderComponent implements OnInit {
     '/outsourcing/',
     '/business-trips/',
     '/correspondents/',
+    '/manufacturing',
   ];
 
   constructor(

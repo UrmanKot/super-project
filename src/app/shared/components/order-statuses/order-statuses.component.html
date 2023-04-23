@@ -39,42 +39,50 @@
       [cdkDropListData]="statuses"
       (cdkDropListDropped)="drop($event)"
     >
-      <div
-        class="order-statuses-line order-statuses-line_dragging"
-        *ngFor="let status of statuses; let idx = index"
-        cdkDrag
-        cdkDragBoundary=".workloads_dragging"
-        [class.active]="selectedStatus && selectedStatus.id === status.id"
-        (click)="toggleLine(status)"
-      >
-        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-        <div class="order-statuses-item">
-          <div class="table-col text-center" style="width: 5%;">{{idx + 1}}</div>
-          <div class=" table-col" [style.width.%]="35">
-            {{status.value}}
-          </div>
-          <div class=" table-col" style="width: 30%;">
-            {{ status.description }}
-          </div>
-          <div class=" table-col text-center" [style.width.%]="isAutoStatus? 15 : 30">
-            <p-checkbox
-              [(ngModel)]="status.is_final"
-              [binary]="true"
-              (onChange)="setFinishStep(status)"
-            ></p-checkbox>
-          </div>
-          <div class=" table-col text-center" *ngIf="isAutoStatus" style="width: 15%;">
-            <p-checkbox
-              [(ngModel)]="status.is_active"
-              [binary]="true"
-              (onChange)="setActiveStatus(status)"
-            ></p-checkbox>
+      <ng-container *ngIf="!isLoading && statuses.length > 0; else empty">
+        <div
+          class="order-statuses-line order-statuses-line_dragging"
+          *ngFor="let status of statuses; let idx = index"
+          cdkDrag
+          cdkDragBoundary=".workloads_dragging"
+          [class.active]="selectedStatus && selectedStatus.id === status.id"
+          (click)="toggleLine(status)"
+        >
+          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+          <div class="order-statuses-item">
+            <div class="table-col text-center" style="width: 5%;">{{idx + 1}}</div>
+            <div class=" table-col" [style.width.%]="35">
+              {{status.value}}
+            </div>
+            <div class=" table-col" style="width: 30%;">
+              {{ status.description }}
+            </div>
+            <div class=" table-col text-center" [style.width.%]="isAutoStatus? 15 : 30">
+              <p-checkbox
+                [(ngModel)]="status.is_final"
+                [binary]="true"
+                (onChange)="setFinishStep(status)"
+              ></p-checkbox>
+            </div>
+            <div class=" table-col text-center" *ngIf="isAutoStatus" style="width: 15%;">
+              <p-checkbox
+                [(ngModel)]="status.is_active"
+                [binary]="true"
+                (onChange)="setActiveStatus(status)"
+              ></p-checkbox>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 </div>
+
+<ng-template #empty>
+  <div class="empty p-4">
+    No Records Found
+  </div>
+</ng-template>
 
 <ng-template #spinner>
   <div class="order-statuses-spinner p-4">

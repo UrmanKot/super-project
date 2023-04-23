@@ -66,10 +66,18 @@ export class ManufacturingEmployeesComponent implements OnInit {
     });
   }
 
+  convertEmployee(employee: Employee): Employee {
+    return {
+      ...employee,
+      start_time: employee.start_time.split(':').splice(-3, 2).join(':'),
+      max_working_time: employee.max_working_time.split(':').splice(-3, 2).join(':'),
+    }
+  }
+
   onAddEmployee() {
     this.employeeService.createEditEmployeeModal('create').pipe(
       filter(employee => !!employee)
-    ).subscribe(employee => this.employees.unshift(employee));
+    ).subscribe(employee => this.employees.unshift(this.convertEmployee(employee)));
   }
 
   private prepareForSearch() {
@@ -83,7 +91,7 @@ export class ManufacturingEmployeesComponent implements OnInit {
       filter(employee => !!employee)
     ).subscribe(employee => {
       const index = this.employees.findIndex(t => t.id === this.selectedEmployee.id);
-      this.employees[index] = employee;
+      this.employees[index] = this.convertEmployee(employee);
       this.selectedEmployee = this.employees[index];
     });
   }

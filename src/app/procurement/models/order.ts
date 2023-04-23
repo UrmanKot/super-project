@@ -51,6 +51,7 @@ export class Order {
   qc_closed_date?: Date;
   qc_started_date?: Date;
   qc_wh_closed_date?: Date;
+  isReceiptDateOverdue?: boolean;
 }
 
 export class Orders {

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {List} from '../../../models/list';
 import {ListProduct} from '../../../models/list-product';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -740,5 +740,10 @@ export class ProductionListComponent implements OnInit {
     }
 
     this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
+  }
+
+  @HostListener("window:afterprint", [])
+  onWindowAfterPrint() {
+    this.isShowPrint = false;
   }
 }

@@ -1,0 +1,189 @@
+<div class="print-order print-order_show">
+  <div class="print-content">
+    <h2>Execution Order Information</h2>
+    <div class="print-content__header" *ngIf="order">
+      <div class="print-content__header-col print-content__header-col_code">
+        <h4>Code</h4>
+        <p>{{order.root_production_list_products[0]?.nomenclature.code}}</p>
+      </div>
+      <div class="print-content__header-col print-content__header-col_name">
+        <h4>Name</h4>
+        <p>{{order.root_production_list_products[0]?.nomenclature.name}}</p>
+      </div>
+      <div class="print-content__header-col print-content__header-col_id">
+        <h4>Id</h4>
+        <p>{{orderId}}</p>
+      </div>
+      <div class="print-content__header-col print-content__header-col_date">
+        <h4>Order Creation Date</h4>
+        <p>{{order.created | date: 'dd.MM.y'}}</p>
+      </div>
+    </div>
+
+    <h3>Ordered Items</h3>
+
+    <div class="table-empty" *ngIf="products.length === 0">
+      No Records Found
+    </div>
+
+    <div class="print-content__table print-content__table_items" *ngIf="products.length > 0">
+      <div
+        class="print-content__table-row"
+        *ngFor="let product of products; let idx = index"
+      >
+        <div class="print-content__table-inner">
+          <div class="print-content__table-col" style="width: 5%;">
+            <h4>#</h4>
+            <p>{{idx + 1}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 30%;">
+            <h4>Code</h4>
+            <p>{{product.nomenclature.code}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 30%;">
+            <h4>Name</h4>
+            <p>{{product.nomenclature.name}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 20%;">
+            <h4>Technology</h4>
+            <p>{{product.current_technology?.name}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 15%;">
+            <h4>Quantity</h4>
+            {{product.quantity}}
+          </div>
+          <div class="print-content__table-col" style="width: 35%;">
+            <h4>Employees</h4>
+          </div>
+          <div class="print-content__table-col" style="width: 30%;">
+            <h4>Ready</h4>
+            <i class="fas fa-check text-success" *ngIf="product.isReady"></i>
+            <p *ngIf="!product.isReady">X</p>
+          </div>
+          <div class="print-content__table-col" style="width: 20%;">
+            <h4>QC passed</h4>
+            <p *ngIf="!product.quality_control && !product.is_technology_ready">—</p>
+            <p *ngIf="product.is_technology_ready && !product.quality_control">In QC</p>
+            <p *ngIf="product.quality_control">{{product.passed_quantity}}/{{product.initial_quantity}}
+              <span *ngIf="product.quality_control === '0'">(Not passed)</span>
+              <span *ngIf="product.quality_control === '1'">(Passed)</span>
+              <span *ngIf="product.quality_control === '2'">(Partly passed)</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Materials</h3>
+    <div class="table-empty" *ngIf="materials.length === 0">
+      No Records Found
+    </div>
+
+    <div class="print-content__table print-content__table_materials" *ngIf="materials.length > 0">
+      <div
+        class="print-content__table-row"
+        *ngFor="let material of materials; let idx = index"
+      >
+        <div class="print-content__table-inner">
+          <div class="print-content__table-col" style="width: 5%;">
+            <h4>#</h4>
+            <p>{{idx + 1}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 30%;">
+            <h4>Code</h4>
+            <p *ngIf="material.material_nomenclature">
+              {{material.material_nomenclature.code}}
+            </p>
+            <p *ngIf="material.order_product_nomenclature">
+              {{material.order_product_nomenclature.code}}
+            </p>
+            <p *ngIf="material.list_product">
+              {{material.list_product.nomenclature.code}}
+            </p>
+          </div>
+          <div class="print-content__table-col" style="width: 25%;">
+            <h4>Name</h4>
+            <p *ngIf="material.material_nomenclature">
+              {{material.material_nomenclature.name}}
+            </p>
+            <p *ngIf="material.order_product_nomenclature">
+              {{material.order_product_nomenclature.name}}
+            </p>
+            <p *ngIf="material.list_product">
+              {{material.list_product.nomenclature.name}}
+            </p>
+          </div>
+          <div class="print-content__table-col" style="width: 20%;">
+            <h4>Technology</h4>
+            <p>{{material?.technology}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 20%;">
+            <h4>Req Quantity</h4>
+            {{material?.totalInitialQuantity}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Machines</h3>
+    <div class="table-empty" *ngIf="machines.length === 0">
+      No Records Found
+    </div>
+
+    <div class="print-content__table print-content__table_materials" *ngIf="machines.length > 0">
+      <div
+        class="print-content__table-row"
+        *ngFor="let machine of machines; let idx = index"
+      >
+        <div class="print-content__table-inner">
+          <div class="print-content__table-col" style="width: 5%;">
+            <h4>#</h4>
+            <p>{{idx + 1}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 40%;">
+            <h4>Name</h4>
+            <p>{{machine.machine.name}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 35%;">
+            <h4>Description</h4>
+            <p>{{machine.machine.description}}</p>
+          </div>
+          <div class="print-content__table-col" style="width: 20%;">
+            <h4>Duration</h4>
+            <p>{{machine.duration}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagebreak"> </div>
+  <div class="user-info">
+    <div class="left">
+      <div>
+        <h3>Sent</h3>
+        <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+      </div>
+      <div>
+        <h3>Date</h3>
+        <p>{{currentDate | date: 'dd.MM.y'}}</p>
+      </div>
+      <div>
+        <h3>Signed</h3>
+      </div>
+    </div>
+    <div class="right">
+      <div>
+        <h3>Retrieved</h3>
+        <p></p>
+      </div>
+      <div>
+        <h3>Date</h3>
+        <p></p>
+      </div>
+      <div>
+        <h3>Signed</h3>
+      </div>
+    </div>
+  </div>
+</div>

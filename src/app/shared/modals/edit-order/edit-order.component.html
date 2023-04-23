@@ -4,8 +4,15 @@
     <ng-container [ngSwitch]="data.orderType">
       <ng-container *ngSwitchCase="'procurement'">Procurement</ng-container>
       <ng-container *ngSwitchCase="'outsourcing'">Outsourcing</ng-container>
+      <ng-container *ngSwitchCase="'manufacturing'">Manufacturing</ng-container>
     </ng-container>
-    Chain
+
+    <ng-container *ngIf="data.orderType !== 'manufacturing'">
+      Chain
+    </ng-container>
+    <ng-container *ngIf="data.orderType === 'manufacturing'">
+      Order
+    </ng-container>
   </h2>
 </div>
 
