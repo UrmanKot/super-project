@@ -45,6 +45,11 @@ export class UITask extends TaskSet {
   };
 }
 
+class ProductionType {
+  value: string;
+  name: string;
+}
+
 @Component({
   selector: 'pek-manufacturing-chart',
   templateUrl: './manufacturing-chart.component.html',
@@ -58,6 +63,12 @@ export class ManufacturingChartComponent implements OnInit {
   selectedFilterTechnologies: string[] = [];
 
   selectedProductionTypes: string[] = [];
+
+  productionsTypes: ProductionType[] = [
+    {value: '0', name: 'Outsource'},
+    {value: '1', name: 'Own production'},
+    {value: '2', name: 'Purchased'},
+  ]
 
   statuses: Status[] = [
     {value: 'Not processed', label: 'Not processed'},
