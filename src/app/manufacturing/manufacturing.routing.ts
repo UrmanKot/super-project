@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {ManufacturingLayoutComponent} from './components/manufacturing-layout/manufacturing-layout.component';
 import {ManufacturingPlanListComponent} from './components/manufacturing-plan-list/manufacturing-plan-list.component';
 import {
@@ -15,6 +15,7 @@ import {ManufacturingOrdersComponent} from './components/manufacturing-orders/ma
 import {
   ManufacturingOrderPageComponent
 } from './components/manufacturing-order-page/manufacturing-order-page.component';
+import {ManufacturingPlanComponent} from './components/manufacturing-plan/manufacturing-plan.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,13 @@ const routes: Routes = [
     component: ManufacturingLayoutComponent,
     children: [
       {path: '', redirectTo: 'plans', pathMatch: 'full'},
-      {path: 'plans', title: 'Plans', component: ManufacturingPlanListComponent},
+      {
+        path: 'plans',
+        children: [
+          {path: '', title: 'Plans', component: ManufacturingPlanListComponent},
+          {path: 'plan/:rootId', title: 'Plan', component: ManufacturingPlanComponent},
+        ]
+      },
       {
         path: 'orders',
         children: [
@@ -43,4 +50,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ManufacturingRouting { }
+export class ManufacturingRouting {
+}

@@ -23,6 +23,7 @@ export class Product {
   rght?: number;
   locator?: Locator;
   level?: number;
+  tree_id?: number;
 }
 
 export class ProductFile {

@@ -180,6 +180,6 @@ export class ManufacturingPlanListComponent implements OnInit {
       `;
     });
 
-    return `<ul class="test">${childContent}</ul>`;
+    return `<ul class="plan-row">${childContent}</ul>`;
   }
 }

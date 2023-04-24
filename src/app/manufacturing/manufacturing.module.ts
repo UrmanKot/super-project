@@ -18,6 +18,11 @@ import { ManufacturingOrdersComponent } from './components/manufacturing-orders/
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import { ManufacturingOrderPageComponent } from './components/manufacturing-order-page/manufacturing-order-page.component';
 import { ManufacturingOrderPagePrintComponent } from './components/manufacturing-order-page/manufacturing-order-page-print/manufacturing-order-page-print.component';
+import { ManufacturingChartComponent } from './components/manufacturing-chart/manufacturing-chart.component';
+import {ResizableModule} from 'angular-resizable-element';
+import { ManufacturingListProductProductionComponent } from './components/manufaturing-list-product-production/manufacturing-list-product-production.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ManufacturingPlanComponent } from './components/manufacturing-plan/manufacturing-plan.component';
 
 
 @NgModule({
@@ -35,13 +40,18 @@ import { ManufacturingOrderPagePrintComponent } from './components/manufacturing
     ManufacturingOrdersComponent,
     ManufacturingOrderPageComponent,
     ManufacturingOrderPagePrintComponent,
+    ManufacturingChartComponent,
+    ManufacturingListProductProductionComponent,
+    ManufacturingPlanComponent,
   ],
   imports: [
     SharedModule,
     CommonModule,
     ManufacturingRouting,
     LayoutModule,
-    TriStateCheckboxModule
+    TriStateCheckboxModule,
+    ResizableModule,
+    DragDropModule
   ]
 })
 export class ManufacturingModule { }

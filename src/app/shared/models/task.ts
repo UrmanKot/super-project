@@ -2,10 +2,19 @@ import {Nomenclature} from '@shared/models/nomenclature';
 import {Product} from '../../product-structure/models/product';
 import {Employee} from '@shared/models/employee';
 import {SerialNumber} from '../../procurement/models/invoice';
+import {Machine} from '../../manufacturing/models/machine';
+import {PlanningStatus} from '../../manufacturing/enums/planning-status.enum';
+import {ListProductProduction} from '../../manufacturing/models/list-product-production';
 
 export type TechnologyName = string;
 export type TaskStatus = string;
 export type Color = string;
+
+export enum TTCDisplayType {
+  MINUTES = '0',
+  HOURS = '1',
+  DAYS = '2'
+}
 
 export class RootTask {
   readonly id: number;
@@ -27,27 +36,39 @@ export class Task {
   product_name: string;
   created: string;
   updated: string;
+
   /** Длительность в часах */
   duration?: number;
   start_date: Date;
   end_date: Date;
+  unconfirmed_end_date?: Date;
   is_grouped?: boolean;
   is_locked: boolean;
   is_planned: boolean;
+  technologyUid?: number;
+  is_added_manually: boolean;
+  change_request?: boolean;
+  groupId?: string;
+  uiGroupId?: number;
+  uiParent?: number;
+  next_task: number;
+  previous_task: number;
   technology?: TechnologyName;
   availability: number | null;
   depends_on: number | null;
   status: TaskStatus;
   employees?: Executor[];
   machines?: ExecutionMachine[];
+  planning_status?: PlanningStatus;
   list_product: Product;
   required_quantity?: number;
   parent_task?: number;
   serials?: SerialNumber[];
   root_nomenclature?: Nomenclature;
   serial_numbers?: SerialNumber[];
+  reserved_serial_numbers?: SerialNumber[];
   serial_products?: any[];
-  production_list_id?: number;
+  ttc_display_type?: TTCDisplayType;
   label?: string;
   child?: Task[];
   /** @deprecated */
@@ -65,13 +86,16 @@ export class Task {
   // ui/ux only props
   isSaved?: boolean;
   searchFieldEmployee?: number[];
+  use_technical_equipment?: boolean;
+  needs_technical_equipment?: boolean;
+  production_list_id: string;
 }
 
 export class TaskSet extends Task {
 
   static id = 0;
 
-  // production: ListProductProduction;
+  production: ListProductProduction;
   id: number;
   tasks: Task[] = [];
 
@@ -112,7 +136,7 @@ export class Executor {
 export class ExecutionMachine {
   duration: number;
   id?: number;
-  // machine: Machine;
+  machine: Machine;
   task: number;
   start?: Date;
   end?: Date;
