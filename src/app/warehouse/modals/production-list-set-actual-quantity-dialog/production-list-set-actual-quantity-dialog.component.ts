@@ -634,6 +634,16 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
           serial_product_ids: [id]
         })
       })
+
+
+      // if (this.form.get('serial_product_ids').value.length === 0) {
+      //   send.push({
+      //     id: this.listProduct.products[0].id,
+      //     actual_quantity: 0,
+      //     serial_product_ids: []
+      //   })
+      // }
+
     } else {
       this.form.get('root_serial_numbers_in_production').value.forEach((id, idx) => {
         send.push({
