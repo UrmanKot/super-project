@@ -261,17 +261,18 @@ export class ProductionListComponent implements OnInit {
       });
 
       newListProducts.filter(listProduct => listProduct.groupId === list.groupId).forEach(l => {
-        list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}`;
+        list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}/${lists.find(l => l.id === list.parent)?.nomenclature?.id}`;
         const childrenListProducts = lists.filter(p => p.parent === list.uiParent);
 
         childrenListProducts.forEach(l => {
-          list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}`;
+          list.groupKey += `${l.technology?.id}/${l.status}/${l.nomenclature.id}/${l.level}/${lists.find(l => l.id === list.parent)?.nomenclature?.id}`;
         });
       });
     });
 
 
     lists.forEach(list => {
+      list.ff = `${list.nomenclature.id}/${list.level}/${lists.find(l => l.id === list.parent)?.nomenclature?.id}`
       list.filteredProducts = lists.filter(p => p.groupKey === list.groupKey);
     });
 
@@ -303,12 +304,12 @@ export class ProductionListComponent implements OnInit {
         if (!parentNode.data.blockedExpand) {
           const filteredLists = lists.filter(l => parentNode.data.filteredProducts.map(p => p.id).includes(l.parent));
 
-          const newLiftProducts: ListProduct[] = [];
+          const newListProducts: ListProduct[] = [];
 
           filteredLists.forEach(list => {
-            if (!newLiftProducts.find(p => p.groupId === list.groupId)) {
+            if (!newListProducts.find(p => p.groupId === list.groupId)) {
 
-              if (!newLiftProducts.find(l => l.groupKey === list.groupKey)) {
+              if (!newListProducts.find(l => l.groupKey === list.groupKey)) {
 
                 const totalActualQuantity = filteredLists
                   .filter(p => p.actual_quantity > 0 && list.nomenclature.id === p.nomenclature.id)
@@ -348,12 +349,12 @@ export class ProductionListComponent implements OnInit {
                   reserved_quantity: reservedQuantity,
                 };
 
-                newLiftProducts.push(newList);
+                newListProducts.push(newList);
               }
             }
           });
 
-          newLiftProducts.forEach(newListProduct => {
+          newListProducts.forEach(newListProduct => {
             parentNode.children.push({
               parent: parentNode,
               data: newListProduct,
@@ -361,6 +362,9 @@ export class ProductionListComponent implements OnInit {
               expanded: newListProduct.blockedExpand ? false : this.expanseMap[newListProduct.uid]
             });
           });
+
+          const nomenclaturesTypes = {'0': 3, '1': 1, '2': 2};
+          parentNode.children.sort((a, b) => nomenclaturesTypes[a.data.nomenclature.type] - nomenclaturesTypes[b.data.nomenclature.type] || a.data.nomenclature.id - b.data.nomenclature.id);
 
           if (parentNode.children.length > 0) {
             fillTree(parentNode.children, level);
@@ -414,6 +418,9 @@ export class ProductionListComponent implements OnInit {
           });
         });
 
+        const nomenclaturesTypes = {'0': 3, '1': 1, '2': 2};
+        node.children.sort((a, b) => nomenclaturesTypes[a.data.nomenclature.type] - nomenclaturesTypes[b.data.nomenclature.type] || a.data.nomenclature.id - b.data.nomenclature.id);
+
         if (node.children.length > 0) {
           fillTree(node.children);
         }
@@ -446,7 +453,11 @@ export class ProductionListComponent implements OnInit {
       list.reserved_quantity = list.reserved_quantity ?? 0;
       list.actual_quantity = list.actual_quantity ?? 0;
 
-      list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level);
+      // const parentList = lists.find(l => list.id === l.parent);
+
+      list.products = lists.filter(l => l.nomenclature.id === list.nomenclature.id && l.level === list.level && list.ff === l.ff);
+
+      // list.products = list.products.filter(l => lists.find(t => t.nomenclature.id === ))
 
       list.warehouseQuantities = this.adapterService.removeDuplicates(list.products, list => list.technology?.id)
         .sort((a, b) => a.task_sort_value - b.task_sort_value)
@@ -935,14 +946,16 @@ export class ProductionListComponent implements OnInit {
     temp.forEach(node => {
       this.expandCollapseRecursive(node, false);
     });
+
+
     this.tree = temp;
     this.selectedNodeTree = null;
   }
 
   expandCollapseRecursive(node: TreeNode, isExpand: boolean): void {
-    if (node.data.status != 1) {
+    if (node.data.status !== 'Completed') {
       node.expanded = isExpand;
-      if (node.children) {
+      if (node.children && node.children?.length > 0) {
         node.children.forEach(childNode => {
           this.expandCollapseRecursive(childNode, isExpand);
         });

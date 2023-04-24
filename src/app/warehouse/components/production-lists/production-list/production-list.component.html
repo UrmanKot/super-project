@@ -399,8 +399,7 @@
             </td>
             <td style="width: 6%" class="text-center">
               <span *ngFor="let technology of rowData?.technologies; let idx = index">
-                {{technology?.name}}
-                <ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
+                {{technology?.name}}<ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
               </span>
             </td>
             <td style="width: 6%" class="text-center">
@@ -441,7 +440,7 @@
               <h3 class="td-title">UOM</h3>
               {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
-            <td style="width: 9%" class="text-center">
+            <td style="width: 9%" class="text-center word-break">
               <h3 class="td-title">Locator</h3>
               {{rowData.available_on_locator}}
             </td>

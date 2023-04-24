@@ -39,6 +39,7 @@ export class ListProduct {
   currentTechnology: Technology;
   pureTotalRequiredQuantity?: number;
   children?: ListProduct[];
+  ff?: string;
 }
 
 export class ActualQuantityPayload {

@@ -52,6 +52,8 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.data.listProduct);
+
     if (!this.data.isOldList) {
       this.listProduct = Object.assign({}, this.data.listProduct);
 
