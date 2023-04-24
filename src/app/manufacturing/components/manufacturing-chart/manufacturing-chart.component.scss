@@ -39,7 +39,7 @@ p-table {
   position: relative;
   overflow-y: auto;
   overflow-x: scroll;
-  height: calc(100vh - 194px);
+  height: calc(100vh - 114px);
   border-top: 1px solid #dddddd;
 
   &_small {
@@ -198,11 +198,16 @@ mwlResizable {
   flex-direction: column;
 }
 
+.footer-text {
+  font-weight: 500;
+}
+
 .filter {
   flex: 0;
   z-index: 1003;
   background: #fff;
-  min-height: 85px;
+  //min-height: 85px;
+  padding: 0 1.75rem;
   transition: 0s !important;
 
   .form-group {
@@ -371,7 +376,7 @@ mwlResizable {
 .bord {
   position: absolute;
   right: 0;
-  height: calc(100vh - 211px);
+  height: calc(100vh - 114px);
   width: 3px;
   border: none !important;
   padding: 0 !important;

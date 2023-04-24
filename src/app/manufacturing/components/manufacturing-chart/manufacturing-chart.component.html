@@ -211,7 +211,7 @@
 
         <div *ngSwitchDefault class="form-group d-flex align-items-center pt-2 pb-2 buttons">
           <div class="d-flex align-items-center">
-            Initialize:
+            <p class="footer-text mr-2">Initialize:</p>
             <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'make-order'">Order creation</button>-->
             <button
               pButton
@@ -238,7 +238,7 @@
             ></button>
             <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'edit-tasks'">Task planning</button>-->
             <!--            <button type="button" class=" btn btn-primary btn-edit" (click)="mode = 'add-items'">Add Items</button>-->
-            <div class="ml-3 d-flex align-items-center chart-scale-btns">
+            <div class="ml-4 mr-4 d-flex align-items-center chart-scale-btns">
               <!--              <button class="btn btn-primary mr-2" (click)="togglePlanScale('minus')" [disabled]="planScale === 25">—-->
               <!--              </button>-->
               <button
@@ -261,7 +261,7 @@
                 [disabled]="planScale === 100"
               ></button>
             </div>
-            <div class="ml-5 prod-picker" *ngIf="isPlan">
+            <div class="prod-picker mr-2" *ngIf="isPlan">
               <p-multiSelect
                 class="plan-multi"
                 (onChange)="filterTasksForStatus()"
@@ -273,7 +273,7 @@
               ></p-multiSelect>
             </div>
 
-            <div class="statuses-picker">
+            <div class="statuses-picker mr-2">
               <p-multiSelect
                 [options]="statuses"
                 [(ngModel)]="selectedStatuses"
@@ -285,7 +285,7 @@
               ></p-multiSelect>
             </div>
 
-            <div class="technologies-picker">
+            <div class="technologies-picker mr-2">
               <p-multiSelect
                 [options]="technologiesPlanning"
                 [(ngModel)]="selectedFilterTechnologies"
