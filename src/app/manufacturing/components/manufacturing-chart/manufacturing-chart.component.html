@@ -14,55 +14,55 @@
             (change)="toggleAllProductsSelected()"
           >
         </div>
-<!--        <div-->
-<!--          class="mb-2 info-container"-->
-<!--          *ngIf="!isPlan"-->
-<!--        >-->
-<!--          <div *ngIf="hasDeliveryDateChanges && !isPlan">-->
-<!--            {{hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges ? 'Root' : ''}} Dates Of Delivery Changed-->
+        <!--        <div-->
+        <!--          class="mb-2 info-container"-->
+        <!--          *ngIf="!isPlan"-->
+        <!--        >-->
+        <!--          <div *ngIf="hasDeliveryDateChanges && !isPlan">-->
+        <!--            {{hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges ? 'Root' : ''}} Dates Of Delivery Changed-->
 
-<!--            <button-->
-<!--              *ngIf="hasChildDeliveryDateChanges"-->
-<!--              class="btn btn-danger ml-2 mr-5"-->
-<!--              (click)="confirmDateChanges(true)"-->
-<!--            >-->
-<!--              Confirm-->
-<!--            </button>-->
-<!--            <button-->
-<!--              *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"-->
-<!--              class="btn btn-danger ml-2 mr-5"-->
-<!--              (click)="confirmDateChanges(false)"-->
-<!--            >-->
-<!--              Confirm-->
-<!--            </button>-->
-<!--          </div>-->
-<!--          <div *ngIf="getLastTask?.planning_status && !isPlan">-->
+        <!--            <button-->
+        <!--              *ngIf="hasChildDeliveryDateChanges"-->
+        <!--              class="btn btn-danger ml-2 mr-5"-->
+        <!--              (click)="confirmDateChanges(true)"-->
+        <!--            >-->
+        <!--              Confirm-->
+        <!--            </button>-->
+        <!--            <button-->
+        <!--              *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"-->
+        <!--              class="btn btn-danger ml-2 mr-5"-->
+        <!--              (click)="confirmDateChanges(false)"-->
+        <!--            >-->
+        <!--              Confirm-->
+        <!--            </button>-->
+        <!--          </div>-->
+        <!--          <div *ngIf="getLastTask?.planning_status && !isPlan">-->
 
-<!--            <ng-container [ngSwitch]="getLastTask?.planning_status">-->
-<!--              <span *ngSwitchCase="PlanningStatus.ON_STOCK" class="text-success">On Stock</span>-->
-<!--              <span *ngSwitchCase="PlanningStatus.PLANNED">-->
-<!--              <span class="text-success">Confirmed</span>-->
-<!--              <button-->
-<!--                *ngIf="!getLastTask?.change_request"-->
-<!--                class="btn btn-primary ml-3"-->
-<!--                (click)="sendPlanToCorrections()"-->
-<!--              >-->
-<!--                request for planing corrections-->
-<!--              </button>-->
-<!--                {{getLastTask?.change_request ? '(Requested For Planing Corrections)' : ''}}-->
-<!--            </span>-->
-<!--              <span *ngSwitchCase="PlanningStatus.WAITING_CONFIRMATION">Waiting Confirmation</span>-->
-<!--              <button-->
-<!--                *ngSwitchCase="PlanningStatus.REQUIRES_PLANNING"-->
-<!--                class="btn btn-primary mr-2"-->
-<!--                (click)="sendPlanToConfirmation()"-->
-<!--              >-->
-<!--                Sent To Confirmation-->
-<!--              </button>-->
-<!--            </ng-container>-->
+        <!--            <ng-container [ngSwitch]="getLastTask?.planning_status">-->
+        <!--              <span *ngSwitchCase="PlanningStatus.ON_STOCK" class="text-success">On Stock</span>-->
+        <!--              <span *ngSwitchCase="PlanningStatus.PLANNED">-->
+        <!--              <span class="text-success">Confirmed</span>-->
+        <!--              <button-->
+        <!--                *ngIf="!getLastTask?.change_request"-->
+        <!--                class="btn btn-primary ml-3"-->
+        <!--                (click)="sendPlanToCorrections()"-->
+        <!--              >-->
+        <!--                request for planing corrections-->
+        <!--              </button>-->
+        <!--                {{getLastTask?.change_request ? '(Requested For Planing Corrections)' : ''}}-->
+        <!--            </span>-->
+        <!--              <span *ngSwitchCase="PlanningStatus.WAITING_CONFIRMATION">Waiting Confirmation</span>-->
+        <!--              <button-->
+        <!--                *ngSwitchCase="PlanningStatus.REQUIRES_PLANNING"-->
+        <!--                class="btn btn-primary mr-2"-->
+        <!--                (click)="sendPlanToConfirmation()"-->
+        <!--              >-->
+        <!--                Sent To Confirmation-->
+        <!--              </button>-->
+        <!--            </ng-container>-->
 
-<!--          </div>-->
-<!--        </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
         <div class="tasks-container" [class.tasks-container_small]="isPlan">
           <div class="items-container">
             <div class="d-flex" [style.minWidth.px]="innerContentWidth">
@@ -209,20 +209,57 @@
           </div>
         </div>
 
-        <div *ngSwitchDefault class="form-group d-flex align-items-center pt-4 pb-4 buttons">
+        <div *ngSwitchDefault class="form-group d-flex align-items-center pt-2 pb-2 buttons">
           <div class="d-flex align-items-center">
-            <!--            <mat-label class="mb-0"><b>Initialize:</b></mat-label>-->
-            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'make-order'">Order creation</button>
-            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'edit-tasks'">Task planning</button>
-            <button type="button" class=" btn btn-primary btn-edit" (click)="mode = 'add-items'">Add Items</button>
-            <div class="ml-2 d-flex align-items-center chart-scale-btns">
-              <button class="btn btn-primary mr-2" (click)="togglePlanScale('minus')" [disabled]="planScale === 25">—
-              </button>
-              <div>{{planScale}}%</div>
-              <button class="class ml-2 btn btn-primary" (click)="togglePlanScale('plus')"
-                      [disabled]="planScale === 100">
-                +
-              </button>
+            Initialize:
+            <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'make-order'">Order creation</button>-->
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Order Creation"
+              icon="pi pi-database"
+              (click)="mode = 'make-order'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Task Planning"
+              icon="pi pi-sliders-h"
+              (click)="mode = 'edit-tasks'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              label="Add Items"
+              (click)="mode = 'add-items'"
+            ></button>
+            <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'edit-tasks'">Task planning</button>-->
+            <!--            <button type="button" class=" btn btn-primary btn-edit" (click)="mode = 'add-items'">Add Items</button>-->
+            <div class="ml-3 d-flex align-items-center chart-scale-btns">
+              <!--              <button class="btn btn-primary mr-2" (click)="togglePlanScale('minus')" [disabled]="planScale === 25">—-->
+              <!--              </button>-->
+              <button
+                pButton
+                type="button"
+                icon="pi pi-search-minus"
+                (click)="togglePlanScale('minus')"
+                [disabled]="planScale === 25"
+              ></button>
+
+              <div class="plan-scale">{{planScale}}%</div>
+              <!--              <button class="class ml-2 btn btn-primary" (click)="togglePlanScale('plus')"-->
+              <!--                      [disabled]="planScale === 100">-->
+              <!--              </button>-->
+              <button
+                pButton
+                type="button"
+                icon="pi pi-search-plus"
+                (click)="togglePlanScale('plus')"
+                [disabled]="planScale === 100"
+              ></button>
             </div>
             <div class="ml-5 prod-picker" *ngIf="isPlan">
               <p-multiSelect
@@ -235,23 +272,69 @@
                 placeholder="Production Lists"
               ></p-multiSelect>
             </div>
+
+            <div class="statuses-pikcer">
+              <p-multiSelect
+                [options]="statuses"
+                [(ngModel)]="selectedStatuses"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Statuses"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
+
+            <div class="technologies-picker">
+              <p-multiSelect
+                [options]="technologiesPlanning"
+                [(ngModel)]="selectedFilterTechnologies"
+                optionLabel="name"
+                optionValue="name"
+                placeholder="Technologies"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
+
+            <div class="type-picker">
+              <p-multiSelect
+                [options]="technologiesPlanning"
+                [(ngModel)]="selectedProductionTypes"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Type"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
           </div>
-          <!--          <div class="ml-3 statuses-pick">-->
-          <!--            <mat-form-field appearance="fill">-->
-          <!--              <mat-label>Statuses</mat-label>-->
-          <!--              <mat-select multiple [(value)]="selectedStatuses" (valueChange)="filterTasksForStatus()">-->
-          <!--                <mat-option *ngFor="let status of statuses" [value]="status.value">{{status.label}}</mat-option>-->
-          <!--              </mat-select>-->
-          <!--            </mat-form-field>-->
-          <!--          </div>-->
-          <!--          <div class="ml-3 statuses-pick">-->
-          <!--            <mat-form-field appearance="fill">-->
-          <!--              <mat-label>Technologies</mat-label>-->
-          <!--              <mat-select multiple [(value)]="selectedFilterTechnologies" (valueChange)="filterTasksForStatus()">-->
-          <!--                <mat-option *ngFor="let tech of technologiesPlanning" [value]="tech.name">{{tech.name}}</mat-option>-->
-          <!--              </mat-select>-->
-          <!--            </mat-form-field>-->
-          <!--          </div>-->
+          <!--                    <div class="ml-3 statuses-pick">-->
+          <!--                      <p-dropdown-->
+          <!--                        [options]="technologies"-->
+          <!--                        placeholder="Select Technology"-->
+          <!--                        [(ngModel)]="selectTechnologyId"-->
+          <!--                        (ngModelChange)="onSelectTechnology()"-->
+          <!--                        optionLabel="name"-->
+          <!--                        optionValue="id"-->
+          <!--                        [showClear]="showClear"-->
+          <!--                      >-->
+          <!--                      </p-dropdown>-->
+          <!--                      <mat-form-field appearance="fill">-->
+          <!--                        <mat-label>Statuses</mat-label>-->
+          <!--                        <mat-select multiple [(value)]="selectedStatuses" (valueChange)="filterTasksForStatus()">-->
+          <!--                          <mat-option *ngFor="let status of statuses" [value]="status.value">{{status.label}}</mat-option>-->
+          <!--                        </mat-select>-->
+          <!--                      </mat-form-field>-->
+          <!--                    </div>-->
+          <!--                    <div class="ml-3 statuses-pick">-->
+          <!--                      <mat-form-field appearance="fill">-->
+          <!--                        <mat-label>Technologies</mat-label>-->
+          <!--                        <mat-select multiple [(value)]="selectedFilterTechnologies" (valueChange)="filterTasksForStatus()">-->
+          <!--                          <mat-option *ngFor="let tech of technologiesPlanning" [value]="tech.name">{{tech.name}}</mat-option>-->
+          <!--                        </mat-select>-->
+          <!--                      </mat-form-field>-->
+          <!--                    </div>-->
 
           <!--          <div class="ml-3 statuses-pick">-->
           <!--            <mat-form-field appearance="fill">-->

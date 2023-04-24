@@ -60,12 +60,12 @@ export class ManufacturingChartComponent implements OnInit {
   selectedProductionTypes: string[] = [];
 
   statuses: Status[] = [
-    {value: '0', label: 'Not processed'},
-    {value: '1', label: 'Deficit'},
-    {value: '2', label: 'Rework'},
-    {value: '3', label: 'Ordered'},
-    {value: '4', label: 'On stock'},
-    {value: '5', label: 'Reserved'},
+    {value: 'Not processed', label: 'Not processed'},
+    {value: 'Deficit', label: 'Deficit'},
+    {value: 'Rework', label: 'Rework'},
+    {value: 'Ordered', label: 'Ordered'},
+    {value: 'On stock', label: 'On stock'},
+    {value: 'Reserved', label: 'Reserved'},
   ];
 
   @Input() isPlan = false;
@@ -567,6 +567,18 @@ export class ManufacturingChartComponent implements OnInit {
     const selectedTasks: Task[] = [];
     this.filteredTasksSet.clear();
 
+    if (!this.selectedStatuses) {
+      this.selectedStatuses = [];
+    }
+
+    if (!this.selectedFilterTechnologies) {
+      this.selectedFilterTechnologies = [];
+    }
+
+    if (!this.selectedProductionTypes) {
+      this.selectedProductionTypes = [];
+    }
+
     this.productions.forEach(production => production.isVisible = false);
     this.productions.forEach(production => {
       let tasks = production.tasks;
@@ -585,6 +597,9 @@ export class ManufacturingChartComponent implements OnInit {
           });
         }
       }
+
+      console.log(this.selectedStatuses);
+      console.log(this.selectedFilterTechnologies);
 
       if (this.selectedStatuses.length) {
         this.selectedStatuses.forEach((status, idx) => {

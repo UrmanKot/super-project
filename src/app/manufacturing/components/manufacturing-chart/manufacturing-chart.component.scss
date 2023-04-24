@@ -226,14 +226,8 @@ mwlResizable {
 }
 
 .buttons {
-  font-size: 16px;
-
-  .fas {
-    font-size: 18px;
-  }
-
-  b {
-    font-size: 18px;
+  button {
+    text-transform: uppercase;
   }
 }
 
@@ -414,11 +408,16 @@ mwlResizable {
 
 .chart-scale-btns {
   button {
-    font-size: 20px;
-    height: 36.5px;
-    padding-top: 0;
-    padding-bottom: 0;
-    width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.125rem;
+    width: 2.5rem !important;
+  }
+
+  .plan-scale {
+    font-weight: 500;
+    width: 3.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
