@@ -23,6 +23,8 @@ import {ResizableModule} from 'angular-resizable-element';
 import { ManufacturingListProductProductionComponent } from './components/manufaturing-list-product-production/manufacturing-list-product-production.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ManufacturingPlanComponent } from './components/manufacturing-plan/manufacturing-plan.component';
+import { ManufacturingCreateOrderComponent } from './modals/manufacturing-create-order/manufacturing-create-order.component';
+import { ManufacturingMaterialPickerComponent } from './pickers/manufacturing-material-picker/manufacturing-material-picker.component';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { ManufacturingPlanComponent } from './components/manufacturing-plan/manu
     ManufacturingChartComponent,
     ManufacturingListProductProductionComponent,
     ManufacturingPlanComponent,
+    ManufacturingCreateOrderComponent,
+    ManufacturingMaterialPickerComponent,
   ],
   imports: [
     SharedModule,

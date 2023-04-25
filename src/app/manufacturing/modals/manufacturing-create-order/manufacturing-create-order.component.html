@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Create Order
+  </h2>
+</div>
+
+<mat-dialog-content class="overflow-auto">
+  <div class="d-flex indicators col-12 mb-3">
+    <div class="сol-6 mr-2">
+      <input id="own" type="radio" value="own" name="production" [(ngModel)]="production" (ngModelChange)="checkTasksTechnicalEquipment()">
+      <label for="own">Own production</label>
+    </div>
+    <div class="col-6">
+      <input id="outsource" class="radio-outsource" type="radio" value="outsource" name="production"
+             [(ngModel)]="production" (ngModelChange)="checkTasksTechnicalEquipment()">
+      <label for="outsource">Outsource production</label>
+    </div>
+  </div>
+
+  <div *ngFor="let order of orders; let idx = index" class="order-content">
+
+    <div class="p-3">
+      <h3 class="mb-3">{{idx + 1}}. {{order.task.technology}} of {{order.task.list_product.nomenclature.name}}
+        <i>{{order.task.list_product.nomenclature.code}}</i> x {{order.quantity}}</h3>
+
+      <label class="add-material">
+        <p-checkbox class="our-mat mr-2" [(ngModel)]="order.useOwnMaterials" [binary]="true"></p-checkbox>
+        <span>Material required</span>
+      </label>
+
+      <div [class.mt-3]="order.useOwnMaterials" class="warehouse-product">
+        <pek-manufacturing-material-picker *ngIf="order.useOwnMaterials" [(materials)]="order.materials"></pek-manufacturing-material-picker>
+      </div>
+
+      <label *ngIf="order.task.needs_technical_equipment" class="add-material">
+        <p-checkbox class="our-mat mr-2" [(ngModel)]="order.task.use_technical_equipment" [binary]="true"></p-checkbox>
+        <span>Use technical equipment</span>
+      </label>
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Create Order"
+    [loading]="isSaving"
+    [disabled]="disable()"
+    (click)="createOrder()"
+  ></button>
+</mat-dialog-actions>

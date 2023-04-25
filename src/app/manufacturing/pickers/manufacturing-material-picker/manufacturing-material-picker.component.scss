@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.btn-search {
+  height: 32px;
+  flex: 0 0 162px;
+  margin-right: 10px;
+}
+
+.header {
+  font-weight: 500;
+}
+
+.form-control {
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  width: 10rem;
+}
+
+.warehouse-product {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.material-name {
+  max-width: 440px;
+  padding: 0 20px;
+}
+
+.btn-picker {
+  font-weight: 500;
+  cursor: pointer;
+
+  i {
+    font-weight: 700;
+  }
+}
+
+.btn-pick {
+  padding-left: 27px;
+}

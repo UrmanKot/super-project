@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Task, TaskSet, TechnologyName} from '@shared/models/task';
 import {filter, map, mapTo, take, tap} from 'rxjs/operators';
-import {fromEvent, Observable, of, Subject, Subscription, takeUntil} from 'rxjs';
+import {forkJoin, fromEvent, Observable, of, Subject, Subscription, takeUntil} from 'rxjs';
 import {TaskService} from '@shared/services/task.service';
 import {TechnologyService} from '../../../product-structure/services/technology.service';
 import {ModalService} from '@shared/services/modal.service';
@@ -149,6 +149,17 @@ export class ManufacturingChartComponent implements OnInit {
     '#f1c0e8',
     '#cfbaf0',
     '#a3c4f3',
+    '#e8e8e4',
+    '#d7e3fc',
+    '#dbfdd8',
+    '#f9f195',
+    '#bdd7d2',
+    '#ebf4ff',
+    '#ccd5ae',
+    '#e3d5ca',
+    '#e0d4ed',
+
+
     // '#FFF587',
     // '#c1b9eb',
     // '#F2C5BB',
@@ -177,6 +188,8 @@ export class ManufacturingChartComponent implements OnInit {
 
   private destroy$ = new Subject();
   private taskDeleteSub: Subscription;
+
+  isLoading = true;
 
   constructor(
     private tasksService: TaskService,
@@ -224,7 +237,8 @@ export class ManufacturingChartComponent implements OnInit {
   updateTechnologies() {
     this.availableTechnologies.clear();
     this.availableTechnologiesPlanning.clear();
-    this.tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
+    // this.tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
+   this.tasks.filter(t => !t.is_locked && t.status === 'Deficit')
       .forEach(task => {
         if (!task.technology && task.list_product.nomenclature.type === '1') {
           this.availableTechnologies.add('Assembly');
@@ -272,7 +286,8 @@ export class ManufacturingChartComponent implements OnInit {
       });
 
       // добавляем технологии загруженных задач в список всех используемых технологий
-      tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
+      // tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
+      tasks.filter(t => !t.is_locked && t.status === 'Deficit')
         .forEach(task => {
           if (!task.technology && task.list_product.nomenclature.type === '1') {
             task.technology = 'Assembly';
@@ -318,6 +333,8 @@ export class ManufacturingChartComponent implements OnInit {
       this.updateTree();
       this.update();
       this.paint();
+
+      this.isLoading = false;
 
       return tasks;
     }));
@@ -714,52 +731,56 @@ export class ManufacturingChartComponent implements OnInit {
     const technologies = this.getSelectedTechnologies();
     const productions = this.getSelectedProduction();
     if (technologies.length > 0) {
-      // this.modalService.makeOrder(technologies).subscribe((res) => {
-      //   if (res) {
-      //     this.filterTasks();
-      //
-      //     const tasks = [];
-      //
-      //     technologies.forEach(tech => {
-      //       tech.tasks.forEach(task => {
-      //         tasks.push(task);
-      //       });
-      //     });
-      //
-      //     forkJoin(...tasks.map(task => this.tasksService.getById(task.id))).subscribe(newTasks => {
-      //       const nTasks = newTasks;
-      //
-      //       tasks.forEach(ta => {
-      //         const findTask = this.tasks.find(t => t.id === ta.id);
-      //
-      //         if (findTask) {
-      //           const newFindTask = nTasks.find(task => task.id === ta.id);
-      //           findTask.created_order = newFindTask.created_order;
-      //         }
-      //       });
-      //
-      //       productions.forEach(p => {
-      //         p.tasks.forEach(uiTask => {
-      //           uiTask.tasks.forEach(task => {
-      //             const findTask = tasks.find(t => t.id === task.id);
-      //
-      //             if (findTask) {
-      //               const newFindTask = nTasks.find(t => task.id === t.id);
-      //               findTask.created_order = newFindTask.created_order;
-      //
-      //               uiTask.created_order = newFindTask.created_order;
-      //             }
-      //           });
-      //         });
-      //       });
-      //     });
-      //
-      //     tasks.forEach(task => {
-      //       this.tasks.find(t => t.id === task.id).is_locked = true;
-      //     });
-      //     this.updateTechnologies();
-      //   }
-      // });
+      this.tasksService.makeOrderDialog(technologies).subscribe(response => {
+        if (response) {
+          this.filterTasks();
+
+          const tasks = [];
+
+          technologies.forEach(tech => {
+            tech.tasks.forEach(task => {
+              tasks.push(task);
+            });
+          });
+
+          forkJoin(...tasks.map(task => this.tasksService.getById(task.id))).subscribe(newTasks => {
+            const nTasks = newTasks.flat()
+
+            tasks.forEach(ta => {
+              const findTask = this.tasks.find(t => t.id === ta.id);
+
+              if (findTask) {
+                // @ts-ignore
+                const newFindTask = nTasks.find(task => task.id === ta.id);
+                // @ts-ignore
+                findTask.created_order = newFindTask.created_order;
+              }
+            });
+
+            productions.forEach(p => {
+              p.tasks.forEach(uiTask => {
+                uiTask.tasks.forEach(task => {
+                  const findTask = tasks.find(t => t.id === task.id);
+
+                  if (findTask) {
+                    // @ts-ignore
+                    const newFindTask = nTasks.find(t => task.id === t.id);
+                    // @ts-ignore
+                    findTask.created_order = newFindTask.created_order;
+                    // @ts-ignore
+                    uiTask.created_order = newFindTask.created_order;
+                  }
+                });
+              });
+            });
+          });
+
+          tasks.forEach(task => {
+            this.tasks.find(t => t.id === task.id).is_locked = true;
+          });
+          this.updateTechnologies();
+        }
+      });
     }
   }
 

@@ -45,9 +45,9 @@
       [(ngModel)]="production.isSelected"
       (change)="chart.changeAllProductsOnSelected()"
       type="checkbox"
-      [style.left]="production.hasChildren ? -(33 + production.product.level * 7) + 'px' : ''"
       class="task-checkbox"
     >
+<!--      [style.left]="production.hasChildren ? -(33 + production.product.level * 7) + 'px' : ''"-->
     <button
       class="task-btn"
       *ngIf="production?.hasChildren && chart.mode === 'add-items'"

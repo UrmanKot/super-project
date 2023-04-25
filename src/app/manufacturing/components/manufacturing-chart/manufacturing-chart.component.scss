@@ -12,12 +12,11 @@ p-table {
 
 .all-selected {
   position: absolute;
-  left: 15px;
-  top: 38px;
+  left: 6px;
+  top: 53px;
   display: flex;
   flex-direction: column;
   z-index: 1004;
-  background: #fff;
 
   label {
     margin-bottom: 0;
@@ -117,7 +116,7 @@ p-table {
     &::after {
       content: '';
       background: #f1716d;
-      height: calc(100vh - 211px);
+      height: calc(100vh - 132px);
       width: 1px;
       position: absolute;
       top: 0;
@@ -254,16 +253,41 @@ mwlResizable {
 }
 
 .planning {
-  .fas {
-    font-size: 18px;
-    margin-top: 12px;
+  display: flex;
+  flex-direction: row;
+}
+
+.plan-close-btn {
+  background: transparent;
+  color: var(--theme-color-primary);
+  padding: 0.625rem 1.125rem;
+  width: 2.5rem !important;
+  border: none !important;
+  position: relative;
+  margin-left: -1rem;
+
+  &:hover {
+    background: transparent;
+    color: var(--theme-color-primary);
   }
 
-  .btn-edit {
-    margin-top: 11px;
+  &:focus,
+  &:active {
+    box-shadow: none !important;
+  }
+
+  &::ng-deep {
+    .p-button-icon {
+      font-weight: 700;
+      position: relative;
+      top: 1px;
+    }
   }
 }
 
+.unlocked-technologies {
+  width: 15rem;
+}
 
 .production-panel-left {
   position: sticky;
@@ -390,6 +414,19 @@ mwlResizable {
 .task-btn_icon {
   top: 0 !important;
   cursor: default;
+  width: 21px;
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--text-color);
+  background: #fff;
+
+  i {
+    color: var(--text-color);
+    font-weight: 700;
+    font-size: 0.875rem
+  }
 }
 
 .technologies-filter {
@@ -398,10 +435,16 @@ mwlResizable {
 
 
 .edit-tasks {
-  button, span {
-    position: relative;
-    top: -5px;
+  flex-direction: row;
+
+  p {
+    font-weight: 500;
   }
+}
+
+.add-tasks {
+  flex-direction: row;
+  font-weight: 500;
 }
 
 
@@ -431,6 +474,33 @@ mwlResizable {
 
 .info-container {
   min-height: 1.5625rem;
+}
+
+.loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  p {
+    font-weight: 500;
+    margin-top: 1.25rem;
+    font-size: 1.25rem;
+  }
+}
+
+.disabled-panel {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.disabled-chart {
+  pointer-events: none;
 }
 
 

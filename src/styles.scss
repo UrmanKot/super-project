@@ -238,6 +238,10 @@ body {
   border: 1px solid #ced4da
 }
 
+.cdk-overlay-container {
+  z-index: 1100 !important;
+}
+
 .p-toast-icon-close {
   flex: 0 0 2rem !important;
 }

@@ -63,7 +63,7 @@
 
         <!--          </div>-->
         <!--        </div>-->
-        <div class="tasks-container" [class.tasks-container_small]="isPlan">
+        <div class="tasks-container" [class.tasks-container_small]="isPlan" [class.disabled-chart]="isLoading">
           <div class="items-container">
             <div class="d-flex" [style.minWidth.px]="innerContentWidth">
               <div class="left-panel-wrapper" [class.pl-33]="mode === 'make-order'">
@@ -139,7 +139,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="production-panel-right">
+                <div class="production-panel-right" *ngIf="!isLoading; else loading">
                   <pek-manufacturing-list-product-production
                     *ngFor="let rootProduction of rootProductions"
                     [production]="rootProduction"
@@ -151,13 +151,44 @@
         </div>
       </div>
     </div>
-    <div class="filter pl-5 pr-5">
+    <div class="filter pl-5 pr-5" [class.disabled-panel]="isLoading">
       <div [ngSwitch]="mode" class="plan-d">
 
-        <div *ngSwitchCase="'edit-tasks'" class="form-group edit-tasks d-flex align-items-center pt-3 pb-2 buttons">
-          <button type="button" class="btn btn-default mr-2" (click)="cancelEditTasks()">
-            <i class="fas fa-times"></i>
+        <div *ngSwitchCase="'edit-tasks'" class="form-group edit-tasks d-flex align-items-center buttons">
+          <!--          <button type="button" class="btn btn-default mr-2" (click)="cancelEditTasks()">-->
+          <!--            <i class="fas fa-times"></i>-->
+          <!--          </button>-->
+
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="cancelEditTasks()"
+            icon="pi pi-times"
+          >
           </button>
+
+          <div class="unlocked-technologies mr-3">
+            <p-multiSelect
+              (onChange)="selectTasks()"
+              [options]="technologiesPlanning"
+              [(ngModel)]="selectedTechnologiesPlanning"
+              optionValue="name"
+              optionLabel="name"
+              placeholder="Unlocked Technologies"
+            ></p-multiSelect>
+          </div>
+
+          <p class="mr-3">Selected {{selectedTasks.size}} tasks</p>
+
+          <button
+            pButton
+            type="button"
+            label="Edit Tasks"
+            icon="pi pi-pencil"
+            [disabled]="!selectedTasks.size"
+            (click)="editTasks()"
+          ></button>
 
           <!--          <mat-form-field class="mr-3 technologies-filter" appearance="fill">-->
           <!--            <mat-label>Unlocked technologies</mat-label>-->
@@ -178,10 +209,15 @@
           <!--          </button>-->
         </div>
 
-        <div *ngSwitchCase="'make-order'" class="form-group d-flex align-items-start pt-3 pb-2 planning">
-          <!--          <button type="button" class="btn btn-default mr-2" (click)="cancelMakeOrder()">-->
-          <!--            <i class="fas fa-times"></i>-->
-          <!--          </button>-->
+        <div *ngSwitchCase="'make-order'" class="form-group d-flex align-items-start planning">
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="cancelMakeOrder()"
+            icon="pi pi-times"
+          >
+          </button>
           <!--          <mat-form-field class="mr-3" appearance="fill">-->
           <!--            <mat-label>Unlocked technologies</mat-label>-->
           <!--            <mat-select multiple [(value)]="selectedTechnologies" (valueChange)="filterTasks()">-->
@@ -189,27 +225,58 @@
           <!--                          [disabled]="!availableTechnologies.has(tech.name)">{{tech.name}}</mat-option>-->
           <!--            </mat-select>-->
           <!--          </mat-form-field>-->
+          <!--          <button-->
+          <!--            type="button"-->
+          <!--            class="btn btn-primary btn-edit"-->
+          <!--            (click)="makeOrder()"-->
+          <!--            [disabled]="selectedTechnologies.length === 0">-->
+          <!--            Create order-->
+          <!--          </button>-->
+
+          <div class="unlocked-technologies mr-2">
+            <p-multiSelect
+              (onChange)="filterTasks()"
+              [options]="technologies"
+              [(ngModel)]="selectedTechnologies"
+              optionValue="name"
+              optionLabel="name"
+              placeholder="Unlocked Technologies"
+            ></p-multiSelect>
+          </div>
+
           <button
+            pButton
             type="button"
-            class="btn btn-primary btn-edit"
+            label="CREATE ORDER"
+            icon="pi pi-plus"
+            [disabled]="selectedTechnologies.length === 0"
             (click)="makeOrder()"
-            [disabled]="selectedTechnologies.length === 0">
-            Create order
-          </button>
+          ></button>
         </div>
 
-        <div *ngSwitchCase="'add-items'" class="form-group d-flex align-items-center pt-4 pb-3 buttons">
-          <button type="button" class="btn btn-default mr-2" (click)="mode = 'planning'">
-            <i class="fas fa-times"></i>
+        <div *ngSwitchCase="'add-items'" class="form-group d-flex align-items-center add-tasks buttons">
+          <!--          <button type="button" class="btn btn-default mr-2" (click)="mode = 'planning'">-->
+          <!--            <i class="fas fa-times"></i>-->
+          <!--          </button>-->
+
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="mode = 'planning'"
+            icon="pi pi-times"
+          >
           </button>
           <div class="d-flex">
             <div>Click on the button</div>
-            <button class="ml-2 mr-3 task-btn task-btn_icon position-relative"></button>
+            <button class="ml-2 mr-2 task-btn task-btn_icon position-relative">
+              <i class="pi pi-plus"></i>
+            </button>
             <div>to add items to the plan</div>
           </div>
         </div>
 
-        <div *ngSwitchDefault class="form-group d-flex align-items-center pt-2 pb-2 buttons">
+        <div *ngSwitchDefault class="form-group d-flex align-items-center buttons">
           <div class="d-flex align-items-center">
             <p class="footer-text mr-2">Initialize:</p>
             <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'make-order'">Order creation</button>-->
@@ -340,9 +407,9 @@
           <!--            <mat-form-field appearance="fill">-->
           <!--              <mat-label>Type</mat-label>-->
           <!--              <mat-select multiple [(value)]="selectedProductionTypes" (valueChange)="filterTasksForStatus()">-->
-<!--                          <mat-option [value]="'0'">Outsource</mat-option>-->
-<!--                          <mat-option [value]="'1'">Own production</mat-option>-->
-<!--                          <mat-option [value]="'2'">Purchased</mat-option>-->
+          <!--                          <mat-option [value]="'0'">Outsource</mat-option>-->
+          <!--                          <mat-option [value]="'1'">Own production</mat-option>-->
+          <!--                          <mat-option [value]="'2'">Purchased</mat-option>-->
           <!--              </mat-select>-->
           <!--            </mat-form-field>-->
           <!--          </div>-->
@@ -352,3 +419,10 @@
   </div>
 </div>
 
+<ng-template #loading>
+  <div class="loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+
+    <p>Chart loading in progress</p>
+  </div>
+</ng-template>

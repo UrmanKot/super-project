@@ -51,18 +51,18 @@
   //color: #00255c;
 
   .task-checkbox {
-    position: absolute;
     width: 18px;
     height: 18px;
     cursor: pointer;
-    left: -33px;
-    top: 9px;
+    left: 6px;
+    position: absolute;
+    z-index: 2;
   }
 
   &.root {
-    .task-checkbox {
-      left: -33px !important;
-    }
+    //.task-checkbox {
+    //  left: -33px !important;
+    //}
   }
 
   &.selected {
@@ -270,8 +270,8 @@
   &.new-date-smaller {
     pointer-events: none;
     border: none;
-    border-bottom: 3px solid red;
-    border-left: 3px dotted red;
+    border-bottom: 2px solid var(--text-color);
+    border-left: 3px dotted var(--text-color);
   }
 }
 
@@ -358,7 +358,7 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    //background: url("../../../../assets/svg/hand-shake.svg");
+    background: url("../../../../assets/images/svg/hand-shake.svg");
     right: 5px;
     z-index: 1;
   }
@@ -412,4 +412,31 @@
 
 .test {
   padding-left: 0 !important;
+}
+
+.task-btn {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 5px;
+  top: 4px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before,
+  &::after {
+    content: '';
+    background: var(--text-color);
+    width: 12px;
+    height: 2px;
+    position: absolute;
+  }
+
+  &::after {
+    transform: rotate(90deg);
+  }
 }
