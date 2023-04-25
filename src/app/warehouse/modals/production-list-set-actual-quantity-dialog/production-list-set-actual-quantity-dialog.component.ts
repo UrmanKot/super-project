@@ -632,10 +632,23 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
           id: this.listProduct.products[idx].id,
           actual_quantity: 1,
           serial_product_ids: [id]
-        })
-      })
+        });
+      });
 
+      let idx = 0;
 
+      if (this.totalRequiredQuantity !== send.length) {
+        while (this.totalRequiredQuantity !== send.length) {
+          if (!send.find(s => s.id === this.listProduct.products[0].id)) {
+            send.push({
+              id: this.listProduct.products[idx].id,
+              actual_quantity: 0,
+            });
+          }
+
+          idx++;
+        }
+      }
       // if (this.form.get('serial_product_ids').value.length === 0) {
       //   send.push({
       //     id: this.listProduct.products[0].id,
@@ -650,8 +663,23 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
           id: this.listProduct.products[idx].id,
           actual_quantity: 1,
           root_serial_numbers_in_production: [+id]
-        })
-      })
+        });
+      });
+
+      let idx = 0;
+
+      if (this.totalRequiredQuantity !== send.length) {
+        while (this.totalRequiredQuantity !== send.length) {
+          if (!send.find(s => s.id === this.listProduct.products[0].id)) {
+            send.push({
+              id: this.listProduct.products[idx].id,
+              actual_quantity: 0,
+            });
+          }
+
+          idx++;
+        }
+      }
     }
 
     this.listProductService.setActualQuantity(send).pipe(
