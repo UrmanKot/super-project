@@ -140,7 +140,7 @@ export class ManufacturingCreateOrderComponent implements OnInit {
       finalize(() => this.isSaving = false)
     ).subscribe({
       next: () => {
-        this.data.tasks.forEach(task => task.status = '3');
+        this.data.tasks.forEach(task => task.status = 'Ordered');
         this.dialogRef.close(true);
       },
       error: err => {

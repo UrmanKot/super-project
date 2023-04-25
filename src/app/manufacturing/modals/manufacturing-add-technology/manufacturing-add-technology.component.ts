@@ -5,6 +5,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TechnologyService} from '../../../product-structure/services/technology.service';
 import {TaskService} from '@shared/services/task.service';
 import {Technology} from '../../../product-structure/models/technology';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'pek-manufacturing-add-technology',
@@ -35,19 +36,17 @@ export class ManufacturingAddTechnologyComponent implements OnInit {
     this.getTechnologies();
   }
 
-  onSave() {
-
-  }
-
   getTechnologies() {
     this.technologyService.get().subscribe(res => {
       this.technologies = res;
     });
   }
 
-  save() {
+  onSave() {
     this.isSaving = true;
-    this.taskService.addTechnologyToTask(this.task.tasks[0].id, this.form.value).subscribe(() => {
+    this.taskService.addTechnologyToTask(this.task.tasks[0].id, this.form.value).pipe(
+      finalize(() => this.isSaving = false)
+    ).subscribe(() => {
       this.dialogRef.close(true);
     });
   }

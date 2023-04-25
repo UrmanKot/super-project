@@ -110,6 +110,7 @@ export class ManufacturingListProductProductionComponent implements OnInit {
       return;
     }
 
+
     const startX = this.chart.getX(task.start_date);
 
     // if (this.chart.getDateInfo(startX + event.distance.x)?.isVac) {
