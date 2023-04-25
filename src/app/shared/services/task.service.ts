@@ -9,6 +9,13 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   ManufacturingCreateOrderComponent
 } from '../../manufacturing/modals/manufacturing-create-order/manufacturing-create-order.component';
+import {UITask} from '../../manufacturing/components/manufacturing-chart/manufacturing-chart.component';
+import {
+  ManufacturingTaskEditComponent
+} from '../../manufacturing/modals/manufacturing-task-edit/manufacturing-task-edit.component';
+import {
+  ManufacturingAddTechnologyComponent
+} from '../../manufacturing/modals/manufacturing-add-technology/manufacturing-add-technology.component';
 
 @Injectable({
   providedIn: 'root'
@@ -105,5 +112,35 @@ export class TaskService {
       })
       .afterClosed()
       .pipe();
+  }
+
+  editTask(entity: UITask, tasks: UITask[], rootTask: UITask) {
+    return this.dialog
+      .open<ManufacturingTaskEditComponent>(ManufacturingTaskEditComponent, {
+        width: '80rem',
+        data: { type: 'edit', entity, tasks, rootTask },
+        disableClose: false,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  addTechnologyToPlanModal(task: UITask) {
+    return this.dialog
+      .open<ManufacturingAddTechnologyComponent>(ManufacturingAddTechnologyComponent, {
+        width: '30rem',
+        data: {task},
+        disableClose: false,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  addTechnologyToTask(id: number, send: any): Observable<any> {
+    return this.httpClient.post<{ data: any }>(this.API_URL + this.url + `${id}/add_technology/`, send);
   }
 }

@@ -1,0 +1,228 @@
+
+.task-edit {
+  &::ng-deep {
+    .p-datatable-header {
+      background: #f8f9fa;
+    }
+  }
+}
+
+.own-production__col {
+  input {
+    width: 100%;
+  }
+
+  label {
+    font-weight: 500 !important;
+    display: block;
+  }
+}
+
+.indicators {
+  font-size: 15px !important;
+
+  .col-2 {
+    display: flex;
+    align-items: center;
+  }
+
+  .col-6 {
+    display: flex;
+    align-items: center;
+  }
+
+  label {
+    margin-bottom: 0;
+    margin-top: 2px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.overflow-visible {
+  overflow: visible !important;
+}
+
+.status {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.wrapper {
+  label {
+    font-size: 15px;
+  }
+}
+
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.error-bord {
+  border: 1px solid #dc3545;
+}
+
+.error {
+  font-weight: 500;
+  color: #dc3545;
+}
+
+.go-order {
+  cursor: pointer;
+}
+
+//.time {
+//  &::-webkit-input-placeholder {
+//    font-size: 16px;
+//  }
+//}
+
+.own-production__col {
+  width: 100%;
+}
+
+.time {
+  flex: 65px 0 0;
+  margin-left: 10px;
+}
+
+.time-wrap {
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.own-production {
+  display: flex;
+  position: relative;
+}
+
+.own-production__wrap {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.own-production__employee,
+.own-production__tool {
+  display: flex;
+  flex-direction: column;
+  width: calc(50% - 15px);
+}
+
+.own-production__employee {
+  margin-right: 10px;
+}
+
+.own-production__row {
+  display: flex;
+  width: 100%;
+  position: relative;
+  margin-top: 0.75rem;
+
+  &:first-child {
+    .btn-remove {
+      top: 43px;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.btn-remove {
+  height: 37px;
+  margin-left: 0.625rem;
+  bottom: 0;
+  background: transparent;
+  margin-top: auto;
+  color: var(--theme-color-danger);
+  cursor: pointer;
+}
+
+.total-ttc {
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  &::-webkit-input-placeholder {
+    font-size: 16px;
+  }
+}
+
+.form-ttc {
+  input {
+    width: 100%;
+  }
+}
+
+.employee,
+.machine {
+  flex: 160px 0 0;
+  margin-right: 10px;
+  max-width: 160px;
+}
+
+.input-green {
+  border: 1px solid green !important;
+}
+
+p-accordion {
+  width: 100%;
+}
+
+.empty {
+  font-size: 16px;
+}
+
+.serial-numbers {
+  &__heading {
+    font-weight: 500;
+  }
+
+  &__list {
+    padding: 0;
+    max-height: 200px;
+    overflow-x: auto;
+
+    li {
+      display: flex;
+      margin-bottom: 7px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      a {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .serial-numbers__col {
+        width: 20%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.btn-add {
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  width: max-content;
+
+  i {
+    font-weight: 500;
+  }
+}

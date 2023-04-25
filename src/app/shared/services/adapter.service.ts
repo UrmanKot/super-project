@@ -65,4 +65,30 @@ export class AdapterService {
 
     return hours + ':' + minutes + ':' + '00';
   }
+
+  timeToMinutesAdapter(time) {
+    if (typeof time === 'number') {
+      return time;
+    }
+
+    const timeIntervals = time.split(':');
+
+    if (timeIntervals.length === 1) {
+      return parseInt(time, 10);
+    }
+
+    const timeInterval = {
+      days: parseInt(timeIntervals[0], 10),
+      hours: parseInt(timeIntervals[1], 10),
+      minutes: parseInt(timeIntervals[2], 10)
+    };
+
+    let minutes = timeInterval.hours * 60 + timeInterval.minutes;
+
+    if (timeInterval.days > 0) {
+      minutes = minutes + timeInterval.days * 1440;
+    }
+
+    return minutes;
+  }
 }

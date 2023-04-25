@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Add Technology of Task
+  </h2>
+</div>
+
+<form [formGroup]="form">
+  <mat-dialog-content class="mb-3">
+    <div class="form-group">
+      <label>Technology</label>
+      <p-dropdown
+        [showClear]="true"
+        placeholder="Select Technology"
+        formControlName="technology"
+        [options]="technologies"
+        optionLabel="name"
+        optionValue="id"
+      >
+      </p-dropdown>
+    </div>
+    <div class="form-group mb-0">
+      <label>Position</label>
+
+      <div class="radio">
+        <div class="form-group mr-4" [class.disabled]="task.status === '4'">
+          <input id="before" type="radio" value="before" name="position" formControlName="position">
+          <label for="before">Before</label>
+        </div>
+        <div class="form-group">
+          <input id="after" type="radio" value="after" name="position" formControlName="position">
+          <label for="after">After</label>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+</form>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -53,17 +53,17 @@ export class ManufacturingListProductProductionComponent implements OnInit {
 
   edit(task: UITask) {
     const rootTask = this.getRootTaskInfo(this.production);
-    // this.modalService.editTask(task, this.production.tasks, rootTask).pipe(filter(isApplied => isApplied)).subscribe(position => {
-    //   if (position === 'reload') {
-    //     // this.applyPosition(task, position)
-    //     location.reload();
-    //     return;
-    //   }
-    //
-    //   if (position) {
-    //     this.applyPosition(task, position);
-    //   }
-    // });
+    this.tasksService.editTask(task, this.production.tasks, rootTask).pipe(filter(isApplied => isApplied)).subscribe(position => {
+      if (position === 'reload') {
+        // this.applyPosition(task, position)
+        location.reload();
+        return;
+      }
+
+      if (position) {
+        this.applyPosition(task, position);
+      }
+    });
   }
 
   resize(task: UITask, event) {

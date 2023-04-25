@@ -25,6 +25,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ManufacturingPlanComponent } from './components/manufacturing-plan/manufacturing-plan.component';
 import { ManufacturingCreateOrderComponent } from './modals/manufacturing-create-order/manufacturing-create-order.component';
 import { ManufacturingMaterialPickerComponent } from './pickers/manufacturing-material-picker/manufacturing-material-picker.component';
+import { ManufacturingTaskEditComponent } from './modals/manufacturing-task-edit/manufacturing-task-edit.component';
+import {AccordionModule} from 'primeng/accordion';
+import { ManufacturingAddTechnologyComponent } from './modals/manufacturing-add-technology/manufacturing-add-technology.component';
 
 
 @NgModule({
@@ -47,6 +50,8 @@ import { ManufacturingMaterialPickerComponent } from './pickers/manufacturing-ma
     ManufacturingPlanComponent,
     ManufacturingCreateOrderComponent,
     ManufacturingMaterialPickerComponent,
+    ManufacturingTaskEditComponent,
+    ManufacturingAddTechnologyComponent,
   ],
   imports: [
     SharedModule,
@@ -55,7 +60,8 @@ import { ManufacturingMaterialPickerComponent } from './pickers/manufacturing-ma
     LayoutModule,
     TriStateCheckboxModule,
     ResizableModule,
-    DragDropModule
+    DragDropModule,
+    AccordionModule
   ]
 })
 export class ManufacturingModule { }
