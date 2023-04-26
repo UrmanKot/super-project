@@ -233,7 +233,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit, OnDestroy {
   onAddCompany() {
     this.companyService.createEditCompanyModal('create').subscribe(company => {
       if (company) {
-        this.searchCompanies();
+        this.router.navigate(['/crm/business-partners/company-page', company.id])
       }
     });
   }
