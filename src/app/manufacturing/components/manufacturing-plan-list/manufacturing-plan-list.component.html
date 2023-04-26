@@ -151,6 +151,7 @@
                 icon="pi pi-chart-bar"
                 label="Selected Plans"
                 [disabled]="selectedTasks.length === 0"
+                (click)="goToSelectedPlans()"
               >
               </button>
             </div>
@@ -281,6 +282,7 @@
               icon="pi pi-chart-bar"
               label="Selected Plans"
               [disabled]="selectedTasksNodes.length === 0"
+              (click)="goToSelectedNodesPlans()"
             >
             </button>
           </div>

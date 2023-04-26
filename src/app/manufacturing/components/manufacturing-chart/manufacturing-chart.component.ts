@@ -13,6 +13,7 @@ import {ENomenclatureType} from '@shared/models/nomenclature';
 import {ShiftTypes} from '../../enums/shift-types.enum';
 import {PlanningStatus} from '../../enums/planning-status.enum';
 import {CalendarService} from '../../services/calendar.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 class Status {
   label: string;
@@ -50,6 +51,7 @@ class ProductionType {
   name: string;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'pek-manufacturing-chart',
   templateUrl: './manufacturing-chart.component.html',
@@ -272,73 +274,75 @@ export class ManufacturingChartComponent implements OnInit {
     }
 
     return this.tasksService.get([{name: option, value}]).pipe(map(tasks => {
-      // избавляемся от дубликатов задач
-      tasks = tasks.filter(task => !this.tasks.find(t => task.id === t.id));
+        // избавляемся от дубликатов задач
+        tasks = tasks.filter(task => !this.tasks.find(t => task.id === t.id));
 
-      // преобразуем строки даты в дату
-      tasks = tasks.map(task => {
-        return {
-          ...task,
-          production_type: task.list_product.nomenclature.type === '0' ? '2' : task.production_type,
-          start_date: new Date(task.start_date),
-          end_date: new Date(task.end_date),
-          unconfirmed_end_date: task.unconfirmed_end_date ? new Date(task.unconfirmed_end_date) : null,
-        };
-      });
-
-      // добавляем технологии загруженных задач в список всех используемых технологий
-      // tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
-      tasks.filter(t => !t.is_locked && t.status === 'Deficit')
-        .forEach(task => {
-          if (!task.technology && task.list_product.nomenclature.type === '1') {
-            task.technology = 'Assembly';
-            this.availableTechnologies.add('Assembly');
-          } else {
-            this.availableTechnologies.add(task.technology);
-          }
+        // преобразуем строки даты в дату
+        tasks = tasks.map(task => {
+          return {
+            ...task,
+            production_type: task.list_product.nomenclature.type === '0' ? '2' : task.production_type,
+            start_date: new Date(task.start_date),
+            end_date: new Date(task.end_date),
+            unconfirmed_end_date: task.unconfirmed_end_date ? new Date(task.unconfirmed_end_date) : null,
+          };
         });
 
-      tasks.forEach(task => {
-        if (!task.technology && task.list_product.nomenclature.type === '1') {
-          this.availableTechnologiesPlanning.add('Assembly');
-        } else {
-          this.availableTechnologiesPlanning.add(task.technology);
+        // добавляем технологии загруженных задач в список всех используемых технологий
+        // tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
+        tasks.filter(t => !t.is_locked && t.status === 'Deficit')
+          .forEach(task => {
+            if (!task.technology && task.list_product.nomenclature.type === '1') {
+              task.technology = 'Assembly';
+              this.availableTechnologies.add('Assembly');
+            } else {
+              this.availableTechnologies.add(task.technology);
+            }
+          });
+
+        tasks.forEach(task => {
+          if (!task.technology && task.list_product.nomenclature.type === '1') {
+            this.availableTechnologiesPlanning.add('Assembly');
+          } else {
+            this.availableTechnologiesPlanning.add(task.technology);
+          }
+
+          task.list_product.task_required_quantity = task.required_quantity;
+          task.groupId = '';
+        });
+
+        this.technologies = this.allTechnologies.filter(t => this.availableTechnologies.has(t.name));
+        this.technologiesPlanning = this.allTechnologies.filter(t => this.availableTechnologiesPlanning.has(t.name));
+
+        this.tasks.push(...tasks);
+        this.loadingTasks = [...this.tasks];
+        if (this.isPlan && this.isRoot) {
+          this.chartRootTasks = [];
+
+          this.tasks.forEach(task => {
+            if (!this.chartRootTasks.find(t => t.family_id === task.family_id &&
+              t.list_product.id === task.list_product.id && t.technology === task.technology &&
+              task.list_product.tree_id === t.list_product.tree_id)) {
+              this.chartRootTasks.push(task);
+            }
+          });
+
+          this.chartRootTasks.forEach(root => root.label = `(${root.list_product.id}) ${root.list_product.nomenclature.name}`);
+          this.chartRootTasks.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+          this.isRoot = false;
         }
 
-        task.list_product.task_required_quantity = task.required_quantity;
-        task.groupId = '';
-      });
+        this.updateTimeline();
+        this.updateTree();
+        this.update();
+        this.paint();
 
-      this.technologies = this.allTechnologies.filter(t => this.availableTechnologies.has(t.name));
-      this.technologiesPlanning = this.allTechnologies.filter(t => this.availableTechnologiesPlanning.has(t.name));
+        this.isLoading = false;
 
-      this.tasks.push(...tasks);
-      this.loadingTasks = [...this.tasks];
-      if (this.isPlan && this.isRoot) {
-        this.chartRootTasks = [];
-
-        this.tasks.forEach(task => {
-          if (!this.chartRootTasks.find(t => t.family_id === task.family_id &&
-            t.list_product.id === task.list_product.id && t.technology === task.technology &&
-            task.list_product.tree_id === t.list_product.tree_id)) {
-            this.chartRootTasks.push(task);
-          }
-        });
-
-        this.chartRootTasks.forEach(root => root.label = `(${root.list_product.id}) ${root.list_product.nomenclature.name}`);
-        this.chartRootTasks.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        this.isRoot = false;
-      }
-
-      this.updateTimeline();
-      this.updateTree();
-      this.update();
-      this.paint();
-
-      this.isLoading = false;
-
-      return tasks;
-    }));
+        return tasks;
+      }),
+      untilDestroyed(this)
+    );
   }
 
   generateTasksGroups() {

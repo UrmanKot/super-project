@@ -13,6 +13,7 @@ import {Nomenclature} from '@shared/models/nomenclature';
 import {Category} from '../../../product-structure/models/category';
 import {cloneDeep} from 'lodash-es';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -85,6 +86,8 @@ export class ManufacturingPlanListComponent implements OnInit {
     private readonly adapterService: AdapterService,
     private readonly taskService: TaskService,
     private categoryService: ProductStructureCategoryService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -556,5 +559,15 @@ export class ManufacturingPlanListComponent implements OnInit {
         this.expandCollapseRecursive(childNode, isExpand);
       });
     }
+  }
+
+  goToSelectedPlans() {
+    const ids = this.selectedTasks.map(t => t.id).join(',')
+    this.router.navigate(['plan', ids], {relativeTo: this.route})
+  }
+
+  goToSelectedNodesPlans() {
+    const ids = this.selectedTasksNodes.map(t => t.data.task.id).join(',')
+    this.router.navigate(['plan', ids], {relativeTo: this.route})
   }
 }
