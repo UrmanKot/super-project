@@ -210,7 +210,7 @@
       </div>
     </div>
 
-    <div class="row mb-2"
+    <div class="row mb-3"
          *ngIf="(reservedSerialNumbers.length > 0 || futureSerialNumbers.length > 0 ) && data.task.list_product.nomenclature.bulk_or_serial === '1'">
       <div class="col-12">
         <p-accordion class="serial-numbers">
@@ -221,7 +221,7 @@
                 {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
               </li>
             </ul>
-            <p class="mt-3" *ngIf="futureSerialNumbers.length > 0">Future Serial Numbers:</p>
+            <p *ngIf="futureSerialNumbers.length > 0">Future Serial Numbers:</p>
             <ul class="serial-numbers__list">
               <li *ngFor="let serial of futureSerialNumbers; let idx = index">
                 {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}

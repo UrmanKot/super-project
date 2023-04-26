@@ -8,6 +8,22 @@
   }
 }
 
+.serial-numbers {
+  &::ng-deep {
+    .p-accordion-header {
+      .p-accordion-header-link {
+        padding: 0.75rem;
+        font-weight: 500;
+        font-size: 1rem;
+      }
+    }
+
+    .p-accordion-content {
+      padding: 0.5rem 0.75rem !important;
+    }
+  }
+}
+
 .own-production__col {
   input {
     width: 100%;

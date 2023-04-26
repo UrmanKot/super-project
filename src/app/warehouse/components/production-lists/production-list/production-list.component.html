@@ -369,7 +369,7 @@
                 </div>
                 <p-treeTableToggler
                   [rowNode]="rowNode"
-                  [class.disabled-toggler]="rowData.status === 'Completed' || rowData.blockedExpand"></p-treeTableToggler>
+                  [class.disabled-toggler]="rowData.status === 'Completed' || rowData.status === 'Reserved' || rowData.blockedExpand"></p-treeTableToggler>
                 <a
                   [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
                   *ngIf="rowData.nomenclature.type === '1'"

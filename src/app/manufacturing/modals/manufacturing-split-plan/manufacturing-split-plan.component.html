@@ -1,21 +1,36 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-<!--    {{data.type}} Employee-->
+    Split {{task.list_product.nomenclature.name}} {{task.list_product.nomenclature.code}}
   </h2>
 </div>
 
 <mat-dialog-content>
+  <form [formGroup]="form">
+    <h3>Default Quantity: {{task.required_quantity}}</h3>
+    <p class="mt-2 mb-2">Split: </p>
+
+    <ul formArrayName="split_as_quantities" class="list">
+      <li *ngFor="let quantity of splitQuantities.controls; let idx = index">
+        <input [formControlName]="idx" type="number" pInputText>
+        <button class="ml-2" (click)="removeQuantity(idx)" [class.hidden]="idx === 0">
+          <i class="pi pi-times"></i>
+        </button>
+      </li>
+    </ul>
+
+    <button (click)="addQuantity()" class="mt-3 add"><i class="pi pi-plus"></i> Add split</button>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions class="justify-content-between">
   <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
-<!--  <button-->
-<!--    pButton-->
-<!--    type="button"-->
-<!--    class="p-button-success"-->
-<!--    [label]="data.type"-->
-<!--    [loading]="isSaving"-->
-<!--    [disabled]="form.invalid"-->
-<!--    (click)="onSave()"-->
-<!--  ></button>-->
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Split"
+    [loading]="isSaving"
+    [disabled]="disabled()"
+    (click)="onSave()"
+  ></button>
 </mat-dialog-actions>

@@ -1,0 +1,50 @@
+.list {
+  li {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 0.5rem;
+
+    input {
+      width: 100%;
+    }
+
+    button {
+      height: 2rem;
+      flex: 0 0 2rem;
+      cursor: pointer;
+      color: var(--theme-color-danger);
+      background: transparent;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+p {
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.add {
+  cursor: pointer;
+  color: var(--theme-color-primary);
+  background: transparent;
+  font: inherit;
+  font-weight: 500;
+
+  i {
+    font-weight: 600;
+  }
+}

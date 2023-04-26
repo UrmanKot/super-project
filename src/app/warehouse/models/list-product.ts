@@ -17,7 +17,7 @@ export class ListProduct {
   nomenclature: Nomenclature;
   available_on_locator?: any
   future_serial_numbers?: SerialNumber[];
-  reserved_serial_numbers?: SerialNumber[];
+  reserved_on_stock_serial_numbers?: SerialNumber[];
   has_children?: any;
   parent?: number;
   status?: string;

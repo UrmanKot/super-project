@@ -234,4 +234,8 @@ export class TaskService {
       })
       .afterClosed()
   }
+
+  splitTasks(send: any, id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + `${id}/split/`, send);
+  }
 }

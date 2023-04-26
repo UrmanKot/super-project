@@ -74,7 +74,7 @@ export class Task {
   serials?: SerialNumber[];
   root_nomenclature?: Nomenclature;
   serial_numbers?: SerialNumber[];
-  reserved_serial_numbers?: SerialNumber[];
+  reserved_on_stock_serial_numbers?: SerialNumber[];
   serial_products?: any[];
   label?: string;
   ttc_display_type?: TTCDisplayType;

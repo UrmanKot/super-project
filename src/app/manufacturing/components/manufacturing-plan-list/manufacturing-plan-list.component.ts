@@ -573,7 +573,8 @@ export class ManufacturingPlanListComponent implements OnInit {
 
   onSplitPlan() {
     this.taskService.splitTasksDialog(this.selectedTasks[0]).pipe(
-      filter(response => !!response)
+      filter(response => !!response),
+      tap(() => this.search$.next())
     ).subscribe()
   }
 

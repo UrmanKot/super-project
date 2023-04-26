@@ -34,6 +34,7 @@ import { ManufacturingAddItemsComponent } from './modals/manufacturing-add-items
 import { ManufacturingPickerProductComponent } from './modals/manufacturing-picker-product/manufacturing-picker-product.component';
 import { ManufacturingAllPlansComponent } from './components/manufacturing-all-plans/manufacturing-all-plans.component';
 import { ManufacturingSplitPlanComponent } from './modals/manufacturing-split-plan/manufacturing-split-plan.component';
+import { ManufacturingProductionCalendarComponent } from './components/manufacturing-production-calendar/manufacturing-production-calendar.component';
 
 
 @NgModule({
@@ -64,6 +65,7 @@ import { ManufacturingSplitPlanComponent } from './modals/manufacturing-split-pl
     ManufacturingPickerProductComponent,
     ManufacturingAllPlansComponent,
     ManufacturingSplitPlanComponent,
+    ManufacturingProductionCalendarComponent,
   ],
   imports: [
     SharedModule,

@@ -106,8 +106,8 @@ export class ManufacturingTaskEditComponent implements OnInit {
             }
           });
         }
-        if (innerTask.reserved_serial_numbers.length > 0) {
-          this.reservedSerialNumbers.push(...innerTask.reserved_serial_numbers);
+        if (innerTask.reserved_on_stock_serial_numbers.length > 0) {
+          this.reservedSerialNumbers.push(...innerTask.reserved_on_stock_serial_numbers);
         }
       });
     });

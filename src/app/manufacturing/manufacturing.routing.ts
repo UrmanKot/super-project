@@ -17,6 +17,9 @@ import {
 } from './components/manufacturing-order-page/manufacturing-order-page.component';
 import {ManufacturingPlanComponent} from './components/manufacturing-plan/manufacturing-plan.component';
 import {ManufacturingAllPlansComponent} from './components/manufacturing-all-plans/manufacturing-all-plans.component';
+import {
+  ManufacturingProductionCalendarComponent
+} from './components/manufacturing-production-calendar/manufacturing-production-calendar.component';
 
 const routes: Routes = [
   {
@@ -44,6 +47,7 @@ const routes: Routes = [
       {path: 'positions', title: 'Positions', component: ManufacturingPositionsComponent},
       {path: 'machines', title: 'Machines', component: ManufacturingMachinesComponent},
       {path: 'order-statuses', title: 'Order Statuses', component: ManufacturingOrderStatusesComponent},
+      {path: 'production-calendar', title: 'Production Calendar', component: ManufacturingProductionCalendarComponent},
     ]
   }
 ];

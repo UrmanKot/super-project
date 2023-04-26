@@ -389,6 +389,7 @@ export class ProductionListComponent implements OnInit {
         ...list,
         products: [],
         technologies: [],
+        blockedExpand: Boolean(list.status === 'Completed' || list.status === 'Reserved'),
         uid: list.id
       };
     });
@@ -400,7 +401,7 @@ export class ProductionListComponent implements OnInit {
         parent: null,
         data: list,
         children: [],
-        expanded: this.expanseMap[list.uid]
+        expanded: list.blockedExpand ? false : this.expanseMap[list.uid]
       });
     });
 
@@ -414,7 +415,7 @@ export class ProductionListComponent implements OnInit {
             parent: null,
             data: listProduct,
             children: [],
-            expanded: this.expanseMap[listProduct.uid]
+            expanded: listProduct.blockedExpand ? false : this.expanseMap[listProduct.uid]
           });
         });
 
@@ -473,8 +474,12 @@ export class ProductionListComponent implements OnInit {
       list.technologies = this.adapterService.removeDuplicates(list.technologies, x => x.name);
       list.technologies.sort((a, b) => a.task_sort_value - b.task_sort_value);
 
-      list.blockedExpand = list.groupedProducts.some(p => p.status === 'Completed');
+      list.blockedExpand = list.groupedProducts.some(p => p.status === 'Completed' || p.status === 'Reserved');
       list.currentTechnology = list.groupedProducts.find(p => p.status === 'Completed')?.technology;
+
+      if (list.nomenclature.name === 'RC charger') {
+        console.log(list);
+      }
 
       const findEl = list.groupedProducts.find(p => p.status === 'Completed');
       list.warehouse_quantity = findEl ? findEl.warehouse_quantity : list.warehouse_quantity;
@@ -1085,7 +1090,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   goToPlan() {
-    window.open(this.link + `production/plan/tasks/${this.list.root_production_plans[0].id}`, '_blank');
+    window.open(`production/plans/plan${this.list.root_production_plans[0].id}`, '_blank');
   }
 
   onGenerateQrCodes(node) {
