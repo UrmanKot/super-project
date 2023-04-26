@@ -35,3 +35,24 @@
     top: 0;
   }
 }
+
+.badge {
+  position: relative;
+  top: -1px;
+  border-radius: 0.25rem;
+  padding: 0.25em 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.625rem;
+  letter-spacing: .3px;
+  color: #fff;
+  background: #64748B;
+
+  &_danger {
+    background: var(--theme-color-danger);
+  }
+
+  &_success {
+    background: var(--theme-color-success);
+  }
+}
