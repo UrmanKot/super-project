@@ -85,13 +85,13 @@ export class ManufacturingTaskEditComponent implements OnInit {
     private companiesService: CompanyService,
     private modalService: ModalService,
     private machinesService: MachineService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: string, entity: any, tasks: UITask[], rootTask: Task },
+    @Inject(MAT_DIALOG_DATA) public data: { task: any, tasks: UITask[], rootTask: Task },
     private adapterService: AdapterService
   ) {
   }
 
   ngOnInit(): void {
-    this.task = this.data.entity;
+    this.task = this.data.task;
 
     this.data.tasks.forEach(task => {
       task.tasks.forEach(innerTask => {
@@ -112,18 +112,18 @@ export class ManufacturingTaskEditComponent implements OnInit {
     this.getData();
     this.initValues();
 
-    this.data.entity.serials = [];
+    this.data.task.serials = [];
 
     this.data.tasks.forEach(task => {
       task.serial_products = [];
       task.tasks.forEach(t => {
-        t.serial_numbers.forEach(serial => this.data.entity.serials.push(serial));
+        t.serial_numbers.forEach(serial => this.data.task.serials.push(serial));
         t.serial_products.forEach(sp => task.serial_products.push(sp));
       });
       // this.data.entity.serials = task.tasks[0].serial_numbers;
     });
 
-    this.data.entity.serials = this.adapterService.removeDuplicates(this.data.entity.serials, x => x.id);
+    this.data.task.serials = this.adapterService.removeDuplicates(this.data.task.serials, x => x.id);
   }
 
   ttc_display_get_multiplier(): number {
@@ -188,7 +188,7 @@ export class ManufacturingTaskEditComponent implements OnInit {
       this.form.get('ttc').disable();
     }
 
-    if (rootStatus === PlanningStatus.PLANNED && rootPlanProductionId === this.data.entity.list_product.id) {
+    if (rootStatus === PlanningStatus.PLANNED && rootPlanProductionId === this.data.task.list_product.id) {
       this.form.get('start').disable();
       this.form.get('end').disable();
       this.form.get('ttc').disable();

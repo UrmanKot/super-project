@@ -1,0 +1,73 @@
+.add-product {
+  h3 {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  padding: 0 0 0.25rem;
+}
+
+.item-name {
+  padding: 0 1.5rem;
+}
+
+.col-2 {
+  input {
+    width: 100%;
+  }
+}
+
+.header-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    width: calc(33% - 0.5rem);
+  }
+}
+
+.material {
+  margin-bottom: 0.25rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+}
+
+.btn-picker {
+  font-weight: 500;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.btn-picker-add {
+  display: block;
+  margin-top: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: max-content;
+
+  i {
+    font-weight: 500;
+  }
+}
+
+.btn-picker-danger {
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--theme-color-danger);
+  position: relative;
+  top: 1px;
+}

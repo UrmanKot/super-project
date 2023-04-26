@@ -16,6 +16,7 @@ import {
   ManufacturingOrderPageComponent
 } from './components/manufacturing-order-page/manufacturing-order-page.component';
 import {ManufacturingPlanComponent} from './components/manufacturing-plan/manufacturing-plan.component';
+import {ManufacturingAllPlansComponent} from './components/manufacturing-all-plans/manufacturing-all-plans.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
         children: [
           {path: '', title: 'Plans', component: ManufacturingPlanListComponent},
           {path: 'plan/:rootId', title: 'Plan', component: ManufacturingPlanComponent},
+          {path: 'all', title: 'All Plans', component: ManufacturingAllPlansComponent},
         ]
       },
       {

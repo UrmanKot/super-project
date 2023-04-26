@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
-    <span *ngIf="data.type==='edit'">Edit Task {{task.technology}} of {{task.list_product.nomenclature.name}}
-      ({{task.list_product.nomenclature.code}})</span>
+    Edit Task {{task.technology}} of {{task.list_product.nomenclature.name}}
+      ({{task.list_product.nomenclature.code}})
   </h2>
   <div class="status">Status: {{task.status}}</div>
 </div>
@@ -43,7 +43,7 @@
         </div>
         <div class="col-2">
           <div class="form-group form-ttc">
-            <label class="flex-0" for="total-ttc" class="mb-2 total-ttc"
+            <label for="total-ttc" class=" total-ttc"
                    [title]="'Time to complete (in ' + ttcIn + ')'">Total
               TTC</label>
             <div class="ml-auto">
@@ -211,7 +211,7 @@
     </div>
 
     <div class="row mb-2"
-         *ngIf="(reservedSerialNumbers.length > 0 || futureSerialNumbers.length > 0 ) && data.entity.list_product.nomenclature.bulk_or_serial === '1'">
+         *ngIf="(reservedSerialNumbers.length > 0 || futureSerialNumbers.length > 0 ) && data.task.list_product.nomenclature.bulk_or_serial === '1'">
       <div class="col-12">
         <p-accordion class="serial-numbers">
           <p-accordionTab header="Serial Numbers">
@@ -233,13 +233,13 @@
     </div>
 
 
-    <div class="empty"
-         *ngIf="(reservedSerialNumbers.length === 0 && futureSerialNumbers.length === 0) && data.entity.list_product.nomenclature.bulk_or_serial === '1'">
+    <div class="empty mb-3"
+         *ngIf="(reservedSerialNumbers.length === 0 && futureSerialNumbers.length === 0) && data.task.list_product.nomenclature.bulk_or_serial === '1'">
       Serial Numbers not available
     </div>
 
-    <div class="row mb-2"
-         *ngIf="data.entity.serial_products.length > 0 && data.entity.status === '4' && data.entity.list_product.nomenclature.bulk_or_serial === '1'">
+    <div class="row mb-3"
+         *ngIf="data.task.serial_products.length > 0 && data.task.status === '4' && data.task.list_product.nomenclature.bulk_or_serial === '1'">
       <div class="col-12">
         <p-accordion class="serial-numbers">
           <p-accordionTab header="Serial Numbers">
@@ -251,7 +251,7 @@
                 <div class="serial-numbers__col serial-numbers__col_3">Protocol</div>
                 <div class="serial-numbers__col serial-numbers__col_4">Serial Number</div>
               </li>
-              <li *ngFor="let product of data.entity.serial_products; let idx = index">
+              <li *ngFor="let product of data.task.serial_products; let idx = index">
                 <div class="serial-numbers__col serial-numbers__col_0">{{idx + 1}}</div>
                 <div class="serial-numbers__col serial-numbers__col_1" *ngIf="!product.invoice">None</div>
                 <div class="serial-numbers__col serial-numbers__col_1"
@@ -277,7 +277,7 @@
     </div>
 
     <div class="empty"
-         *ngIf="data.entity.serial_products.length === 0 && data.entity.status === '4' && data.entity.list_product.nomenclature.bulk_or_serial === '1'">
+         *ngIf="data.task.serial_products.length === 0 && data.task.status === '4' && data.task.list_product.nomenclature.bulk_or_serial === '1'">
       Serial Products not available
     </div>
 
@@ -299,7 +299,6 @@
 
       <button
         pButton
-        *ngIf="data.type==='edit'"
         type="submit"
         [disabled]="showError() || showErrorTasks()"
         label="Save"

@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
-import {NewNomenclature, Nomenclature, NomenclatureImage, Nomenclatures} from '@shared/models/nomenclature';
+import {
+  ENomenclatureType,
+  NewNomenclature,
+  Nomenclature,
+  NomenclatureImage,
+  Nomenclatures
+} from '@shared/models/nomenclature';
 import {map} from 'rxjs/operators';
 import {forkJoin, Observable} from 'rxjs';
 import {QuerySearch} from '@shared/models/other';
@@ -11,6 +17,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   SerialConfirmationComponent
 } from '../../product-structure/modals/serial-confirmation/serial-confirmation.component';
+import {
+  CreateOutsourcingRequestComponent
+} from '../../outsourcing/modals/create-outsourcing-request/create-outsourcing-request.component';
+import {
+  ManufacturingPickerProductComponent
+} from '../../manufacturing/modals/manufacturing-picker-product/manufacturing-picker-product.component';
 
 @Injectable({
   providedIn: 'root'
@@ -232,6 +244,18 @@ export class NomenclatureService {
         disableClose: true,
         data: {product, warehouseQuantity},
         panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  assemblyManufacturedPickerDialog(type: ENomenclatureType): Observable<Product> {
+    return this.dialog
+      .open<ManufacturingPickerProductComponent>(ManufacturingPickerProductComponent, {
+        width: '70rem',
+        height: 'auto',
+        data: {type},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

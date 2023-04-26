@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
-import {forkJoin, Observable, Subject} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {forkJoin, from, Observable, of, Subject, toArray} from 'rxjs';
+import {concatMap, map, tap} from 'rxjs/operators';
 import {Task, TaskSet, TasksResponse} from '@shared/models/task';
 import {MatDialog} from '@angular/material/dialog';
 import {
@@ -16,6 +16,12 @@ import {
 import {
   ManufacturingAddTechnologyComponent
 } from '../../manufacturing/modals/manufacturing-add-technology/manufacturing-add-technology.component';
+import {
+  ManufacturingTasksEditComponent
+} from '../../manufacturing/modals/manufacturing-tasks-edit/manufacturing-tasks-edit.component';
+import {
+  ManufacturingAddItemsComponent, NewItem
+} from '../../manufacturing/modals/manufacturing-add-items/manufacturing-add-items.component';
 
 @Injectable({
   providedIn: 'root'
@@ -114,11 +120,24 @@ export class TaskService {
       .pipe();
   }
 
-  editTask(entity: UITask, tasks: UITask[], rootTask: UITask) {
+  editTaskDialog(task: UITask, tasks: UITask[], rootTask: UITask) {
     return this.dialog
       .open<ManufacturingTaskEditComponent>(ManufacturingTaskEditComponent, {
         width: '80rem',
-        data: { type: 'edit', entity, tasks, rootTask },
+        data: {task, tasks, rootTask },
+        disableClose: false,
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  editTasksDialog(tasks: UITask[]) {
+    return this.dialog
+      .open<ManufacturingTasksEditComponent>(ManufacturingTasksEditComponent, {
+        width: '80rem',
+        data: { tasks },
         disableClose: false,
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
@@ -142,5 +161,34 @@ export class TaskService {
 
   addTechnologyToTask(id: number, send: any): Observable<any> {
     return this.httpClient.post<{ data: any }>(this.API_URL + this.url + `${id}/add_technology/`, send);
+  }
+
+  addTasks(parentTasks: Task[], rootId: string): Observable<Task[]> {
+    return of(parentTasks).pipe(
+      concatMap(parentTasks => this.addTasksDialog(parentTasks)),
+      concatMap(items => from(items)),
+      concatMap(item => this.httpClient.post(this.API_URL + this.url + item.taskId + '/add_position/', item.data)),
+      toArray(),
+      concatMap((tasks) => tasks.length > 0 ? this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + '?for_root_id__in=' + rootId) : []),
+      map(response => response.data),
+    );
+  }
+
+  addTasksDialog(parentTasks: Task[]): Observable<any[]> {
+    return this.dialog
+      .open<ManufacturingAddItemsComponent>(ManufacturingAddItemsComponent, {
+        width: '30rem',
+        data: { parentTasks },
+        disableClose: false,
+        autoFocus: false,
+      })
+      .afterClosed()
+      .pipe(
+        concatMap((value) =>
+          value
+            ? of(value)
+            : new Observable((subscriber) => subscriber.complete())
+        )
+      );
   }
 }

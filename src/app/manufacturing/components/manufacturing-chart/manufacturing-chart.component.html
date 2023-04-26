@@ -89,6 +89,55 @@
                     </div>
                     <div style="width: 50px;" class="d-flex align-items-center justify-content-center pl-0">UOM</div>
                     <div *ngIf="isShowBorder" class="bord" #panelBorder></div>
+
+
+                    <div class="info-container" *ngIf="!isPlan && isShowConfirmationMenu">
+                      <div *ngIf="hasDeliveryDateChanges && !isPlan" class="d-flex align-items-center">
+                        {{hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges ? 'Root' : ''}} Dates Of Delivery
+                        Changed
+                        <button
+                          pButton
+                          *ngIf="hasChildDeliveryDateChanges"
+                          class="p-button-danger ml-3 mr-3"
+                          (click)="confirmDateChanges(true)"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          pButton
+                          *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"
+                          class="p-button-danger ml-3 mr-3"
+                          (click)="confirmDateChanges(false)">
+                          Confirm
+                        </button>
+                      </div>
+                      <div *ngIf="getLastTask?.planning_status && !isPlan">
+                        <ng-container [ngSwitch]="getLastTask?.planning_status">
+                          <div *ngSwitchCase="PlanningStatus.ON_STOCK" class="text-success">On Stock</div>
+                          <div *ngSwitchCase="PlanningStatus.PLANNED">
+                            <span class="text-success">Confirmed</span>
+                            <button
+                              pButton
+                              *ngIf="!getLastTask?.change_request"
+                              class="ml-3"
+                              (click)="sendPlanToCorrections()"
+                            >
+                              Request for planing corrections
+                            </button>
+                            {{getLastTask?.change_request ? '(Requested For Planing Corrections)' : ''}}
+                          </div>
+                          <span *ngSwitchCase="PlanningStatus.WAITING_CONFIRMATION">Waiting Confirmation</span>
+                          <button
+                            pButton
+                            class="mr-3"
+                            *ngSwitchCase="PlanningStatus.REQUIRES_PLANNING"
+                            (click)="sendPlanToConfirmation()"
+                          >
+                            Sent To Confirmation
+                          </button>
+                        </ng-container>
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <div class="resize-handle-right" mwlResizeHandle [resizeEdges]="{ left: true }"></div>
@@ -299,9 +348,17 @@
             <button
               pButton
               type="button"
+              class="mr-2"
               icon="pi pi-plus"
               label="Add Items"
               (click)="mode = 'add-items'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              [icon]="'pi ' + (isShowConfirmationMenu ? 'pi-eye-slash' : 'pi-eye')"
+              [label]="(isShowConfirmationMenu ? 'Hide' : 'Show') + ' Confirmation'"
+              (click)="toggleShowConfirmation()"
             ></button>
             <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'edit-tasks'">Task planning</button>-->
             <!--            <button type="button" class=" btn btn-primary btn-edit" (click)="mode = 'add-items'">Add Items</button>-->
@@ -413,6 +470,7 @@
           <!--              </mat-select>-->
           <!--            </mat-form-field>-->
           <!--          </div>-->
+
         </div>
       </div>
     </div>

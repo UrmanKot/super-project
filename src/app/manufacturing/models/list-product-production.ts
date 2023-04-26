@@ -1,6 +1,6 @@
 import {Product} from '../../product-structure/models/product';
 import {UITask} from '../components/manufacturing-chart/manufacturing-chart.component';
-import {Color} from '@shared/models/task';
+import {Color, Task} from '@shared/models/task';
 
 export type ListProductProductionGroup = Array<ListProductProduction>;
 

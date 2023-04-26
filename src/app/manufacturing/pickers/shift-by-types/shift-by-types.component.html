@@ -1,0 +1,10 @@
+<p-dropdown
+  placeholder="Choose Type"
+  [filter]="true"
+  [options]="types"
+  [disabled]="isDisabled"
+  [(ngModel)]="type"
+  (ngModelChange)="onChange($event)"
+  optionValue="value"
+  optionLabel="name"
+></p-dropdown>

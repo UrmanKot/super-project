@@ -28,6 +28,11 @@ import { ManufacturingMaterialPickerComponent } from './pickers/manufacturing-ma
 import { ManufacturingTaskEditComponent } from './modals/manufacturing-task-edit/manufacturing-task-edit.component';
 import {AccordionModule} from 'primeng/accordion';
 import { ManufacturingAddTechnologyComponent } from './modals/manufacturing-add-technology/manufacturing-add-technology.component';
+import { ManufacturingTasksEditComponent } from './modals/manufacturing-tasks-edit/manufacturing-tasks-edit.component';
+import { ShiftByTypesComponent } from './pickers/shift-by-types/shift-by-types.component';
+import { ManufacturingAddItemsComponent } from './modals/manufacturing-add-items/manufacturing-add-items.component';
+import { ManufacturingPickerProductComponent } from './modals/manufacturing-picker-product/manufacturing-picker-product.component';
+import { ManufacturingAllPlansComponent } from './components/manufacturing-all-plans/manufacturing-all-plans.component';
 
 
 @NgModule({
@@ -52,6 +57,11 @@ import { ManufacturingAddTechnologyComponent } from './modals/manufacturing-add-
     ManufacturingMaterialPickerComponent,
     ManufacturingTaskEditComponent,
     ManufacturingAddTechnologyComponent,
+    ManufacturingTasksEditComponent,
+    ShiftByTypesComponent,
+    ManufacturingAddItemsComponent,
+    ManufacturingPickerProductComponent,
+    ManufacturingAllPlansComponent,
   ],
   imports: [
     SharedModule,

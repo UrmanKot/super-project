@@ -1,8 +1,23 @@
 .form {
   margin-top: -0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .serials {
   display: flex;
   flex-direction: column;
 }
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.plan-link {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+

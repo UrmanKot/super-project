@@ -68,7 +68,7 @@ export class ManufacturingChartComponent implements OnInit {
     {value: '0', name: 'Outsource'},
     {value: '1', name: 'Own production'},
     {value: '2', name: 'Purchased'},
-  ]
+  ];
 
   statuses: Status[] = [
     {value: 'Not processed', label: 'Not processed'},
@@ -190,6 +190,7 @@ export class ManufacturingChartComponent implements OnInit {
   private taskDeleteSub: Subscription;
 
   isLoading = true;
+  isShowConfirmationMenu = false;
 
   constructor(
     private tasksService: TaskService,
@@ -238,7 +239,7 @@ export class ManufacturingChartComponent implements OnInit {
     this.availableTechnologies.clear();
     this.availableTechnologiesPlanning.clear();
     // this.tasks.filter(t => !t.is_locked && t.status !== 'Ordered' && t.status !== 'On stock')
-   this.tasks.filter(t => !t.is_locked && t.status === 'Deficit')
+    this.tasks.filter(t => !t.is_locked && t.status === 'Deficit')
       .forEach(task => {
         if (!task.technology && task.list_product.nomenclature.type === '1') {
           this.availableTechnologies.add('Assembly');
@@ -262,7 +263,7 @@ export class ManufacturingChartComponent implements OnInit {
     // Используются для получения тасков
     this.rootId = rootId ? rootId : this.rootId;
 
-    let option = 'for_root';
+    let option = 'for_root_id__in';
     let value: string | boolean = this.rootId;
 
     if (this.isPlan && !rootId) {
@@ -744,7 +745,7 @@ export class ManufacturingChartComponent implements OnInit {
           });
 
           forkJoin(...tasks.map(task => this.tasksService.getById(task.id))).subscribe(newTasks => {
-            const nTasks = newTasks.flat()
+            const nTasks = newTasks.flat();
 
             tasks.forEach(ta => {
               const findTask = this.tasks.find(t => t.id === ta.id);
@@ -787,17 +788,17 @@ export class ManufacturingChartComponent implements OnInit {
   editTasks() {
     if (this.selectedTasks.size > 0) {
       const selectedTasks = Array.from(this.selectedTasks);
-      // this.modalService.editTasks(selectedTasks).subscribe((positions) => {
-      //   if (positions.start && positions.end) {
-      //     selectedTasks.forEach(task => {
-      //       this.applyPositionTask(task, task.production, positions);
-      //     });
-      //   }
-      //
-      //   if (positions.shiftByAmount && positions.shiftByType) {
-      //     this.updateIfShiftIsApplied(selectedTasks, positions);
-      //   }
-      // });
+      this.tasksService.editTasksDialog(selectedTasks).subscribe((positions) => {
+        if (positions.start && positions.end) {
+          selectedTasks.forEach(task => {
+            this.applyPositionTask(task, task.production, positions);
+          });
+        }
+
+        if (positions.shiftByAmount && positions.shiftByType) {
+          this.updateIfShiftIsApplied(selectedTasks, positions);
+        }
+      });
     }
   }
 
@@ -1035,25 +1036,27 @@ export class ManufacturingChartComponent implements OnInit {
   }
 
   addTasks(production) {
-    // this.tasksService.addTasks(production.tasks[0].tasks, this.rootId).pipe(
-    //   map(tasks => tasks.filter(task => !this.tasks.find(t => task.id === t.id))))
-    //   .subscribe(tasks => {
-    //     tasks.forEach(task => {
-    //       task.production_type = task.list_product.nomenclature.type === '0' ? '2' : task.production_type;
-    //       task.start_date = new Date(task.start_date);
-    //       task.end_date = new Date(task.end_date);
-    //       task.list_product.task_required_quantity = task.required_quantity;
-    //     });
-    //
-    //     this.tasks.push(...tasks);
-    //     this.updateTimeline();
-    //     this.updateTree();
-    //     this.updateParentMargins(production);
-    //     this.updateTree();
-    //     this.update();
-    //     this.paint();
-    //     this.updateTechnologies();
-    //   });
+    this.tasksService.addTasks(production.tasks[0].tasks, this.rootId).pipe(
+      map(tasks => tasks.filter(task => !this.tasks.find(t => task.id === t.id))))
+      .subscribe(tasks => {
+        console.log(tasks);
+        tasks.forEach(task => {
+          task.production_type = task.list_product.nomenclature.type === '0' ? '2' : task.production_type;
+          task.start_date = new Date(task.start_date);
+          task.end_date = new Date(task.end_date);
+          task.list_product.task_required_quantity = task.required_quantity;
+        });
+
+        this.tasks.push(...tasks);
+        this.updateTimeline();
+        this.updateTree();
+        this.updateParentMargins(production);
+        this.updateMargins(production);
+        this.updateTree();
+        this.update();
+        this.paint();
+        this.updateTechnologies();
+      });
   }
 
   private highlightChildrenEnd() {
@@ -1114,6 +1117,11 @@ export class ManufacturingChartComponent implements OnInit {
   }
 
   public updateTree() {
+    this.productionMap = new Map<ID | ProductionKey, ListProductProduction>();
+    this.uiTaskMap = new Map<UITaskKey, UITask>();
+    this.productions = [];
+    this.rootProductions = [];
+
     this.generateTasksGroups();
 
     const taskMap = new Map<string, Task>();
@@ -1182,7 +1190,7 @@ export class ManufacturingChartComponent implements OnInit {
       production.index = index++;
       production.parent = this.productionMap.get(`${production.product.parent}:${production.tasks[0].family_id}`);
 
-      production.isExpanded = !production.isBlocked;
+      production.isExpanded = production.task.list_product.level === 0 ? !this.isPlan : !production.isBlocked;
 
       if (production.parent) {
         if (!production.parent.children.includes(production)) {
@@ -1340,5 +1348,9 @@ export class ManufacturingChartComponent implements OnInit {
     this.tasksService.sendToPlanningCorrections({family_id: familyId, change_request: true}).subscribe(() => {
       rootTask.change_request = true;
     });
+  }
+
+  toggleShowConfirmation() {
+    this.isShowConfirmationMenu = !this.isShowConfirmationMenu;
   }
 }

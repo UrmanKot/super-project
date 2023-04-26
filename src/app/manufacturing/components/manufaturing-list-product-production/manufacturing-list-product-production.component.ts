@@ -53,7 +53,7 @@ export class ManufacturingListProductProductionComponent implements OnInit {
 
   edit(task: UITask) {
     const rootTask = this.getRootTaskInfo(this.production);
-    this.tasksService.editTask(task, this.production.tasks, rootTask).pipe(filter(isApplied => isApplied)).subscribe(position => {
+    this.tasksService.editTaskDialog(task, this.production.tasks, rootTask).pipe(filter(isApplied => isApplied)).subscribe(position => {
       if (position === 'reload') {
         // this.applyPosition(task, position)
         location.reload();

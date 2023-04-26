@@ -1,0 +1,138 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Add
+    <ng-container [ngSwitch]="type">
+      <ng-container *ngSwitchCase="'assemblies'">Assembly</ng-container>
+      <ng-container *ngSwitchCase="'warehouse'">Warehouse Products</ng-container>
+      <ng-container *ngSwitchCase="'manufactured-parts'">Manufactured</ng-container>
+    </ng-container>
+    Items
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <ng-container *ngIf="type; else selectionType">
+    <div class="add-items">
+      <div class="row">
+        <div class="col-9">
+          <h3 class="header-title">
+            <ng-container [ngSwitch]="type">
+              <ng-container *ngSwitchCase="'assemblies'">Assemblies</ng-container>
+              <ng-container *ngSwitchCase="'warehouse'">Warehouse Products</ng-container>
+              <ng-container *ngSwitchCase="'manufactured-parts'">Manufactured</ng-container>
+            </ng-container>
+          </h3>
+        </div>
+        <div class="col-3">
+          <h3 class="header-title">Quantity</h3>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="type !== 'warehouse'">
+        <div *ngFor="let assembling of assemblies; index as index"
+             class="col-12 row pt-2 align-items-center material"
+        >
+          <div class="col-9 item">
+            <a class="btn-picker" (click)="onItemSearch(assembling)">
+              <span *ngIf="!assembling.assemblingProduct">
+                {{type === 'assemblies' ? 'Search Assembling' : 'Search Manufactured Parts'}}
+              </span>
+              <span *ngIf="assembling.assemblingProduct">
+                {{type === 'assemblies' ? 'Change Assembling' : 'Change Manufactured Parts'}}
+              </span>
+            </a>
+            <span class="item-name" *ngIf="assembling.assemblingProduct">
+              {{assembling.assemblingProduct.name}}
+              ({{assembling.assemblingProduct.code}})
+            </span>
+          </div>
+          <div class="col-2">
+            <input min="1" type="number" pInputText class="form-control" [(ngModel)]="assembling.quantity">
+          </div>
+          <div class="col-1">
+            <button *ngIf="index" class="btn-picker btn-danger btn-picker-danger" (click)="onRemoveItem(assembling)">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="type === 'warehouse'">
+        <div *ngFor="let material of materials; index as index"
+             class="col-12 row pt-2 align-items-center material"
+        >
+          <div class="col-9 item">
+            <a class="btn-picker" (click)="onItemSearch(material)">
+              <span *ngIf="!material.warehouseProduct">Search In Warehouse</span>
+              <span *ngIf="material.warehouseProduct">Change material</span>
+            </a>
+            <span class="item-name" *ngIf="material.warehouseProduct">
+              {{material.warehouseProduct.nomenclature.name}} ({{material.warehouseProduct.nomenclature.code}})
+              Quantity: {{material.warehouseProduct.total_locator_quantity}}
+            </span>
+          </div>
+          <div class="col-2">
+            <input pInputText min="1" type="number" class="form-control" [(ngModel)]="material.quantity">
+          </div>
+          <div class="col-1">
+            <button *ngIf="index" class="btn-picker btn-danger btn-picker-danger" (click)="onRemoveItem(material)">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <a class="btn-picker btn-picker-add" (click)="onAddItem()">
+        <i class="pi pi-plus"></i>
+        Add new item
+      </a>
+    </div>
+  </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+
+  <button
+    *ngIf="type"
+    pButton
+    type="button"
+    [loading]="isSaving"
+    label="Add Items"
+    class="p-button-success"
+    (click)="onAddItems()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #selectionType>
+  <div class="add-product">
+    <h3>Please select the type of new position</h3>
+
+    <div class="buttons">
+      <button
+        pButton
+        type="button"
+        label="Purchased"
+        (click)="choiceType('warehouse')"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Assembly"
+        (click)="choiceType('assemblies')"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Manufactured"
+        (click)="choiceType('manufactured-parts')"
+      ></button>
+    </div>
+  </div>
+</ng-template>

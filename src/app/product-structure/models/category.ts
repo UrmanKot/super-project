@@ -1,4 +1,5 @@
 import {UnitMeasure} from './unit-measure';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 export class Category {
   readonly id: number;
@@ -12,4 +13,5 @@ export class Category {
   rght?: number;
   tree_id?: number;
   // categories?: Nomenclature[];
+  categories?: any[];
 }
