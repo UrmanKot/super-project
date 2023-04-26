@@ -191,8 +191,12 @@
             </td>
             <td style="width: 10%" class="text-center">
               <span [ngSwitch]="supplier.last_event?.is_done">
-                <ng-container *ngSwitchCase="true">Done</ng-container>
-                <ng-container *ngSwitchCase="false">Not Done</ng-container>
+                <ng-container *ngSwitchCase="true">
+                  <span class="badge badge_success">DONE</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="false">
+                  <span class="badge badge_danger">NOT DONE</span>
+                </ng-container>
               </span>
             </td>
           </tr>
