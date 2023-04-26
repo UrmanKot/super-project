@@ -23,6 +23,7 @@ import {
   ManufacturingAddItemsComponent, NewItem
 } from '../../manufacturing/modals/manufacturing-add-items/manufacturing-add-items.component';
 import { Tasks} from '@shared/models/task';
+import {PlanningStatus} from '../../manufacturing/enums/planning-status.enum';
 
 @Injectable({
   providedIn: 'root'

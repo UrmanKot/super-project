@@ -1,9 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {PlanningStatus, Task} from '@shared/models/task';
+import {Task} from '@shared/models/task';
 import {TaskService} from '@shared/services/task.service';
 import {tap} from 'rxjs/operators';
 import {environment} from '@env/environment';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {PlanningStatus} from '../../../../../manufacturing/enums/planning-status.enum';
 
 @UntilDestroy()
 @Component({
