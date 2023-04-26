@@ -3,7 +3,7 @@
     Edit Task {{task.technology}} of {{task.list_product.nomenclature.name}}
       ({{task.list_product.nomenclature.code}})
   </h2>
-  <div class="status">Status: {{task.status}}</div>
+  <div class="status">Status: {{status}}</div>
 </div>
 
 <form [formGroup]="form" (ngSubmit)="save()">

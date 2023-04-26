@@ -83,6 +83,8 @@ export class Task {
   tools?: any;
   tasks?: Task[];
   created_order?: any;
+  is_in_qc?: boolean;
+  is_in_qc_wh?: boolean;
   /**
    * Values:<br>
    * "0" = "Outsource"<br>

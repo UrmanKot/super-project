@@ -54,6 +54,8 @@ export class ManufacturingTaskEditComponent implements OnInit {
   isDeleting = false;
   isSaving = false;
 
+  status = '';
+
   isTTCUpdated = false;
   isEndUpdated = false;
 
@@ -93,6 +95,8 @@ export class ManufacturingTaskEditComponent implements OnInit {
   ngOnInit(): void {
     this.task = this.data.task;
 
+    this.prepareDetailedStatus();
+
     this.data.tasks.forEach(task => {
       task.tasks.forEach(innerTask => {
         if (innerTask.serial_numbers.length > 0) {
@@ -124,6 +128,20 @@ export class ManufacturingTaskEditComponent implements OnInit {
     });
 
     this.data.task.serials = this.adapterService.removeDuplicates(this.data.task.serials, x => x.id);
+  }
+
+  prepareDetailedStatus() {
+    if (this.task.status === 'Ordered') {
+      if (this.task.is_in_qc_wh) {
+        this.status = 'In QC-WH';
+      } else if (this.task.is_in_qc) {
+        this.status = 'In QC';
+      } else {
+        this.status = this.task.status;
+      }
+    } else {
+      this.status = this.task.status;
+    }
   }
 
   ttc_display_get_multiplier(): number {
