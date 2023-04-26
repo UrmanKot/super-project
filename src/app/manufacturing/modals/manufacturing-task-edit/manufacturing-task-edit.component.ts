@@ -434,7 +434,6 @@ export class ManufacturingTaskEditComponent implements OnInit {
     // this.router.navigate([url])
     //
     window.open(url.toString(), '_blank');
-    this.dialogRef.close(false);
   }
 
   showError() {
