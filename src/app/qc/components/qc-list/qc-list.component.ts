@@ -1,14 +1,18 @@
 import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {Invoice} from '../../../procurement/models/invoice';
 import {TreeNode} from 'primeng/api';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
 import {Order} from '../../../procurement/models/order';
-import {tap} from 'rxjs/operators';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {Category} from '../../../product-structure/models/category';
+import {AdapterService} from '@shared/services/adapter.service';
+import {Subject, takeUntil} from 'rxjs';
+import {QuerySearch} from '@shared/models/other';
 import * as cloneDeep from 'lodash/cloneDeep';
-import {forkJoin} from 'rxjs';
+
+type ViewType = 'list' | 'hierarchy'
 
 @Component({
   selector: 'pek-qc-list',
@@ -23,55 +27,147 @@ export class QcListComponent implements OnInit {
   selectedOrderNode: TreeNode<Order>;
   selectedPurchasedInvoiceNode: TreeNode<Invoice>;
 
+  invoicesViewType: ViewType = 'hierarchy';
+  invoicesOrderType: ViewType = 'hierarchy';
+  invoicesPurchasedType: ViewType = 'hierarchy';
+
   invoiceManufacturedTree: TreeNode<Invoice>[];
   invoicePurchasedTree: TreeNode<Invoice>[];
   ownProductionCategorizedList: TreeNode[];
 
   invoiceTree: TreeNode<Invoice>[];
+  orderTree: TreeNode<Invoice>[];
 
   isLoadingInvoices = true;
   isLoadingOrders = true;
 
+  showClosedInvoices = false;
+  showClosedOrders = false;
+
   categories: TreeNode<Category>[];
 
+  invoicesList: Invoice[] = [];
+  ordersList: Order[] = [];
+  purchasedInvoicesList: Invoice[] = [];
+
+  selectedInvoice: Invoice;
+  selectedInvoiceItem: Invoice;
+  selectedInvoicePurchaseItem: Invoice;
+  selectedOrderItem: Order;
 
   expanseMap = {};
+
+  private destroyInvoices$ = new Subject();
+  private destroyOrders$ = new Subject();
+
+  invoicesQuery: QuerySearch[] = [
+    {name: 'needs_qc', value: true},
+    {name: 'by_qc_module_permission', value: true}
+  ];
+
+  ordersQuery: QuerySearch[] = [
+    {name: 'needs_qc', value: true},
+    {name: 'by_qc_module_permission', value: true}
+  ];
+
+  searchForm: FormGroup = this.fb.group({    
+    supplier: [null],
+    qc_closed_date_after: [null],
+    qc_closed_date_before: [null],
+    accounting_type: [null],
+    material_or_service: [null],
+    purchase_categories: [null],
+    status: [null]
+  });
 
   constructor(
     private invoiceService: InvoiceService,
     private orderService: OrderService,
     private productStructureCategoryService: ProductStructureCategoryService,
+    private adapterService: AdapterService,
+    private fb: FormBuilder,
   ) {
   }
 
   ngOnInit(): void {
-    forkJoin({
-      categories: this.productStructureCategoryService.get(),
-      invoices: this.invoiceService.get([
-        {name: 'needs_qc', value: true},
-        {name: 'by_qc_module_permission', value: true}
-      ]),
-      orders: this.orderService.get([
-        {name: 'needs_qc', value: true},
-        {name: 'by_qc_module_permission', value: true}
-      ])
-    }).subscribe(({categories, invoices, orders}) => {
-      if (this.categories) {
-        this.mapExpansion();
-      }
+    this.getCategories();
+    this.getInvoices();
+    this.getServices();
+  }
 
-      this.createTree(categories);
+  searchItems() {
+    this.searchInvoices();
+    this.searchServices();
+  }
 
-      this.invoices = invoices;
-      this.makeUniqueProductionPlansInvoice();
-      this.resetProductPaymentTree();
+  searchInvoices() {
+    this.isLoadingInvoices = true;
+    this.destroyInvoices$.next(true);
+    this.invoices = [];
+    this.selectedInvoice = null;
+    this.invoicesQuery = [
+      {name: 'by_qc_module_permission', value: true}
+    ];
 
-      this.orders = orders;
-      this.makeUniqueProductionPlans();
-      this.fillOwnProductionWithData();
+    if (!this.searchForm.get('qc_closed_date_after').value 
+        && !this.searchForm.get('qc_closed_date_before').value) {
+      this.invoicesQuery.push({
+        name: 'needs_qc', value: true
+      })
+      this.showClosedInvoices = false;
+    } else {
+      this.showClosedInvoices = true;
+    }
 
-      this.isLoadingInvoices = false;
-    });
+    if (this.searchForm.get('qc_closed_date_after').value) {
+      this.invoicesQuery.push({
+        name: 'qc_closed_date_after',
+        value: this.adapterService.dateAdapter(this.searchForm.get('qc_closed_date_after').value)
+      });
+    }
+
+    if (this.searchForm.get('qc_closed_date_before').value) {
+      this.invoicesQuery.push({
+        name: 'qc_closed_date_before',
+        value: this.adapterService.dateAdapter(this.searchForm.get('qc_closed_date_before').value)
+      });
+    }
+    this.getInvoices();
+  }
+
+  searchServices() {
+    this.isLoadingOrders = true;
+    this.destroyOrders$.next(true);
+    this.orders = [];
+    this.selectedOrderItem = null;
+    this.ordersQuery = [
+      {name: 'by_qc_module_permission', value: true}
+    ];
+
+    if (!this.searchForm.get('qc_closed_date_after').value 
+        && !this.searchForm.get('qc_closed_date_before').value) {
+      this.ordersQuery.push({
+        name: 'needs_qc', value: true
+      })
+      this.showClosedOrders = false;
+    } else {
+      this.showClosedOrders = true;
+    }
+
+    if (this.searchForm.get('qc_closed_date_after').value) {
+      this.ordersQuery.push({
+        name: 'qc_closed_date_after',
+        value: this.adapterService.dateAdapter(this.searchForm.get('qc_closed_date_after').value)
+      });
+    }
+
+    if (this.searchForm.get('qc_closed_date_before').value) {
+      this.ordersQuery.push({
+        name: 'qc_closed_date_before',
+        value: this.adapterService.dateAdapter(this.searchForm.get('qc_closed_date_before').value)
+      });
+    }
+    this.getServices();
   }
 
   mapExpansion() {
@@ -93,27 +189,48 @@ export class QcListComponent implements OnInit {
     }
   }
 
+  getCategories() {
+    this.productStructureCategoryService.get().pipe(
+      takeUntil(this.destroyInvoices$)
+    ).subscribe((categories) => {
+      if (this.categories) {
+        this.mapExpansion();
+      }
+      this.createTree(categories);
+    });
+  }
+
   getInvoices() {
-    this.invoiceService.get([
-      {name: 'needs_qc', value: true},
-      {name: 'by_qc_module_permission', value: true}
-    ]).pipe(
-      tap(invoices => this.invoices = invoices),
-      tap(() => this.makeUniqueProductionPlansInvoice()),
-      tap(() => this.resetProductPaymentTree()),
-      tap(() => this.isLoadingInvoices = false)
-    ).subscribe();
+    this.invoiceService.get(this.invoicesQuery).pipe(
+      takeUntil(this.destroyInvoices$)
+    ).subscribe(invoices => {
+      this.invoices = invoices;
+      this.makeUniqueProductionPlansInvoice(),
+      this.resetProductPaymentTree(),
+      this.resetInvoicesList(),
+      this.isLoadingInvoices = false
+    });
   }
 
   getServices(): void {
-    this.orderService.get([
-      {name: 'needs_qc', value: true},
-      {name: 'by_qc_module_permission', value: true}
-    ]).pipe(
-      tap(orders => this.orders = orders),
-      tap(() => this.makeUniqueProductionPlans()),
-      tap(() => this.fillOwnProductionWithData()),
-    ).subscribe();
+    this.orderService.get(this.ordersQuery).pipe(
+      takeUntil(this.destroyOrders$)
+    ).subscribe(orders => {
+      this.orders = orders;
+      this.makeUniqueProductionPlans(),
+      this.fillOwnProductionWithData(),
+      this.resetOrdersList(),
+      this.isLoadingOrders = false
+    });
+  }
+
+  resetInvoicesList(): void {
+    this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
+    this.invoicesList = this.invoices.filter(i => !i.purchase_category);
+  }
+
+  resetOrdersList(): void {
+    this.ordersList = this.orders;
   }
 
   resetProductPaymentTree(): void {
@@ -371,6 +488,7 @@ export class QcListComponent implements OnInit {
   }
 
   fillCategorizedTree(): void {
+    this.ownProductionCategorizedList = cloneDeep(this.categories);
     const categoriesTemp: { id: number, level: number, parentId: number, name: string }[] = [];
 
     this.orders.forEach(order => {
@@ -600,5 +718,17 @@ export class QcListComponent implements OnInit {
       this.expandCollapseRecursive(node, isToExpand);
     });
     this.ownProductionCategorizedList = temp;
+  }
+
+  onSelectInvoiceType(view: ViewType) {
+    this.invoicesViewType = view;
+  }
+
+  onSelectOrderType(view: ViewType) {
+    this.invoicesOrderType = view;
+  }
+
+  onSelectPurchaseType(view: ViewType) {
+    this.invoicesPurchasedType = view;
   }
 }
