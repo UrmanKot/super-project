@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
 import {Task} from '@shared/models/task';
-import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, tap} from 'rxjs/operators';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AdapterService} from '@shared/services/adapter.service';
 import {QuerySearch} from '@shared/models/other';
@@ -569,5 +569,18 @@ export class ManufacturingPlanListComponent implements OnInit {
   goToSelectedNodesPlans() {
     const ids = this.selectedTasksNodes.map(t => t.data.task.id).join(',')
     this.router.navigate(['plan', ids], {relativeTo: this.route})
+  }
+
+  onSplitPlan() {
+    this.taskService.splitTasksDialog(this.selectedTasks[0]).pipe(
+      filter(response => !!response)
+    ).subscribe()
+  }
+
+  onSplitNodePlan() {
+    this.taskService.splitTasksDialog(this.selectedTasksNodes[0].data).pipe(
+      filter(response => !!response),
+      tap(() => this.search$.next())
+    ).subscribe()
   }
 }

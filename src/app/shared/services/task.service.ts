@@ -24,6 +24,12 @@ import {
 } from '../../manufacturing/modals/manufacturing-add-items/manufacturing-add-items.component';
 import { Tasks} from '@shared/models/task';
 import {PlanningStatus} from '../../manufacturing/enums/planning-status.enum';
+import {
+  ManufacturingSliceTasksComponent
+} from '../../manufacturing/components/manufacturing-slice-tasks/manufacturing-slice-tasks.component';
+import {
+  ManufacturingSplitPlanComponent
+} from '../../manufacturing/modals/manufacturing-split-plan/manufacturing-split-plan.component';
 
 @Injectable({
   providedIn: 'root'
@@ -216,5 +222,16 @@ export class TaskService {
             : new Observable((subscriber) => subscriber.complete())
         )
       );
+  }
+
+  splitTasksDialog(task: Task) {
+    return this.dialog
+      .open<ManufacturingSplitPlanComponent>(ManufacturingSplitPlanComponent, {
+        width: '30rem',
+        data: { task },
+        disableClose: false,
+        autoFocus: false,
+      })
+      .afterClosed()
   }
 }

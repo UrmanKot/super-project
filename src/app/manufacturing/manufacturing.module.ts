@@ -33,6 +33,7 @@ import { ShiftByTypesComponent } from './pickers/shift-by-types/shift-by-types.c
 import { ManufacturingAddItemsComponent } from './modals/manufacturing-add-items/manufacturing-add-items.component';
 import { ManufacturingPickerProductComponent } from './modals/manufacturing-picker-product/manufacturing-picker-product.component';
 import { ManufacturingAllPlansComponent } from './components/manufacturing-all-plans/manufacturing-all-plans.component';
+import { ManufacturingSplitPlanComponent } from './modals/manufacturing-split-plan/manufacturing-split-plan.component';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { ManufacturingAllPlansComponent } from './components/manufacturing-all-p
     ManufacturingAddItemsComponent,
     ManufacturingPickerProductComponent,
     ManufacturingAllPlansComponent,
+    ManufacturingSplitPlanComponent,
   ],
   imports: [
     SharedModule,

@@ -142,6 +142,7 @@
                 icon="pi pi-chart-pie"
                 label="Add Split"
                 [disabled]="selectedTasks.length !== 1 || selectedTasks[0]?.required_quantity === 1"
+                (click)="onSplitPlan()"
               >
               </button>
               <button
@@ -273,6 +274,7 @@
               icon="pi pi-chart-pie"
               label="Add Split"
               [disabled]="selectedTasksNodes.length !== 1 || selectedTasksNodes[0]?.data?.task?.required_quantity === 1"
+              (click)="onSplitNodePlan()"
             >
             </button>
             <button
