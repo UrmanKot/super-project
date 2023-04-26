@@ -26,6 +26,7 @@ export class CreateEditPaymentFormComponent implements OnInit {
     exchange_rate: [1, Validators.required],
     payment_date: ['', Validators.required],
     accountant_number: ['', Validators.required],
+    paid_by_card: [false],
   });
   isSaving = false;
   invoices: Invoice[] = [];

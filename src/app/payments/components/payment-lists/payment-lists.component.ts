@@ -83,6 +83,8 @@ export class PaymentListsComponent implements OnInit {
 
   statusPayment = ['DECLINED', 'PAID', 'CONFIRMED', 'WAITING'];
 
+  paymentMethod = ['Card', 'Invoice'];
+
   selectedPayment: Payment;
   selectedServicePayment: ServiceInvoicePayment;
   tabIndex = 0;
@@ -127,6 +129,7 @@ export class PaymentListsComponent implements OnInit {
     accounting_type: [null],
     material_or_service: [null],
     purchase_categories: [null],
+    payment_method: [null],
     status: [null]
   });
 
@@ -137,6 +140,7 @@ export class PaymentListsComponent implements OnInit {
     accounting_type: [null],
     material_or_service: [null],
     purchase_categories: [null],
+    payment_method: [null],
     status: [null]
   });
 
@@ -327,6 +331,12 @@ export class PaymentListsComponent implements OnInit {
         value: this.searchPaymentsForm.get('status').value
       });
     }
+    if (this.searchPaymentsForm.get('payment_method').value) {
+      this.paymentsQuery.push({
+        name: 'payment_method',
+        value: this.searchPaymentsForm.get('payment_method').value
+      });
+    }
     this.getPayments();
   }
 
@@ -362,7 +372,7 @@ export class PaymentListsComponent implements OnInit {
       this.auxiliaryPaymentsQuery.push(
         {
           name: 'payment_date_after',
-          value: this.adapterService.dateAdapter(this.searchPaymentsForm.get('payment_date_after').value)
+          value: this.adapterService.dateAdapter(this.searchPaymentsAuxiliaryForm.get('payment_date_after').value)
         }
       );
     }
@@ -370,7 +380,7 @@ export class PaymentListsComponent implements OnInit {
       this.auxiliaryPaymentsQuery.push(
         {
           name: 'payment_date_before',
-          value: this.adapterService.dateAdapter(this.searchPaymentsForm.get('payment_date_before').value)
+          value: this.adapterService.dateAdapter(this.searchPaymentsAuxiliaryForm.get('payment_date_before').value)
         }
       );
     }
@@ -380,6 +390,14 @@ export class PaymentListsComponent implements OnInit {
           name: 'status',
           value: this.searchPaymentsAuxiliaryForm.get('status').value
         }
+      );
+    }
+    if (this.searchPaymentsAuxiliaryForm.get('payment_method').value) {
+      this.auxiliaryPaymentsQuery.push(
+        {
+        name: 'payment_method',
+        value: this.searchPaymentsAuxiliaryForm.get('payment_method').value
+      }
       );
     }
     this.getServiceInvoicePayments();
