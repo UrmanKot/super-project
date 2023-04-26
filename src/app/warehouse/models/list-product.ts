@@ -24,8 +24,9 @@ export class ListProduct {
   list_url?: string;
   products?: ListProduct[];
   technology: Technology;
-  technologies: any[];
   groupedProductIds?: number[];
+  productionPlanId?: number;
+  technologies: any[];
   groupedProducts: ListProduct[];
   task_sort_value?: number;
   blockedExpand?: boolean;

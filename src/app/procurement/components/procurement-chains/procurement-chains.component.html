@@ -190,7 +190,13 @@
               <td style="width: 15%;">
                 <div class="word-break"
                      *ngFor="let item of getRootLists(order.root_production_list_products); let idx = index">
-                  {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  <a
+                    target="_blank"
+                    [href]="productionPlanLinkBase + item.list.productionPlanId">
+                  >
+                    {{item.list.nomenclature.code}}
+                    ~{{item.list.nomenclature.name}}({{item.count}})
+                  </a>
                 </div>
               </td>
               <td class="text-center" style="width: 10%;">{{order.status?.value}}</td>
