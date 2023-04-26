@@ -14,6 +14,7 @@ import {map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Table} from 'primeng/table';
 import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
+import {environment} from "@env/environment";
 
 @UntilDestroy()
 @Component({
@@ -64,6 +65,7 @@ export class ProcurementChainsComponent implements OnInit {
 
   nomenclaturesList: Nomenclature[] = [];
   rootLists: any[] = [];
+  productionPlanLinkBase = environment.link_url + "dash/production/plan/tasks/";
 
   query: QuerySearch[] = [];
 
@@ -106,7 +108,15 @@ export class ProcurementChainsComponent implements OnInit {
         }
       });
 
-      order.root_production_list_products.forEach(root => this.rootLists.push(root));
+      order.root_production_list_products.forEach((root) => {
+
+        order.root_production_plans.forEach((plan: any) => {
+          if (plan.list_product.id == root.id) {
+            root.productionPlanId = plan.id
+          }
+        })
+        this.rootLists.push(root);
+      });
 
       this.rootLists = this.rootLists.map(root => {
         return {
