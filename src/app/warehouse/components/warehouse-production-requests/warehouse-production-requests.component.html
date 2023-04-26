@@ -100,9 +100,35 @@
           </div>
           <div class="col-3">
             <div class="form-group">
-              <label>Created Date From</label>
+              <label>Created Date To</label>
               <p-calendar
                 formControlName="created_before"
+                (ngModelChange)="searchProducts()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Closing Date From</label>
+              <p-calendar
+                formControlName="closing_date_after"
+                (ngModelChange)="searchProducts()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Closing Date To</label>
+              <p-calendar
+                formControlName="closing_date_before"
                 (ngModelChange)="searchProducts()"
                 [showButtonBar]="true"
                 dataType="date"
