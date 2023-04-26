@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.title}}
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div class="calendar">
+    <p-calendar selectionMode="single" [inline]="true" [(ngModel)]="date"></p-calendar>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    (click)="onChoice()"
+    pButton
+    type="button"
+    label="Choice"
+    class="p-button-success"
+  ></button>
+</mat-dialog-actions>

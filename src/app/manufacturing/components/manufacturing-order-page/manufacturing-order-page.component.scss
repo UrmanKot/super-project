@@ -1,0 +1,49 @@
+h2 {
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+
+.all-checked {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  label {
+    cursor: pointer;
+  }
+}
+
+.pi-times {
+  color: var(--theme-color-danger);
+  position: relative;
+  top: 2px;
+}
+
+.pi-check-circle {
+  color: var(--theme-color-success);
+  position: relative;
+  top: 2px;
+}
+
+.manufacturing-order-page {
+  @media print {
+    display: none;
+  }
+
+  &-print {
+    z-index: 9999;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    display: none;
+    height: 100%;
+
+    @media print {
+      position: unset;
+      display: block;
+    }
+  }
+}

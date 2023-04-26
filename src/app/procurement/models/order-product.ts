@@ -39,7 +39,7 @@ export class OrderProduct {
   is_technology_ready?: boolean;
   not_ordered_product_id?: number;
   free_quantity_without_final_status?: number;
-  quality_control?: number;
+  quality_control?: any;
   // details?: OrderDetail;
   isReady?: boolean;
   products: OrderProduct[];
@@ -67,11 +67,11 @@ export class OrderMaterial {
   readonly id: number;
   name: string;
   code: string;
-  required_quantity: number;
-  list_product: ListProduct;
   technology?: string;
+  required_quantity: number;
   material_nomenclature?: Nomenclature;
   order_product_nomenclature?: Nomenclature;
+  list_product: ListProduct;
   allIds?: number[];
   totalInitialQuantity?: number;
   totalRequiredQuantity?: number;
@@ -94,5 +94,7 @@ export class OrderProducts {
 
 export class OrderMachine {
   readonly id: number;
+  machine: any;
+  duration: any
 }
 

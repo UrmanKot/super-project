@@ -53,6 +53,7 @@ export class Order {
   qc_wh_closed_date?: Date;
   freeNomenclatureQuantityAtChain?: number;
   sent_to_qc_quantity?: number;
+  isReceiptDateOverdue?: boolean;
 }
 
 export class Orders {

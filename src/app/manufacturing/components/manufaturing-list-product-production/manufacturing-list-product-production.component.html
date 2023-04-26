@@ -1,0 +1,206 @@
+<div
+  *ngIf="production?.isExpanded"
+  class="children"
+  [class.highlighted-end]="childrenEndHighlighted"
+  [class.test]="!isLeftPanel"
+>
+  <!-- Группируем в один контейнер задачи без дочерних -->
+  <div
+    class="child-group"
+    *ngFor="let group of production.groups"
+    [style.background]="production.color"
+  >
+    <pek-manufacturing-list-product-production
+      *ngFor="let child of group"
+      [rootTask]="rootTask"
+      [isLeftPanel]="isLeftPanel"
+      [productionNameWidth]="productionNameWidth"
+      [production]="child"
+    >
+    </pek-manufacturing-list-product-production>
+  </div>
+</div>
+
+<div
+  class="task"
+  [class.m-0]="production?.children?.length"
+  [class.root]="isRoot"
+  [class.selected]="production?.isSelected"
+  [class.filtered]="production?.isFiltered"
+  [class.visible]="production?.isVisible"
+  [class.parent]="production.hasChildren"
+  [class.task_hover]="production.isHover"
+  [class.task_active]="production.isActive"
+  [style.marginLeft.px]="isLeftPanel ? -7 * production?.product.level : 0"
+  (mouseover)="mouseoverFromTask(production)"
+  (mouseout)="mouseoutFromTask(production)"
+>
+  <div
+    *ngIf="isLeftPanel"
+    class="d-flex task-content align-items-center"
+    [class.task-parent]="production?.hasChildren"
+  >
+    <input
+      *ngIf="chart.selectedTechnologies?.length && production.isFiltered && chart.mode === 'make-order'"
+      [(ngModel)]="production.isSelected"
+      (change)="chart.changeAllProductsOnSelected()"
+      type="checkbox"
+      class="task-checkbox"
+    >
+<!--      [style.left]="production.hasChildren ? -(33 + production.product.level * 7) + 'px' : ''"-->
+    <button
+      class="task-btn"
+      *ngIf="production?.hasChildren && chart.mode === 'add-items'"
+      (click)="chart.addTasks(production)"
+    ></button>
+    <div style="width: 30px" [class.toggle-disable]="chart.mode === 'add-items'">
+      <i *ngIf="production?.hasChildren && !production?.isBlocked"
+         class="pi"
+         [class.pi-minus]="production.isExpanded"
+         [class.pi-plus]="!production.isExpanded"
+         (click)="chart.toggleProduction(production).subscribe()"
+      ></i>
+    </div>
+    <div class="d-flex" (click)="toggleActiveProduction(production)">
+      <div
+        class="task-item task-item-code"
+        [ngStyle]="{
+          width: production?.hasChildren ? 190 - 7 * production?.product.level + 'px' : '190px',
+          paddingLeft: isLeftPanel && !production?.hasChildren ? 7 * (production?.product.level - 1) + 'px' : 0
+        }"
+      >
+        <span class="production-code">{{production?.product.nomenclature.code}}</span>
+        <span class="production-code production-code_hide">
+        <span class="text">{{production?.product.nomenclature.code}}</span>
+      </span>
+      </div>
+
+      <!-- Название продукта -->
+      <div class="task-item task-item-name">
+      <span class="production-name" [style.width.px]="productionNameWidth">
+        <b *ngIf="production?.product.nomenclature.bulk_or_serial === '1'">(S)</b>
+        <b *ngIf="production?.product.nomenclature.has_technical_equipment">(T)</b>
+        {{production?.product.nomenclature.name}}
+      </span>
+
+        <span class="production-name production-name_hide" [style.width.px]="productionNameWidth">
+        <span class="text">{{production?.product.nomenclature.name}}</span>
+      </span>
+      </div>
+
+      <!--    <div style="width: 80px;" class="task-item justify-content-center">{{production?.product.required_quantity * production.products.length}}</div>-->
+      <div
+        style="width: 80px;"
+        class="task-item justify-content-center"
+      >
+        {{production?.product.task_required_quantity * production?.tasks[0].tasks.length}}
+      </div>
+      <div style="width: 50px;" class="task-item justify-content-center">
+        {{production?.product.nomenclature.category?.unit_of_measure?.symbol ? production?.product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs'}}
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="!isLeftPanel"
+    class="d-flex timeline-tasks ml-3"
+    [style.width.px]="chart?.getX(production?.getEnd())"
+  >
+    <ng-container *ngFor="let task of production?.tasks">
+      <div
+        class="task-time"
+        (mouseenter)="mouseEntered(task)"
+        (mouseleave)="mouseLeave(task)"
+        *ngIf="task.start_date"
+        [class.selected]="chart.selectedTasks.has(task)"
+        [class.deselected]="chart.mode === 'edit-tasks' && !chart.selectedTasks.has(task)"
+        [class.disabled]="chart.selectedTechnologies.length && !chart.selectedTechnologies.includes(task.technology)"
+        [class.disabled_status]="chart.mode !== 'make-order' &&
+           (chart.selectedStatuses.length && !chart.selectedStatuses.includes(task.status)) ||
+           (chart.selectedFilterTechnologies.length && !chart.selectedFilterTechnologies.includes(task.technology)) ||
+           (chart.selectedProductionTypes.length && !chart.selectedProductionTypes.includes(task.production_type))"
+        [class.is-saved]="task.isSaved"
+        [class.small]="task.width <= 24"
+        [class.not-planned]="!task.is_planned"
+        [class.planned]="task.is_planned"
+        [class.deficit_not-planned]="task.status === 'Deficit' && !task.is_planned"
+        [class.deficit_planned]="task.status === 'Deficit' && task.is_planned"
+        [class.ordered-own]="task.status === 'Ordered' && task.production_type === '1'"
+        [class.ordered-own-p]="task.status === 'Ordered' && task.list_product.nomenclature.type === '0'"
+        [class.ordered-outsource]="task.status === 'Ordered' && task.production_type === '0'"
+        [class.on-stock]="task.status === 'On stock'"
+        [class.task-reserved]="task.status === 'Reserved'"
+        [class.rework]="task.status === 'Rework'"
+        [ngStyle]="{'left': task.left + 'px', 'width' : task.width + 'px'}"
+        [id]="production.product.id"
+        cdkDrag
+        cdkDragLockAxis="x"
+        (cdkDragStarted)="dragging = true"
+        (cdkDragEnded)="move(task, $event)"
+        [cdkDragDisabled]="getIfDisabled(task)"
+        mwlResizable
+        [enableGhostResize]="true"
+        [resizeSnapGrid]="{left: chart.scaleHourWeekdayDay, right: chart.scaleHourWeekdayDay}"
+        (resizeEnd)="resize(task, $event)"
+        [validateResize]="validateResize"
+        (click)="onTaskClick(task, production, $event)"
+      >
+        <svg [style.width]="task.width" height="22" *ngIf="task.status === 'Rework'">
+          <defs>
+            <pattern
+              id="transformedPattern"
+              x="0" y="0" width="1" height="20"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45)"
+            >
+              <circle cx="1" cy="1" r="2" style="stroke: none; fill: #000000"/>
+            </pattern>
+          </defs>
+
+          <rect
+            x="0"
+            y="0"
+            [style.width]="task.width"
+            height="22"
+            style="stroke: #000000; fill: url(#transformedPattern);"/>
+        </svg>
+        <div class="days">
+          <div
+            *ngFor="let day of task.days"
+            class="day"
+            [style.width]="chart.vacationCoords + 'px'"
+            [class.day_is-vac]="day.isVac"
+            [style.left.px]="day.x"
+          >
+          </div>
+        </div>
+        <div class="tech-name" [class.tech-name_small]="chart.planScale === 25">
+          {{task.technology ? task.technology : type(task.list_product.nomenclature.type)}}
+        </div>
+        <div
+          class="resize-handle-right"
+          [class.resize-handle-right_medium]="task.width <= 24"
+          mwlResizeHandle [resizeEdges]="{ right: true }"></div>
+        <div
+          class="resize-handle-left"
+          [class.resize-handle-left_medium]="task.width <= 24"
+          mwlResizeHandle [resizeEdges]="{ left: true }"></div>
+        <div class="drag-handle" cdkDragHandle [cdkDragHandleDisabled]="getIfDisabled(task)"></div>
+      </div>
+      <div
+        class="task-time new-date"
+        *ngIf="task.unconfirmedBiggerWidth"
+        [ngStyle]="{'left': task.left + 'px', 'width' : task.unconfirmedBiggerWidth + 'px'}"
+      >
+        &#160;
+      </div>
+      <div
+        class="task-time new-date-smaller"
+        *ngIf="task.unconfirmedSmallerWidth"
+        [ngStyle]="{'left': task.unconfirmedLeft + 'px', 'width' : task.unconfirmedSmallerWidth + 'px'}"
+      >
+        &#160;
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -290,6 +290,12 @@ export class OrderService {
     return modifyOrders
   }
 
+  moveToQc(data: any): Observable<Order> {
+    return this.httpClient.patch<{data: Order}>(this.API_URL + this.url + data.id + '/', data.order).pipe(
+      map(response => response.data)
+    );
+  }
+
   openAddProductsToChainModal(products: OrderProduct[], orderType: OrderType): Observable<Order> {
     return this.dialog
       .open<AddProductsToChainComponent>(AddProductsToChainComponent, {

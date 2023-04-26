@@ -28,7 +28,7 @@ import {AlbumService} from '@shared/services/album.service';
 import {forkJoin} from 'rxjs';
 import {deepCopy} from 'deep-copy-ts';
 
-export type OrderType = 'procurement' | 'outsourcing' | 'purchase';
+export type OrderType = 'procurement' | 'outsourcing' | 'purchase' | 'manufacturing';
 
 @UntilDestroy()
 @Component({
@@ -144,6 +144,7 @@ export class OrderPageComponent implements OnInit {
   isLoadingFiles = true;
   isLoadingTechnicalEquipments = true;
   isLoadingPurchasingCategories = true;
+  isCancellation = false;
 
   products: OrderProduct[] = [];
   proformaInvoices: Invoice[] = [];
@@ -440,7 +441,7 @@ export class OrderPageComponent implements OnInit {
         if (product) {
           this.getProducts();
         }
-      })
+      });
     }
   }
 
@@ -611,7 +612,16 @@ export class OrderPageComponent implements OnInit {
   onCancelOrderMaterials() {
     this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
       if (confirm) {
-        this.requestService.cancel(this.orderId).subscribe();
+        this.isCancellation = true;
+        this.requestService.cancel(this.orderId).pipe(
+          finalize(() => this.isCancellation = false)
+        ).subscribe(() => {
+          this.orderMaterials = [];
+          this.products = [];
+          this.selectedProduct = null;
+          this.isLoadingProducts = true;
+          this.getOrder();
+        });
       }
     });
   }
@@ -634,10 +644,10 @@ export class OrderPageComponent implements OnInit {
   }
 
   onSelectPurchaseCategory() {
-   const send = {
-     purchase_category: this.selectedPurchasingCategoryId,
-     id: this.order.id
-   }
+    const send = {
+      purchase_category: this.selectedPurchasingCategoryId,
+      id: this.order.id
+    };
 
     this.orderService.updatePartly(send).subscribe();
   }
@@ -647,7 +657,7 @@ export class OrderPageComponent implements OnInit {
       if (request) {
         this.getOrder();
       }
-    })
+    });
   }
 
   public checkIfIsBlockedToTenderTransform(): boolean {

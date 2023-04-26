@@ -1,0 +1,41 @@
+<div class="row header">
+  <div class="col-9">
+    <label> Warehouse Product</label>
+  </div>
+  <div class="col-2 pl-0" style="margin-left: -7px">
+    <label> Quantity</label>
+  </div>
+</div>
+
+<div class="row">
+  <div *ngFor="let material of materials; index as index"
+       class="col-12 row pt-3 align-items-center"
+  >
+    <div class="col-9 warehouse-product">
+      <a class="btn-picker" (click)="warehouseSearch(material)">
+        <span *ngIf="!material.warehouseProduct">
+          Search In Warehouse
+        </span>
+        <span *ngIf="material.warehouseProduct">Change Material</span>
+      </a>
+      <span class="material-name" *ngIf="material.warehouseProduct">
+        {{material.warehouseProduct.nomenclature.name}} ({{material.warehouseProduct.nomenclature.code}})
+        Quantity: {{material.warehouseProduct.total_locator_quantity}}
+      </span>
+    </div>
+    <div class="col-2">
+      <input min="1" type="number" pInputText [(ngModel)]="material.quantity">
+    </div>
+    <div class="col-1">
+      <button *ngIf="index" class="btn-picker btn-danger btn-picker-danger" (click)="removeMaterial(material)">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pl-3 row mt-3">
+  <div class="btn-pick">
+    <a class="btn-picker btn-picker-add" (click)="addMaterial()"><i class="pi pi-plus"></i> Add New Item</a>
+  </div>
+</div>

@@ -55,4 +55,40 @@ export class AdapterService {
     document.body.appendChild(downloadLink);
     downloadLink.click();
   }
+
+  msToTime(duration: any): string {
+    let minutes: any = parseInt(`${(duration / (1000 * 60)) % 60}`, 10);
+    let hours: any = parseInt(`${(duration / (1000 * 60 * 60)) % 24}`, 10) + 3;
+
+    hours = (hours < 10) ? '0' + hours : hours;
+    minutes = (minutes < 10) ? '0' + minutes : minutes;
+
+    return hours + ':' + minutes + ':' + '00';
+  }
+
+  timeToMinutesAdapter(time) {
+    if (typeof time === 'number') {
+      return time;
+    }
+
+    const timeIntervals = time.split(':');
+
+    if (timeIntervals.length === 1) {
+      return parseInt(time, 10);
+    }
+
+    const timeInterval = {
+      days: parseInt(timeIntervals[0], 10),
+      hours: parseInt(timeIntervals[1], 10),
+      minutes: parseInt(timeIntervals[2], 10)
+    };
+
+    let minutes = timeInterval.hours * 60 + timeInterval.minutes;
+
+    if (timeInterval.days > 0) {
+      minutes = minutes + timeInterval.days * 1440;
+    }
+
+    return minutes;
+  }
 }

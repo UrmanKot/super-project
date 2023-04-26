@@ -67,6 +67,10 @@ export class EditOrderComponent implements OnInit {
       case 'procurement':
         accountingType = 4;
         break;
+      case 'manufacturing': {
+        accountingType = 3;
+        break;
+      }
       case 'outsourcing':
         accountingType = 2;
         break;

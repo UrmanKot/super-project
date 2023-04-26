@@ -1,7 +1,8 @@
+import {EmployeePosition} from '@shared/models/employee-position';
 
 export class Employee {
   readonly id: number;
-  // position?: Position;
+  position?: EmployeePosition;
   first_name: string;
   last_name: string;
   fullName?: string;

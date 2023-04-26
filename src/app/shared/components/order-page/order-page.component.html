@@ -310,10 +310,11 @@
                 *ngIf="orderMaterials.length > 0"
                 (click)="onCancelOrderMaterials()"
                 pButton
+                [loading]="isCancellation"
                 type="button"
                 label="Cancelation"
                 icon="pi pi-times"
-                class="ml-auto p-button-danger"
+                class="ml-auto p-button-danger p-button-icon"
               >
               </button>
             </div>
@@ -449,7 +450,7 @@
           <ng-template pTemplate="paginatorright">
             <p-button
               type="button"
-              (click)="mt.paginator=false"
+              (click)="et.paginator=false"
               styleClass="p-button-text"
             >
               All

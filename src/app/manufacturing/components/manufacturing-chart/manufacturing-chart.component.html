@@ -1,0 +1,486 @@
+<div class="content">
+  <div class="card">
+    <div class="card-body">
+      <div
+        class="chart-wrapper"
+        [class.pl-15]="mode === 'make-order'"
+      >
+        <div class="all-selected" *ngIf="selectedTechnologies?.length && mode === 'make-order'">
+          <label for="all-selected">All</label>
+          <input
+            id="all-selected"
+            type="checkbox"
+            [(ngModel)]="allProductsOnSelected"
+            (change)="toggleAllProductsSelected()"
+          >
+        </div>
+        <!--        <div-->
+        <!--          class="mb-2 info-container"-->
+        <!--          *ngIf="!isPlan"-->
+        <!--        >-->
+        <!--          <div *ngIf="hasDeliveryDateChanges && !isPlan">-->
+        <!--            {{hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges ? 'Root' : ''}} Dates Of Delivery Changed-->
+
+        <!--            <button-->
+        <!--              *ngIf="hasChildDeliveryDateChanges"-->
+        <!--              class="btn btn-danger ml-2 mr-5"-->
+        <!--              (click)="confirmDateChanges(true)"-->
+        <!--            >-->
+        <!--              Confirm-->
+        <!--            </button>-->
+        <!--            <button-->
+        <!--              *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"-->
+        <!--              class="btn btn-danger ml-2 mr-5"-->
+        <!--              (click)="confirmDateChanges(false)"-->
+        <!--            >-->
+        <!--              Confirm-->
+        <!--            </button>-->
+        <!--          </div>-->
+        <!--          <div *ngIf="getLastTask?.planning_status && !isPlan">-->
+
+        <!--            <ng-container [ngSwitch]="getLastTask?.planning_status">-->
+        <!--              <span *ngSwitchCase="PlanningStatus.ON_STOCK" class="text-success">On Stock</span>-->
+        <!--              <span *ngSwitchCase="PlanningStatus.PLANNED">-->
+        <!--              <span class="text-success">Confirmed</span>-->
+        <!--              <button-->
+        <!--                *ngIf="!getLastTask?.change_request"-->
+        <!--                class="btn btn-primary ml-3"-->
+        <!--                (click)="sendPlanToCorrections()"-->
+        <!--              >-->
+        <!--                request for planing corrections-->
+        <!--              </button>-->
+        <!--                {{getLastTask?.change_request ? '(Requested For Planing Corrections)' : ''}}-->
+        <!--            </span>-->
+        <!--              <span *ngSwitchCase="PlanningStatus.WAITING_CONFIRMATION">Waiting Confirmation</span>-->
+        <!--              <button-->
+        <!--                *ngSwitchCase="PlanningStatus.REQUIRES_PLANNING"-->
+        <!--                class="btn btn-primary mr-2"-->
+        <!--                (click)="sendPlanToConfirmation()"-->
+        <!--              >-->
+        <!--                Sent To Confirmation-->
+        <!--              </button>-->
+        <!--            </ng-container>-->
+
+        <!--          </div>-->
+        <!--        </div>-->
+        <div class="tasks-container" [class.tasks-container_small]="isPlan" [class.disabled-chart]="isLoading">
+          <div class="items-container">
+            <div class="d-flex" [style.minWidth.px]="innerContentWidth">
+              <div class="left-panel-wrapper" [class.pl-33]="mode === 'make-order'">
+                <div
+                  class="d-flex task-header-name"
+                  mwlResizable
+                  [enableGhostResize]="false"
+                  [resizeSnapGrid]="{left: 12}"
+                  (resizeEnd)="resizePanel($event)"
+                  (resizing)="moveBorder($event)"
+                >
+                  <div class="d-flex header-items">
+                    <div style="width: 30px;" class="d-flex align-items-center justify-content-center pl-0 task-toggle">
+                      <i class="pi"
+                         [class.pi-minus]="isExpanded"
+                         [class.pi-plus]="!isExpanded"
+                         (click)="toggle()"
+                      ></i>
+                    </div>
+                    <div style="width: 190px;" class="d-flex align-items-center">Code</div>
+                    <div [style.width.px]="productionNameWidth" class="d-flex align-items-center">Name</div>
+                    <div style="width: 80px;" class="d-flex align-items-center justify-content-center pl-0">Quantity
+                    </div>
+                    <div style="width: 50px;" class="d-flex align-items-center justify-content-center pl-0">UOM</div>
+                    <div *ngIf="isShowBorder" class="bord" #panelBorder></div>
+
+
+                    <div class="info-container" *ngIf="!isPlan && isShowConfirmationMenu">
+                      <div *ngIf="hasDeliveryDateChanges && !isPlan" class="d-flex align-items-center">
+                        {{hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges ? 'Root' : ''}} Dates Of Delivery
+                        Changed
+                        <button
+                          pButton
+                          *ngIf="hasChildDeliveryDateChanges"
+                          class="p-button-danger ml-3 mr-3"
+                          (click)="confirmDateChanges(true)"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          pButton
+                          *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"
+                          class="p-button-danger ml-3 mr-3"
+                          (click)="confirmDateChanges(false)">
+                          Confirm
+                        </button>
+                      </div>
+                      <div *ngIf="getLastTask?.planning_status && !isPlan">
+                        <ng-container [ngSwitch]="getLastTask?.planning_status">
+                          <div *ngSwitchCase="PlanningStatus.ON_STOCK" class="text-success">On Stock</div>
+                          <div *ngSwitchCase="PlanningStatus.PLANNED">
+                            <span class="text-success">Confirmed</span>
+                            <button
+                              pButton
+                              *ngIf="!getLastTask?.change_request"
+                              class="ml-3"
+                              (click)="sendPlanToCorrections()"
+                            >
+                              Request for planing corrections
+                            </button>
+                            {{getLastTask?.change_request ? '(Requested For Planing Corrections)' : ''}}
+                          </div>
+                          <span *ngSwitchCase="PlanningStatus.WAITING_CONFIRMATION">Waiting Confirmation</span>
+                          <button
+                            pButton
+                            class="mr-3"
+                            *ngSwitchCase="PlanningStatus.REQUIRES_PLANNING"
+                            (click)="sendPlanToConfirmation()"
+                          >
+                            Sent To Confirmation
+                          </button>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="resize-handle-right" mwlResizeHandle [resizeEdges]="{ left: true }"></div>
+                    <div class="drag-handle" cdkDragHandle></div>
+                  </div>
+                </div>
+                <div
+                  class="production-panel-left"
+                  mwlResizable
+                  [enableGhostResize]="false"
+                  [resizeSnapGrid]="{left: 12}"
+                  (resizeEnd)="resizePanel($event)"
+                  (resizing)="moveBorder($event)"
+                >
+                  <pek-manufacturing-list-product-production
+                    *ngFor="let rootProduction of rootProductions"
+                    [production]="rootProduction"
+                    [productionNameWidth]="productionNameWidth"
+                    [isRoot]="true"
+                    [isLeftPanel]="true"
+                  >
+                  </pek-manufacturing-list-product-production>
+                  <div class="resize-handle-right" mwlResizeHandle [resizeEdges]="{ left: true }"></div>
+                  <div class="drag-handle" cdkDragHandle></div>
+                </div>
+              </div>
+              <div class="right-panel-wrapper">
+                <div class="d-flex days-header">
+                  <div class="d-flex">
+                    <div class="day-header" [class.ml-3]="idx === 0" [class.day-header_week]="dateInfo.value.isVac"
+                         [style.width]="(dateInfo.value.isVac ? vacationCoords : weekdayCoords) + 'px'"
+                         *ngFor="let dateInfo of (dates | keyvalue); let idx = index">
+                      <div class="day-name" [class.day-name_small]="planScale === 25">
+                        <span *ngIf="!dateInfo.value.isVac">{{dateInfo.value?.date | date}}</span>
+                        <span class="text-center" *ngIf="dateInfo.value.isVac"
+                              style="color: '#f1716d'; display: block">{{dateInfo.value.date | date:'d'}}</span>
+                      </div>
+                      <div class="d-flex hour-container">
+                        <div
+                          *ngFor="let time of hours"
+                          class="hour-line"
+                          [style.marginLeft]="marginTimeLeft + 'px'"
+                          [ngClass]="{'middle': time == 3}"
+                          tooltipPosition="bottom"
+                          pTooltip="{{(time + 1) * 3 + ':' + '00'}}">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="production-panel-right" *ngIf="!isLoading; else loading">
+                  <pek-manufacturing-list-product-production
+                    *ngFor="let rootProduction of rootProductions"
+                    [production]="rootProduction"
+                  ></pek-manufacturing-list-product-production>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="filter pl-5 pr-5" [class.disabled-panel]="isLoading">
+      <div [ngSwitch]="mode" class="plan-d">
+
+        <div *ngSwitchCase="'edit-tasks'" class="form-group edit-tasks d-flex align-items-center buttons">
+          <!--          <button type="button" class="btn btn-default mr-2" (click)="cancelEditTasks()">-->
+          <!--            <i class="fas fa-times"></i>-->
+          <!--          </button>-->
+
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="cancelEditTasks()"
+            icon="pi pi-times"
+          >
+          </button>
+
+          <div class="unlocked-technologies mr-3">
+            <p-multiSelect
+              (onChange)="selectTasks()"
+              [options]="technologiesPlanning"
+              [(ngModel)]="selectedTechnologiesPlanning"
+              optionValue="name"
+              optionLabel="name"
+              placeholder="Unlocked Technologies"
+            ></p-multiSelect>
+          </div>
+
+          <p class="mr-3">Selected {{selectedTasks.size}} tasks</p>
+
+          <button
+            pButton
+            type="button"
+            label="Edit Tasks"
+            icon="pi pi-pencil"
+            [disabled]="!selectedTasks.size"
+            (click)="editTasks()"
+          ></button>
+
+          <!--          <mat-form-field class="mr-3 technologies-filter" appearance="fill">-->
+          <!--            <mat-label>Unlocked technologies</mat-label>-->
+          <!--            <mat-select multiple [(value)]="selectedTechnologiesPlanning" (valueChange)="selectTasks()">-->
+          <!--              <mat-option *ngFor="let tech of technologiesPlanning" [value]="tech.name"-->
+          <!--                          [disabled]="!availableTechnologiesPlanning.has(tech.name)">{{tech.name}}</mat-option>-->
+          <!--            </mat-select>-->
+          <!--          </mat-form-field>-->
+
+          <!--          <span>Selected {{selectedTasks.size}} tasks</span>-->
+
+          <!--          <button type="button"-->
+          <!--                  class="btn btn-primary btn-edit"-->
+          <!--                  [disabled]="!selectedTasks.size"-->
+          <!--                  (click)="editTasks()"-->
+          <!--          >-->
+          <!--            Edit-->
+          <!--          </button>-->
+        </div>
+
+        <div *ngSwitchCase="'make-order'" class="form-group d-flex align-items-start planning">
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="cancelMakeOrder()"
+            icon="pi pi-times"
+          >
+          </button>
+          <!--          <mat-form-field class="mr-3" appearance="fill">-->
+          <!--            <mat-label>Unlocked technologies</mat-label>-->
+          <!--            <mat-select multiple [(value)]="selectedTechnologies" (valueChange)="filterTasks()">-->
+          <!--              <mat-option *ngFor="let tech of technologies" [value]="tech.name"-->
+          <!--                          [disabled]="!availableTechnologies.has(tech.name)">{{tech.name}}</mat-option>-->
+          <!--            </mat-select>-->
+          <!--          </mat-form-field>-->
+          <!--          <button-->
+          <!--            type="button"-->
+          <!--            class="btn btn-primary btn-edit"-->
+          <!--            (click)="makeOrder()"-->
+          <!--            [disabled]="selectedTechnologies.length === 0">-->
+          <!--            Create order-->
+          <!--          </button>-->
+
+          <div class="unlocked-technologies mr-2">
+            <p-multiSelect
+              (onChange)="filterTasks()"
+              [options]="technologies"
+              [(ngModel)]="selectedTechnologies"
+              optionValue="name"
+              optionLabel="name"
+              placeholder="Unlocked Technologies"
+            ></p-multiSelect>
+          </div>
+
+          <button
+            pButton
+            type="button"
+            label="CREATE ORDER"
+            icon="pi pi-plus"
+            [disabled]="selectedTechnologies.length === 0"
+            (click)="makeOrder()"
+          ></button>
+        </div>
+
+        <div *ngSwitchCase="'add-items'" class="form-group d-flex align-items-center add-tasks buttons">
+          <!--          <button type="button" class="btn btn-default mr-2" (click)="mode = 'planning'">-->
+          <!--            <i class="fas fa-times"></i>-->
+          <!--          </button>-->
+
+          <button
+            pButton
+            type="button"
+            class="plan-close-btn mr-2"
+            (click)="mode = 'planning'"
+            icon="pi pi-times"
+          >
+          </button>
+          <div class="d-flex">
+            <div>Click on the button</div>
+            <button class="ml-2 mr-2 task-btn task-btn_icon position-relative">
+              <i class="pi pi-plus"></i>
+            </button>
+            <div>to add items to the plan</div>
+          </div>
+        </div>
+
+        <div *ngSwitchDefault class="form-group d-flex align-items-center buttons">
+          <div class="d-flex align-items-center">
+            <p class="footer-text mr-2">Initialize:</p>
+            <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'make-order'">Order creation</button>-->
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Order Creation"
+              icon="pi pi-database"
+              (click)="mode = 'make-order'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Task Planning"
+              icon="pi pi-sliders-h"
+              (click)="mode = 'edit-tasks'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              icon="pi pi-plus"
+              label="Add Items"
+              (click)="mode = 'add-items'"
+            ></button>
+            <button
+              pButton
+              type="button"
+              [icon]="'pi ' + (isShowConfirmationMenu ? 'pi-eye-slash' : 'pi-eye')"
+              [label]="(isShowConfirmationMenu ? 'Hide' : 'Show') + ' Confirmation'"
+              (click)="toggleShowConfirmation()"
+            ></button>
+            <!--            <button type="button" class="btn btn-primary btn-edit" (click)="mode = 'edit-tasks'">Task planning</button>-->
+            <!--            <button type="button" class=" btn btn-primary btn-edit" (click)="mode = 'add-items'">Add Items</button>-->
+            <div class="ml-4 mr-4 d-flex align-items-center chart-scale-btns">
+              <!--              <button class="btn btn-primary mr-2" (click)="togglePlanScale('minus')" [disabled]="planScale === 25">—-->
+              <!--              </button>-->
+              <button
+                pButton
+                type="button"
+                icon="pi pi-search-minus"
+                (click)="togglePlanScale('minus')"
+                [disabled]="planScale === 25"
+              ></button>
+
+              <div class="plan-scale">{{planScale}}%</div>
+              <!--              <button class="class ml-2 btn btn-primary" (click)="togglePlanScale('plus')"-->
+              <!--                      [disabled]="planScale === 100">-->
+              <!--              </button>-->
+              <button
+                pButton
+                type="button"
+                icon="pi pi-search-plus"
+                (click)="togglePlanScale('plus')"
+                [disabled]="planScale === 100"
+              ></button>
+            </div>
+            <div class="prod-picker mr-2" *ngIf="isPlan">
+              <p-multiSelect
+                class="plan-multi"
+                (onChange)="filterTasksForStatus()"
+                [options]="chartRootTasks"
+                [(ngModel)]="selectedProductions"
+                optionValue="family_id"
+                optionLabel="label"
+                placeholder="Production Lists"
+              ></p-multiSelect>
+            </div>
+
+            <div class="statuses-picker mr-2">
+              <p-multiSelect
+                [options]="statuses"
+                [(ngModel)]="selectedStatuses"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Statuses"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
+
+            <div class="technologies-picker mr-2">
+              <p-multiSelect
+                [options]="technologiesPlanning"
+                [(ngModel)]="selectedFilterTechnologies"
+                optionLabel="name"
+                optionValue="name"
+                placeholder="Technologies"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
+
+            <div class="type-picker">
+              <p-multiSelect
+                [options]="productionsTypes"
+                [(ngModel)]="selectedProductionTypes"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Type"
+                (ngModelChange)="filterTasksForStatus()"
+                [showClear]="true"
+              ></p-multiSelect>
+            </div>
+          </div>
+          <!--                    <div class="ml-3 statuses-pick">-->
+          <!--                      <p-dropdown-->
+          <!--                        [options]="technologies"-->
+          <!--                        placeholder="Select Technology"-->
+          <!--                        [(ngModel)]="selectTechnologyId"-->
+          <!--                        (ngModelChange)="onSelectTechnology()"-->
+          <!--                        optionLabel="name"-->
+          <!--                        optionValue="id"-->
+          <!--                        [showClear]="showClear"-->
+          <!--                      >-->
+          <!--                      </p-dropdown>-->
+          <!--                      <mat-form-field appearance="fill">-->
+          <!--                        <mat-label>Statuses</mat-label>-->
+          <!--                        <mat-select multiple [(value)]="selectedStatuses" (valueChange)="filterTasksForStatus()">-->
+          <!--                          <mat-option *ngFor="let status of statuses" [value]="status.value">{{status.label}}</mat-option>-->
+          <!--                        </mat-select>-->
+          <!--                      </mat-form-field>-->
+          <!--                    </div>-->
+          <!--                    <div class="ml-3 statuses-pick">-->
+          <!--                      <mat-form-field appearance="fill">-->
+          <!--                        <mat-label>Technologies</mat-label>-->
+          <!--                        <mat-select multiple [(value)]="selectedFilterTechnologies" (valueChange)="filterTasksForStatus()">-->
+          <!--                          <mat-option *ngFor="let tech of technologiesPlanning" [value]="tech.name">{{tech.name}}</mat-option>-->
+          <!--                        </mat-select>-->
+          <!--                      </mat-form-field>-->
+          <!--                    </div>-->
+
+          <!--          <div class="ml-3 statuses-pick">-->
+          <!--            <mat-form-field appearance="fill">-->
+          <!--              <mat-label>Type</mat-label>-->
+          <!--              <mat-select multiple [(value)]="selectedProductionTypes" (valueChange)="filterTasksForStatus()">-->
+          <!--                          <mat-option [value]="'0'">Outsource</mat-option>-->
+          <!--                          <mat-option [value]="'1'">Own production</mat-option>-->
+          <!--                          <mat-option [value]="'2'">Purchased</mat-option>-->
+          <!--              </mat-select>-->
+          <!--            </mat-form-field>-->
+          <!--          </div>-->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+
+    <p>Chart loading in progress</p>
+  </div>
+</ng-template>

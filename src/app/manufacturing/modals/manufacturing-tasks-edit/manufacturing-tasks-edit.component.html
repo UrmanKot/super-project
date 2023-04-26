@@ -1,0 +1,271 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit tasks
+  </h2>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+
+  <mat-dialog-content class="dialog">
+    <div class="wrapper task-edit">
+      <div formGroupName="time" class="position-relative d-flex align-items-center group-time"
+           [class.highlight]="isHighlightTime">
+        <label class="group-input">
+          <input
+            #applyTimeCheckbox type="checkbox" [value]="applyTime"
+            (input)="applyTime=applyTimeCheckbox.checked; applyShiftBy=false; applyShiftByCheckbox.checked = false"
+            (mouseover)="isHighlightTime = true"
+            (mouseleave)="isHighlightTime = false"
+          >
+        </label>
+        <div class="w-100">
+          <div class="dates row time-wrap">
+            <div class="col-5">
+              <div class="form-group">
+                <label for="start"> Start </label>
+                <p-calendar
+                  formControlName="start"
+                  (onSelect)="getNewDateFromCalendar()"
+                  id="start" dataType="date"
+                  [showTime]="true"
+                  dateFormat="dd/mm/yy"
+                  [readonlyInput]="true"
+                ></p-calendar>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group">
+                <label for="end_date"> End </label>
+                <p-calendar
+                  formControlName="end"
+                  id="end_date"
+                  dataType="date"
+                  dateFormat="dd/mm/yy"
+                  [class.p-input-green]="isEndUpdated"
+                  [showTime]="true"
+                  [readonlyInput]="true"
+                  (onSelect)="getNewDateFromCalendar()"
+                ></p-calendar>
+              </div>
+            </div>
+            <div class="col-2">
+              <div class="form-group">
+                <label for="total-ttc" class="total-ttc" title="Time to complete (in minutes)">Total
+                  TTC</label>
+                <div class="ml-auto">
+                  <input
+                    pInputText
+                    [class.input-green]="isTTCUpdated"
+                    formControlName="ttc"
+                    id="total-ttc"
+                    class="form-control total-ttc"
+                    type="number"
+                    step="10"
+                    placeholder="Minutes"
+                    (input)="getNewDateFromInput()"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <span *ngIf="showError()" class="error">The start date cannot be greater than the end date, Total TTC cannot be negative</span>
+        </div>
+      </div>
+
+      <div formGroupName="production"
+           class="position-relative production-wrap group-production"
+           [class.highlight]="isHighlightProduction"
+      >
+        <label class="group-input">
+          <input #applyProductionCheckbox type="checkbox" [value]="applyProduction"
+                 (input)="applyProduction=applyProductionCheckbox.checked"
+                 (mouseover)="isHighlightProduction= true"
+                 (mouseleave)="isHighlightProduction = false"
+          >
+        </label>
+        <div class="row-header">
+          <div class="production row indicators mb-4">
+            <div class="col-6">
+              <input id="own" type="radio" value="1" name="production" formControlName="production">
+              <label for="own">Own production</label>
+            </div>
+            <div class="col-6">
+              <input id="outsource" type="radio" value="0" name="production" formControlName="production">
+              <label for="outsource">Outsource production</label>
+            </div>
+          </div>
+
+          <div class="resources" *ngIf="form.get('production').get('production').value === '1'">
+            <p-table selectionMode="single" rowGroupMode="rowspan" [scrollable]="true"
+                     scrollHeight="calc(100vh - 335px)" frozenWidth="1000px" class="mt-2 mb-3">
+              <ng-template pTemplate="caption">
+                <div class="own-production p-3">
+                  <div class="own-production__wrap">
+                    <div class="own-production__employee" formArrayName="employees">
+                      <div class="own-production__row" *ngFor="let executor of executors.controls; let idx = index"
+                           [formGroupName]="idx">
+                        <div class="own-production__col employee">
+                          <label class="mb-2" *ngIf="idx === 0">Employee</label>
+                          <p-dropdown [filter]="true" [options]="employees"
+                                      name="employees" optionValue="id" formControlName="employee"
+                                      optionLabel="fullName" placeholder="No employee selected">
+                          </p-dropdown>
+                        </div>
+                        <div class="own-production__col date">
+                          <label class="mb-2" *ngIf="idx === 0">Start date</label>
+                          <p-calendar
+                            dataType="date"
+                            dateFormat="dd/mm/yy"
+                            [showTime]="true"
+                            [readonlyInput]="true"
+                            placeholder="Start date"
+                            formControlName="startDate"
+                          ></p-calendar>
+                        </div>
+                        <div class="own-production__col time">
+                          <label class="flex-0" class="mb-2" title="Employee time to complete (in minutes)"
+                                 *ngIf="idx === 0">
+                            TTC
+                          </label>
+                          <div class="ml-auto">
+                            <input type="text" pInputText class="form-control" formControlName="ttc">
+                          </div>
+                        </div>
+                        <button class="btn-remove" [class.btn-disable]="!applyProduction"
+                                (click)="removeExecutor(idx)"></button>
+                      </div>
+                      <a class="btn-add" (click)="addExecutor()" [class.btn-disable]="!applyProduction">
+                        <i class="pi pi-plus"></i>
+                        Add employee
+                      </a>
+                    </div>
+
+                    <div class="own-production__tool" formArrayName="machines">
+                      <div class="own-production__row" *ngFor="let machine of exeMachines.controls; let idx = index"
+                           [formGroupName]="idx">
+                        <div class="own-production__col machine">
+                          <label class="mb-2" *ngIf="idx === 0">Machine</label>
+                          <p-dropdown [filter]="true" [options]="machines"
+                                      name="machines" optionValue="id" formControlName="machine"
+                                      optionLabel="name" placeholder="No machine selected">
+                          </p-dropdown>
+                        </div>
+                        <div class="own-production__col date">
+                          <label class="mb-2" *ngIf="idx === 0">Start date</label>
+                          <p-calendar
+                            dataType="date"
+                            dateFormat="dd/mm/yy"
+                            [showTime]="true"
+                            [readonlyInput]="true"
+                            placeholder="Start date"
+                            formControlName="startDate"
+                          ></p-calendar>
+                        </div>
+                        <div class="own-production__col time">
+                          <label class="mb-2" title="Machine time to complete (in minutes)"
+                                 *ngIf="idx === 0">TTC</label>
+                          <div class="ml-auto">
+                            <input type="text" class="form-control" pInputText formControlName="ttc">
+                          </div>
+                        </div>
+                        <button class="btn-remove" [class.btn-disable]="!applyProduction"
+                                (click)="removeExecutionMachine(idx)"></button>
+                      </div>
+                      <a class="btn-add" [class.btn-disable]="!applyProduction" (click)="addExecutionMachine()">
+                        <i class="pi pi-plus"></i>
+                        Add Machine
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+
+      <!--      <div class="position-relative group-flags" formGroupName="flags" [class.highlight]="isHighlightFlags">-->
+      <!--        <label class="group-input">-->
+      <!--          <input #applyFlagsCheckbox type="checkbox" [value]="applyFlags"-->
+      <!--                 (input)="applyFlags=applyFlagsCheckbox.checked"-->
+      <!--                 (mouseover)="isHighlightFlags= true"-->
+      <!--                 (mouseleave)="isHighlightFlags = false"-->
+      <!--          >-->
+      <!--        </label>-->
+      <!--        <div class="flags row indicators mt-1 mb-1">-->
+      <!--          &lt;!&ndash;div class="col-6">-->
+      <!--            <input type="checkbox" id="planned" [ngModel]="task.is_planned">-->
+      <!--            <label for="planned">Planned</label>-->
+      <!--          </div&ndash;&gt;-->
+      <!--          <div class="col-6">-->
+      <!--            <input type="checkbox" id="locked" formControlName="isLocked">-->
+      <!--            <label for="locked">Locked</label>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <div class="position-relative group-flags" formGroupName="shiftBy" [class.highlight]="isHighlightShiftBy">
+        <label class="group-input">
+          <input #applyShiftByCheckbox type="checkbox" [value]="applyShiftBy"
+                 (input)="applyShiftBy=applyShiftByCheckbox.checked; applyTime=false; applyTimeCheckbox.checked = false"
+                 (mouseover)="isHighlightShiftBy= true"
+                 (mouseleave)="isHighlightShiftBy = false"
+          >
+        </label>
+        <div class="w-100">
+          <div class="flags row mt-1 mb-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="amount">Shift By Amount</label>
+                <input pInputText formControlName="amount" class="form-control" type="number" id="amount">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Shift Type</label>
+                <pek-shift-by-types
+                  [type]="form.get('shiftBy').get('type').value"
+                  (valueChange)="form.get('shiftBy').get('type').setValue($event)"
+                  [isDisabled]="!applyShiftByCheckbox.checked"
+                >
+                </pek-shift-by-types>
+              </div>
+            </div>
+          </div>
+          <!--          <span *ngIf="showErrorShiftBy()" class="error">Fill Shift Amount or Type To Shift</span>-->
+        </div>
+      </div>
+
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class=" d-flex justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <button
+      pButton
+      class="p-button-success"
+      type="submit"
+      label="Save"
+      [disabled]="showError() || showErrorShiftBy()"
+      [loading]="isSaving"
+    >
+    </button>
+  </mat-dialog-actions>
+
+  <!--  <mat-dialog-actions class=" d-flex justify-content-between">-->
+  <!--    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>-->
+  <!--    <div class="d-flex">-->
+  <!--      <button type="button" pButton class="p-button-danger mr-3" (click)="deleteTask()" label="Delete" [loading]="isDeleting"></button>-->
+
+  <!--      <button-->
+  <!--        pButton-->
+  <!--        type="submit"-->
+  <!--        [disabled]="showError() || showErrorTasks()"-->
+  <!--        label="Save"-->
+  <!--        class="p-button-success"-->
+  <!--        [loading]="isSaving"-->
+  <!--      >-->
+  <!--      </button>-->
+  <!--    </div>-->
+  <!--  </mat-dialog-actions>-->
+</form>

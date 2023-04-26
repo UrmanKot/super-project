@@ -1,0 +1,311 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Task {{task.technology}} of {{task.list_product.nomenclature.name}}
+      ({{task.list_product.nomenclature.code}})
+  </h2>
+  <div class="status">Status: {{task.status}}</div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+
+  <mat-dialog-content class="mb-3 overflow-visible">
+    <div class="wrapper task-edit">
+      <div class="row time-wrap">
+        <div class="col-5">
+          <div class="form-group">
+            <label for="start"> Start </label>
+            <p-calendar
+              [class.disabled]="task.list_product.nomenclature.type === '0'"
+              formControlName="start"
+              (onSelect)="getNewDateFromCalendar()"
+              id="start" dataType="date"
+              [showTime]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+            ></p-calendar>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="form-group">
+            <label for="end_date"> End </label>
+            <p-calendar
+              [class.disabled]="task.list_product.nomenclature.type === '0'"
+              [class.p-input-green]="isEndUpdated"
+              formControlName="end"
+              id="end_date"
+              dataType="date"
+              dateFormat="dd/mm/yy"
+              [showTime]="true"
+              [readonlyInput]="true"
+              (onSelect)="getNewDateFromCalendar()"
+            ></p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group form-ttc">
+            <label for="total-ttc" class=" total-ttc"
+                   [title]="'Time to complete (in ' + ttcIn + ')'">Total
+              TTC</label>
+            <div class="ml-auto">
+              <input
+                pInputText
+                [class.error-bord]="showError()"
+                [class.input-green]="isTTCUpdated"
+                [class.disabled]="task.list_product.nomenclature.type === '0'"
+                formControlName="ttc"
+                id="total-ttc"
+                class="form-control total-ttc"
+                type="number"
+                step="10"
+                placeholder="Minutes"
+                (input)="getNewDateFromInput()"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <span *ngIf="showError()" class="error">The start date cannot be greater than the end date, Total TTC cannot be negative</span>
+      <span *ngIf="showErrorTasks()" class="error">
+        Task "{{data.tasks[currentTaskIndex].technology}}
+        " can't start before task "{{data.tasks[currentTaskIndex - 1].technology}}", <br>
+        "{{data.tasks[currentTaskIndex - 1].technology}}
+        " ending {{data.tasks[currentTaskIndex - 1].end_date | date: 'dd.MM.yy HH.mm'}}
+      </span>
+
+      <div class="row indicators mt-2 mb-4" *ngIf="task.list_product.nomenclature.type !== '0'">
+        <div class="col-6">
+          <input id="own" type="radio" value="1" name="production" formControlName="production">
+          <label for="own">Own production</label>
+        </div>
+        <div class="col-6">
+          <input id="outsource" type="radio" value="0" name="production" formControlName="production">
+          <label for="outsource">Outsource production</label>
+        </div>
+      </div>
+
+      <div class="row indicators mt-2 mb-4" *ngIf="task.list_product.nomenclature.type !== '0'">
+        <div class="col-2">
+          Display TTC In:
+        </div>
+        <div class="col-2">
+          <input id="minutes" type="radio" value="0" name="ttc_display_type" formControlName="ttc_display_type"
+                 (ngModelChange)="changedTTCType()">
+          <label for="minutes">Minutes</label>
+        </div>
+        <div class="col-2">
+          <input id="hours" type="radio" value="1" name="ttc_display_type" formControlName="ttc_display_type"
+                 (ngModelChange)="changedTTCType()">
+          <label for="hours">Hours</label>
+        </div>
+        <div class="col-2">
+          <input id="days" type="radio" value="2" name="ttc_display_type" formControlName="ttc_display_type"
+                 (ngModelChange)="changedTTCType()">
+          <label for="days">Days</label>
+        </div>
+        <div class="col-4"></div>
+      </div>
+      <div *ngIf="form.get('production').value === '1' && task.list_product.nomenclature.type !== '0'">
+        <p-table selectionMode="single" rowGroupMode="rowspan" [scrollable]="true"
+                 scrollHeight="calc(100vh - 335px)" frozenWidth="1000px" class="mt-2 mb-3">
+          <ng-template pTemplate="caption">
+            <div class="own-production p-3">
+              <div class="own-production__wrap">
+                <div class="own-production__employee" formArrayName="employees">
+                  <div class="own-production__row" *ngFor="let executor of executors.controls; let idx = index"
+                       [formGroupName]="idx">
+                    <div class="own-production__col employee">
+                      <label class="mb-2" *ngIf="idx === 0">Employee</label>
+                      <p-dropdown [filter]="true" [options]="employees"
+                                  name="employees" optionValue="id" formControlName="employee"
+                                  optionLabel="fullName" placeholder="No employee selected">
+                      </p-dropdown>
+                    </div>
+                    <div class="own-production__col date">
+                      <label class="mb-2" *ngIf="idx === 0">Start date</label>
+                      <p-calendar
+                        formControlName="startDate"
+                        dataType="date"
+                        dateFormat="dd/mm/yy"
+                        [showTime]="true"
+                        [readonlyInput]="true"
+                        placeholder="Start date"
+                      ></p-calendar>
+                    </div>
+                    <div class="own-production__col time">
+                      <label
+                        class="flex-0" class="mb-2" [title]="'Employee time to complete (in' + ttcIn + ')'"
+                        *ngIf="idx === 0"
+                      >
+                        TTC
+                      </label>
+                      <div class="ml-auto">
+                        <input type="text" pInputText class="form-control" formControlName="ttc">
+                      </div>
+                    </div>
+                    <button class="btn-remove" (click)="removeExecutor(idx)">
+                      <i class="pi pi-times"></i>
+                    </button>
+                  </div>
+                  <a class="btn-add" (click)="addExecutor()">
+                    <i class="pi pi-plus"></i>
+                    Add employee
+                  </a>
+                </div>
+
+                <div class="own-production__tool" formArrayName="machines">
+                  <div class="own-production__row" *ngFor="let machine of exeMachines.controls; let idx = index"
+                       [formGroupName]="idx">
+                    <div class="own-production__col machine">
+                      <label class="mb-2" *ngIf="idx === 0">Machine</label>
+                      <p-dropdown [filter]="true" [options]="machines"
+                                  name="tools" optionValue="id" formControlName="machine"
+                                  optionLabel="name" placeholder="No machine selected">
+                      </p-dropdown>
+                    </div>
+                    <div class="own-production__col date">
+                      <label class="mb-2" *ngIf="idx === 0">Start date</label>
+                      <p-calendar
+                        formControlName="startDate"
+                        dataType="date"
+                        dateFormat="dd/mm/yy"
+                        [showTime]="true"
+                        [readonlyInput]="true"
+                        placeholder="Start date"
+                      ></p-calendar>
+                    </div>
+                    <div class="own-production__col time">
+                      <label class="flex-0" class="mb-2" [title]="'Machine time to complete (in ' + ttcIn + ')'"
+                             *ngIf="idx === 0">TTC</label>
+                      <div class="ml-auto">
+                        <input formControlName="ttc" type="text" class="form-control" pInputText>
+                      </div>
+                    </div>
+                    <button class="btn-remove" (click)="removeExecutionMachine(idx)">
+                      <i class="pi pi-times"></i>
+                    </button>
+                  </div>
+                  <a class="btn-add" (click)="addExecutionMachine()">
+                    <i class="pi pi-plus"></i>
+                    Add machine
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <div class="row indicators mt-4 mb-4">
+      <div class="col-6">
+        <input formControlName="isLocked" type="checkbox" id="locked">
+        <label for="locked">Locked</label>
+      </div>
+      <div class="col-6" *ngIf="task.created_order">
+        <span class="mr-2">Order:</span>
+        <a class="go-order" (click)="goToOrder()">
+          {{task.created_order.id}}
+        </a>
+      </div>
+    </div>
+
+    <div class="row mb-2"
+         *ngIf="(reservedSerialNumbers.length > 0 || futureSerialNumbers.length > 0 ) && data.task.list_product.nomenclature.bulk_or_serial === '1'">
+      <div class="col-12">
+        <p-accordion class="serial-numbers">
+          <p-accordionTab header="Serial Numbers">
+            <p *ngIf="reservedSerialNumbers.length > 0">Reserved Serial Numbers:</p>
+            <ul class="serial-numbers__list">
+              <li *ngFor="let serial of reservedSerialNumbers; let idx = index">
+                {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+              </li>
+            </ul>
+            <p class="mt-3" *ngIf="futureSerialNumbers.length > 0">Future Serial Numbers:</p>
+            <ul class="serial-numbers__list">
+              <li *ngFor="let serial of futureSerialNumbers; let idx = index">
+                {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+              </li>
+            </ul>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+
+
+    <div class="empty mb-3"
+         *ngIf="(reservedSerialNumbers.length === 0 && futureSerialNumbers.length === 0) && data.task.list_product.nomenclature.bulk_or_serial === '1'">
+      Serial Numbers not available
+    </div>
+
+    <div class="row mb-3"
+         *ngIf="data.task.serial_products.length > 0 && data.task.status === '4' && data.task.list_product.nomenclature.bulk_or_serial === '1'">
+      <div class="col-12">
+        <p-accordion class="serial-numbers">
+          <p-accordionTab header="Serial Numbers">
+            <ul class="serial-numbers__list">
+              <li class="serial-numbers__heading">
+                <div class="serial-numbers__col serial-numbers__col_0">#</div>
+                <div class="serial-numbers__col serial-numbers__col_1">Invoice</div>
+                <div class="serial-numbers__col serial-numbers__col_2">Order</div>
+                <div class="serial-numbers__col serial-numbers__col_3">Protocol</div>
+                <div class="serial-numbers__col serial-numbers__col_4">Serial Number</div>
+              </li>
+              <li *ngFor="let product of data.task.serial_products; let idx = index">
+                <div class="serial-numbers__col serial-numbers__col_0">{{idx + 1}}</div>
+                <div class="serial-numbers__col serial-numbers__col_1" *ngIf="!product.invoice">None</div>
+                <div class="serial-numbers__col serial-numbers__col_1"
+                     *ngIf="product.invoice">{{product?.invoice?.self_serial_number}}</div>
+                <div class="serial-numbers__col serial-numbers__col_2" *ngIf="!product.order">None</div>
+                <div class="serial-numbers__col serial-numbers__col_2" *ngIf="product.order">{{product.order}}</div>
+                <div class="serial-numbers__col serial-numbers__col_3" *ngIf="!product.warehouse_product_qc_protocol">
+                  None
+                </div>
+                <div class="serial-numbers__col serial-numbers__col_3" *ngIf="product.warehouse_product_qc_protocol">
+                  <a
+                    (click)="onOpenProtocolInfo(product.warehouse_product_qc_protocol.protocol, product.warehouse_product_qc_protocol.paragraphs, product.serial_number)">
+                    {{product?.warehouse_product_qc_protocol.protocol.name}}
+                  </a>
+                </div>
+                <div
+                  class="serial-numbers__col serial-numbers__col_4">{{product.serial_number.type_with_number ? product.serial_number.type_with_number : product.serial_number.id}}</div>
+              </li>
+            </ul>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+
+    <div class="empty"
+         *ngIf="data.task.serial_products.length === 0 && data.task.status === '4' && data.task.list_product.nomenclature.bulk_or_serial === '1'">
+      Serial Products not available
+    </div>
+
+    <button
+      type="button"
+      (click)="onAddTechnology()"
+      icon="pi pi-plus"
+      label="Add Technology"
+      pButton
+      *ngIf="this.task?.production?.product?.nomenclature?.type !== '0'"
+    >
+    </button>
+
+  </mat-dialog-content>
+  <mat-dialog-actions class=" d-flex justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+    <div class="d-flex">
+      <button type="button" pButton class="p-button-danger mr-3" (click)="deleteTask()" label="Delete" [loading]="isDeleting"></button>
+
+      <button
+        pButton
+        type="submit"
+        [disabled]="showError() || showErrorTasks()"
+        label="Save"
+        class="p-button-success"
+        [loading]="isSaving"
+      >
+      </button>
+    </div>
+  </mat-dialog-actions>
+</form>

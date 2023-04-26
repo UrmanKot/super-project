@@ -93,7 +93,9 @@ export class OrderProductService {
 
       });
     }
-    return this.httpClient.get<{ data: OrderProducts }>(this.API_URL + this.url + 'purchased_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    return this.httpClient.get<{
+      data: OrderProducts
+    }>(this.API_URL + this.url + 'purchased_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -110,7 +112,9 @@ export class OrderProductService {
 
       });
     }
-    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'purchased_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    return this.httpClient.get<{
+      data: OrderProduct[]
+    }>(this.API_URL + this.url + 'purchased_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -127,7 +131,9 @@ export class OrderProductService {
 
       });
     }
-    return this.httpClient.get<{ data: OrderProducts }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    return this.httpClient.get<{
+      data: OrderProducts
+    }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -147,7 +153,9 @@ export class OrderProductService {
         }
       });
     }
-    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    return this.httpClient.get<{
+      data: OrderProduct[]
+    }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -165,8 +173,10 @@ export class OrderProductService {
   }
 
   severalUpdatePartly(send: Partial<OrderProduct[]>): Observable<OrderProduct[]> {
-    return forkJoin(...send.map(product => this.httpClient.patch<{ data: OrderProduct }>(this.API_URL + this.url + product.id + '/', product).pipe(
-      map(response => response.data)))
+    return forkJoin(...send.map(product => this.httpClient.patch<{
+        data: OrderProduct
+      }>(this.API_URL + this.url + product.id + '/', product).pipe(
+        map(response => response.data)))
     );
   }
 
@@ -183,7 +193,9 @@ export class OrderProductService {
   }
 
   updatePartly(orderProduct: OrderProduct): Observable<OrderProduct> {
-    return this.httpClient.patch<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/', orderProduct).pipe(
+    return this.httpClient.patch<{
+      data: OrderProduct
+    }>(this.API_URL + this.url + orderProduct.id + '/', orderProduct).pipe(
       map(response => response.data)
     );
   }
@@ -193,14 +205,26 @@ export class OrderProductService {
   }
 
   removeFromOrder(orderProduct: OrderProduct): Observable<any> {
-    return this.httpClient.post<{ data: OrderProduct }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct);
+    return this.httpClient.post<{
+      data: OrderProduct
+    }>(this.API_URL + this.url + orderProduct.id + '/remove_from_order/', orderProduct);
   }
 
   getTechnicalEquipmentToQC(id): Observable<OrderTechnicalEquipment[]> {
-    return this.httpClient.get<{ data: OrderTechnicalEquipment[] }>(this.API_URL + 'orders/' + id + '/technical_equipment_to_qc/').pipe(
+    return this.httpClient.get<{
+      data: OrderTechnicalEquipment[]
+    }>(this.API_URL + 'orders/' + id + '/technical_equipment_to_qc/').pipe(
       map(response => response.data)
     );
   }
+
+  moveToQc(orderProduct: any): Observable<OrderProduct> {
+    return this.httpClient.patch<{
+      data: OrderProduct
+    }>(this.API_URL + this.url + orderProduct.id + '/', orderProduct.product).pipe(
+      map(response => response.data)
+    );
+  };
 
   openAddOutsourcingRequestModal(orderId: number): Observable<OrderProduct> {
     return this.dialog

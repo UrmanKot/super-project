@@ -11,15 +11,9 @@ import {
 } from '@shared/modals/nomenclature-picker-modal/nomenclature-picker-modal.component';
 import {CompleteListComponent} from '@shared/modals/refactoring/complete-list/complete-list.component';
 import {ListProductsComponent} from '@shared/modals/refactoring/list-products/list-products.component';
-import {Overlay} from '@angular/cdk/overlay';
-import {
-  CreateEditSalesStatusComponent
-} from "../../sales/modals/create-edit-sales-status/create-edit-sales-status.component";
-import {EditEventModalComponent} from "../../sales/modals/edit-event-modal/edit-event-modal.component";
-import {EditStatusesModalComponent} from "../../sales/modals/edit-statuses-modal/edit-statuses-modal.component";
-import {EventCompany} from "../../crm/models/event-company";
-import {SalesChain} from "../../sales/models/sales-chain";
-import {AddFileToOrderComponent} from "@shared/modals/add-file-to-order/add-file-to-order.component";
+import {AddFileToOrderComponent} from '@shared/modals/add-file-to-order/add-file-to-order.component';
+import {ChoiceDateComponent} from '@shared/modals/choice-date/choice-date.component';
+import {ChoicePeriodDateComponent} from '@shared/modals/choice-period-date/choice-period-date.component';
 
 @Injectable({
   providedIn: 'root'
@@ -100,8 +94,8 @@ export class ModalService {
   completeList(entity) {
     return this.dialog
       .open<CompleteListComponent>(CompleteListComponent, {
-        width: '800px',
-        data: { type: 'edit', entity: entity },
+        width: '54rem',
+        data: {type: 'edit', entity: entity},
         disableClose: false,
         panelClass: 'modal-overflow-visible'
       })
@@ -112,8 +106,8 @@ export class ModalService {
   editListProduct(entity) {
     return this.dialog
       .open<ListProductsComponent>(ListProductsComponent, {
-        width: '800px',
-        data: { type: 'edit', entity: entity },
+        width: '54rem',
+        data: {type: 'edit', entity: entity},
         disableClose: false,
         panelClass: 'modal-overflow-visible',
       })
@@ -124,9 +118,30 @@ export class ModalService {
   openAddFileToOrderModal(orderId: number) {
     return this.dialog
       .open<AddFileToOrderComponent>(AddFileToOrderComponent, {
-        width: '800px',
-        data: { orderId },
-        disableClose:false,
+        width: '54rem',
+        data: {orderId},
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  openChoiceDateDialog(title: string): Observable<Date> {
+    return this.dialog
+      .open<ChoiceDateComponent>(ChoiceDateComponent, {
+        width: '35rem',
+        data: {title},
+        autoFocus: false,
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  openChoicePeriodDateDialog(): Observable<{ startDate: Date, endDate: Date }> {
+    return this.dialog
+      .open<ChoicePeriodDateComponent>(ChoicePeriodDateComponent, {
+        width: '35rem',
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
       })
       .afterClosed()
       .pipe();

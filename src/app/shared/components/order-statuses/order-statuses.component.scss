@@ -138,3 +138,16 @@
   color: #495057;
 }
 
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #dee2e6;
+  color: #495057;
+  font-size: var(--theme-font-size-s);
+
+  &:hover {
+    background: #e9ecef !important;
+    transition: background 0.1s, color 0.1s;
+  }
+}
