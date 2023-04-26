@@ -205,7 +205,10 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       value: this.searchForm.get('name').value.replace(/\+/g, '%2b')
     });
 
-    if (this.searchForm.get('code').value) this.query.push({name: 'code', value: this.searchForm.get('code').value});
+    if (this.searchForm.get('code').value) this.query.push(
+      {name: 'code', 
+      value: this.searchForm.get('code').value.replace(/^\s+/gm, '')
+    });
 
     if (this.searchForm.get('description').value) this.query.push({
       name: 'description',
