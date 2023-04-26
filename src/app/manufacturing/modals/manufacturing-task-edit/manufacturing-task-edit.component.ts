@@ -418,21 +418,21 @@ export class ManufacturingTaskEditComponent implements OnInit {
       }
     });
   }
-
   goToOrder() {
     let url: UrlTree | string = '';
     if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
       this.task.created_order.accounting_type === 3) {
-      url = this.router.createUrlTree(['dash', 'production', 'orders', 'order', this.task.created_order.id]);
+      url = this.router.createUrlTree(['manufacturing', 'orders', 'order', this.task.created_order.id]);
     } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
       this.task.created_order.accounting_type === 2) {
-      url = environment.link_url + 'outsourcing/chains/order/' + this.task.created_order.id;
+      url =  'outsourcing/chains/order/' + this.task.created_order.id;
     } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
       this.task.created_order.accounting_type === 1) {
-      url = environment.link_url + 'procurement/chains/order/' + this.task.created_order.id;
+      url = 'procurement/chains/order/' + this.task.created_order.id;
     }
-    console.log(url);
-
+    // console.log(url);
+    // this.router.navigate([url])
+    //
     window.open(url.toString(), '_blank');
     this.dialogRef.close(false);
   }
