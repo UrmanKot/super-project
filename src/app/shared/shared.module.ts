@@ -99,6 +99,9 @@ import { RootListPickerByOrderTypeComponent } from './pickers/root-list-picker-b
 import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists-nomenclature-picker/product-lists-nomenclature-picker.component';
 import {MiddleMouseClickDirective} from '@shared/directives/middle-mouse-click.directive';
 import { OrderTenderSupplierComponent } from './components/order-page/order-tender-supplier/order-tender-supplier.component';
+
+import { MultiVehiclePickerComponent } from './pickers/multi-vehicle-picker/multi-vehicle-picker.component';
+
 import { TippyDirective } from './directives/tippy.directive';
 import { ChoiceDateComponent } from './modals/choice-date/choice-date.component';
 import { ChoicePeriodDateComponent } from './modals/choice-period-date/choice-period-date.component';
@@ -187,6 +190,7 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     OrderTenderSupplierComponent,
     RootListPickerByOrderTypeComponent,
     ProductListsNomenclaturePickerComponent,
+    MultiVehiclePickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
@@ -269,6 +273,7 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     RootListPickerByOrderTypeComponent,
     ProductListsNomenclaturePickerComponent,
     MiddleMouseClickDirective,
+    MultiVehiclePickerComponent,
   ],
   imports: [
     MultiSelectModule,

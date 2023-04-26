@@ -1,0 +1,17 @@
+<div class="multi-vehicle-picker">
+  <p-multiSelect
+    [showClear]="true"
+    *ngIf="!isLoading; else spinner"
+    [options]="vehicles"
+    [(ngModel)]="selectedVehicles"
+    optionLabel="displayLabel"
+    placeholder="Select Vehicles"
+    (ngModelChange)="onSelectVehicles($event)"
+  ></p-multiSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

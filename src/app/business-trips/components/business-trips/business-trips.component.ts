@@ -17,6 +17,7 @@ import {
   EmployeeWithCustom
 } from '../pickers/business-trips-multi-employee-with-custom/business-trips-multi-employee-with-custom.component';
 import {Country} from '@shared/models/country';
+import { Vehicle } from '../../models/vehicle';
 
 @UntilDestroy()
 @Component({
@@ -69,7 +70,8 @@ export class BusinessTripsComponent implements OnInit {
     duration_more_than: [null],
     duration: ['other'],
     durationOther: [0],
-    location_countries_ids: [null]
+    location_countries_ids: [null],
+    vehicle_ids: [null],
   });
 
   queryKey: string = this.adapterService.generateQueryKey(this.searchForm);
@@ -281,6 +283,11 @@ export class BusinessTripsComponent implements OnInit {
   onSelectCountries(countries: Country[]) {
     this.searchForm.get('location_countries_ids').patchValue(countries?.map(c => c.alpha2_code).join(',') ?? null);
     console.log(this.searchForm.get('location_countries_ids').value);
+    this.search$.next()
+  }
+  onSelectVehicles(vehicles: Vehicle[]) {
+    this.searchForm.get('vehicle_ids').patchValue(vehicles?.map(v => v.id).join(',') ?? null);
+    console.log(this.searchForm.get('vehicle_ids').value);
     this.search$.next()
   }
 
