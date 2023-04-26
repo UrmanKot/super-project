@@ -87,7 +87,13 @@
               <pek-multi-countries-picker (selectCountries)="onSelectCountries($event)"></pek-multi-countries-picker>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Vehicles</label>
+              <pek-multi-vehicle-picker (selectVehicles)="onSelectVehicles($event)"></pek-multi-vehicle-picker>
+            </div>
+          </div>
+          <div class="col-3">
             <div class="duration">
               <p>Duration Is Longer Than</p>
               <div class="d-flex">
@@ -142,8 +148,9 @@
           </div>
           <!--          <div class="col-3">-->
           <!--          </div>-->
-          <div class="col-3 col-actions">
-            <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
+          <div class="col-3"></div>
+          <div class="col-3" style="margin: auto">
+          <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
         </div>
       </form>
