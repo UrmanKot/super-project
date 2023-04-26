@@ -23,7 +23,7 @@ export class RequestOrdersListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
 
   menuItems: MenuItem[] = [{
-    label: 'Selected Request Nomenclature',
+    label: 'Selected',
     items: [
       {
         label: 'Edit',

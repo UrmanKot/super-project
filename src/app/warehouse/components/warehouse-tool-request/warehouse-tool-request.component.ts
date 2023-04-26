@@ -7,6 +7,7 @@ import {map, tap} from 'rxjs/operators';
 import {ToolRequestService} from '../../services/tool-request.service';
 import {ToolOrderService} from '../../services/tool-order.service';
 import {ModalService} from '@shared/services/modal.service';
+import {GroupedToolRequest} from "../../models/grouped-tool-request";
 
 @Component({
   selector: 'pek-warehouse-tool-request',
@@ -18,6 +19,9 @@ export class WarehouseToolRequestComponent implements OnInit, OnDestroy {
   isCompleting = false;
   requests: ToolRequest[] = [];
   selectedRequest: ToolRequest;
+  isShowPrint = true;
+  toolRequests: GroupedToolRequest[] = [];
+  toolOrder: ToolOrder;
 
   orderId: number;
   order: ToolOrder;
@@ -55,6 +59,15 @@ export class WarehouseToolRequestComponent implements OnInit, OnDestroy {
     ]).subscribe(requests => {
       this.requests = requests;
       this.isLoading = false;
+    });
+  }
+
+  printPage() {
+    this.isShowPrint = true;
+    this.toolRequests = [...this.requests];
+    this.toolOrder = Object.assign({}, this.order);
+    setTimeout(() => {
+      window.print();
     });
   }
 

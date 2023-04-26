@@ -1,0 +1,109 @@
+@page {
+  size: A4;
+  margin: 20mm;
+}
+
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+  }
+}
+
+.warehouse-tool-request-print-page {
+  display: block;
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+
+    div {
+      padding-right: 25px;
+      width: 25%;
+      margin-bottom: 20px;
+
+      &.col-2 {
+        width: 50%;
+      }
+    }
+  }
+
+  &__box {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__row {
+    border: 1px solid #000;
+    border-bottom: none;
+    padding: 10px;
+
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid #000;
+    }
+  }
+
+  &__col {
+    width: 18%;
+    padding: 3px;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+
+  &__column {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    h3 {
+      font-size: 17px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    div {
+      width: 25%;
+    }
+
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+  }
+
+  &__left,
+  &__right {
+    div {
+      margin-bottom: 40px;
+    }
+  }
+
+  &__bottom {
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+  }
+
+  &__table {
+    margin-bottom: 60px;
+
+    @media print {
+      page-break-after: auto;
+    }
+  }
+}
