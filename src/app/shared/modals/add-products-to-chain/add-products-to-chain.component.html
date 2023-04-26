@@ -24,6 +24,13 @@
   </div>
 </div>
 
+<div *ngFor="let product of data.products; let last=last">
+  {{product.nomenclature.name}}
+  ({{product.initial_quantity}}
+  {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}})
+  <span *ngIf="!last">,</span><br>
+</div>
+
 <div class="mb-3"></div>
 
 <mat-dialog-content>
