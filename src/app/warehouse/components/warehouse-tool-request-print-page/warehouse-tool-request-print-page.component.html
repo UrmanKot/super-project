@@ -1,0 +1,101 @@
+<div class="warehouse-tool-request-print-page" *ngIf="toolOrder">
+  <div class="warehouse-tool-request-print-page__header">
+    <div>
+      <h2>Area</h2>
+      <p>{{toolOrder.area_locator.area.name}}</p>
+    </div>
+    <div>
+      <h2>Locator</h2>
+      <p>{{toolOrder.area_locator.name}}</p>
+    </div>
+    <div>
+      <h2>Order ID</h2>
+      <p>{{toolOrder.id}}</p>
+    </div>
+    <div>
+      <h2>Creation Date</h2>
+      <p>{{toolOrder.created | date: 'dd.MM.y'}}</p>
+
+    </div>
+  </div>
+
+  <div class="warehouse-tool-request-print-page__table">
+    <div
+      *ngFor="let request of toolRequests"
+      class="warehouse-tool-request-print-page__row"
+    >
+      <div class="warehouse-tool-request-print-page__box">
+        <div class="warehouse-tool-request-print-page__col" style="width: 10%">
+          <h3>ID</h3>
+          <div *ngIf="request.id">
+            <p>{{request.id}}</p>
+          </div>
+        </div>
+        <div class="warehouse-tool-request-print-page__col" style="width: 10%">
+          <h3>Code</h3>
+          <div *ngIf="request.nomenclature.code">
+            {{request.nomenclature.code}}
+          </div>
+        </div>
+        <div class="warehouse-tool-request-print-page__col" style="width: 30%">
+          <h3>Name</h3>
+          <div *ngIf="request.nomenclature.name">
+            {{request.nomenclature.name}}
+          </div>
+        </div>
+        <div class="warehouse-tool-request-print-page__col" style="width: 10%">
+          <h3>Qty</h3>
+          <div *ngIf="request.required_quantity">
+            {{request.required_quantity}}
+          </div>
+        </div>
+        <div class="warehouse-tool-request-print-page__col" style="width: 10%">
+          <h3>Units</h3>
+          <div *ngIf="request.nomenclature.category.unit_of_measure.symbol">
+            {{request.nomenclature.category.unit_of_measure.symbol}}
+          </div>
+        </div>
+        <div class="warehouse-tool-request-print-page__col" style="width: 30%">
+          <h3>Locator</h3>
+          <div *ngIf="request.nomenclature.locators">
+            <div *ngFor="let locator of request.nomenclature.locators; let last=last">
+              {{locator.name}}<span *ngIf="!last">,</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warehouse-tool-request-print-page__bottom">
+    <div class="warehouse-tool-request-print-page__column">
+      <div class="warehouse-tool-request-print-page__left">
+        <div>
+          <h3>Sent</h3>
+          <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p>{{currentDate | date: 'dd.MM.y'}}</p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+      <div class="warehouse-tool-request-print-page__right">
+        <div>
+          <h3>Retrieved</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

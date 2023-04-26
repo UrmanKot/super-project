@@ -9,6 +9,87 @@
 
 <div class="page__content">
   <div class="page__card">
+
+    <div class="filters-visibility">
+      <form
+        [formGroup]="searchForm"
+        class="form mb-3"
+      >
+        <div class="row">
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Created Date From</label>
+              <p-calendar
+                formControlName="created_after"
+                (ngModelChange)="getRequests()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Created Date To</label>
+              <p-calendar
+                formControlName="created_before"
+                (ngModelChange)="getRequests()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Completed Date From</label>
+              <p-calendar
+                formControlName="completed_after"
+                (ngModelChange)="getRequests()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Completed Date To</label>
+              <p-calendar
+                formControlName="completed_before"
+                (ngModelChange)="getRequests()"
+                [showButtonBar]="true"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Requests State</label>
+              <p-dropdown
+                [options]="requestsTypes"
+                formControlName="is_completed"
+                optionValue="value"
+                optionLabel="name"
+                placeholder="Select state"
+                (ngModelChange)="getRequests()"
+              ></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
     <div class="page__table">
       <div class="page__block">
         <button
@@ -34,11 +115,40 @@
         <ng-template pTemplate="header">
           <tr>
             <th class="text-center" style="width: 5%">#</th>
-            <th style="width: 35%" class="text-center">Area</th>
-            <th style="width: 30%" class="text-center">Locator</th>
-            <th style="width: 30%" class="text-center" pSortableColumn="created">
-              Creation Date
-              <p-sortIcon field="created"></p-sortIcon>
+            <th class="sort-label text-center"
+                style="width: 5%"
+                pSortableColumn=""
+                (click)="sorting(searchForm.get('order_by_id').value, 'order_by_id')"
+            >ID
+              <pek-sort-icon [value]="searchForm.get('order_by_id').value"></pek-sort-icon>
+            </th>
+            <th style="width: 25%"
+                class="sort-label text-center"
+                pSortableColumn=""
+                (click)="sorting(searchForm.get('order_by_area').value, 'order_by_area')"
+            >Area
+              <pek-sort-icon [value]="searchForm.get('order_by_area').value"></pek-sort-icon>
+            </th>
+            <th style="width: 25%"
+                class="sort-label text-center"
+                pSortableColumn=""
+                (click)="sorting(searchForm.get('order_by_locator').value, 'order_by_locator')"
+            >Locator
+              <pek-sort-icon [value]="searchForm.get('order_by_locator').value"></pek-sort-icon>
+            </th>
+            <th style="width: 20%"
+                class="sort-label text-center"
+                pSortableColumn=""
+                (click)="sorting(searchForm.get('order_by_created').value, 'order_by_created')"
+            >Creation Date
+              <pek-sort-icon [value]="searchForm.get('order_by_created').value"></pek-sort-icon>
+            </th>
+            <th style="width: 20%"
+                class="sort-label text-center"
+                pSortableColumn=""
+                (click)="sorting(searchForm.get('order_by_completed').value, 'order_by_completed')"
+            >Completion Date
+              <pek-sort-icon [value]="searchForm.get('order_by_completed').value"></pek-sort-icon>
             </th>
           </tr>
         </ng-template>
@@ -48,17 +158,25 @@
               <h3 class="td-title">#</h3>
               {{i + 1 }}
             </td>
-            <td style="width: 35%" class="text-center">
+            <td style="width: 5%" class="text-center">
+              <h3 class="td-title">ID</h3>
+              {{order.id}}
+            </td>
+            <td style="width: 25%" class="text-center">
               <h3 class="td-title">Area</h3>
               {{order.area_locator.area.name}}
             </td>
-            <td style="width: 30%" class="text-center">
+            <td style="width: 25%" class="text-center">
               <h3 class="td-title">Locator</h3>
               {{order.area_locator.name}}
             </td>
-            <td style="width: 30%" class="text-center">
+            <td style="width: 20%" class="text-center">
               <h3 class="td-title">Creation Date</h3>
-              {{order.created | date:'dd/MM/yyyy'}}
+              {{order.created | date:'dd/MM/yyyy HH:mm:ss'}}
+            </td>
+            <td style="width: 20%" class="text-center">
+              <h3 class="td-title">Completion Date</h3>
+              {{order.completed | date:'dd/MM/yyyy HH:mm:ss'}}
             </td>
           </tr>
         </ng-template>

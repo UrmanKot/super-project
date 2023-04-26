@@ -29,6 +29,11 @@ export class ToolRequestsListComponent implements OnInit, OnDestroy {
   count: number;
   searchForm: FormGroup = this.fb.group({
     page: [1],
+    order_by_area: [null],
+    order_by_locator: [null],
+    order_by_id: [null],
+    order_by_created: [null],
+    order_by_completed: [null],
   });
 
   menuItems: MenuItem[] = [{
@@ -76,11 +81,77 @@ export class ToolRequestsListComponent implements OnInit, OnDestroy {
     this.query = [
       {name: 'page', value: this.searchForm.get('page').value},
       {name: 'paginated', value: true},
-      {name: 'is_completed', value: false},
+      // {name: 'is_completed', value: false},
     ];
+
+    const ordering = this.prepareSortingField();
+    if (ordering) {
+      this.query.push({
+        name: 'ordering',
+        value: ordering
+      });
+    }
   }
 
+  prepareSortingField(): string {
+    let sorting = '';
+    if (this.searchForm.get('order_by_id').value !== null) {
+      if (this.searchForm.get('order_by_id').value) {
+        sorting += '-id';
+      } else {
+        sorting += 'id';
+      }
+    }
+    if (this.searchForm.get('order_by_area').value !== null) {
+      if (this.searchForm.get('order_by_area').value) {
+        sorting += '-area_locator__area__name';
+      } else {
+        sorting += 'area_locator__area__name';
+      }
+    }
+    if (this.searchForm.get('order_by_locator').value !== null) {
+      if (this.searchForm.get('order_by_locator').value) {
+        sorting += '-area_locator__name';
+      } else {
+        sorting += 'area_locator__name';
+      }
+    }
+    if (this.searchForm.get('order_by_created').value !== null) {
+      if (this.searchForm.get('order_by_created').value) {
+        sorting += '-created';
+      } else {
+        sorting += 'created';
+      }
+    }
+    if (this.searchForm.get('order_by_completed').value !== null) {
+      if (this.searchForm.get('order_by_completed').value) {
+        sorting += '-completed';
+      } else {
+        sorting += 'completed';
+      }
+    }
+    return sorting;
+  }
 
+  sorting(value: boolean, field: string) {
+    this.resetAllSorting();
+    if (value === null) {
+      this.searchForm.get(field).patchValue(false);
+    } else if (value === false) {
+      this.searchForm.get(field).patchValue(true);
+    } else if (value === true) {
+      this.searchForm.get(field).patchValue(null);
+    }
+    this.search();
+  }
+
+  resetAllSorting() {
+    this.searchForm.get('order_by_area').setValue(null);
+    this.searchForm.get('order_by_locator').setValue(null);
+    this.searchForm.get('order_by_id').setValue(null);
+    this.searchForm.get('order_by_created').setValue(null);
+    this.searchForm.get('order_by_completed').setValue(null);
+  }
 
   ngOnDestroy() {
     this.destroy$.next(true);

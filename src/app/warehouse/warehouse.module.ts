@@ -58,8 +58,8 @@ import { WarehouseShippingRequestsComponent } from './components/warehouse-shipp
 import { WarehouseShippingRequestComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
 import { WarehouseShippingRequestPrintComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request-print/warehouse-shipping-request-print.component';
 import { ProductionListChainsStatisticsComponent } from './modals/production-list-chains-statistics/production-list-chains-statistics.component';
+import { WarehouseToolRequestPrintPageComponent } from './components/warehouse-tool-request-print-page/warehouse-tool-request-print-page.component';
 import { ProductionListSetActualQuantityDialogComponent } from './modals/production-list-set-actual-quantity-dialog/production-list-set-actual-quantity-dialog.component';
-
 
 
 @NgModule({
@@ -106,6 +106,7 @@ import { ProductionListSetActualQuantityDialogComponent } from './modals/product
     WarehouseShippingRequestComponent,
     WarehouseShippingRequestPrintComponent,
     ProductionListChainsStatisticsComponent,
+    WarehouseToolRequestPrintPageComponent,
     ProductionListSetActualQuantityDialogComponent,
   ],
   exports: [

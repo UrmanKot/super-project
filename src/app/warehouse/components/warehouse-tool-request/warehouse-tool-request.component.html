@@ -21,6 +21,15 @@
         [loading]="isCompleting"
         (click)="onComplete()"
       ></button>
+      <button
+        pButton
+        icon="pi pi-print"
+        class="mr-2"
+        type="button"
+        label="Print"
+        (click)="printPage()"
+        [disabled]="isLoading"
+      ></button>
     </div>
   </div>
 </div>
@@ -57,17 +66,25 @@
               <h3 class="td-title">#</h3>
               #
             </th>
-            <th style="width: 35%">
+            <th style="width: 20%">
               <h3 class="td-title">Code</h3>
               Code
             </th>
-            <th style="width: 45%">
+            <th style="width: 25%">
               <h3 class="td-title">Name</h3>
               Name
             </th>
-            <th class="text-center" style="width: 15%">
+            <th class="text-center" style="width: 10%">
               <h3 class="td-title">Requested Quantity</h3>
               Requested Quantity
+            </th>
+            <th class="text-center" style="width: 10%">
+              <h3 class="td-title">UOM</h3>
+              UOM
+            </th>
+            <th class="text-center" style="width: 30%">
+              <h3 class="td-title">Locator</h3>
+              Locator
             </th>
           </tr>
         </ng-template>
@@ -76,14 +93,25 @@
             <td class="text-center" style="width: 5%">
               {{i + 1}}
             </td>
-            <td style="width: 35%">
+            <td style="width: 25%">
               {{request.nomenclature.code}}
             </td>
-            <td style="width: 45%">
+            <td style="width: 25%">
               {{request.nomenclature.name}}
             </td>
-            <td style="width: 15%" class="text-center">
+            <td style="width: 10%" class="text-center">
               {{request.required_quantity}}
+            </td>
+            <td style="width: 10%" class="text-center">
+              {{request.nomenclature.category.unit_of_measure.symbol}}
+            </td>
+            <td style="width: 30%" class="text-center">
+
+              <div *ngIf="request.nomenclature.locators">
+                <div *ngFor="let locator of request.nomenclature.locators; let last=last">
+                  {{locator.name}} <span *ngIf="!last">,</span>
+                </div>
+              </div>
             </td>
           </tr>
         </ng-template>
@@ -114,6 +142,15 @@
         Return pagination
       </p-button>
     </div>
+  </div>
+</div>
+
+<div class="print-page" *ngIf="isShowPrint">
+  <div>
+    <pek-warehouse-tool-request-print-page
+      [toolOrder]="toolOrder"
+      [toolRequests]="toolRequests">
+    </pek-warehouse-tool-request-print-page>
   </div>
 </div>
 
