@@ -1090,7 +1090,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   goToPlan() {
-    window.open(`production/plans/plan${this.list.root_production_plans[0].id}`, '_blank');
+    window.open(`manufacturing/plans/plan/${this.list.root_production_plans[0].id}`, '_blank');
   }
 
   onGenerateQrCodes(node) {

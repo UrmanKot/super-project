@@ -759,11 +759,11 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   goToPlan() {
-    window.open(this.link + `production/plan/tasks/${this.selectedList.root_production_plans[0].id}`, '_blank');
+    window.open(`manufacturing/plans/plan/${this.selectedList.root_production_plans[0].id}`, '_blank');
   }
 
   goToPlanNode() {
-    window.open(this.link + `production/plan/tasks/${this.selectedOrderNode.data.list.root_production_plans[0].id}`, '_blank');
+    window.open(`manufacturing/plans/plan/${this.selectedOrderNode.data.list.root_production_plans[0].id}`, '_blank');
   }
 
   generateStatistic(statistics: any[]) {
