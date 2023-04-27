@@ -68,6 +68,7 @@ export class ManufacturingTaskEditComponent implements OnInit {
 
   reservedSerialNumbers: SerialNumber[] = [];
   futureSerialNumbers: SerialNumber[] = [];
+  productionSerialNumbers: SerialNumber[] = [];
   ttcIn = 'hours';
 
   get executors() {
@@ -94,6 +95,7 @@ export class ManufacturingTaskEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.task = this.data.task;
+    console.log(this.task);
 
     this.prepareDetailedStatus();
 
@@ -109,6 +111,12 @@ export class ManufacturingTaskEditComponent implements OnInit {
         if (innerTask.reserved_on_stock_serial_numbers.length > 0) {
           this.reservedSerialNumbers.push(...innerTask.reserved_on_stock_serial_numbers);
         }
+
+        if (innerTask.reserved_in_production_serial_numbers.length > 0) {
+          this.productionSerialNumbers.push(...innerTask.reserved_in_production_serial_numbers);
+        }
+
+      //
       });
     });
     this.data.tasks.sort((a, b) => a.start_date.getTime() - b.start_date.getTime());

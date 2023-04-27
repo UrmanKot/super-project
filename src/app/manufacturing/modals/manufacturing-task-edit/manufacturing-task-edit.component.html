@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h2 class="modal-header__title">
     Edit Task {{task.technology}} of {{task.list_product.nomenclature.name}}
-      ({{task.list_product.nomenclature.code}})
+    ({{task.list_product.nomenclature.code}})
   </h2>
   <div class="status">Status: {{status}}</div>
 </div>
@@ -215,18 +215,30 @@
       <div class="col-12">
         <p-accordion class="serial-numbers">
           <p-accordionTab header="Serial Numbers">
-            <p *ngIf="reservedSerialNumbers.length > 0">Reserved Serial Numbers:</p>
-            <ul class="serial-numbers__list">
-              <li *ngFor="let serial of reservedSerialNumbers; let idx = index">
-                {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
-              </li>
-            </ul>
-            <p *ngIf="futureSerialNumbers.length > 0">Future Serial Numbers:</p>
-            <ul class="serial-numbers__list">
-              <li *ngFor="let serial of futureSerialNumbers; let idx = index">
-                {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
-              </li>
-            </ul>
+            <ng-container *ngIf="reservedSerialNumbers.length > 0">
+              <p>Reserved Serial Numbers:</p>
+              <ul class="serial-numbers__list">
+                <li *ngFor="let serial of reservedSerialNumbers; let idx = index">
+                  {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                </li>
+              </ul>
+            </ng-container>
+            <ng-container *ngIf="futureSerialNumbers.length > 0">
+              <p>Future Serial Numbers:</p>
+              <ul class="serial-numbers__list">
+                <li *ngFor="let serial of futureSerialNumbers; let idx = index">
+                  {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                </li>
+              </ul>
+            </ng-container>
+            <ng-container *ngIf="productionSerialNumbers.length > 0">
+              <p>Serial Numbers Reserved From Production:</p>
+              <ul class="serial-numbers__list">
+                <li *ngFor="let serial of productionSerialNumbers; let idx = index">
+                  {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                </li>
+              </ul>
+            </ng-container>
           </p-accordionTab>
         </p-accordion>
       </div>
@@ -295,7 +307,8 @@
   <mat-dialog-actions class=" d-flex justify-content-between">
     <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
     <div class="d-flex">
-      <button type="button" pButton class="p-button-danger mr-3" (click)="deleteTask()" label="Delete" [loading]="isDeleting"></button>
+      <button type="button" pButton class="p-button-danger mr-3" (click)="deleteTask()" label="Delete"
+              [loading]="isDeleting"></button>
 
       <button
         pButton
