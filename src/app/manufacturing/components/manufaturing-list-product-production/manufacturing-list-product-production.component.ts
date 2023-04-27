@@ -41,7 +41,7 @@ export class ManufacturingListProductProductionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.production.hasChildren) {
+    if (this.production.product.nomenclature.type === '1') {
       this.elementRef.nativeElement.style.background = this.production.color;
       this.elementRef.nativeElement.style.zIndex = String(99999 - this.production.index);
     }

@@ -1221,7 +1221,7 @@ export class ManufacturingChartComponent implements OnInit {
   private paint() {
     // рекурсивный проход по дереву
     const paintingProduction = (production: ListProductProduction, colorIndex = 0) => {
-      if (production.hasChildren) {
+      if (production.product.nomenclature.type === '1') {
         production.color = this.colors[colorIndex++ % this.colors.length];
       }
       return production.children.reduce((index, child) => paintingProduction(child, index), colorIndex);

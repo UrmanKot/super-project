@@ -77,7 +77,7 @@ export class ListProductProduction {
     this.groups = [];
     for (const child of this.children) {
       // разбиваем всего на 2 группы: с дочерними, без дочерних
-      const groupIndex = child.hasChildren ? 0 : 1;
+      const groupIndex = child.product.nomenclature.type === '1' ? 0 : 1;
       this.groups[groupIndex] = this.groups[groupIndex] ?? [] as ListProductProductionGroup;
       this.groups[groupIndex].push(child);
     }
