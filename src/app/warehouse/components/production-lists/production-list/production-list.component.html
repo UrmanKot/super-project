@@ -419,7 +419,7 @@
             <td style="width: 8%" class="text-center">
               <h3 class="td-title">Free Wh Qty</h3>
               <ng-container
-                *ngIf="(rowData.currentTechnology && rowData.blockedExpand) || rowData.technologies?.length === 0">
+                *ngIf="(rowData.currentTechnology && rowData.blockedExpand) || rowData.technologies?.length === 0 || showSerialWarehouseQuantity(rowData)">
                 {{rowData.warehouse_quantity}}
               </ng-container>
               <ng-container *ngIf="rowData.technologies?.length > 0 && !rowData.blockedExpand">

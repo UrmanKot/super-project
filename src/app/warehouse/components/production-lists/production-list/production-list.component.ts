@@ -484,6 +484,11 @@ export class ProductionListComponent implements OnInit {
       const findEl = list.groupedProducts.find(p => p.status === 'Completed');
       list.warehouse_quantity = findEl ? findEl.warehouse_quantity : list.warehouse_quantity;
 
+      if (list.nomenclature.name === 'IntC Unit') {
+        console.log(list.warehouse_quantity);
+        console.log(list.warehouseQuantities);
+      }
+
       // list.has_children = list.products.some(p => p.has_children);
       list.groupedProductIds = list.products.map(p => p.id);
 
@@ -584,7 +589,7 @@ export class ProductionListComponent implements OnInit {
 
       if (list.level === 1 && list.technologies.length > 0) {
 
-        if (list.status !== 'Not processed' && list.technologies.length > 0 && list.currentTechnology) {
+        if ((list.status !== 'Not processed' && list.technologies.length > 0 && list.currentTechnology) || (list.status === 'Reserved' && list.technologies.length > 0)) {
           list.total_required_quantity = list.actual_quantity = list.filteredProducts
             .filter(p => p.actual_quantity > 0)
             .reduce((sum, p) => sum += p.actual_quantity, 0);
@@ -1187,5 +1192,9 @@ export class ProductionListComponent implements OnInit {
 
       this.selectedNodeTree = null;
     });
+  }
+
+  showSerialWarehouseQuantity(listProduct: ListProduct) {
+    return Boolean(listProduct.filteredProducts.find(l => l.status === 'Reserved') && listProduct.technologies.length === 1);
   }
 }

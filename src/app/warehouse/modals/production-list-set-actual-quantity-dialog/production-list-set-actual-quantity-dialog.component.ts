@@ -624,63 +624,47 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     this.isSaving = true;
     const send = [];
 
-    console.log(this.listProduct.products);
-
     if (this.form.get('ownProduction').value === 0) {
       this.form.get('serial_product_ids').value.forEach((id, idx) => {
+
         send.push({
-          id: this.listProduct.products[idx].id,
+          id: this.listProduct.filteredProducts[idx].id,
           actual_quantity: 1,
           serial_product_ids: [id]
         });
       });
 
-      let idx = 0;
+      let quantity = send.length;
 
-      if (this.totalRequiredQuantity !== send.length) {
-        while (this.totalRequiredQuantity !== send.length) {
-          if (!send.find(s => s.id === this.listProduct.products[0].id)) {
-            send.push({
-              id: this.listProduct.products[idx].id,
-              actual_quantity: 0,
-            });
-          }
-
-          idx++;
-        }
+      while (this.totalRequiredQuantity !== quantity) {
+        send.push({
+          id: this.listProduct.filteredProducts[quantity].id,
+          actual_quantity: 0,
+        });
+        quantity++;
       }
-      // if (this.form.get('serial_product_ids').value.length === 0) {
-      //   send.push({
-      //     id: this.listProduct.products[0].id,
-      //     actual_quantity: 0,
-      //     serial_product_ids: []
-      //   })
-      // }
 
     } else {
       this.form.get('root_serial_numbers_in_production').value.forEach((id, idx) => {
         send.push({
-          id: this.listProduct.products[idx].id,
+          id: this.listProduct.filteredProducts[idx].id,
           actual_quantity: 1,
           root_serial_numbers_in_production: [+id]
         });
       });
 
-      let idx = 0;
+      let quantity = send.length;
 
-      if (this.totalRequiredQuantity !== send.length) {
-        while (this.totalRequiredQuantity !== send.length) {
-          if (!send.find(s => s.id === this.listProduct.products[0].id)) {
-            send.push({
-              id: this.listProduct.products[idx].id,
-              actual_quantity: 0,
-            });
-          }
-
-          idx++;
-        }
+      while (this.totalRequiredQuantity !== quantity) {
+        send.push({
+          id: this.listProduct.filteredProducts[quantity].id,
+          actual_quantity: 0,
+        });
+        quantity++;
       }
     }
+
+    console.log(send);
 
     this.listProductService.setActualQuantity(send).pipe(
       finalize(() => this.isSaving = false)
