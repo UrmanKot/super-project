@@ -14,6 +14,7 @@ import {ShiftTypes} from '../../enums/shift-types.enum';
 import {PlanningStatus} from '../../enums/planning-status.enum';
 import {CalendarService} from '../../services/calendar.service';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {QuerySearch} from '@shared/models/other';
 
 class Status {
   label: string;
@@ -265,15 +266,22 @@ export class ManufacturingChartComponent implements OnInit {
     // Используются для получения тасков
     this.rootId = rootId ? rootId : this.rootId;
 
-    let option = 'for_root_id__in';
-    let value: string | boolean = this.rootId;
+    let querySearch: QuerySearch[] = [{name: 'for_root_id__in', value: this.rootId}];
+
+    // let option = 'for_root_id__in';
+    // let value: string | boolean = this.rootId;
 
     if (this.isPlan && !rootId) {
-      option = 'is_root';
-      value = true;
+      // option = 'is_root';
+      // value = true;
+
+      querySearch = [
+        {name: 'is_root', value: true},
+        {name: 'statuses', value: '0,1,2,3'}
+      ];
     }
 
-    return this.tasksService.get([{name: option, value}]).pipe(map(tasks => {
+    return this.tasksService.get(querySearch).pipe(map(tasks => {
         // избавляемся от дубликатов задач
         tasks = tasks.filter(task => !this.tasks.find(t => task.id === t.id));
 
