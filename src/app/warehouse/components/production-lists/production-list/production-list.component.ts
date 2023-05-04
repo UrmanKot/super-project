@@ -4,7 +4,7 @@ import {ListProduct} from '../../../models/list-product';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 import {ListService} from '../../../services/list.service';
-import {filter, take} from 'rxjs/operators';
+import {filter, take, tap} from 'rxjs/operators';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {Location} from '@angular/common';
 import {MenuItem, MessageService, TreeNode} from 'primeng/api';
@@ -91,6 +91,11 @@ export class ProductionListComponent implements OnInit {
           label: 'Make Request',
           icon: 'pi pi-caret-right',
           command: () => this.makeDeficitOne(this.selectedNodeTree.data),
+        },
+        {
+          label: 'Make Request For All',
+          icon: 'pi pi-caret-right',
+          command: () => this.makeRequestsNodeForAll(this.selectedNodeTree.data),
         },
         {
           label: 'Generate QR Codes',
@@ -272,7 +277,7 @@ export class ProductionListComponent implements OnInit {
 
 
     lists.forEach(list => {
-      list.ff = `${list.nomenclature.id}/${list.level}/${lists.find(l => l.id === list.parent)?.nomenclature?.id}`
+      list.ff = `${list.nomenclature.id}/${list.level}/${lists.find(l => l.id === list.parent)?.nomenclature?.id}`;
       list.filteredProducts = lists.filter(p => p.groupKey === list.groupKey);
     });
 
@@ -618,7 +623,7 @@ export class ProductionListComponent implements OnInit {
         }
       }
 
-      list.required_quantity_per_one = list.pureTotalRequiredQuantity / this.list.sets_number
+      list.required_quantity_per_one = list.pureTotalRequiredQuantity / this.list.sets_number;
     });
 
     this.createListProductsTree(newListProducts, lists);
@@ -897,7 +902,7 @@ export class ProductionListComponent implements OnInit {
   makeDeficit() {
     this.modalService.confirm('success').subscribe(res => {
       if (res) {
-        this.listService.make_deficit(this.list.id).subscribe(res => {
+        this.listService.makeDeficit(this.list.id).subscribe(res => {
           this.getListProducts();
         });
       }
@@ -905,7 +910,15 @@ export class ProductionListComponent implements OnInit {
   }
 
   makeRequestsForAll() {
-    this.listService.makeRequestsForAll(this.list).subscribe();
+    this.listService.makeRequestsForAll(this.list.id).pipe(
+      tap(() => this.getListProducts())
+    ).subscribe();
+  }
+
+  makeRequestsNodeForAll(node: ListProduct) {
+    this.listService.makeRequestsForAll(+node.list).pipe(
+      tap(() => this.getListProducts())
+    ).subscribe();
   }
 
   showImages(node) {
@@ -981,16 +994,30 @@ export class ProductionListComponent implements OnInit {
     this.onSelectTreeNode();
   }
 
-  makeDeficitOne(node: any) {
+  makeDeficitOne(node: ListProduct) {
     // /list_products/{id}/deficit_request/
 
-    this.modalService.confirm('success').subscribe(confirm => {
-      if (confirm) {
-        this.listService.makeDeficitOne(node.id).subscribe(() => {
+    console.log(node);
+
+    this.modalService.confirm('success').pipe(
+      filter(confirm => confirm)
+    ).subscribe(() => {
+      if (node.nomenclature.type === ENomenclatureType.ASSEMBLY) {
+        this.listService.makeDeficit(+node.list).subscribe(() => {
           this.getListProducts();
         });
+      } else if (node.nomenclature.type === ENomenclatureType.PURCHASED) {
+        const send: number[] = [];
+
+        node.filteredProducts.forEach(p => send.push(p.id));
+
+        this.listProductService.makeDeficit({ids: send}).pipe(
+          tap(() => this.getListProducts())
+        ).subscribe()
       }
     });
+
+
   }
 
   onSelectTreeNode() {
@@ -1001,6 +1028,9 @@ export class ProductionListComponent implements OnInit {
     } else {
       this.menuItems[0].items[2].disabled = false;
     }
+
+    this.selectedNodeTreeMenuItems[0].items[3].disabled = this.selectedNodeTree.data.nomenclature.type === ENomenclatureType.MANUFACTURED;
+    this.selectedNodeTreeMenuItems[0].items[4].disabled = this.selectedNodeTree.data.nomenclature.type !== ENomenclatureType.ASSEMBLY;
   }
 
   scanForListProduct(data: ScanResult = null) {

@@ -69,12 +69,12 @@ export class ListService {
     return this.httpClient.post(this.API_URL + this.url + id + '/set_actual_quantities/', null);
   }
 
-  make_deficit(id: number): Observable<any> {
+  makeDeficit(id: number): Observable<any> {
     return this.httpClient.post(this.API_URL + this.url + id + '/deficit_request/', null);
   }
 
-  makeRequestsForAll(list: List): Observable<any> {
-    return this.httpClient.post(this.API_URL + this.url + list.id + '/bulk_deficit_request/', list.id);
+  makeRequestsForAll(id: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + id + '/bulk_deficit_request/', id);
   }
 
   makeDeficitOne(id: number): Observable<any> {

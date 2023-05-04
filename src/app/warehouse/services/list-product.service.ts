@@ -80,4 +80,10 @@ export class ListProductService {
       map(response => response.data)
     );
   }
+
+  makeDeficit(send: any): Observable<any> {
+    return this.httpClient.post<{ data: ListProduct[] }>(this.API_URL + this.url + `bulk_deficit_request/`, send).pipe(
+      map(response => response.data)
+    );
+  }
 }
