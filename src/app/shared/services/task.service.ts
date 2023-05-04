@@ -238,4 +238,8 @@ export class TaskService {
   splitTasks(send: any, id: number): Observable<any> {
     return this.httpClient.post(this.API_URL + this.url + `${id}/split/`, send);
   }
+
+  deletePlan(id: number): Observable<Task> {
+    return this.httpClient.delete<Task>(this.API_URL + this.url + id + '/');
+  }
 }

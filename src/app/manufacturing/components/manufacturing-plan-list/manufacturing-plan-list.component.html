@@ -147,13 +147,24 @@
               >
               </button>
               <button
-                class="p-button-icon"
+                class="p-button-icon mr-2"
                 pButton
                 type="button"
                 icon="pi pi-chart-bar"
                 label="Selected Plans"
                 [disabled]="selectedTasks.length === 0"
                 (click)="goToSelectedPlans()"
+              >
+              </button>
+              <button
+                class="p-button-icon p-button-danger"
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                label="Delete Plan"
+                [loading]="isDeleting"
+                [disabled]="selectedTasks.length !== 1"
+                (click)="onDeletePlan()"
               >
               </button>
             </div>
@@ -279,13 +290,24 @@
             >
             </button>
             <button
-              class="p-button-icon"
+              class="p-button-icon mr-2"
               pButton
               type="button"
               icon="pi pi-chart-bar"
               label="Selected Plans"
               [disabled]="selectedTasksNodes.length === 0"
               (click)="goToSelectedNodesPlans()"
+            >
+            </button>
+            <button
+              class="p-button-icon p-button-danger"
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              label="Delete Plan"
+              [loading]="isDeleting"
+              [disabled]="selectedTasksNodes.length !== 1"
+              (click)="onDeleteNodePlan()"
             >
             </button>
           </div>

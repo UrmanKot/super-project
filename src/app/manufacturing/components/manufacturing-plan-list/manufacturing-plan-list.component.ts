@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
 import {Task} from '@shared/models/task';
-import {debounceTime, distinctUntilChanged, filter, map, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, finalize, map, tap} from 'rxjs/operators';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AdapterService} from '@shared/services/adapter.service';
 import {QuerySearch} from '@shared/models/other';
@@ -14,6 +14,7 @@ import {Category} from '../../../product-structure/models/category';
 import {cloneDeep} from 'lodash-es';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ModalService} from '@shared/services/modal.service';
 
 @UntilDestroy()
 @Component({
@@ -40,6 +41,8 @@ export class ManufacturingPlanListComponent implements OnInit {
   ];
 
   mode: 'hierarchy' | 'list' = 'hierarchy';
+
+  isDeleting = false;
 
   tasks: Task[] = [];
   categories: Category[] = [];
@@ -84,6 +87,7 @@ export class ManufacturingPlanListComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly adapterService: AdapterService,
+    private readonly modalService: ModalService,
     private readonly taskService: TaskService,
     private categoryService: ProductStructureCategoryService,
     private readonly router: Router,
@@ -252,7 +256,7 @@ export class ManufacturingPlanListComponent implements OnInit {
     ];
 
     if (!this.searchForm.get('statuses').value) {
-      this.query.push({name: 'statuses', value: [0, 1, 2, 3]})
+      this.query.push({name: 'statuses', value: [0, 1, 2, 3]});
     }
 
     // if (!this.isShowAll) {
@@ -400,8 +404,6 @@ export class ManufacturingPlanListComponent implements OnInit {
     if (this.ownProductionCategorizedList.every(f => f.children.length === 0)) {
       this.ownProductionCategorizedList = [];
     }
-
-    console.log(this.ownProductionCategorizedList);
   }
 
   appendCategories(node: TreeNode, categoriesTemp: {
@@ -562,26 +564,63 @@ export class ManufacturingPlanListComponent implements OnInit {
   }
 
   goToSelectedPlans() {
-    const ids = this.selectedTasks.map(t => t.id).join(',')
-    this.router.navigate(['plan', ids], {relativeTo: this.route})
+    const ids = this.selectedTasks.map(t => t.id).join(',');
+    this.router.navigate(['plan', ids], {relativeTo: this.route});
   }
 
   goToSelectedNodesPlans() {
-    const ids = this.selectedTasksNodes.map(t => t.data.task.id).join(',')
-    this.router.navigate(['plan', ids], {relativeTo: this.route})
+    const ids = this.selectedTasksNodes.map(t => t.data.task.id).join(',');
+    this.router.navigate(['plan', ids], {relativeTo: this.route});
   }
 
   onSplitPlan() {
     this.taskService.splitTasksDialog(this.selectedTasks[0]).pipe(
       filter(response => !!response),
       tap(() => this.search$.next())
-    ).subscribe()
+    ).subscribe();
   }
 
   onSplitNodePlan() {
     this.taskService.splitTasksDialog(this.selectedTasksNodes[0].data).pipe(
       filter(response => !!response),
       tap(() => this.search$.next())
-    ).subscribe()
+    ).subscribe();
+  }
+
+  onDeletePlan() {
+    this.modalService.confirm('danger').pipe(
+      filter(confirm => confirm)
+    ).subscribe(() => {
+      this.isDeleting = true;
+      this.taskService.deletePlan(this.selectedTasks[0].id).pipe(
+        finalize(() => this.isDeleting = false)
+      ).subscribe(() => {
+        const taskIndex = this.tasks.findIndex(t => t.id === this.selectedTasks[0].id);
+        this.tasks.splice(taskIndex, 1);
+        this.fillCategorizedTree();
+
+        this.selectedTasks = [];
+        this.selectedTasksNodes = [];
+      });
+    });
+  }
+
+  onDeleteNodePlan() {
+    console.log(this.selectedTasksNodes);
+    this.modalService.confirm('danger').pipe(
+      filter(confirm => confirm)
+    ).subscribe(() => {
+      this.isDeleting = true;
+      this.taskService.deletePlan(this.selectedTasksNodes[0].data.task.id).pipe(
+        finalize(() => this.isDeleting = false)
+      ).subscribe(() => {
+        const taskIndex = this.tasks.findIndex(t => t.id === this.selectedTasksNodes[0].data.task.id);
+        this.tasks.splice(taskIndex, 1);
+        this.fillCategorizedTree();
+
+        this.selectedTasks = [];
+        this.selectedTasksNodes = [];
+      });
+    });
   }
 }
