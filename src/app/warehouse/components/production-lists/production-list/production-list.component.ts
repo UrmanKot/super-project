@@ -587,6 +587,7 @@ export class ProductionListComponent implements OnInit {
     newListProducts.forEach(list => {
       list.filteredProducts = lists.filter(p => p.groupKey === list.groupKey);
 
+
       if (list.level === 1 && list.technologies.length > 0) {
 
         if ((list.status !== 'Not processed' && list.technologies.length > 0 && list.currentTechnology) || (list.status === 'Reserved' && list.technologies.length > 0)) {
@@ -616,6 +617,8 @@ export class ProductionListComponent implements OnInit {
           list.total_required_quantity = count;
         }
       }
+
+      list.required_quantity_per_one = list.pureTotalRequiredQuantity / this.list.sets_number
     });
 
     this.createListProductsTree(newListProducts, lists);
