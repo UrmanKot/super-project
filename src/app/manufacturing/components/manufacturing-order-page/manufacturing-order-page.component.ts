@@ -92,6 +92,10 @@ export class ManufacturingOrderPageComponent implements OnInit {
   }
 
   getProducts() {
+    this.machines = [];
+    this.orderMaterials = [];
+    this.products = [];
+
     this.orderProductService.get([
       {name: 'order', value: this.orderId}
     ]).subscribe(products => {
@@ -294,5 +298,13 @@ export class ManufacturingOrderPageComponent implements OnInit {
         prod.is_technology_ready = true;
       }
     }));
+  }
+
+  onAddMaterial() {
+    this.orderProductService.openAddPMaterialToOrder(this.selectedProduct.id).subscribe(request => {
+      if (request) {
+        this.getOrder();
+      }
+    });
   }
 }

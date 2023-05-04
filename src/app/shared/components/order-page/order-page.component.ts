@@ -242,6 +242,9 @@ export class OrderPageComponent implements OnInit {
   }
 
   getProducts() {
+    this.orderMaterials = [];
+    this.products = [];
+
     this.orderProductService.get([
       {name: 'order', value: this.orderId}
     ]).subscribe(products => {

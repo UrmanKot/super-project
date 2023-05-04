@@ -82,6 +82,14 @@
                 [disabled]="isLoadingProducts"
               >
               </button>
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-2"
+                label="Add Material"
+                (click)="onAddMaterial()"
+                [disabled]="!selectedProduct"
+              ></button>
             </div>
           </ng-template>
           <ng-template pTemplate="header">
