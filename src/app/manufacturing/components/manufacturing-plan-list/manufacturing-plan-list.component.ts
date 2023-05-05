@@ -565,7 +565,12 @@ export class ManufacturingPlanListComponent implements OnInit {
 
   goToSelectedPlans() {
     const ids = this.selectedTasks.map(t => t.id).join(',');
-    this.router.navigate(['plan', ids], {relativeTo: this.route});
+
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['plan', ids], {relativeTo: this.route})
+    );
+
+    window.open(url, '_blank');
   }
 
   goToSelectedNodesPlans() {
@@ -622,5 +627,13 @@ export class ManufacturingPlanListComponent implements OnInit {
         this.selectedTasksNodes = [];
       });
     });
+  }
+
+  goToAllPlans() {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['all'], {relativeTo: this.route})
+    );
+
+    window.open(url, '_blank');
   }
 }

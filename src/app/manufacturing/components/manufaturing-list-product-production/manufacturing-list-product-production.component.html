@@ -1,25 +1,25 @@
-<div
-  *ngIf="production?.isExpanded"
-  class="children"
-  [class.highlighted-end]="childrenEndHighlighted"
-  [class.test]="!isLeftPanel"
->
-  <!-- Группируем в один контейнер задачи без дочерних -->
-  <div
-    class="child-group"
-    *ngFor="let group of production.groups"
-    [style.background]="production.color"
-  >
-    <pek-manufacturing-list-product-production
-      *ngFor="let child of group"
-      [rootTask]="rootTask"
-      [isLeftPanel]="isLeftPanel"
-      [productionNameWidth]="productionNameWidth"
-      [production]="child"
-    >
-    </pek-manufacturing-list-product-production>
-  </div>
-</div>
+<!--<div-->
+<!--  *ngIf="production?.isExpanded"-->
+<!--  class="children"-->
+<!--  [class.highlighted-end]="childrenEndHighlighted"-->
+<!--  [class.test]="!isLeftPanel"-->
+<!--&gt;-->
+<!--  &lt;!&ndash; Группируем в один контейнер задачи без дочерних &ndash;&gt;-->
+<!--  <div-->
+<!--    class="child-group"-->
+<!--    *ngFor="let group of production.groups"-->
+<!--    [style.background]="production.color"-->
+<!--  >-->
+<!--    <pek-manufacturing-list-product-production-->
+<!--      *ngFor="let child of group"-->
+<!--      [rootTask]="rootTask"-->
+<!--      [isLeftPanel]="isLeftPanel"-->
+<!--      [productionNameWidth]="productionNameWidth"-->
+<!--      [production]="child"-->
+<!--    >-->
+<!--    </pek-manufacturing-list-product-production>-->
+<!--  </div>-->
+<!--</div>-->
 
 <div
   class="task"
@@ -31,7 +31,7 @@
   [class.parent]="production.hasChildren"
   [class.task_hover]="production.isHover"
   [class.task_active]="production.isActive"
-  [style.marginLeft.px]="isLeftPanel ? -7 * production?.product.level : 0"
+  [style.marginLeft.px]="isLeftPanel ? -15 * production?.product.level : 0"
   (mouseover)="mouseoverFromTask(production)"
   (mouseout)="mouseoutFromTask(production)"
 >
@@ -65,8 +65,8 @@
       <div
         class="task-item task-item-code"
         [ngStyle]="{
-          width: production?.hasChildren ? 190 - 7 * production?.product.level + 'px' : '190px',
-          paddingLeft: isLeftPanel && !production?.hasChildren ? 7 * (production?.product.level - 1) + 'px' : 0
+          width: production?.hasChildren ? 190 - 15 * production?.product.level + 'px' : '190px',
+          paddingLeft: isLeftPanel && !production?.hasChildren ? 15 * (production?.product.level - 1) + 'px' : 0
         }"
       >
         <span class="production-code">{{production?.product.nomenclature.code}}</span>
@@ -202,5 +202,28 @@
         &#160;
       </div>
     </ng-container>
+  </div>
+</div>
+
+<div
+  *ngIf="production?.isExpanded"
+  class="children"
+  [class.highlighted-end]="childrenEndHighlighted"
+  [class.test]="!isLeftPanel"
+>
+  <!-- Группируем в один контейнер задачи без дочерних -->
+  <div
+    class="child-group"
+    *ngFor="let group of production.groups"
+    [style.background]="production.color"
+  >
+    <pek-manufacturing-list-product-production
+      *ngFor="let child of group"
+      [rootTask]="rootTask"
+      [isLeftPanel]="isLeftPanel"
+      [productionNameWidth]="productionNameWidth"
+      [production]="child"
+    >
+    </pek-manufacturing-list-product-production>
   </div>
 </div>
