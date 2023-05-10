@@ -136,7 +136,7 @@
               {{product.current_technology?.name}}
             </td>
             <td style="width: 5%" class="text-center">
-              {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+              {{product.nomenclature.category ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
             <td style="width: 10%" class="text-center">
               {{product.totalQuantity}}
