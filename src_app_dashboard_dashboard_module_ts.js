@@ -89,12 +89,14 @@ class DashboardComponent {
             }, {
                 label: 'QC',
                 icon: 'icon-quality-control',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/quality-control/invoices`],
+                // routerLink: ['/external', `${environment.link_url}dash/quality-control/invoices`],
+                routerLink: ['/quality-control'],
                 requiredModulePermission: 'can_edit_quality_control'
             }, {
                 label: 'Manufacturing',
                 icon: 'icon-manufacturing',
-                routerLink: ['/external', `${_env_environment__WEBPACK_IMPORTED_MODULE_0__.environment.link_url}dash/production/plan`],
+                // routerLink: ['/external', `${environment.link_url}dash/production/plan`],
+                routerLink: ['/manufacturing'],
                 requiredModulePermission: 'can_edit_manufacturing'
             }, {
                 label: 'Sales',
