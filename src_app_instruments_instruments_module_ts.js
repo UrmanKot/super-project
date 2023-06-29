@@ -2234,7 +2234,7 @@ class CreateEditAreaLocatorComponent {
         if (this.data.type === 'edit') {
             this.form.addControl('id', new _angular_forms__WEBPACK_IMPORTED_MODULE_3__.FormControl(this.data.locator.id));
             this.form.patchValue(this.data.locator);
-            this.form.get('area').patchValue(this.data.locator.area.id);
+            this.form.get('area').patchValue(this.data.locator.area);
         }
         else {
             this.form.get('area').patchValue(this.data.areaId);
@@ -2734,7 +2734,6 @@ class InstrumentsAndToolsWriteOffReturnComponent {
         this.form = this.fb.group({
             products: this.fb.array(fArray)
         });
-        console.log('this.form', this.form);
     }
     get products() {
         return this.form.get('products');
