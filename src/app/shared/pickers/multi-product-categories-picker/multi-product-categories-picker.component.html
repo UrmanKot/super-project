@@ -1,10 +1,10 @@
-<div class="product-category-picker">
+<div class="product-category-picker" [class.disabled]="isDisabled">
   <p-treeSelect
     selectionMode="checkbox"
     *ngIf="!isLoading; else spinner"
     [options]="categoriesTree"
     [(ngModel)]="selectedCategories"
-    [showClear]="true"
+    [showClear]="!isDisabled"
     placeholder="Select Category"
     (ngModelChange)="onChoiceCategories()"
   ></p-treeSelect>

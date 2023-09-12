@@ -3,7 +3,7 @@
 .layout {
   position: relative;
 
-  @media (max-width: $tablet-width) {
+  @media (max-width: $desktop-width) {
     &__inner {
       padding-top: 3.75rem;
     }

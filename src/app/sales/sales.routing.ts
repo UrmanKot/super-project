@@ -6,6 +6,7 @@ import {SalesStatusesComponent} from './components/sales-statuses/sales-statuses
 import {RegionsComponent} from './components/regions/regions.component';
 import {SalesChainsComponent} from "./components/sales-chains/sales-chains.component";
 import {SalesChainPageComponent} from "./components/sales-chain-page/sales-chain-page.component";
+import {SalesPricesComponent} from "./components/sales-prices/sales-prices.component";
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
 
       {path: 'statuses', title: 'Statuses Type', component: SalesStatusesComponent},
       {path: 'regions', title: 'Countries & Regions', component: RegionsComponent},
+      {path: 'nomenclature-price', title: 'Prices', component: SalesPricesComponent},
       {
         path: 'configs',
         children: [

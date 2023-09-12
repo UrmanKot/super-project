@@ -19,7 +19,8 @@
 <div class="page__content">
   <div class="page__card">
     <div class="filters-visibility">
-        <div class="action-buttons">
+        <div class="action-buttons align-items-center">
+          <p class="mt-0 mb-0 subtitle" *ngIf="!selectedExpense">Choose the Expense to edit</p>
           <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedExpense"></p-menubar>
         </div>
     </div>

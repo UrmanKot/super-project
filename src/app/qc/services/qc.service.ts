@@ -8,6 +8,9 @@ import {MoveQcWithSerialComponent} from '../modals/move-qc-with-serial/move-qc-w
 import {InvoiceProduct} from '../../procurement/models/invoice-product';
 import {MoveQcWithProtocolComponent} from '../modals/move-qc-with-protocol/move-qc-with-protocol.component';
 import {OrderProduct} from '../../procurement/models/order-product';
+import {FoundProductInQcComponent} from '../modals/found-product-in-qc/found-product-in-qc.component';
+import {Observable} from 'rxjs';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +34,11 @@ export class QcService {
       .pipe();
   }
 
-  serializedControlProduct(product: InvoiceProduct | OrderProduct, currentCount: number, count: number, type: 'invoice' | 'order') {
+  serializedControlProduct(product: InvoiceProduct | OrderProduct, currentCount: number, count: number, type: 'invoice' | 'order', foundSerialId: number = null) {
     return this.dialog
       .open<MoveQcWithSerialComponent>(MoveQcWithSerialComponent, {
         width: '60rem',
-        data: {product, currentCount, count, type},
+        data: {product, currentCount, count, type, foundSerialId},
         disableClose: true,
         autoFocus: false
       })
@@ -43,11 +46,11 @@ export class QcService {
       .pipe();
   }
 
-  withProtocolControlProduct(product: InvoiceProduct | OrderProduct, currentCount: number, count: number, type: 'invoice' | 'order') {
+  withProtocolControlProduct(product: InvoiceProduct | OrderProduct, currentCount: number, count: number, type: 'invoice' | 'order', foundSerialId: number = null) {
     return this.dialog
       .open<MoveQcWithProtocolComponent>(MoveQcWithProtocolComponent, {
         width: '60rem',
-        data: {product, currentCount, count, type},
+        data: {product, currentCount, count, type, foundSerialId},
         disableClose: true,
         autoFocus: false
       })
@@ -61,6 +64,18 @@ export class QcService {
         width: '50rem',
         data: {type: 'edit', entity, isOwnProduction},
         disableClose: true,
+        autoFocus: false
+      })
+      .afterClosed()
+      .pipe();
+  }
+
+  foundProductInList(nomenclature: Nomenclature): Observable<boolean> {
+    return this.dialog
+      .open<FoundProductInQcComponent>(FoundProductInQcComponent, {
+        width: '50rem',
+        data: {nomenclature},
+        disableClose: false,
         autoFocus: false
       })
       .afterClosed()

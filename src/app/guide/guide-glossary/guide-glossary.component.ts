@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 
 export class GlossaryItem {
   title: string;
@@ -11,7 +11,7 @@ export class GlossaryItem {
   templateUrl: './guide-glossary.component.html',
   styleUrls: ['./guide-glossary.component.scss']
 })
-export class GuideGlossaryComponent implements OnInit {
+export class GuideGlossaryComponent implements OnInit, OnDestroy  {
 
   searchTitle = '';
 
@@ -169,6 +169,9 @@ export class GuideGlossaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.glossary.sort((a, b) => a.title.localeCompare(b.title));
+
+    const modal = document.querySelector('.guide-modalbox');
+    modal.classList.add('guide-modalbox_reference');
   }
 
   openingImage() {
@@ -195,7 +198,7 @@ export class GuideGlossaryComponent implements OnInit {
     });
   }
 
-  onSelectItem(item: GlossaryItem) {
+  onSelectItem(item: any) {
     if (this.selectedItem && this.selectedItem.title === item.title) {
       this.selectedItem = null;
       return;
@@ -203,5 +206,10 @@ export class GuideGlossaryComponent implements OnInit {
 
     this.selectedItem = item;
     setTimeout(() => this.openingImage());
+  }
+
+  ngOnDestroy() {
+    const modal = document.querySelector('.guide-modalbox');
+    modal.classList.remove('guide-modalbox_reference');
   }
 }

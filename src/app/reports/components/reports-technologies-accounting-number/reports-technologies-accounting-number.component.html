@@ -1,0 +1,78 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Technologies Accounting Number</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="edit-button">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-pencil"
+        label="Edit Accounting Number"
+        (click)="onEditTechnologyAccountingNumber()"
+        [disabled]="!selectedTechnology"
+      >
+      </button>
+    </div>
+    <p-table
+      #dt
+      selectionMode="single"
+      [rows]="10"
+      [scrollable]="true"
+      [paginator]="technologies.length > 0"
+      scrollHeight="calc(100vh - 19rem)"
+      [value]="technologies"
+      [(selection)]="selectedTechnology"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5%" class="index-header text-center">#</th>
+          <th style="width: 40%">Name</th>
+          <th style="width: 40%">Description</th>
+          <th style="width: 15%" class="text-center">Accounting Number</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-technology let-i="rowIndex">
+        <tr [pSelectableRow]="technology">
+          <td class="text-center" style="width: 5%">{{ i + 1}}</td>
+          <td style="width: 40%">{{technology.name}}</td>
+          <td style="width: 40%">{{technology.description}}</td>
+          <td style="width: 15%" class="text-center">{{technology.accounting_number}}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="4">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorright">
+        <p-button
+          type="button"
+          (click)="dt.paginator=false"
+          styleClass="p-button-text"
+        >All
+        </p-button>
+      </ng-template>
+    </p-table>
+  </div>
+  <div *ngIf="!dt.paginator && !isLoading && technologies.length > 0" class="paginator-return-pagination">
+    <p-button
+      type="button"
+      (click)="dt.paginator=true"
+      styleClass="p-button-text"
+    >
+      Return pagination
+    </p-button>
+  </div>
+</div>
+

@@ -7,6 +7,7 @@ export class ServiceInvoicePayment {
   total_price?: number;
   service_invoices?: Invoice[];
   is_paid?: boolean;
+  paid_by_card?: boolean;
   service_invoice_total_price: number;
   service_invoice_payment_amount: string;
   self_serial_number?: string;
@@ -16,6 +17,7 @@ export class ServiceInvoicePayment {
   invoice_total_price?: number;
   payment_amount?: string;
   label?:string;
+  payment_method?:string;
   payment_date_to?;
   supplier?: Company;
   serviceinvoice: {
@@ -23,9 +25,22 @@ export class ServiceInvoicePayment {
     order: {
       id: number;
       accounting_type: number,
-      purchase_category: any
+      purchase_category: any,
     }
   }
+  unique_root_plans?: {planName: string, count: number}[]
+  invoices?: {
+    id: number,
+    order: {
+      id: number;
+      accounting_type: number,
+      purchase_category: any,
+      root_production_list_products: any
+    },
+    supplier?: {
+      id: number
+    }
+  }[]
   status?;
   filter_status?;
   amount:number;

@@ -1,4 +1,16 @@
 .guide {
+
+  .resize-handle {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 0;
+    width: 10px;
+    z-index: 3;
+    //border-left: 5px dashed #000;
+    cursor: grabbing;
+  }
+
   &__instruction {
     padding: 0.875rem 1rem 1rem;
     margin-left: 1.25rem;
@@ -7,6 +19,27 @@
     background: #f8f9fa;
     border: 1px solid #e9ecef;
     overflow: auto;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      //border-left: 5px solid red;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 0.625rem;
+      background-color: #d1d2d8;
+    }
+
+    &::-webkit-scrollbar {
+      cursor: auto;
+      width: 0.5rem;
+      background-color: #f8f9fa;
+    }
 
     h2 {
       font-size: 1.325rem;
@@ -54,12 +87,71 @@
     img {
       width: auto;
       height: auto;
-      max-width: 90%;
-      max-height: 90%;
+      max-width: 85%;
+      max-height: 85%;
     }
 
     &_open {
       display: flex;
+
+      & + .guide__image-box-close {
+        display: flex;
+      }
     }
+  }
+
+  &__image-box-close {
+    display: none;
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    z-index: 3000;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &_hide-instruction {
+    .guide__instruction {
+      display: none !important;
+    }
+
+    .guide__panel {
+      width: 100% !important;
+      margin-right: 1.5rem;
+    }
+  }
+}
+
+.guide-map-item {
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin: 0.75rem 0;
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0.75rem 0;
+  }
+
+  img {
+    margin: 0.75rem auto;
+    cursor: pointer;
+    max-width: 100%;
+  }
+
+  ol, ul {
+    margin: 0 0 0.75rem;
+  }
+
+  .text-yellow {
+    background: yellow;
   }
 }

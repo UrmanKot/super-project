@@ -59,6 +59,7 @@ export class ToolRequestsListComponent implements OnInit, OnDestroy {
 
   query: QuerySearch[] = [
     {name: 'paginated', value: true},
+    {name: 'is_completed', value: false},
     {name: 'page', value: this.searchForm.get('page').value}
   ];
   constructor(
@@ -79,6 +80,7 @@ export class ToolRequestsListComponent implements OnInit, OnDestroy {
     this.query = [];
 
     this.query = [
+      {name: 'is_completed', value: false},
       {name: 'page', value: this.searchForm.get('page').value},
       {name: 'paginated', value: true},
       // {name: 'is_completed', value: false},
@@ -170,7 +172,7 @@ export class ToolRequestsListComponent implements OnInit, OnDestroy {
 
   getAll() {
     this.selectedNode = null;
-    this.toolOrderService.get().pipe(take(1)).pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.toolOrderService.get([{name: 'is_completed', value: false}]).pipe(take(1)).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.requests = res;
       this.selectedNode = null;
       if (this.isStartOnePage) {

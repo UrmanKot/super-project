@@ -46,6 +46,7 @@ export class CreateEditEventComponent implements OnInit {
     is_scheduled: [false],
     parent: [null],
     canOverlap: [false],
+    sales_chain_status_id: [null],
   });
 
   scheduleForm = this.fb.group({
@@ -89,8 +90,11 @@ export class CreateEditEventComponent implements OnInit {
       this.form.get('start').patchValue(new Date(this.data.event.start));
       this.form.get('end').patchValue(new Date(this.data.event.end));
       this.form.get('employee_ids').patchValue(this.data.event.employee?.map(e => e.id));
-      console.log('this.form.get(\'company_ids\')', this.form.get('company_ids').value);
-      console.log('this.form.get(\'contact_ids\')', this.form.get('contact_ids').value);
+
+      if (this.data.event.sales_chain) {
+        this.form.get('sales_chain_status_id')
+          .patchValue(this.data.event.sales_chain_status ? this.data.event.sales_chain_status.id : null);
+      }
       if (this.data.event.scheduler) {
         this.scheduleForm.get('schedule_values').patchValue(this.data.event.scheduler.values);
         this.scheduleForm.get('schedule_id').patchValue(this.data.event.scheduler.id);
@@ -209,7 +213,6 @@ export class CreateEditEventComponent implements OnInit {
               event.isDatesColliding = false;
             }
           });
-          console.log('this.eventsLists', this.eventsLists);
           return this.eventsLists.filter(el => el.isDatesColliding).length > 0 && !this.form.get('canOverlap').value;
         }));
       return res;
@@ -312,5 +315,9 @@ export class CreateEditEventComponent implements OnInit {
 
   onClearEndDate() {
     this.form.get('end').patchValue(null);
+  }
+
+  updateSaleStatus(id: number) {
+      this.form.get('sales_chain_status_id').patchValue(id);
   }
 }

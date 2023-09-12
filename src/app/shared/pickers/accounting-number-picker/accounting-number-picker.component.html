@@ -1,0 +1,17 @@
+<p-dropdown
+  *ngIf="!isLoading; else spinner"
+  [filter]="true"
+  [showClear]="true"
+  [(ngModel)]="number"
+  [options]="numbers"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="id"
+  placeholder="Choose Accounting Number">
+</p-dropdown>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

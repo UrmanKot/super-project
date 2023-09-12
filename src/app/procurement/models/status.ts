@@ -7,4 +7,5 @@ export class Status {
   description?: boolean;
   is_active?: boolean;
   accounting_type?: number;
+  name?: string;
 }

@@ -1,0 +1,11 @@
+.checkboxes {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}

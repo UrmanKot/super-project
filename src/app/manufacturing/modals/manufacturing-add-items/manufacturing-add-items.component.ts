@@ -120,7 +120,7 @@ export class ManufacturingAddItemsComponent implements OnInit {
           // @ts-ignore
           taskId: this.data.parentTasks[0].id,
           data: {
-            nomenclature: material.warehouseProduct.nomenclature.id,
+            nomenclature: material.warehouseProduct?.nomenclature?.id ? material.warehouseProduct?.nomenclature.id : material.warehouseProduct?.nomenclature_id,
             quantity: material.quantity,
           }
         });

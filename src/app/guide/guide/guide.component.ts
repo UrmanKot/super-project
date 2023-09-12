@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialogRef} from '@angular/material/dialog';
 import {environment} from '@env/environment';
+import {ResizeEvent} from "angular-resizable-element";
 
 export type GuideFlowType =
   'all'
@@ -25,6 +26,8 @@ export type GuideType = 'flow' | 'map' | 'glossary'
 export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
   guideType: GuideType = 'flow';
 
+  instructionWidth = 400;
+
   routerSub: Subscription;
   @ViewChild('guidePanel') guidePanel: ElementRef;
 
@@ -36,6 +39,11 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   zoom = 1;
 
+  isFullScreen = false;
+
+  isShowInstruction = true;
+
+
   constructor(
     private router: Router,
     private readonly route: ActivatedRoute,
@@ -44,6 +52,118 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routerSub = this.router.events.pipe(
     ).subscribe(evt => {
     });
+  }
+
+  get allGuideMargin() {
+    switch (this.zoom) {
+      case 0.7:
+        return '1rem -21rem -10rem'
+      case 0.8:
+        return '14rem -14rem -6rem'
+      case 0.9:
+        return '24rem -7rem -3rem'
+      case 1:
+        return '35rem 0 0 0'
+      case 1.1:
+        return '45rem 0 0 8rem'
+      case 1.2:
+        return '55rem 0 0 15rem'
+      case 1.3:
+        return '62rem 0 0 22rem'
+      case 1.4:
+        return '70rem 0 0 29rem'
+    }
+  }
+
+  get qcGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get salesGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get outsourceGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get procurementGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get productionGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get confirmationGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
+  }
+
+  get warehouseGuideMargin() {
+    switch (this.zoom) {
+      case 1.1:
+        return '-3rem 0 0 8rem'
+      case 1.2:
+        return '-3rem 0 0 8rem'
+      case 1.3:
+        return '-3rem 0 0 8rem'
+      case 1.4:
+        return '-4rem 0 0 11rem'
+    }
   }
 
   changeRoute(url: string) {
@@ -133,11 +253,11 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showLorem = true;
     } else if (url.includes('sales')) {
       this.guideFlowType = 'sales';
-    } else if (url.includes('outsource')) {
+    } else if (url.includes('outsourcing')) {
       this.guideFlowType = 'outsource';
     } else if (url.includes('procurement')) {
       this.guideFlowType = 'procurement';
-    } else if (url.includes('production')) {
+    } else if (url.includes('manufacturing')) {
       this.guideFlowType = 'production';
     } else if (url.includes('confirmation')) {
       this.guideFlowType = 'confirmation';
@@ -173,10 +293,12 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   plusScale() {
     this.zoom += 0.1;
+    this.zoom = Math.round(this.zoom * 10) / 10
   }
 
   minusScale() {
     this.zoom -= 0.1;
+    this.zoom = Math.round(this.zoom * 10) / 10
   }
 
   @HostListener('window:keydown.escape', ['$event'])
@@ -193,11 +315,36 @@ export class GuideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onChoiceGuideType(type: GuideType) {
+    this.closeFullScreen()
+
     this.guideType = type;
 
     if (type === 'flow') {
       setTimeout(() => this.drag());
     }
+
   }
 
+  goToFullScreen() {
+    this.isFullScreen = true;
+    const modal = document.querySelector('.guide-modalbox');
+    modal.classList.add('guide-modalbox_full');
+  }
+
+  closeFullScreen() {
+    this.isFullScreen = false;
+    const modal = document.querySelector('.guide-modalbox');
+    modal.classList.remove('guide-modalbox_full');
+  }
+
+  toggleInstruction() {
+    this.isShowInstruction = !this.isShowInstruction
+  }
+
+  moveInstruction(event: ResizeEvent) {
+  }
+
+  onResizeEnd($event: ResizeEvent) {
+    this.instructionWidth = $event.rectangle.width
+  }
 }

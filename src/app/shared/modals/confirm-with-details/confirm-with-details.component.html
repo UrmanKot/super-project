@@ -1,0 +1,45 @@
+<mat-dialog-content>
+  <div class="confirm">
+    <div
+      class="confirm__icon"
+      [class.confirm__icon_success]="modalData.type === 'success'"
+      [class.confirm__icon_danger]="modalData.type === 'danger'"
+      [ngSwitch]="modalData.type"
+    >
+      <i *ngSwitchCase="'danger'" class="pi pi-times-circle"></i>
+      <i *ngSwitchCase="'default'" class="pi fa-trash-alt"></i>
+      <i *ngSwitchCase="'success'" class="pi pi-check-circle"></i>
+    </div>
+
+    <div class="confirm__text text-center">
+      Are you sure?
+    </div>
+    <div class="align-content-stretch d-flex flex-column w-100 mt-3">
+      <p class="mb-2" *ngFor="let item of modalData.itemsToDelete; let index=index">
+        <span *ngIf="modalData.itemsToDelete.length > 1">{{index+1}}.</span> {{item}}
+      </p>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-secondary"></button>
+  <ng-container [ngSwitch]="modalData.type">
+    <button
+      *ngSwitchCase="'danger'"
+      pButton
+      type="button"
+      [label]="modalData.btnConfirmText ? modalData.btnConfirmText : 'Remove'"
+      [mat-dialog-close]="true"
+      class="p-button-danger"
+    ></button>
+    <button
+      *ngSwitchCase="'success'"
+      pButton
+      type="button"
+      [label]="modalData.btnConfirmText ? modalData.btnConfirmText : 'Confirm'"
+      [mat-dialog-close]="true"
+      class="p-button-success"
+    ></button>
+  </ng-container>
+</mat-dialog-actions>

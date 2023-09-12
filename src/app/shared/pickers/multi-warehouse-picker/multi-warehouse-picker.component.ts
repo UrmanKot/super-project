@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {WarehouseService} from '../../../warehouse/services/warehouse.service';
 import {Subject, takeUntil} from 'rxjs';
-import {Warehouse} from '../../../warehouse/models/warehouse';
+import {Currency} from '../../../warehouse/models/warehouse';
 
 @Component({
   selector: 'pek-multi-warehouse-picker',
@@ -10,11 +10,11 @@ import {Warehouse} from '../../../warehouse/models/warehouse';
 })
 export class MultiWarehousePickerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentWarehousesIds: number[] = [];
-  @Output() selectWarehouses: EventEmitter<Warehouse[]> = new EventEmitter<Warehouse[]>();
+  @Output() selectWarehouses: EventEmitter<Currency[]> = new EventEmitter<Currency[]>();
 
   isLoading = true;
-  warehouses: Warehouse[] = [];
-  selectedWarehouses: Warehouse[] = [];
+  warehouses: Currency[] = [];
+  selectedWarehouses: Currency[] = [];
 
   private destroy$ = new Subject();
 
@@ -40,7 +40,7 @@ export class MultiWarehousePickerComponent implements OnInit, OnChanges, OnDestr
     }
   }
 
-  onSelectWarehouses(warehouses: Warehouse[]) {
+  onSelectWarehouses(warehouses: Currency[]) {
     this.selectWarehouses.emit(warehouses);
   }
 

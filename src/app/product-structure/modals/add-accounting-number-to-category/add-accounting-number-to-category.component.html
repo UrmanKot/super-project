@@ -1,0 +1,56 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Add Accounting Number to Category
+  </h2>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Categories</label>
+      <pek-product-category-picker
+        (choiceCategory)="getNomenclatureCategories($event.id)"
+      ></pek-product-category-picker>
+    </div>
+
+    <div class="form-group">
+      <label for="accounting-number">Accounting Number</label>
+      <input
+        (input)="changeNumber()"
+        id="accounting-number"
+        pInputText
+        formControlName="accountingNumber"
+      >
+    </div>
+    <div class="form-group checkboxes">
+      <div class="checkbox">
+        <p-checkbox class="p-checkbox-box mr-4"
+                    label="Is Fixed Asset"
+                    [binary]="true"
+                    id="is_fixed_asset"
+                    formControlName="is_fixed_asset">
+        </p-checkbox>
+      </div>
+      <div class="checkbox">
+        <p-checkbox class="p-checkbox-box"
+                    id="is_non_ressivable"
+                    label="Is Non Ressivable"
+                    [binary]="true"
+                    formControlName="is_non_ressivable">
+        </p-checkbox>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Save'"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -103,7 +103,13 @@
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-i="rowIndex">
-                  <tr [pSelectableRow]="product" [pRowToggler]="product">
+                  <tr [pSelectableRow]="product" [pRowToggler]="product"
+                      [pSelectableRowDisabled]="showIsReserved(product.extra_info) ||
+                      (product.type === ENomenclatureType.PURCHASED &&
+                   (product.approved && product.approved === ENomenclatureApproval.DECLINED ||
+                     product.nomenclature?.approved === ENomenclatureApproval.DECLINED) ||
+                      (product.approved && product.approved === ENomenclatureApproval.NEW ||
+                     product.nomenclature?.approved === ENomenclatureApproval.NEW))">
                     <td style="width: 5%" class="text-center">
                       {{(this.searchForm.get('page').value - 1) * 10 + i + 1}}
                     </td>
@@ -113,6 +119,7 @@
                     <td style="width: 15%" class="in-use">
                       <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
                       <b *ngIf="product.nomenclature.has_technical_equipment">(T)</b>
+                      <b *ngIf="showIsReserved(product.extra_info)">(R)</b>
                       {{product.nomenclature.name}}
                       <span class="text-danger" *ngIf="product.used_by_order && product.used_by_order.length > 0">
                       <b>In Use</b>
@@ -129,6 +136,10 @@
                         </div>
                       </div>
                     </span>
+                      <b *ngIf="product.type === ENomenclatureType.PURCHASED && (product.approved && product.approved === ENomenclatureApproval.DECLINED ||
+                     product.nomenclature?.approved === ENomenclatureApproval.DECLINED)" class="text-danger">(Declined)</b>
+                      <b  *ngIf="product.type === ENomenclatureType.PURCHASED && (product.approved && product.approved === ENomenclatureApproval.NEW ||
+                     product.nomenclature?.approved === ENomenclatureApproval.NEW)" class="text-warning">(Not Confirmed)</b>
                     </td>
                     <td style="width: 10%" class="text-center">
                       {{product.total_locator_quantity}}

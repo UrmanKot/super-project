@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Order} from '../../../procurement/models/order';
 import {OrderService} from '../../../procurement/services/order.service';
 import {ListProduct} from '../../../warehouse/models/list-product';
-import {OrderMaterial, OrderProduct} from '../../../procurement/models/order-product';
+import {OrderMaterial, OrderProduct, OrderRequestType} from '../../../procurement/models/order-product';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {Invoice} from '../../../procurement/models/invoice';
 import {InvoiceService} from '../../../procurement/services/invoice.service';
@@ -27,6 +27,8 @@ import {PurchasingCategoryService} from '../../../purchasing/services/purchasing
 import {AlbumService} from '@shared/services/album.service';
 import {forkJoin} from 'rxjs';
 import {deepCopy} from 'deep-copy-ts';
+import {Router} from "@angular/router";
+import {QuerySearch} from '@shared/models/other';
 
 export type OrderType = 'procurement' | 'outsourcing' | 'purchase' | 'manufacturing';
 
@@ -41,7 +43,13 @@ export class OrderPageComponent implements OnInit {
   @Input() orderType: OrderType;
   @Output() loaded: EventEmitter<Order> = new EventEmitter<Order>();
 
+  isCreatingProformaInvoice = false;
+  isCreatingInvoice = false;
+  isCreatingServiceInvoice = false;
+  isCreatingProformaServiceInvoice = false;
+
   isPurchaseOrderNonMaterial = false;
+  OrderRequestType = OrderRequestType;
 
   link = environment.link_url + 'dash/';
 
@@ -167,11 +175,18 @@ export class OrderPageComponent implements OnInit {
   selectedServicePayment: ServiceInvoicePayment;
   selectedFile: any;
 
+  autoStatuses: any;
+  manualStatuses: any;
+
   order: Order;
   orderSupplierConfirmation: OrderSupplierConfirmation;
   selectedPurchasingCategoryId: number;
 
   isAlbumPrint = false;
+
+  isRootListShown: boolean = false;
+
+  expectedDeliveryDate: Date = null;
 
   constructor(
     private readonly orderService: OrderService,
@@ -187,11 +202,12 @@ export class OrderPageComponent implements OnInit {
     private readonly orderTechnicalEquipmentService: OrderTechnicalEquipmentsService,
     private readonly purchasingCategoryService: PurchasingCategoryService,
     public readonly albumService: AlbumService,
+    private readonly router: Router,
   ) {
   }
 
   ngOnInit(): void {
-    this.getOrder();
+    this.getOrder(true);
     this.getInvoices();
     this.getPayments();
     this.getServiceInvoices();
@@ -215,74 +231,88 @@ export class OrderPageComponent implements OnInit {
     this.albumService.getNomenclaturesImages((<OrderProduct[]>this.selectedProduct).map(p => p.nomenclature));
   }
 
-  togglePrintAlbumMode() {
-    this.selectedProduct = [];
-    this.isAlbumPrint = !this.isAlbumPrint;
-  }
-
-
-  getOrder() {
-    this.orderService.getById(this.orderId).subscribe(order => {
-      order.statuses.map(x => x.estimated_date_sort = new Date(x.estimated_date));
-      order.statuses.sort((a, b) => a.estimated_date_sort - b.estimated_date_sort || a.is_active - b.is_active);
-      this.order = order;
-      this.loaded.next(this.order);
-      this.isLoading = false;
-
-      this.getProducts();
-
-      if (!this.order.purchase_category?.is_material) {
-        this.isPurchaseOrderNonMaterial = true;
-      }
-
-      if (this.orderType === 'purchase') {
-        this.getPurchasingCategories();
-      }
-    });
-  }
-
-  getProducts() {
+  getOrderProducts() {
     this.orderMaterials = [];
     this.products = [];
+    this.isLoadingProducts = true;
 
-    this.orderProductService.get([
-      {name: 'order', value: this.orderId}
-    ]).subscribe(products => {
-      products.forEach((product, idx) => {
-
-        product.details = this.order.order_products[idx];
+    this.orderProductService.getOrderProducts(this.orderId).subscribe(products => {
+      products.forEach((tempProduct, idx) => {
+        const product = new OrderProduct(tempProduct);
+        product.generateUniqueToolRequests()
         product.isReady = product.is_technology_ready ? product.is_technology_ready : false;
 
         if (!this.products.find(p => p.nomenclature.id === product.nomenclature.id &&
-          p.current_technology?.id  === product.current_technology?.id
+          p.current_technology?.id === product.current_technology?.id
           && p.request_type === product.request_type)) {
           product.totalQuantity = products.filter(p =>
             p.nomenclature.id === product.nomenclature.id &&
-            p.current_technology?.id  === product.current_technology?.id &&
+            p.current_technology?.id === product.current_technology?.id &&
             p.request_type === product.request_type)
             .reduce((sum, p) => sum + p.quantity, 0);
 
-          const rootLists = products
+          const orderProducts = products
             .filter(p => p.nomenclature.id === product.nomenclature.id && p.request_type === product.request_type &&
-              p.current_technology?.id  === product.current_technology?.id
+              p.current_technology?.id === product.current_technology?.id
               && product.root_production_list_products.length > 0);
           const rootProducts = [];
-          rootLists.forEach(roots => {
-            if (roots.root_production_list_products.length > 0) {
-              roots.root_production_list_products.forEach(el => {
+
+          orderProducts.forEach(product => {
+            if (product.root_production_list_products.length > 0) {
+              product.root_production_list_products.forEach(el => {
                 rootProducts.push(el);
               });
             }
           });
           product.equal_order_products = deepCopy(products.filter(p =>
             p.nomenclature.id === product.nomenclature.id &&
-            p.current_technology?.id  === product.current_technology?.id &&
+            p.current_technology?.id === product.current_technology?.id &&
             p.request_type === product.request_type));
 
           if (rootProducts) {
             product.root_production_list_products = rootProducts;
           }
 
+          const toolOrders = [];
+
+          products.filter(p =>
+            p.nomenclature.id === product.nomenclature.id &&
+            p.current_technology?.id === product.current_technology?.id &&
+            p.request_type === product.request_type).forEach(product => {
+            product.tool_requests?.forEach(request => {
+              const addedToolOrder = toolOrders?.find(toolRequest => toolRequest.tool_order.id === request.tool_order.id)
+              if (!addedToolOrder) {
+                toolOrders.push(request);
+              }
+            });
+          });
+
+          if (toolOrders) {
+            product.uniqueToolOrders = toolOrders;
+            console.log('product.tool_requests', product.uniqueToolOrders);
+
+          }
+
+          product.root_production_list_products.forEach((root) => {
+
+            this.order.root_production_plans.forEach((plan: any) => {
+              if (plan.list_product.id == root.id) {
+                root.productionPlanId = plan.id;
+              }
+            });
+          });
+
+          const lists: { list: ListProduct, count?: number, allLists: ListProduct[] }[] = [];
+          product.root_production_list_products.forEach((res: ListProduct) => {
+            const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
+            if (found) {
+              found.count++;
+              found.allLists.push(res);
+            } else {
+              lists.push({list: res, count: 1, allLists: [res]});
+            }
+          });
+          product.display_production_list_products = lists;
           this.products.push(product);
         }
       });
@@ -292,8 +322,8 @@ export class OrderPageComponent implements OnInit {
         const materials = [];
 
         products.forEach(product => {
-          if (product.details?.task_materials.length > 0) {
-            product.details?.task_materials.forEach(m => {
+          if (product?.task_materials?.length > 0) {
+            product?.task_materials.forEach(m => {
               let nomenclatureId: number;
               let currentTechnology: string;
               if (m.material_nomenclature) {
@@ -340,7 +370,42 @@ export class OrderPageComponent implements OnInit {
     });
   }
 
+  togglePrintAlbumMode() {
+    this.selectedProduct = [];
+    this.isAlbumPrint = !this.isAlbumPrint;
+  }
+
+
+  getOrder(getProducts: boolean = false) {
+    this.orderService.getById(this.orderId).subscribe(order => {
+      order.statuses.map(x => x.estimated_date_sort = new Date(x.estimated_date));
+      order.statuses.sort((a, b) => a.estimated_date_sort - b.estimated_date_sort || a.is_active - b.is_active);
+      this.order = order;
+      this.loaded.next(this.order);
+      this.isLoading = false;
+
+      if (!this.order.purchase_category?.is_material) {
+        this.isPurchaseOrderNonMaterial = true;
+      }
+
+      this.autoStatuses = order.statuses.filter(el => el.status.is_auto_status === true);
+      this.manualStatuses = order.statuses.filter(el => el.status.is_auto_status === false);
+
+      if (this.orderType === 'purchase') {
+        this.getPurchasingCategories();
+      }
+      if (getProducts) {
+        this.getOrderProducts();
+      }
+      if (order.expected_delivery_date) {
+        this.expectedDeliveryDate = new Date(order.expected_delivery_date);
+      }
+    });
+  }
+
   getInvoices() {
+    this.invoices = [];
+    this.isLoadingInvoices = true;
     this.invoiceService.get([{name: 'order', value: this.orderId}]).subscribe(invoices => {
       this.invoices = invoices.filter(el => el.is_proforma === false);
       this.proformaInvoices = invoices.filter(el => el.is_proforma === true);
@@ -349,6 +414,9 @@ export class OrderPageComponent implements OnInit {
   }
 
   getPayments() {
+    this.payments = [];
+    this.selectedPayment = null;
+    this.isLoadingPayments = true;
     this.paymentService.get([{name: 'order', value: this.orderId}]).subscribe(payments => {
       this.payments = payments;
 
@@ -359,6 +427,9 @@ export class OrderPageComponent implements OnInit {
   }
 
   getServiceInvoices() {
+    this.isLoadingServiceInvoices = true;
+    this.serviceProformaInvoices = [];
+    this.serviceInvoices = [];
     this.serviceInvoiceService.get([{name: 'order', value: this.orderId}]).subscribe(serviceInvoices => {
       this.serviceInvoices = serviceInvoices.filter(el => el.is_proforma === false);
       this.serviceProformaInvoices = serviceInvoices.filter(el => el.is_proforma === true);
@@ -367,6 +438,9 @@ export class OrderPageComponent implements OnInit {
   }
 
   getServicePayments() {
+    this.servicePayments = [];
+    this.selectedServicePayment = null;
+    this.isLoadingServicePayments = true;
     this.servicePaymentService.get([{name: 'order', value: this.orderId}]).subscribe(servicePayments => {
       this.servicePayments = servicePayments;
       this.isLoadingServicePayments = false;
@@ -395,16 +469,42 @@ export class OrderPageComponent implements OnInit {
   }
 
   getFiles() {
+    this.files = [];
+    this.isLoadingFiles = true;
     this.orderService.getFiles(+this.orderId).subscribe(files => {
       this.files = files;
       this.isLoadingFiles = false;
     });
   }
 
+  clickExpectedDeliveryDateOutside() {
+    if (this.order.expected_delivery_date){
+      this.expectedDeliveryDate = new Date(this.order.expected_delivery_date);
+    } else {
+      this.expectedDeliveryDate = null;
+    }
+  }
+
+  setExpectedDeliveryDate() {
+    const send = {id: this.order.id, expected_delivery_date: this.adapterService.dateAdapter(this.expectedDeliveryDate)};
+      this.orderService.updatePartly(send).subscribe(() => {
+        this.order.expected_delivery_date = this.expectedDeliveryDate;
+      });
+  }
+
+  clear() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+        this.expectedDeliveryDate = null;
+        this.setExpectedDeliveryDate();
+      }
+    })
+  }
+
   onEditOrderProductQuantity() {
     this.orderProductService.editOrderProductQuantity(<OrderProduct>this.selectedProduct).subscribe(orderProduct => {
       if (orderProduct) {
-        this.selectedProduct.totalQuantity = orderProduct.totalQuantity;
+        this.getOrderProducts();
       }
     });
   }
@@ -436,13 +536,13 @@ export class OrderPageComponent implements OnInit {
     if (this.orderType !== 'outsourcing') {
       this.orderProductService.openAddProductToOrderModal(false, this.orderId).subscribe(product => {
         if (product) {
-          this.getProducts();
+          this.getOrderProducts();
         }
       });
     } else {
       this.orderProductService.openAddOutsourcingRequestModal(this.orderId).subscribe(product => {
         if (product) {
-          this.getProducts();
+          this.getOrderProducts();
         }
       });
     }
@@ -451,17 +551,20 @@ export class OrderPageComponent implements OnInit {
   onCreateProformaInvoice() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        this.orderService.createProformaInvoice(this.orderId).subscribe(() => this.getInvoices());
+        this.isCreatingProformaInvoice = true;
+        this.orderService.createProformaInvoice(this.orderId).pipe(
+          finalize(() => this.isCreatingProformaInvoice = false)
+        ).subscribe(() => this.getInvoices());
       }
     });
   }
 
   onGoToProformaInvoicePage() {
-    window.open(`${this.link}accounting/invoices/products/${this.selectedProformaInvoice?.id}`);
+    window.open(`/reports/invoices/invoice/${this.selectedProformaInvoice?.id}`, '_blank');
   }
 
   openProformaInvoiceFilesModal() {
-    this.invoiceService.openInvoiceFilesModal(this.selectedProformaInvoice).subscribe();
+    this.invoiceService.openInvoiceFilesModal(this.selectedProformaInvoice.id).subscribe();
   }
 
   onRemoveProformaInvoice() {
@@ -478,17 +581,20 @@ export class OrderPageComponent implements OnInit {
   onCreateInvoice() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        this.orderService.createInvoice(this.orderId).subscribe(() => this.getInvoices());
+        this.isCreatingInvoice = true;
+        this.orderService.createInvoice(this.orderId).pipe(
+          finalize(() => this.isCreatingInvoice = false)
+        ).subscribe(() => this.getInvoices());
       }
     });
   }
 
   onGoToInvoicePage() {
-    window.open(`${this.link}accounting/invoices/products/${this.selectedInvoice?.id}`);
+    window.open(`/reports/invoices/invoice/${this.selectedInvoice?.id}`, '_blank');
   }
 
   openInvoiceFilesModal() {
-    this.invoiceService.openInvoiceFilesModal(this.selectedInvoice).subscribe();
+    this.invoiceService.openInvoiceFilesModal(this.selectedInvoice.id).subscribe();
   }
 
   onRemoveInvoice() {
@@ -503,7 +609,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   onCreatePayment() {
-    this.paymentService.openCreateEditPaymentForm('create', null, this.order.supplier.id, this.orderId).subscribe(payment => {
+    this.paymentService.openCreateEditPaymentForm('create', null, this.order.supplier?.id, this.orderId).subscribe(payment => {
       if (payment) {
         this.getPayments();
       }
@@ -521,13 +627,25 @@ export class OrderPageComponent implements OnInit {
   onCreateServiceInvoice(isProforma: boolean) {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
+
+        if (isProforma) {
+          this.isCreatingProformaServiceInvoice = true;
+        } else {
+          this.isCreatingServiceInvoice = true;
+        }
+
         this.serviceInvoiceService.create({
           order: this.orderId,
-          supplier: this.order.supplier.id,
+          supplier: this.order.supplier?.id,
           is_proforma: isProforma,
-        }).subscribe(invoice => {
+        }).pipe(
+          finalize(() => {
+            this.isCreatingServiceInvoice = false
+            this.isCreatingProformaServiceInvoice = false
+          })
+        ).subscribe(invoice => {
           this.getServiceInvoices();
-          window.open(`${this.link}accounting/invoices/service-invoice/${invoice.id}`);
+          this.router.navigate([`/reports/invoices/service-invoice/${invoice.id}`])
         });
       }
     });
@@ -545,11 +663,11 @@ export class OrderPageComponent implements OnInit {
   }
 
   openServiceInvoiceFilesModal() {
-    this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceInvoice).subscribe();
+    this.serviceInvoiceService.openInvoiceFilesModal(this.selectedServiceInvoice.id).subscribe();
   }
 
   onGoToServiceInvoicePage() {
-    window.open(`${this.link}accounting/invoices/service-invoice/${this.selectedServiceInvoice?.id}`);
+    this.router.navigate([`/reports/invoices/service-invoice/${this.selectedServiceInvoice?.id}`])
   }
 
   onCreateServicePayment() {
@@ -563,7 +681,7 @@ export class OrderPageComponent implements OnInit {
   onEditServicePayment() {
     this.servicePaymentService.openCreateEditServicePaymentForm('edit', this.selectedServicePayment).subscribe(payment => {
       if (payment) {
-        this.getPayments();
+        this.getServicePayments();
       }
     });
   }
@@ -623,7 +741,7 @@ export class OrderPageComponent implements OnInit {
           this.products = [];
           this.selectedProduct = null;
           this.isLoadingProducts = true;
-          this.getOrder();
+          this.getOrderProducts();
         });
       }
     });
@@ -637,9 +755,17 @@ export class OrderPageComponent implements OnInit {
   }
 
   getPurchasingCategories() {
-    this.purchasingCategoryService.get([{
-      name: 'is_material', value: true
-    }]).subscribe(categories => {
+    const query: QuerySearch[] = [];
+    if (this.order.purchase_category?.is_material) {
+      query.push({
+        name: 'is_material', value: true
+      })
+    } else {
+      query.push({
+        name: 'is_material', value: false
+      })
+    }
+    this.purchasingCategoryService.get(query).subscribe(categories => {
       this.purchasingCategories = categories;
       this.selectedPurchasingCategoryId = this.purchasingCategories.find(c => c.id === this.order.purchase_category?.id)?.id;
       this.isLoadingPurchasingCategories = false;
@@ -658,7 +784,7 @@ export class OrderPageComponent implements OnInit {
   onAddMaterial() {
     this.orderProductService.openAddPMaterialToOrder(this.selectedProduct.id).subscribe(request => {
       if (request) {
-        this.getOrder();
+        this.getOrderProducts();
       }
     });
   }

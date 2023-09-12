@@ -54,6 +54,7 @@
   }
 
   &__header-col {
+    word-break: break-all;
     &_code {
       width: 30%;
     }

@@ -37,6 +37,17 @@ import { NomenclatureFilesComponent } from './components/create-edit-product-for
 import {CompareStructureComponent} from './modals/compare-structure/compare-structure.component';
 import { SerialConfirmationComponent } from './modals/serial-confirmation/serial-confirmation.component';
 import {CreateEditSerialTypeComponent} from './modals/create-edit-serial-type/create-edit-serial-type.component';
+import { StructureErrorMessageModalComponent } from './modals/structure-error-message-modal/structure-error-message-modal.component';
+import {
+  AddAccountingNumberToCategoryComponent
+} from "./modals/add-accounting-number-to-category/add-accounting-number-to-category.component";
+import {
+  EditNomenclatureAccountingNumberComponent
+} from "./modals/edit-nomenclature-accounting-number/edit-nomenclature-accounting-number.component";
+import {
+  EditTechnologyAccountingNumberComponent
+} from "./modals/edit-technology-accounting-number/edit-technology-accounting-number.component";
+import { EditSalesChainsCategoriesComponent } from './modals/edit-sales-chains-categories/edit-sales-chains-categories.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +75,11 @@ import {CreateEditSerialTypeComponent} from './modals/create-edit-serial-type/cr
     CompareStructureComponent,
     SerialConfirmationComponent,
     CreateEditSerialTypeComponent,
+    StructureErrorMessageModalComponent,
+    AddAccountingNumberToCategoryComponent,
+    EditNomenclatureAccountingNumberComponent,
+    EditTechnologyAccountingNumberComponent,
+    EditSalesChainsCategoriesComponent
   ],
   exports: [
     CreateEditProductFormComponent

@@ -1,0 +1,93 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Accounting Number to Category
+  </h2>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="accounting-number">Accounting Number</label>
+      <input
+        (input)="changeNumber()"
+        id="accounting-number"
+        pInputText
+        formControlName="accounting_number"
+      >
+    </div>
+    <div class="form-group checkboxes">
+      <div class="checkbox">
+        <p-checkbox class="p-checkbox-box mr-4"
+                    label="Is Fixed Asset"
+                    [binary]="true"
+                    id="is_fixed_asset"
+                    formControlName="is_fixed_asset">
+        </p-checkbox>
+      </div>
+      <div class="checkbox">
+        <p-checkbox class="p-checkbox-box"
+                    id="is_non_ressivable"
+                    label="Is Non Ressivable"
+                    [binary]="true"
+                    formControlName="is_non_ressivable">
+        </p-checkbox>
+      </div>
+    </div>
+    <div class="form-group">
+      <pek-country-picker
+        (selectCountry)="changeCountry($event)"
+        [currentCountryIds]="this.form.get('country_of_origin_default').value"
+      ></pek-country-picker>
+    </div>
+    <div class="form-group">
+      <label for="tariff_code">Tariff Code</label>
+      <p-inputNumber
+        [showButtons]="true"
+        [min]="0"
+        [step]="1"
+        [maxlength]="8"
+        id="tariff_code"
+        formControlName="tariff_code"
+      >
+      </p-inputNumber>
+    </div>
+    <div class="form-group">
+      <label for="tariff_code_checked">Tariff Code checked</label>
+      <p-inputNumber
+        [showButtons]="true"
+        [min]="0"
+        [step]="1"
+        [maxlength]="8"
+        id="tariff_code_checked"
+        formControlName="tariff_code_checked"
+      >
+      </p-inputNumber>
+    </div>
+    <div class="form-group">
+      <label for="weight">Weight (kg)</label>
+      <p-inputNumber
+        [showButtons]="true"
+        [min]="0"
+        mode="decimal"
+        [minFractionDigits]="6"
+        [maxFractionDigits]="6"
+        [step]="0.000001"
+        id="weight"
+        formControlName="weight"
+      >
+      </p-inputNumber>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Save'"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

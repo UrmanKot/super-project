@@ -1,0 +1,112 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Choice Invoice Filter
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <p-table
+    #dt
+    selectionMode="single"
+    scrollHeight="calc(100vh - 18.8rem)"
+    [scrollable]="true"
+    [paginator]="invoiceFilters.length > 0"
+    [rows]="10"
+    [(selection)]="selectedFilter"
+    [value]="invoiceFilters"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3%" class="text-center">#</th>
+        <th style="width: 15%">Name</th>
+        <th style="width: 14%">Company</th>
+        <th style="width: 6%" class="text-center">Company Category</th>
+        <th style="width: 6%" class="text-center">Creation From</th>
+        <th style="width: 6%" class="text-center">Creation <br>To</th>
+        <th style="width: 9%" class="text-center">Invoice <br>Recieved From</th>
+        <th style="width: 6%" class="text-center">Invoice <br>Recieved To</th>
+        <th style="width: 8%" class="text-center">Items <br>Recieved From</th>
+        <th style="width: 7%" class="text-center">Items <br>Recieved To</th>
+        <th style="width: 5%" class="text-center">Related</th>
+        <th style="width: 5%" class="text-center">Payment</th>
+        <th style="width: 5%" class="text-center">Complete</th>
+        <th style="width: 6%" class="text-center">Type</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-filter let-i="rowIndex">
+      <tr [pSelectableRow]="filter">
+        <td style="width: 3%" class="text-center">{{i + 1}}</td>
+        <td style="width: 15%">{{filter.name}}</td>
+        <td style="width: 14%">{{filter.supplier ? filter.supplier.name : 'All companies'}}</td>
+        <td class="text-center" style="width: 6%">
+          <span *ngIf="filter.supplier_category">{{filter.supplier_category?.name}}</span>
+          <span *ngIf="!filter.supplier_category">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.system_creation_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.system_creation_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.system_creation_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.system_creation_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 9%">
+          {{filter.invoice_reception_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.invoice_reception_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.invoice_reception_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.invoice_reception_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 8%">
+          {{filter.items_reception_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.items_reception_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 7%">
+          {{filter.items_reception_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.items_reception_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 5%">
+          <i class="pi pi-check text-success" *ngIf="filter.has_proformas === true"></i>
+          <i class="pi pi-times text-danger" *ngIf="filter.has_proformas === false"></i>
+          <span *ngIf="filter.has_proformas === null">—</span>
+        </td>
+        <td class="text-center" style="width: 5%">
+          <i class="pi pi-check text-success" *ngIf="filter.is_paid === true"></i>
+          <i class="pi pi-times text-danger" *ngIf="filter.is_paid === false"></i>
+          <span *ngIf="filter.is_paid === null">—</span>
+        </td>
+        <td class="text-center" style="width: 5%">
+          <i class="pi pi-check text-success" *ngIf="filter.completed === true"></i>
+          <i class="pi pi-times text-danger" *ngIf="filter.completed === false"></i>
+          <span *ngIf="filter.completed === null">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          <span *ngIf="filter.type === '0'">Invoices</span>
+          <span *ngIf="filter.type === '1'">Auxiliary Invoices</span>
+          <span *ngIf="!filter.type">—</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="14">
+          <i *ngIf="isLoadingInvoiceFilters" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoadingInvoiceFilters">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Apply Filter'"
+    [disabled]="!selectedFilter"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

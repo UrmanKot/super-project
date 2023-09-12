@@ -37,7 +37,8 @@
         <div class="col-3">
           <div class="form-group">
             <label>Category</label>
-            <pek-multi-product-categories-picker (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
+            <pek-multi-product-categories-picker
+              (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
           </div>
         </div>
         <div class="col-3">
@@ -105,7 +106,8 @@
             <td style="width: 10%">{{product.nomenclature.name}}</td>
             <td style="width: 5%" class="text-center">{{product.initial_quantity}}</td>
             <td style="width: 5%" class="text-center">{{product.ordered_quantity}}</td>
-            <td style="width: 7%" class="text-center">{{product.free_quantity_without_final_status ? product.free_quantity_without_final_status : 0}}</td>
+            <td style="width: 7%"
+                class="text-center">{{product.free_quantity_without_final_status ? product.free_quantity_without_final_status : 0}}</td>
             <td style="width: 5%" class="text-center">
               {{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
             </td>
@@ -118,7 +120,7 @@
             <td style="width: 6%;" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
             <td class="text-center" style="width: 6%;">
               <ng-container *ngIf="product.request_type==1">Auto</ng-container>
-              <ng-container *ngIf="product.request_type==0">Manual</ng-container>
+              <ng-container *ngIf="product.request_type==0 || product.request_type==3">Manual</ng-container>
             </td>
             <td style="width: 6%;" class="text-center">
               <ng-container *ngFor="let order of product.orders; let idx = index">
@@ -132,9 +134,14 @@
             </td>
 
             <td style="width: 9%;">
-              <ng-container *ngFor="let list of product.root_production_list_products; let idx = index">
-                {{list}}<span *ngIf="idx !== product.root_production_list_products.length - 1">,</span>
-              </ng-container>
+              <span class="capitalize" *ngIf="product.request_type === OrderRequestType.REQUEST_BY_VOLUME">
+                requested by minimum volume
+              </span>
+              <span *ngIf="product.request_type !== OrderRequestType.REQUEST_BY_VOLUME">
+                <ng-container *ngFor="let list of product.root_production_list_products; let idx = index">
+                  {{list}}<span *ngIf="idx !== product.root_production_list_products.length - 1">,</span>
+                </ng-container>
+              </span>
             </td>
             <td style="width: 9%;">
               <ng-container *ngFor="let list of product.production_list_products; let idx = index">

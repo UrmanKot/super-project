@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    What to do with the redelivered item?
+  </h2>
+</div>
+
+<mat-dialog-actions class="d-flex justify-content-between">
+  <button
+    class="p-button-danger"
+    pButton
+    type="button"
+    [mat-dialog-close]="false"
+    label="Cancel"
+  >
+  </button>
+
+  <div>
+    <button
+      pButton
+      type="button"
+      class="mr-2"
+      (click)="redelivery(true)"
+      label="Return The Item"
+    >
+    </button>
+
+    <button
+      pButton
+      type="button"
+      (click)="redelivery(false)"
+      label="Leave a Item in The Warehouse"
+    >
+    </button>
+  </div>
+</mat-dialog-actions>

@@ -4,9 +4,12 @@ import {ListService} from '../../services/list.service';
 import {ActualQuantityPayload, ListProduct, ListProductQuantity} from '../../models/list-product';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ListProductService} from '../../services/list-product.service';
-import {finalize} from 'rxjs/operators';
+import {catchError, finalize} from 'rxjs/operators';
 import {AdapterService} from '@shared/services/adapter.service';
-import {forkJoin} from 'rxjs';
+import {concatMap, forkJoin, from, of, toArray} from 'rxjs';
+import {ServiceInvoicePayment} from '../../../payments/models/service-invoice-payment';
+import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
+import {QrCodeService} from '../../../qr-code/qr-code.service';
 
 @Component({
   selector: 'pek-production-list-set-actual-quantity-dialog',
@@ -40,6 +43,7 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
 
   serialsWarehouse: { id: number, label: string }[] = [];
   serialsProduction: { id: number, label: string }[] = [];
+  isGenerating: boolean;
 
   constructor(
     private readonly dialogRef: MatDialogRef<ProductionListSetActualQuantityDialogComponent>,
@@ -47,12 +51,15 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     private readonly listProductService: ListProductService,
     private readonly adapterService: AdapterService,
     private readonly fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: { listProduct: ListProduct, parent: ListProduct, isOldList: boolean },
+    private readonly qrCodeService: QrCodeService,
+    @Inject(MAT_DIALOG_DATA) public data: { listProduct: ListProduct, parent: ListProduct,
+      isOldList: boolean, products: ListProduct[], sendGenerateData, treeSimplifiedPath: Nomenclature[]},
   ) {
   }
 
   ngOnInit(): void {
     console.log(this.data.listProduct);
+    console.log(this.data);
 
     if (!this.data.isOldList) {
       this.listProduct = Object.assign({}, this.data.listProduct);
@@ -161,6 +168,11 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     }));
 
     this.listProducts = newProducts.map(p => p);
+    this.listProducts.forEach(product => {
+      product.reserved_quantity = this.data.products
+        .filter(p => p.nomenclature.id === product.nomenclature.id && p.technology?.id === product.technology?.id && p.level === (product.level ?? 1))
+        .reduce((sum, lp) => sum += lp.reserved_quantity ?? 0, 0)
+    })
 
     if (this.data.parent) {
       const lastProducts = this.quantities[this.quantities.length - 1].products;
@@ -671,5 +683,9 @@ export class ProductionListSetActualQuantityDialogComponent implements OnInit {
     ).subscribe(listProducts => {
       this.dialogRef.close(listProducts);
     });
+  }
+
+  generateQRCodes() {
+    this.qrCodeService.generateQrCodes(this.data.sendGenerateData).subscribe(() => this.isGenerating = false);
   }
 }

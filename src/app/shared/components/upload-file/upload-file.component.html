@@ -22,6 +22,7 @@
           in <span>{{fileFormat}}</span> format
         </ng-container>
         or drag and drop it here
+        {{canPrintScreenImage ? 'or Make print screen (PrtSc), copy it to the clipboard and on hover mouse over dialog press keys "Ctrl + V)' : ''}}
       </div>
       <input
         #addFileInput
@@ -64,6 +65,7 @@
           in <span>{{fileFormat}}</span> format
         </ng-container>
         or drag and drop it here
+        {{canPrintScreenImage ? 'or Make print screen (PrtSc), copy it to the clipboard and on hover mouse over dialog press keys "Ctrl + V)' : ''}}
       </div>
       <input
         #addFileInput

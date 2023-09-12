@@ -14,6 +14,7 @@ import { PurchasingChainCreationListComponent } from './components/purchasing-ch
 import { PurchasingRequestsComponent } from './components/purchasing-requests/purchasing-requests.component';
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import { CreateEmptyPurchaseChainComponent } from './modals/create-empty-purchase-chain/create-empty-purchase-chain.component';
+import { EditPurchasingCategoryAccountingNumberComponent } from './modals/edit-purchasing-category-accounting-number/edit-purchasing-category-accounting-number.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { CreateEmptyPurchaseChainComponent } from './modals/create-empty-purchas
     CreateEditPurchasingCategoryComponent,
     PurchasingChainCreationListComponent,
     PurchasingRequestsComponent,
-    CreateEmptyPurchaseChainComponent
+    CreateEmptyPurchaseChainComponent,
+    EditPurchasingCategoryAccountingNumberComponent
   ],
   imports: [
     CommonModule,

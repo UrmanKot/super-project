@@ -16,6 +16,7 @@ export class GuideButtonComponent implements OnInit {
   @Input() hideButtons = false;
   @Output() navigate: EventEmitter<string> = new EventEmitter<string>();
   @Output() getInfo: EventEmitter<any> = new EventEmitter<any>();
+  @Input() i: number;
 
   env = environment
 

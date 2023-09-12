@@ -1,0 +1,825 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>
+        <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+        Invoice Edit
+        <ng-container
+          *ngIf="invoice?.qc_completed">(QC Processed)
+        </ng-container>
+      </h1>
+    </div>
+    <div class="page__tools">
+      <ng-container [ngSwitch]="invoice?.order?.accounting_type">
+        <a *ngSwitchCase="3" [routerLink]="'/manufacturing/orders/order/' + invoice?.order?.id"
+           target="_blank"
+        >
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-double-right"
+            label="Go To Order"
+          ></button>
+        </a>
+        <a *ngSwitchCase="2" [href]="'/outsourcing/chains/order/' + invoice?.order?.id"
+           target="_blank">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-double-right"
+            label="Go To Order"
+          ></button>
+        </a>
+        <a *ngSwitchCase="1" [href]="'procurement/chains/order/' + invoice?.order?.id"
+           target="_blank">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-angle-double-right"
+            label="Go To Order"
+          ></button>
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+
+  <div class="reports-invoice-page">
+
+    <h2 class="mb-4">
+      <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+      Invoice Info
+    </h2>
+
+    <div class="reports-invoice-page__card reports-invoice-page__info mb-4">
+      <form [formGroup]="form" *ngIf="!isLoading; else infoLoading">
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label>
+                Supplier
+                <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+                <ng-container *ngIf="!invoice?.is_proforma">Invoice</ng-container>
+                Number
+              </label>
+              <input type="text" pInputText formControlName="supplier_serial_number">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>
+                Internal
+                <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+                <ng-container *ngIf="!invoice?.is_proforma">Invoice</ng-container>
+                Number
+              </label>
+              <input pInputText type="text" *ngIf="!invoice?.is_proforma"
+                     value="{{invoice?.self_serial_number}}" disabled>
+              <input pInputText type="text" *ngIf="invoice?.is_proforma"
+                     value="{{invoice?.self_proforma_serial_number}}" disabled>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Supplier* </label>
+              <pek-company-picker
+                [currentCompanyId]="form.get('supplier').value"
+                (selectCompany)="onSelectCompany($event)"
+              ></pek-company-picker>
+            </div>
+          </div>
+          <div class="col-6" *ngIf="!invoice?.is_proforma">
+            <div class="form-group">
+              <label> Relation With Proforma Invoice</label>
+              <p-multiSelect
+                [disabled]="!!(!related.length)"
+                formControlName="proformas"
+                [options]="related"
+                optionLabel="self_proforma_serial_number"
+                optionValue="id"
+                placeholder="Select Relation"
+                *ngIf="!isLoadingRelated else spinner"
+              >
+              </p-multiSelect>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label> Total Price*
+                <ng-container *ngIf="invoice?.currency">
+                  ({{invoice?.currency?.symbol}})
+                </ng-container>
+              </label>
+              <input pInputText formControlName="total_price" type="number" step="0.01">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Pure Total Price
+                <ng-container *ngIf="invoice?.currency">
+                  ({{invoice?.currency?.symbol}})
+                </ng-container>
+              </label>
+              <input pInputText type="number" step="0.01" formControlName="pure_total_price"
+                     (input)="pureTotalChange()">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Currency</label>
+              <pek-currency-picker
+                [currency]="form.get('currency').value"
+                (valueChange)="changeCurrency($event)"
+              ></pek-currency-picker>
+            </div>
+          </div>
+
+          <div class="col-3" *ngIf="form.get('currency').value !== 'EUR'">
+            <div class="form-group">
+              <label> Exchange Rate</label>
+              <input pInputText formControlName="exchange_rate" type="number" step="0.0001"
+                     (ngModelChange)="changeRate()">
+            </div>
+          </div>
+
+          <div class="col-3" *ngIf="form.get('currency').value !== 'EUR'">
+            <div class="form-group">
+              <label>Total Price In EUR</label>
+              <input
+                pInputText
+                disabled
+                readonly class="form-control" type="text"
+                value="{{form.get('total_price').value * form.get('exchange_rate').value | moneyFormat}}"
+                step="0.01">
+            </div>
+          </div>
+        </div>
+
+        <h2 class="mt-4">Dates On Document</h2>
+
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Invoice Date</label>
+              <p-calendar
+                formControlName="invoice_date"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [showClear]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Due Date</label>
+              <p-calendar
+                formControlName="due_date"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [showClear]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Invoice Reception Date</label>
+              <p-calendar
+                formControlName="invoice_reception_date"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [showClear]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+            </div>
+          </div>
+        </div>
+
+        <h2 class="mt-4">System Date</h2>
+
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group">
+              <label>Date*</label>
+              <p-calendar
+                [showClear]="true"
+                formControlName="system_creation_date"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Items Reception Date</label>
+              <p-calendar
+                formControlName="items_reception_date"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                [showClear]="true"
+              ></p-calendar>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Set Physical Characteristics</label>
+              <div>
+                <p-checkbox
+                  id="other"
+                  [ngModel]="form.get('set_physical_characteristics').value"
+                  (ngModelChange)="updateCharacteristic($event)"
+                  [binary]="true"
+                  [ngModelOptions]="{standalone: true}"
+                ></p-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="form.get('set_physical_characteristics').value">
+            <div class="col-3">
+              <div class="form-group">
+                <label>Weight*</label>
+                <input
+                  pInputText
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter width in kilograms"
+                  formControlName="weight"
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Width</label>
+                <input
+                  pInputText
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter width in centimeters"
+                  formControlName="width"
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Height</label>
+                <input
+                  pInputText
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter height in centimeters"
+                  formControlName="height"
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Length</label>
+                <input
+                  pInputText
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter length in centimeters"
+                  formControlName="length"
+                >
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="d-flex mt-2">
+          <button
+            [disabled]="form.invalid"
+            (click)="saveInvoice()"
+            class="ml-auto"
+            pButton
+            type="button"
+            label="Save"
+            [loading]="isSaving"
+          ></button>
+        </div>
+      </form>
+    </div>
+
+    <div class="block-header mb-4">
+      <h2>
+        <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+        Invoice Items
+      </h2>
+
+      <div class="d-flex" *ngIf="!isLoading">
+        <button
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-cog"
+          label="RMA Files"
+          *ngIf="!invoice?.is_proforma"
+          [disabled]="disabledRmaFiles()"
+          (click)="openRmaFiles()"
+        ></button>
+
+        <button
+          *ngIf="!invoice?.completed"
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-sort-alt"
+          label="Allocate To Tool Area"
+          (click)="allocateToToolRequest()"
+        ></button>
+        <button
+          *ngIf="isAllocatingMode"
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-reply"
+          label="Allocate"
+          [disabled]="selectedInvoiceProducts.length === 0"
+          (click)="allocateProducts()"
+        ></button>
+        <button
+          *ngIf="hasAllocatedProducts && !invoice?.completed"
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-sort-alt-slash"
+          label="Cancel Tool Allocation"
+          (click)="cancelAllocatedProducts()"
+        ></button>
+
+        <button
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-cog"
+          label="RMA"
+          *ngIf="!invoice?.is_proforma"
+          [disabled]="disabled()"
+          (click)="rma()"
+        ></button>
+
+        <button
+          pButton
+          class="mr-2"
+          type="button"
+          icon="pi pi-plus"
+          label="New Item"
+          [disabled]="invoice?.qc_completed"
+          (click)="addInvoiceItem()"
+        ></button>
+        <button
+          *ngIf="!invoice?.qc_completed && !invoice?.completed"
+          pButton
+          class="mr-2 p-button-success p-button-icon"
+          type="button"
+          icon="pi pi-check"
+          label="Complete"
+          [disabled]="invoice?.qc_completed && invoice?.completed"
+          (click)="complete()"
+          [loading]="isCompletingOrCancellation"
+        ></button>
+
+        <button
+          *ngIf="invoice?.completed"
+          pButton
+          class="mr-2 p-button-danger p-button-icon"
+          type="button"
+          icon="pi pi-times"
+          label="Cancellation"
+          (click)="cancellation()"
+          [loading]="isCompletingOrCancellation"
+        ></button>
+
+        <button
+          pButton
+          class="p-button-icon"
+          type="button"
+          icon="pi pi-sliders-v"
+          label="Price Distribution"
+          (click)="distributePrice()"
+        ></button>
+      </div>
+    </div>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #it
+          selectionMode="multiple"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="invoiceProducts.length > 0"
+          [rows]="10"
+          [(selection)]="selectedInvoiceProducts"
+          [value]="invoiceProducts"
+          dataKey="uid"
+          (selectionChange)="productsSelectionChange()"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-auto"
+                label="Add File"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 3%" class="index-header text-center">#</th>
+              <th style="width: 15%">Code</th>
+              <th style="width: 15%">Name</th>
+              <th style="width: 15%">Root Lists</th>
+              <th style="width: 10%">RMA Comment</th>
+              <th style="width: 5%" class="text-center">Quantity</th>
+              <th style="width: 13%" class="text-center">Allocated Quantity</th>
+              <th style="width: 10%" class="text-center">Price</th>
+              <th style="width: 10%" class="text-center">Other Currency</th>
+              <th style="width: 10%" class="text-center">DDV</th>
+              <th style="width: 10%" class="text-center">Discount</th>
+              <th style="width: 10%" class="text-center">Passed</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedInvoiceProducts.length">Choose the Invoice Item to edit</p>
+              <p-menubar
+                class="ml-auto invoice-product-menubar"
+                [model]="invoiceProductsMenuItems"
+                [class.disabled]="!selectedInvoiceProducts.length || selectedInvoiceProducts.length > 1"></p-menubar>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr [pSelectableRow]="!isViewingMode ? product : null">
+              <td style="width: 3%" class="text-center">
+                <div class="selection-td">
+                  <p-tableCheckbox class="mr-2" *ngIf="isAllocatingMode" [value]="product"></p-tableCheckbox>
+                  <span>
+                    {{i + 1}}
+                  </span>
+                </div>
+              </td>
+              <td style="width: 15%">{{product.nomenclature.code}} <b *ngIf="product.rma_comment">(RMA)</b>
+                <b *ngIf="(product?.passed === 'notPassed' || !product?.passed)  && product?.rma_status === 'Reordered'"> (Reordered)</b>
+                <b *ngIf="(product?.passed === 'notPassed' || !product?.passed) && product?.rma_status === 'Received'"> (Received)</b>
+              </td>
+              <td style="width: 15%">{{product.nomenclature.name}}</td>
+              <td style="width: 15%">
+                <div class="root-count-wrapper">
+                  <div class="root-count-wrapper">
+                    <span class="d-block"
+                          *ngFor="let item of getRootLists(product.equalInvoiceProducts); let idx = index">
+                      <ng-template [ngIf]="item.count === 1">
+                          <a *ngIf="item.list.serial_numbers.length < 1" target="_blank" rel="noopener noreferrer"
+                             [routerLink]="['/manufacturing/plans/plan', item.list.id]">
+                             {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
+                            ({{item.count}})
+                          </a>
+
+                          <ng-template *ngIf="item.list.serial_numbers.length >= 1">
+                            <a *ngFor="let serial of item.list.serial_numbers" target="_blank" rel="noopener noreferrer"
+                               [routerLink]="['/manufacturing/plans/plan', serial.id]">
+                             {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
+                              ({{item.count}})
+                            </a>
+                          </ng-template>
+                      </ng-template>
+
+                      <ng-template [ngIf]="item.count > 1">
+                          <a href="javascript:void(0)" (click)="showProductionLists(product.root_production_plans)">
+                             {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
+                            ({{item.count}})
+                          </a>
+                          <ng-template *ngIf="item.list.serial_numbers.length >= 1">
+                          <a href="javascript:void(0)" (click)="showProductionLists(product.root_production_plans)">
+                           {{item.list.list_product.nomenclature.code}}~{{item.list.list_product.nomenclature.name}}
+                            ({{item.count}})
+                          </a>
+                          </ng-template>
+                      </ng-template>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 15%" class="hovered-info">
+                <a href="javascript:void(0)" class="rma-files">
+                  <i *ngIf="product.rma_files?.length > 0 && product.rma_comment" class="pi pi-paperclip mr-2"></i>
+                  {{product.rma_comment}}
+                </a>
+                <pek-hover-detailed-info-component
+                  *ngIf="product?.rma_files?.length > 0 && product?.rma_comment"
+                >
+                  <span *ngFor="let file of product?.rma_files">
+                     <a [href]="link + '/media/' + file.file">
+                       {{ getName(file.file) }}
+                     </a>
+                     <br>
+                  </span>
+                </pek-hover-detailed-info-component>
+              </td>
+              <td style="width: 5%"
+                  class="text-center">{{product.totalQuantity}} {{product.nomenclature.category?.unit_of_measure?.symbol}}</td>
+              <td style="width: 13%"
+                  class="text-center">
+                <span *ngIf="product.totalQuantityAllocated">
+                  {{product.totalQuantityAllocated}} {{product.nomenclature.category ? product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </span>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <ng-container *ngIf="form.get('currency').value !== 'EUR'">
+                  {{product.supplier_unit_price * form.get('exchange_rate').value | moneyFormat}}
+                </ng-container>
+                <ng-container *ngIf="form.get('currency').value === 'EUR'">
+                  {{product.supplier_unit_price | moneyFormat}}
+                </ng-container>
+                €
+              </td>
+              <td style="width: 10%" class="text-center">
+                <ng-container
+                  *ngIf="form.get('currency').value !== 'EUR'">{{product.supplier_unit_price | moneyFormat}} {{invoice?.currency?.symbol}}</ng-container>
+              </td>
+              <td style="width: 10%" class="text-center">{{product.ddv}}%</td>
+              <td style="width: 10%" class="text-center">{{product.discount | number: '1.0'}}
+                <ng-container *ngIf="product.fixed_discount">
+                  {{invoice.currency?.symbol}}</ng-container>
+                <ng-container *ngIf="!product.fixed_discount">%</ng-container>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <ng-container *ngIf="product.passed && !product.rma_comment">
+                  <div *ngIf="shownPassedStat(product) else notPassed">
+                    <div class="text-success" *ngIf="product.passed === 'passed'">Passed</div>
+                    <div class="text-danger" *ngIf="product.passed === 'notPassed'">Not Passed</div>
+                  </div>
+
+                  <ng-template #notPassed>
+                    -
+                  </ng-template>
+                </ng-container>
+                <ng-container *ngIf="product.rma_comment">
+                  <div *ngIf="product.rma_status === 'Reordered' || product.rma_status === 'Received' &&
+                   product.quality_control else notPassed">
+                    <div class="text-success" *ngIf="product.passed === 'passed'">Passed</div>
+                    <div class="text-danger" *ngIf="product.passed === 'notPassed'">Not Passed</div>
+                  </div>
+                  <ng-template #notPassed>
+                    -
+                  </ng-template>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="14">
+                <i *ngIf="isLoadingInvoiceProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingInvoiceProducts">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="it.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!it.paginator && !isLoadingInvoiceProducts && invoiceProducts.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="it.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <div class="block-header mb-4">
+      <h2>
+        <ng-container *ngIf="invoice?.is_proforma">Proforma</ng-container>
+        Invoice Services
+      </h2>
+
+      <button
+        [disabled]="isLoadingServices"
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="New Service"
+        (click)="createInvoiceService()"
+      ></button>
+    </div>
+
+    <div class="page__card mb-4">
+      <div class="page__table">
+        <p-table
+          #st
+          [rows]="10"
+          [paginator]="invoiceServices.length > 0"
+          [value]="invoiceServices"
+          selectionMode="single"
+          [(selection)]="selectedService"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <p class="subtitle" *ngIf="!selectedService">Choose the Invoice Service to edit</p>
+              <p-menubar
+                class="ml-auto"
+                [model]="invoiceServiceMenuItems"
+                [class.disabled]="!selectedService"></p-menubar>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="index-header text-center">#</th>
+              <th style="width: 45%">Name</th>
+              <th style="width: 10%" class="text-center">Price</th>
+              <th style="width: 10%" class="text-center">Other currency</th>
+              <th style="width: 10%" class="text-center">DDV</th>
+              <th style="width: 10%" class="text-center">Discount</th>
+              <th style="width: 10%" class="text-center">Total Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr [pSelectableRow]="!isViewingMode ? product : null">
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 45%">{{product.base_service.name}}</td>
+              <td style="width: 10%" class="text-center">
+                <ng-container *ngIf="form.get('currency').value !== 'EUR'">
+                  {{product.pure_price * form.get('exchange_rate').value | moneyFormat}}
+                </ng-container>
+                <ng-container *ngIf="form.get('currency').value === 'EUR'">
+                  {{product.pure_price | moneyFormat}}
+                </ng-container>
+                €
+              </td>
+              <td style="width: 10%" class="text-center">
+                <ng-container
+                  *ngIf="form.get('currency').value !== 'EUR'">{{product.pure_price | moneyFormat}} {{invoice?.currency?.symbol}}</ng-container>
+              </td>
+              <td style="width: 10%" class="text-center">{{product.ddv}}%</td>
+              <td style="width: 10%" class="text-center">{{product.discount | number: '1.0'}}%</td>
+              <td style="width: 10%" class="text-center">
+                <ng-container *ngIf="form.get('currency').value !== 'EUR'">
+                  {{product.ddv_discount_price * form.get('exchange_rate').value | moneyFormat}}
+                </ng-container>
+                <ng-container *ngIf="form.get('currency').value === 'EUR'">
+                  {{product.ddv_discount_price | moneyFormat}}
+                </ng-container>
+                €
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="12">
+                <i *ngIf="isLoadingServices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingServices">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="st.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!st.paginator && !isLoadingServices && invoiceServices.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="st.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+
+    <h2 class="mb-4">Files</h2>
+
+    <div class="page__card">
+      <div class="page__table">
+        <p-table
+          #fs
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="files.length > 0"
+          [rows]="10"
+          [(selection)]="selectedFile"
+          [value]="files"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton type="button"
+                icon="pi pi-plus"
+                class="ml-auto"
+                label="Add File"
+                [disabled]="isLoadingFiles"
+                (click)="openInvoiceFilesModal()"
+              >
+              </button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%" class="text-center">#</th>
+              <th style="width: 85%">Name</th>
+              <th style="width: 10%;" class="text-center">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+            <tr>
+              <td class="text-center">{{rowIndex + 1}}</td>
+              <td>
+                {{getFileName(file.file)}}
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center">
+                  <button
+                    pButton
+                    (click)="onDownloadFile(file)"
+                    [loading]="addition.has(file.id)"
+                    type="button"
+                    class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                    icon="pi pi-download"
+                  ></button>
+                  <button
+                    pButton
+                    (click)="onRemoveFile(file.id)"
+                    [loading]="deletion.has(file.id)"
+                    type="button"
+                    class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                    icon="pi pi-trash"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="5">
+                <i *ngIf="isLoadingFiles" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingFiles">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="fs.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!fs.paginator && !isLoadingFiles && files.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="fs.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #infoLoading>
+  <div class="info-loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

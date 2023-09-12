@@ -14,6 +14,9 @@ import {QcService} from '../../services/qc.service';
 import {deepCopy} from 'deep-copy-ts';
 import {EInvoiceProductQualityControl} from '../../../procurement/models/invoice-product';
 import {forkJoin} from 'rxjs';
+import {ScanResult} from '../../../qr-code/models/scan-result';
+import {untilDestroyed} from '@ngneat/until-destroy';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 @Component({
   selector: 'pek-qc-order',
@@ -42,6 +45,10 @@ export class QcOrderComponent implements OnInit {
   selectedTechnicalEquipment: OrderTechnicalEquipment;
 
   orderCanBeCompleted = false;
+
+  isScanning = false;
+  scanningEnd: boolean;
+  foundSerialId: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,7 +134,14 @@ export class QcOrderComponent implements OnInit {
   }
 
   onPrintAlbum() {
-    this.albumService.getNomenclaturesImages((this.selectedOrderProducts.map(p => p?.nomenclature)));
+    const nomenclatures: Nomenclature[] = [];
+    if (this.selectedOrderProducts.length > 0) {
+      nomenclatures.push(...this.selectedOrderProducts.map(p => p?.nomenclature));
+    }
+    if (this.selectedTechnicalEquipment) {
+      nomenclatures.push(this.selectedTechnicalEquipment.nomenclature as Nomenclature);
+    }
+    this.albumService.getNomenclaturesImages(nomenclatures);
   }
 
   goToOrder() {
@@ -142,7 +156,7 @@ export class QcOrderComponent implements OnInit {
         link = '/outsourcing/chains/order/' + order.id;
         break;
       case 3:
-        link = `${this.link}production/orders/order/` + order.id;
+        link = `/manufacturing/orders/order/` + order.id;
         break;
     }
 
@@ -222,6 +236,18 @@ export class QcOrderComponent implements OnInit {
         }
       });
     });
+
+    if (this.selectedTechnicalEquipment) {
+      const exists = send.by_nomenclatures_list.findIndex(el => el.nomenclature_id === (this.selectedTechnicalEquipment.nomenclature as Nomenclature).id) >= 0;
+      if (!exists) {
+        send.by_nomenclatures_list.push({
+          nomenclature_id: (this.selectedTechnicalEquipment.nomenclature as Nomenclature).id,
+          serial_number_ids: [],
+          order_product_ids: [],
+          invoice_product_ids: [],
+        });
+      }
+    }
     this.qrCodeService.generateQrCodes(send, this.order.id).subscribe(() => this.isGenerating = false);
   }
 
@@ -236,7 +262,7 @@ export class QcOrderComponent implements OnInit {
       if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityPassed;
       if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityNotPassed;
 
-      this.qcService.withProtocolControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order').subscribe(res => {
+      this.qcService.withProtocolControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order', this.foundSerialId).subscribe(res => {
         if (res) {
           this.selectedOrderProducts = [];
           this.getOrderProducts();
@@ -248,7 +274,7 @@ export class QcOrderComponent implements OnInit {
       if (this.selectedOrderProducts[0].passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityPassed;
       if (this.selectedOrderProducts[0].not_passed_quantity) currentCount += this.selectedOrderProducts[0].totalQuantityNotPassed;
 
-      this.qcService.serializedControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order').subscribe(res => {
+      this.qcService.serializedControlProduct(this.selectedOrderProducts[0], currentCount, this.selectedOrderProducts[0].totalQuantity, 'order', this.foundSerialId).subscribe(res => {
         if (res) {
           this.selectedOrderProducts = [];
           this.getOrderProducts();
@@ -269,9 +295,9 @@ export class QcOrderComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       this.isReworking = true;
-      const ids = []
+      const ids = [];
       this.orderProducts.forEach(p => {
-        ids.push(...p.orderProducts.map(order => order.id))
+        ids.push(...p.orderProducts.map(order => order.id));
       });
 
       this.orderProductService.reworkOrder(ids).subscribe(() => {
@@ -289,13 +315,13 @@ export class QcOrderComponent implements OnInit {
       const ids = [];
       const productsIds = [];
       const calls = [];
-      this.orderProducts.forEach(p => {
-        productsIds.push(p.id)
+      this.selectedOrderProducts.forEach(p => {
+        productsIds.push(p.id);
         ids.push(...p.orderProducts.map(order => order.id));
       });
 
       ids.forEach(id => {
-        calls.push(this.orderProductService.reworkOrderProduct(id))
+        calls.push(this.orderProductService.reworkOrderProduct(id));
       });
 
       forkJoin([...calls]).subscribe(() => {
@@ -309,7 +335,7 @@ export class QcOrderComponent implements OnInit {
         }
         this.selectedOrderProducts = [];
         this.isReworkingProduct = false;
-      })
+      });
 
       // this.orderProductService.reworkOrderProduct(this.selectedOrderProducts[0].id).subscribe(() => {
       //   const index = this.orderProducts.findIndex(o => o.id === this.selectedOrderProducts[0].id);
@@ -331,5 +357,38 @@ export class QcOrderComponent implements OnInit {
         this.selectedTechnicalEquipment = null;
       }
     });
+  }
+
+  onStartScanning() {
+    this.isScanning = true;
+    this.scanningEnd = false;
+  }
+
+  onScanned(data: any) {
+    this.scanningEnd = true;
+    this.isScanning = false;
+    this.scanForListProduct(data);
+  }
+
+  scanForListProduct(data: ScanResult = null) {
+    this.orderService.scanOrderProductInQc(data, this.orderId).subscribe(res => {
+      const foundOrderProduct = this.orderProducts.find(orderProduct => orderProduct.orderProducts.findIndex(prod => prod.id === res.found_id) > -1);
+      if (foundOrderProduct) {
+        this.qcService.foundProductInList(foundOrderProduct.nomenclature).subscribe(res => {
+          if (res) {
+            if (data.serial_number) {
+              this.foundSerialId = data.serial_number;
+            }
+            this.selectedOrderProducts = [foundOrderProduct];
+            this.onQualityControl();
+          }
+        });
+      }
+    });
+  }
+
+  onCancelScanned() {
+    this.scanningEnd = true;
+    this.isScanning = false;
   }
 }

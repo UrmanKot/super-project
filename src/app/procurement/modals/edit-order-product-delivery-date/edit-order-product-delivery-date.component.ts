@@ -24,8 +24,8 @@ export class EditOrderProductDeliveryDateComponent implements OnInit {
   constructor(
     private readonly orderProductService: OrderProductService,
     private dialogRef: MatDialogRef<EditOrderProductDeliveryDateComponent>,
-    private readonly modalService: ModalService,
     private readonly fb: FormBuilder,
+    private readonly modalService: ModalService,
     @Inject(MAT_DIALOG_DATA) public orderProduct: OrderProduct
   ) {
   }

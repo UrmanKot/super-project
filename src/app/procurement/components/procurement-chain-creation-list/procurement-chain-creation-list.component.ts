@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {OrderProduct} from '../../models/order-product';
+import {OrderProduct, OrderRequestType} from '../../models/order-product';
 import {BehaviorSubject, iif, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {QuerySearch} from '@shared/models/other';
@@ -58,6 +58,8 @@ export class ProcurementChainCreationListComponent implements OnInit {
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   name$: Subject<void> = new Subject<void>();
 
+  OrderRequestType = OrderRequestType;
+
   orderProducts$: Observable<OrderProduct[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),
     switchMap(() =>
@@ -65,7 +67,9 @@ export class ProcurementChainCreationListComponent implements OnInit {
         !this.isShowAll,
         this.orderProductService.getGroupedPurchasedForPagination(this.query).pipe(
           tap(response => this.productsCount = response.count),
-          map(response => response.results.map(product => {
+          map(response => response.results.map(resProduct => {
+            const product = new OrderProduct(resProduct)
+            product.generateUniqueToolRequests();
             product.status = this.setProductStatus(product);
             return product;
           })),
@@ -290,7 +294,10 @@ export class ProcurementChainCreationListComponent implements OnInit {
   }
 
   onDeleteOrders() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    const deleteItems = this.selectedProducts.map(product => {
+      return `${product.nomenclature.code} ${product.nomenclature.name} Q(${product.initial_quantity})`;
+    });
+    this.modalService.confirmWithDetails(deleteItems, 'danger').subscribe(confirm => {
       if (confirm) {
         const notOrderedProducts = this.selectedProducts.filter(n => n.status === 'A2');
 

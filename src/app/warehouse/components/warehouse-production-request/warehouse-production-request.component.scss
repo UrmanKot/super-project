@@ -121,7 +121,7 @@ a {
 }
 
 ::ng-deep {
-  .orders-tree {
+  .orders-tree.is-scrollable {
     .p-treetable-wrapper {
       max-height: calc(100vh - 16.625rem);
       overflow: auto;
@@ -259,3 +259,27 @@ a {
   }
 }
 
+.mobile-version {
+  &.mobile-scan {
+    position: fixed;
+    top: 10px;
+    right: 50px;
+    z-index: 4;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    justify-content: flex-start;
+
+    .ml-2 {
+      margin-left: 0 !important;
+    }
+
+    .colors {
+      margin-left: 0 !important;
+    }
+  }
+}

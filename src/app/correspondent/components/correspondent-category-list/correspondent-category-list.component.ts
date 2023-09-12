@@ -201,7 +201,7 @@ export class CorrespondentCategoryListComponent implements OnInit, OnDestroy {
         return;
       }
       // Use our mapping to locate the parent element in our data array
-      const parentEl = dd[idMapping[el.data.parent]];
+      const parentEl = dd[idMapping[el.data.parent?.id]];
       // Add our current el to its parent's `children` array
       parentEl.children = [...(parentEl.children || []), el];
       if (parentEl.children.length === 0) {

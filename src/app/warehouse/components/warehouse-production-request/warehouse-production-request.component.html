@@ -2,7 +2,7 @@
   <div class="page__header">
     <div class="page__title">
       <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1 class="align-items-center d-flex">
+      <h1 class="align-items-center d-flex header">
         Requests for Order
 
         <a
@@ -27,19 +27,33 @@
           {{orderId}}
         </a>
 
-        <span *ngIf="order?.root_production_plans" class="ml-2">
-      <span *ngIf="order?.root_production_plans.length > 0"
+        <span *ngIf="order?.uniqueRootInfo" class="ml-2">
+      <span *ngIf="order?.uniqueRootInfo.length > 0"
             class="order-ids-container">
-        <a (click)="onGoProd(order?.root_production_plans[0].id)">
-          {{order?.root_production_plans[0].list_product.nomenclature.name}}
-        </a>
-        <div *ngIf="order?.root_production_plans.length > 1" class="orders-ids">
-          <div *ngFor="let root_plan of order.root_production_plans">
-            <a (click)="onGoProd(root_plan.id)">
-             {{root_plan.list_product.nomenclature.name}} ({{root_plan.id}})
+
+          {{order?.uniqueRootInfo[0].nomenclature.name}}
+
+                    <a (click)="onGoProd(order?.uniqueRootInfo[0].planId)">
+              (Plan: {{order?.uniqueRootInfo[0].planId}})
+            </a>
+            <a (click)="onGoPlan(order?.uniqueRootInfo[0].list.id)">
+              (PL: {{order?.uniqueRootInfo[0].list.id}})
+            </a>
+        <div *ngIf="order?.uniqueRootInfo.length > 1" class="orders-ids">
+          <div *ngFor="let root_plan of order.uniqueRootInfo">
+
+             {{root_plan.nomenclature.name}}
+            <a (click)="onGoProd(root_plan.planId)">
+              (Plan: {{root_plan.planId}})
+            </a>
+            <a (click)="onGoPlan(root_plan.list.id)">
+              (PL: {{root_plan.list.id}})
             </a>
           </div>
         </div>
+        <span *ngIf="currentReqDate">
+          Request Creation Date: {{currentReqDate | date:'dd/MM/yyyy HH:mm'}}
+        </span>
       </span>
     </span>
         <div class="colors">
@@ -59,6 +73,7 @@
         class="ml-auto mr-2"
         [model]="printMenuItems">
       </p-menubar>
+
       <button
         [loading]="albumService.loading$ | async"
         pButton
@@ -67,7 +82,7 @@
         type="button"
         label="Print Album"
         (click)="printAlbum()"
-        [disabled]="selectedRequest?.length === 0 || viewMode !== viewModes.LIST"
+        [disabled]="(selectedRequest?.length === 0 && (!selectedTechnicalEquipment || selectedTechnicalEquipment?.length === 0)) || viewMode !== viewModes.LIST"
       >
       </button>
       <button
@@ -77,6 +92,28 @@
         type="button"
         [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
         (click)="togglePrintAlbumMode()"
+        [disabled]="isLoading"
+      >
+      </button>
+
+      <button
+        [loading]="albumService.loading$ | async"
+        pButton
+        *ngIf="isQRPrint"
+        class="p-button-success mr-2"
+        type="button"
+        label="Print QR Codes"
+        (click)="printQR()"
+        [disabled]="(selectedRequest?.length === 0 && (!selectedTechnicalEquipment || selectedTechnicalEquipment?.length === 0)) || viewMode !== viewModes.LIST"
+      >
+      </button>
+      <button
+        pButton
+        [icon]="isQRPrint ? 'pi pi-times' : 'pi pi-images'"
+        class="mr-2"
+        type="button"
+        [label]="(isQRPrint ? 'Close' : 'Open') + ' QR Generation'"
+        (click)="togglePrintQRMode()"
         [disabled]="isLoading"
       >
       </button>
@@ -102,9 +139,20 @@
         class="ml-2"
         type="button"
         icon="pi pi-angle-double-right"
-        [class.disabled]="!order || isAlbumPrint"
+        [class.disabled]="!order || isAlbumPrint || isQRPrint"
         label="Go to Order"
         (click)="goToOrder()"
+      >
+      </a>
+
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        icon="pi pi-file-edit"
+        [class.disabled]="!order || isAlbumPrint || isQRPrint"
+        label="Signature"
+        (click)="signatures()"
       >
       </a>
 
@@ -150,25 +198,37 @@
         <p-table
           #dt
           [paginator]="listRequests.length > 0"
-          scrollHeight="calc(100vh - 18.8rem)"
-          [scrollable]="!dt.paginator"
+          [scrollHeight]="isTableScrollable ? 'calc(100vh - 18.8rem)' : '100%'"
+          [scrollable]="isTableScrollable ? !dt.paginator : false"
           class="adaptive-table print-table"
           [rows]="10"
           [value]="listRequests"
           [(first)]="firstPage"
           [globalFilterFields]="['name']"
           dataKey="id"
-          [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
+          [selectionMode]="isAlbumPrint || isQRPrint ? 'checkbox' : 'single'"
           [(selection)]="selectedRequest"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex table-caption">
-              <p class="subtitle" *ngIf="!selectedRequest && !isAlbumPrint">Choose the Request to edit</p>
-              <p-menubar
-                class="ml-auto mr-2"
-                [model]="requestMenuItems"
-                [class.disabled]="!selectedRequest || isAlbumPrint">
-              </p-menubar>
+              <p class="subtitle" *ngIf="!selectedRequest && !isAlbumPrint && !isQRPrint">Choose the Request to edit</p>
+
+              <div class="ml-auto d-flex">
+                <p-checkbox
+                  class="checkbox-big mr-3 event-statuses"
+                  name="group1"
+                  label="Enable Status Of Scan"
+                  [binary]="true"
+                  inputId="enableColors"
+                  [(ngModel)]="enableColors"
+                >
+                </p-checkbox>
+                <p-menubar
+                  class="ml-auto mr-2 desktop-version"
+                  [model]="requestMenuItems"
+                  [class.disabled]="!selectedRequest || isAlbumPrint || isQRPrint">
+                </p-menubar>
+              </div>
 
               <button
                 class="mr-2 p-button-icon"
@@ -176,6 +236,7 @@
                 type="button"
                 icon="pi pi-camera"
                 label="Scan QR Codes"
+                [disabled]="isLoading"
                 (click)="onStartScanning()"
               >
               </button>
@@ -203,6 +264,11 @@
                 label="Detailed Hierarchy"
                 (click)="changeView(viewModes.DETAILED_HIERARCHY)"
               ></button>
+              <p-menubar
+                class="ml-auto mr-2 mobile-version"
+                [model]="requestMenuItems"
+                [class.disabled]="!selectedRequest || isAlbumPrint || isQRPrint">
+              </p-menubar>
             </div>
           </ng-template>
           <ng-template pTemplate="colgroup">
@@ -215,7 +281,7 @@
               <th class="text-center" style="width: 5%;">
                 <div class="row-toggler">
                   <div class="toggle">
-                    <p-tableHeaderCheckbox *ngIf="isAlbumPrint"></p-tableHeaderCheckbox>
+                    <p-tableHeaderCheckbox *ngIf="isAlbumPrint || isQRPrint"></p-tableHeaderCheckbox>
                   </div>
                   #
                 </div>
@@ -233,15 +299,15 @@
           </ng-template>
           <ng-template pTemplate="body" let-request let-i="rowIndex">
             <tr class="pagebreak" [pSelectableRow]="request"
-                [class.last-scanned]="request.id === lastScannedId"
-                [class.partly-scanned]="isPartlyScanned(request)"
                 [class.is-added-after-order-creation]="request.material_nomenclature"
-                [class.qr-code-scanned]="isFullyScanned(request)">
+                [class.last-scanned]="enableColors && request.id === lastScannedId"
+                [class.partly-scanned]="enableColors && isPartlyScanned(request)"
+                [class.qr-code-scanned]="enableColors && isFullyScanned(request)">
               <td style="width: 5%;" class="text-center">
                 <div class="row-toggler">
                   <h3 class="td-title">#</h3>
                   <div class="toggle">
-                    <p-tableCheckbox *ngIf="isAlbumPrint" [value]="request"></p-tableCheckbox>
+                    <p-tableCheckbox *ngIf="isAlbumPrint || isQRPrint" [value]="request"></p-tableCheckbox>
                   </div>
                   {{i + 1}}
                 </div>
@@ -295,11 +361,22 @@
                   {{request.list_product.nomenclature.name}}
                 </div>
               </td>
-              <td style="width: 10%" class="text-center">
+              <td style="width: 10%" class="text-center hovered-info">
                 <h3 class="td-title">Serial number</h3>
-                <span *ngIf="request.reserved_serial_products?.length === 1">
-                {{request.reserved_serial_products[0].serial_number.type_with_number}}
-                </span>
+                <span *ngIf="request.all_reserved_serial_products?.length > 0">L({{request.all_reserved_serial_products?.length}})</span>
+
+                <pek-hover-detailed-info-component
+                  [moveLeft]="0"
+                  *ngIf="request.all_reserved_serial_products?.length > 0">
+                                     <span class="ids">
+                    <div *ngFor="let serial of request.reserved_serial_products">
+                      {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                    </div>
+                    <div *ngFor="let serial of request.all_reserved_serial_products">
+                      {{serial.type_with_number ? serial.type_with_number : serial.id}}
+                    </div>
+                  </span>
+                </pek-hover-detailed-info-component>
               </td>
               <td style="width: 12%" class="text-center">
                 <h3 class="td-title">Technology</h3>
@@ -339,7 +416,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr class="tr-spinner">
-              <td class="text-center p-4" [attr.colspan]="9">
+              <td class="text-center p-4" [attr.colspan]="12">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
               </td>
@@ -370,21 +447,35 @@
       <p-treeTable
         class="orders-tree"
         [value]="requestTree"
+        [scrollable]="isTableScrollable"
         selectionMode="single"
         [(selection)]="selectedRequestNode"
-        scrollHeight="calc(100vh - 16.5rem)"
+        [scrollHeight]="isTableScrollable ? 'calc(100vh - 16.5rem)' : '100%'"
       >
         <ng-template pTemplate="caption">
           <div class="d-flex table-caption">
             <p class="subtitle" *ngIf="!selectedRequestNode">Choose the Request to edit</p>
-            <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems"
-                       [class.disabled]="!selectedRequestNode"></p-menubar>
+            <div class="ml-auto d-flex">
+              <p-checkbox
+                class="checkbox-big mr-3 event-statuses"
+                name="group1"
+                label="Enable Status Of Scan"
+                [binary]="true"
+                inputId="enableColors"
+                [(ngModel)]="enableColors"
+              >
+              </p-checkbox>
+              <p-menubar class="ml-auto mr-2 desktop-version" [model]="requestNodeMenuItems"
+                         [class.disabled]="!selectedRequestNode"></p-menubar>
+            </div>
+
             <button
               class="mr-2 p-button-icon"
               pButton
               type="button"
               icon="pi pi-camera"
               label="Scan QR Codes"
+              [disabled]="isLoading"
               (click)="onStartScanning()"
             >
             </button>
@@ -428,6 +519,8 @@
               icon="pi pi-th-large"
               (click)="changeView(viewModes.DETAILED_HIERARCHY)"
             ></button>
+            <p-menubar class="ml-auto mr-2 mobile-version" [model]="requestNodeMenuItems"
+                       [class.disabled]="!selectedRequestNode"></p-menubar>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -447,11 +540,11 @@
           <tr
             class="pagebreak"
             [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttSelectableRowDisabled]="rowData.level < 4"
-            [class.last-scanned]="rowData.request?.id === lastScannedId"
-            [id]="rowData.request ? 'row-' + rowData.request?.id : null"
-            [class.partly-scanned]="rowData.request ? isPartlyScanned(rowData.request) : false"
-            [class.qr-code-scanned]="rowData.request ? isFullyScanned(rowData.request) : false"
             [class.is-added-after-order-creation]="rowData.request?.material_nomenclature"
+            [class.last-scanned]="enableColors && rowData.request?.id === lastScannedId"
+            [id]="rowData.request ? 'row-' + rowData.request?.id : null"
+            [class.partly-scanned]="enableColors && rowData.request ? isPartlyScanned(rowData.request) : false"
+            [class.qr-code-scanned]="enableColors && rowData.request ? isFullyScanned(rowData.request) : false"
             [class.tr-toggler]="rowNode.node.children.length > 0"
           >
             <td style="width: 16%;" class="text-center ids-container">
@@ -459,7 +552,7 @@
               <div class="toggle-row hovered-info">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 <span [class.bold]="rowData.level < 4">
-                    {{rowData.name}}
+                    {{rowData.name}}  {{rowData.listId ? '(' + rowData.listId + ')' : ''}}
                   </span>
                 <span *ngIf="rowData.level === 4">
                      {{rowData.request.id}}
@@ -512,12 +605,23 @@
                 </div>
               </div>
             </td>
-            <td style="width: 10%" class="text-center">
+            <td style="width: 10%" class="text-center hovered-info">
               <h3 class="td-title">Serial Number</h3>
               <div *ngIf="rowData.level === 4">
-                <span *ngIf="rowData.request.reserved_serial_products?.length === 1">
-                {{rowData.request.reserved_serial_products[0].serial_number.type_with_number}}
-                </span>
+                  <span *ngIf="rowData.request.all_reserved_serial_products?.length > 0">L({{rowData.request.all_reserved_serial_products?.length + 1}})</span>
+
+                   <pek-hover-detailed-info-component
+                     [moveLeft]="0"
+                     *ngIf="rowData.request.all_reserved_serial_products?.length > 0">
+                                     <span class="ids">
+                    <div *ngFor="let serial of rowData.request.reserved_serial_products">
+                      {{serial.serial_number.type_with_number ? serial.serial_number.type_with_number : serial.serial_number.id}}
+                    </div>
+                    <div *ngFor="let serial of rowData.request.all_reserved_serial_products">
+                      {{serial.serial_number.type_with_number ? serial.serial_number.type_with_number : serial.serial_number.id}}
+                    </div>
+                  </span>
+                  </pek-hover-detailed-info-component>
               </div>
             </td>
             <td style="width: 10%" class="text-center">
@@ -568,7 +672,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr class="tr-spinner">
-            <td class="text-center p-4" [attr.colspan]="8">
+            <td class="text-center p-4" [attr.colspan]="12">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>
             </td>
@@ -581,9 +685,11 @@
       <div class="page__table">
         <p-treeTable
           class="orders-tree"
+          [class.is-scrollable]="isTableScrollable"
           [value]="detailedRequestTree"
           (onNodeExpand)="onNodeExpand($event)"
-          scrollHeight="calc(100vh - 16.5rem)"
+          [scrollable]="isTableScrollable"
+          [scrollHeight]="isTableScrollable ? 'calc(100vh - 16.5rem)' : '100%'"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex table-caption">
@@ -640,7 +746,7 @@
               <th class="text-center" style="width: 12%;">Available Quantity</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
             <tr
               class="pagebreak"
               [ttRow]="rowNode"
@@ -648,7 +754,7 @@
               [class.placeholder]="!rowData.request"
               [class.tr-toggler]="rowNode.node.children?.length > 0"
             >
-              <td style="width: 16%;" class="text-center">
+              <td style="width: 16%;" class="text-center hovered-info">
                 <div class="toggle-row">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <span *ngIf="rowData.loading" [class.bold]="!rowData.request">
@@ -658,7 +764,23 @@
                       {{rowData.id}}
                     </span>
                   <span *ngIf="rowData.request">
-                     {{rowData.request.id}}
+                    {{rowData.request.id}} <span *ngIf="rowData.request.ids?.length > 0">L({{rowData.request.ids?.length + 1}})</span>
+                    <pek-hover-detailed-info-component
+                      [moveLeft]="0"
+                      *ngIf="rowData.request.ids?.length > 0">
+                      <span
+                        [class.is-fixed]="listRequests.length <= 10"
+                        [class.is-absolute]="listRequests.length > 10"
+                        [class.is-last]="listRequests.length - 10 <= i"
+                        class="ids">
+                        <div>
+                          {{rowData.request.id}}
+                        </div>
+                        <div *ngFor="let id of rowData.request.ids">
+                          {{id}}
+                        </div>
+                      </span>
+                      </pek-hover-detailed-info-component>
                     </span>
                 </div>
               </td>
@@ -678,10 +800,23 @@
                   </div>
                 </div>
               </td>
-              <td style="width: 20%;">
+              <td style="width: 20%;" class="hovered-info">
                    <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
                       {{rowData.name}}
-                     {{rowData.serialNumber}}
+                      {{rowData.serialNumber}}
+                     <pek-hover-detailed-info-component
+                       [moveLeft]="0"
+                       *ngIf="rowData.serialNumbers?.length > 0">
+                      <span
+                        [class.is-fixed]="listRequests.length <= 10"
+                        [class.is-absolute]="listRequests.length > 10"
+                        [class.is-last]="listRequests.length - 10 <= i"
+                        class="ids">
+                        <div *ngFor="let serialNumber of rowData.serialNumbers">
+                          {{serialNumber}}
+                        </div>
+                      </span>
+                      </pek-hover-detailed-info-component>
                   </span>
                 <div *ngIf="rowData.request">
                   <div *ngIf="rowData.request.material_nomenclature">
@@ -705,7 +840,7 @@
               </td>
               <td style="width: 14%;" class="text-center">
                 <div *ngIf="rowData.request">
-                  {{rowData.request.required_quantity}}
+                  {{rowData.request.total_required_quantity}}
                 </div>
               </td>
               <td style="width: 10%" class="text-center">
@@ -726,7 +861,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr class="tr-spinner">
-              <td class="text-center p-4" [attr.colspan]="9">
+              <td class="text-center p-4" [attr.colspan]="10">
                 <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoading">No Records Found</span>
               </td>
@@ -741,28 +876,51 @@
 <div class="page__content">
   <div class="page__card">
     <div class="page__table">
-      <p-table selectionMode="single" [value]="technicalEquipments">
+      <p-table
+        selectionMode="single"
+        [value]="technicalEquipments"
+        [selectionMode]="isAlbumPrint || isQRPrint ? 'checkbox' : 'single'"
+        [(selection)]="selectedTechnicalEquipment">
         <ng-template pTemplate="caption">
           <div class="table-tools" *ngIf="technicalEquipments">
             <h2 class="subtitle">Technical Equipments</h2>
-            <div>
+            <div class="ml-auto d-flex">
+              <p-menubar
+                class="ml-auto mr-2 desktop-version"
+                [model]="technicalEquipmentMenuItems"
+                [class.disabled]="!selectedTechnicalEquipment || isAlbumPrint || isQRPrint">
+              </p-menubar>
             </div>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5%" class="index-header text-center">#</th>
+            <th class="text-center" style="width: 5%;">
+              <div class="row-toggler">
+                <div class="toggle">
+                  <p-tableHeaderCheckbox *ngIf="isAlbumPrint || isQRPrint"></p-tableHeaderCheckbox>
+                </div>
+                #
+              </div>
+            </th>
             <th style="width: 35%">Code</th>
-            <th style="width: 30%">Name</th>
-            <th style="width: 30%">Locator</th>
-            <th style="width: 30%" class="text-center">Quantity</th>
-            <!--              <th>Price Per Unit</th>-->
-            <!--              <th>Total Price</th>-->
+            <th style="width: 15%">Name</th>
+            <th style="width: 15%">Locator</th>
+            <th style="width: 15%" class="text-center">Quantity</th>
+            <th style="width: 15%" class="text-center">Required Quantity</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
           <tr [pSelectableRow]="technicalEquipment" class="table-row">
-            <td class="text-center">{{i + 1}}</td>
+            <td style="width: 5%;" class="text-center">
+              <div class="row-toggler">
+                <h3 class="td-title">#</h3>
+                <div class="toggle">
+                  <p-tableCheckbox *ngIf="isAlbumPrint || isQRPrint" [value]="technicalEquipment"></p-tableCheckbox>
+                </div>
+                {{i + 1}}
+              </div>
+            </td>
             <td>{{technicalEquipment.nomenclature.code}}</td>
             <td>{{technicalEquipment.nomenclature.name}}</td>
             <td>
@@ -776,9 +934,17 @@
                   {{locator.name}}<span *ngIf="!last">, </span>
                 </span>
               </div>
-              <!--              {{technicalEquipment.warehouse_product ? technicalEquipment.warehouse_product.locator.name : ''}}-->
             </td>
             <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
+            <td class="text-center">
+              <span *ngIf=" technicalEquipment.in_use">
+                {{technicalEquipment.technical_equipment_shortage_quantity}}
+              </span>
+              <span *ngIf="!technicalEquipment.in_use">
+                {{technicalEquipment.quality_control ?
+                technicalEquipment.max_initial_quantity - technicalEquipment.quantity : technicalEquipment.initial_quantity}}
+              </span>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -799,6 +965,27 @@
       </p-table>
     </div>
   </div>
+  <div class="mobile-version  mobile-scan">
+    <div class="d-flex">
+      <button
+        class="mr-2 p-button-icon p-button-rounded"
+        pButton
+        type="button"
+        icon="pi pi-camera"
+        (click)="onStartScanning()"
+      >
+      </button>
+      <button
+        class="mr-2 p-button-icon p-button-rounded"
+        [disabled]="!selectedRequestNode && !selectedRequest"
+        pButton
+        type="button"
+        icon="pi pi-images"
+        (click)="onShowImage()"
+      >
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="print-page" *ngIf="isShowPrint">
@@ -809,6 +996,7 @@
       [requests]="listRequests"
       [currentReqDate]="currentReqDate"
       [technologies]="order?.ordered_items_technologies"
+      [technicalEquipments]="technicalEquipments"
     ></pek-warehouse-production-request-print-page>
   </div>
 </div>
@@ -822,6 +1010,7 @@
       [requests]="listRequests"
       [currentReqDate]="currentReqDate"
       [technologies]="order?.ordered_items_technologies"
+      [technicalEquipments]="technicalEquipments"
     ></pek-warehouse-production-request-print-page>
   </div>
 </div>

@@ -29,6 +29,7 @@ import {
 } from '../../purchasing/modals/create-empty-purchase-chain/create-empty-purchase-chain.component';
 import {AdapterService} from '@shared/services/adapter.service';
 import {Router} from '@angular/router';
+import {ScanResult} from '../../qr-code/models/scan-result';
 
 @Injectable({
   providedIn: 'root'
@@ -112,6 +113,12 @@ export class OrderService {
     );
   }
 
+  getMinimalById(id: number): Observable<Order> {
+    return this.httpClient.get<{ data: Order }>(this.API_URL + this.url + id + '/detail_minimal/' ).pipe(
+      map(response => response.data)
+    );
+  }
+
   getById(id: number): Observable<Order> {
     return this.httpClient.get<{ data: Order }>(this.API_URL + this.url + id + '/').pipe(
       map(response => response.data)
@@ -148,6 +155,13 @@ export class OrderService {
     );
   }
 
+  createDeliveryInvoice(data) {
+    const url = this.API_URL + this.url + 'delivery_invoice_create/';
+    return this.httpClient.post(url, data).pipe(map((res: any) => {
+      return res.data;
+    }));
+  }
+
   downloadFile(id: number): Observable<any> {
     return this.httpClient.get(this.API_URL + 'order_file_download/' + id + '/', {responseType: 'blob'});
   }
@@ -168,6 +182,13 @@ export class OrderService {
 
   createChain(order: any): Observable<Order> {
     return this.httpClient.post<{ data: any }>(this.API_URL + this.url + 'order_bulk_products_create/', order).pipe(
+      map(response => response.data)
+    );
+  }
+
+
+  scanOrderProductInQc(scannedInfo: ScanResult, id: number): Observable<{ found_id: number }> {
+    return this.httpClient.post<{ data: any }>(this.API_URL + this.url +  + id + '/scan_product_in_qc/', scannedInfo).pipe(
       map(response => response.data)
     );
   }
@@ -259,7 +280,27 @@ export class OrderService {
       order.activeStatusDate = order.statuses.filter(stat => stat.is_active)[0]?.estimated_date;
 
       order.root_lists = [];
-      order.order_products.forEach(prod => order.root_lists = order.root_lists.concat(prod.root_production_list_products));
+      order.order_products.forEach(prod => {
+        order.root_lists = order.root_lists.concat(prod.root_production_list_products);
+        prod.tool_requests.forEach(request => {
+          const addedRequest = order.uniqueToolRequests?.find(toolRequest => toolRequest.toolRequest.tool_order.area_locator.id === request.tool_order.area_locator.id)
+          if (!addedRequest) {
+            if (!order.uniqueToolRequests) {
+              order.uniqueToolRequests = [{
+                toolRequest: request,
+                count: 1
+              }];
+            } else {
+              order.uniqueToolRequests.push({
+                toolRequest: request,
+                count: 1
+              });
+            }
+          } else {
+            addedRequest.count++;
+          }
+        });
+      });
       order.root_lists = this.adapterService.removeDuplicates(order.root_lists, x => x.id);
       order.root_search_lists = 'A' + order.root_lists.map(x => x.nomenclature.code + '~' + x.nomenclature.name).join('/');
 
@@ -279,6 +320,25 @@ export class OrderService {
       order.root_lists = this.adapterService.removeDuplicates(order.root_lists, x => x.fullName);
 
       order.dates = [];
+
+      // this.tool_requests.forEach(request => {
+      //   const addedRequest = this.uniqueToolRequests?.find(toolRequest => toolRequest.toolRequest.tool_order.area_locator.id === request.tool_order.area_locator.id)
+      //   if (!addedRequest) {
+      //     if (!this.uniqueToolRequests) {
+      //       this.uniqueToolRequests = [{
+      //         toolRequest: request,
+      //         count: 1
+      //       }];
+      //     } else {
+      //       this.uniqueToolRequests.push({
+      //         toolRequest: request,
+      //         count: 1
+      //       });
+      //     }
+      //   } else {
+      //     addedRequest.count++;
+      //   }
+      // });
 
       order.companyId = order.supplier?.id;
       order.dateFrom = order.created;

@@ -12,6 +12,7 @@ export class UploadFileComponent implements OnInit {
   @Output() removeFile: EventEmitter<void> = new EventEmitter<void>();
   @Input() fileFormat: FileFormat = 'all';
   @Input() multiple: boolean = false;
+  @Input() canPrintScreenImage: boolean = false;
   @ViewChild('addFileInput') addFileInput: ElementRef;
 
   @Input() uploadFiles: File[] = [];

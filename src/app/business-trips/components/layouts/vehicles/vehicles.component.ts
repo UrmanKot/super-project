@@ -15,8 +15,8 @@ import {Paginator} from 'primeng/paginator';
 })
 export class VehiclesComponent implements OnInit {
   @ViewChild('paginator') paginator: Paginator;
-  isLoading: boolean;
-  vehicles: Vehicle[];
+  isLoading: boolean = true;
+  vehicles: Vehicle[] = [];
   selectedVehicle: Vehicle;
 
   searchForm: FormGroup = this.fb.group({
@@ -81,6 +81,7 @@ export class VehiclesComponent implements OnInit {
   }
 
   getPaginated() {
+    this.isLoading = true;
     this.vehicleService
       .getPaginated(this.query)
       .pipe(take(1))
@@ -88,19 +89,21 @@ export class VehiclesComponent implements OnInit {
         this.vehicles = res.results;
         this.count = res.count;
         this.selectedVehicle = null;
+        this.isLoading = false;
       });
   }
 
   getAll() {
+    this.isLoading = true;
     this.vehicleService
       .get()
       .pipe(take(1))
       .subscribe((res) => {
         this.vehicles = res;
         this.selectedVehicle = null;
+        this.isLoading = false;
         if (this.isStartOnePage) {
           this.paginator?.changePage(0);
-          this.isLoading = false;
         }
       });
   }

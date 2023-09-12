@@ -56,13 +56,13 @@ export class GroupLocatorPickerComponent implements OnInit {
         const locatorId = element.id;
         if (this.uniqueLocators) {
           const uniquesWarehouse = this.uniqueLocators.find(locator => {
-            return locator.warehouse.id === warehouseId;
+            return locator?.warehouse.id === warehouseId;
           });
           if (uniquesWarehouse) {
             isUnique = true;
           }
           const isExists = this.uniqueLocators.find(locator => {
-            return locator.warehouse.id === warehouseId && locator.id === locatorId
+            return locator?.warehouse.id === warehouseId && locator?.id === locatorId
           });
 
           if (!isExists && uniquesWarehouse) return;
@@ -78,10 +78,10 @@ export class GroupLocatorPickerComponent implements OnInit {
         const locatorId = element.id;
         if (this.uniqueLocators) {
           const uniquesWarehouse = this.uniqueLocators.find(locator => {
-            return locator.warehouse.id === warehouseId;
+            return locator?.warehouse?.id === warehouseId;
           });
           const isExists = this.uniqueLocators.find(locator => {
-            return locator.id === locatorId
+            return locator?.id === locatorId
           });
           if (uniquesWarehouse) {
             isUnique = true;

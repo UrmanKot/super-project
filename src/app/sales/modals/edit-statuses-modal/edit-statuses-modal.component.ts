@@ -6,6 +6,8 @@ import {ModalActionType} from "@shared/models/modal-action";
 import {SalesChain} from "../../models/sales-chain";
 import {AdapterService} from "@shared/services/adapter.service";
 import {SalesChainService} from "../../services/sales-chain-service";
+import {finalize} from "rxjs/operators";
+import {Status} from "../../../procurement/models/status";
 
 @Component({
   selector: 'pek-edit-statuses-modal',
@@ -14,14 +16,15 @@ import {SalesChainService} from "../../services/sales-chain-service";
 })
 export class EditStatusesModalComponent implements OnInit {
 
-  statuses;
+  isLoading = true;
+  statuses: Status[] = [];
 
   form = this.fb.group({
     status: [<number>null, Validators.required],
     date: [<Date>null, Validators.required],
-    comment: ['', Validators.required]
+    comment: ['']
   })
-  isSaving:boolean = false;
+  isSaving: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,12 +39,12 @@ export class EditStatusesModalComponent implements OnInit {
   ngOnInit(): void {
     if (this.data.type === 'edit') {
       this.salesStatusService.get().subscribe(status => {
-        this.statuses = status
+        this.statuses = status;
+        this.isLoading = false;
       })
       this.form.get('status').patchValue(this.data.salesChain.chain_status.status.id);
       this.form.get('date').patchValue(new Date(this.data.salesChain.chain_status.date))
       this.form.get('comment').patchValue(this.data.salesChain.comment);
-      console.log(this.data)
     }
   }
 
@@ -55,7 +58,9 @@ export class EditStatusesModalComponent implements OnInit {
           status: this.form.get('status').value
         }
       }
-      this.salesChainService.updateStatus(this.data.salesChain.id, send).subscribe(res => this.dialogRef.close())
+      this.salesChainService.updateStatus(this.data.salesChain.id, send).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(res => this.dialogRef.close(true))
     }
   }
 }

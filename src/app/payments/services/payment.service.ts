@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {forkJoin, Observable, of} from 'rxjs';
+import {concatMap, forkJoin, from, Observable, of, toArray} from 'rxjs';
 import {environment} from "@env/environment";
 import {Payment, PaymentFile} from "../models/payment";
 import {catchError, map} from 'rxjs/operators';
@@ -82,16 +82,12 @@ export class PaymentService {
       map(response => response.data));
   }
 
-  severalConfirm(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.http.post<{ data: Payment }>(this.API_URL + this.url + `confirm/${id}/`, null).pipe(
-      catchError(() => of(null)),
-    )));
+  severalConfirm(ids: number[]): Observable<any> {
+    return this.http.post<{ data: Payment }>(this.API_URL + this.url + `bulk_confirm/`, ids)
   }
 
-  severalDecline(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.http.post<{ data: Payment }>(this.API_URL + this.url + `decline/${id}/`, null).pipe(
-      catchError(() => of(null)),
-    )));
+  severalDecline(ids: number[]): Observable<any> {
+    return this.http.post<{ data: Payment }>(this.API_URL + this.url + `bulk_decline/`, ids)
   }
 
   getLimit(): Observable<{ id: number; value: string }[]> {
@@ -117,12 +113,12 @@ export class PaymentService {
     )));
   }
 
-  openCreateEditPaymentForm(type: ModalActionType, payment?: Payment, companyId?: number, orderId?: number): Observable<Payment[]> {
+  openCreateEditPaymentForm(type: ModalActionType, payment?: Payment, companyId?: number, orderId?: number, isDelivery = false): Observable<Payment> {
     return this.dialog
       .open<CreateEditPaymentFormComponent>(CreateEditPaymentFormComponent, {
-        width: '39rem',
+        width: '60rem',
         height: 'auto',
-        data: {type, payment, companyId, orderId},
+        data: {type, payment, companyId, orderId, isDelivery},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

@@ -3,8 +3,8 @@ import {EventCompany} from "../../../crm/models/event-company";
 import {SalesActivity, SalesChain, SalesFile, SalesReservation} from "../../models/sales-chain";
 import {environment} from '@env/environment';
 import {CompanyService} from "../../../crm/services/company.service";
-import {map, switchMap, tap} from "rxjs/operators";
-import {Subject, takeUntil} from "rxjs";
+import {finalize, map, tap} from "rxjs/operators";
+import {Subject} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {InvoiceService} from "../../../procurement/services/invoice.service";
 import {Invoice} from "../../../procurement/models/invoice";
@@ -15,6 +15,7 @@ import {ModalService} from "@shared/services/modal.service";
 import {EventSalesChainService} from "../../services/event-sales-chain.service";
 import {AdapterService} from "@shared/services/adapter.service";
 import {SalesFileService} from "../../services/sales-file.service";
+import {DeliveryChainService} from "../../../warehouse/services/delivery-chain.service";
 
 @Component({
   selector: 'pek-sales-chain-page',
@@ -27,6 +28,13 @@ export class SalesChainPageComponent implements OnInit {
   selectedEvent: EventCompany;
   statuses = {'0': 'Not Processed', '1': 'Completed', '2': 'Deficit', '3': 'Reserved'};
   isLoadingReservation = true;
+
+  isCreatingOffer = false;
+  isCreateingDelivery = false;
+
+  isLoadingActivities = true;
+  isActivities = true;
+  isLoadingFiles = false;
 
   readonly deletion = new Set<number>();
   readonly addition = new Set<number>();
@@ -52,7 +60,7 @@ export class SalesChainPageComponent implements OnInit {
   selectedFile: SalesFile;
 
   salesChainEvents: MenuItem[] = [{
-    label: 'Selected Events',
+    label: 'Selected Event',
     items: [
       {
         label: 'Confirm',
@@ -75,7 +83,7 @@ export class SalesChainPageComponent implements OnInit {
   }];
 
   products: MenuItem[] = [{
-    label: 'Selected product',
+    label: 'Selected Product',
     items: [
       {
         label: 'Delete',
@@ -86,8 +94,27 @@ export class SalesChainPageComponent implements OnInit {
   }]
 
   offersMenu: MenuItem[] = [{
-    label: 'Selected product',
+    label: 'Selected Offer',
     items: [
+      {
+        label: 'Generate PDF (BACKEND)',
+        icon: 'pi pi-file-pdf',
+        command: () => this.generatePdf()
+      },
+      {
+        label: 'Confirm Offer',
+        icon: 'pi pi-check',
+        command: () => this.confirmOffer()
+      },
+      {
+        label: 'Edit Prices',
+        icon: 'pi pi-pencil',
+        command: () => this.editOfferPrices()
+      },
+      {
+        label: 'Download (BACKEND)',
+        icon: 'pi pi-download',
+      },
       {
         label: 'Delete',
         icon: 'pi pi-trash',
@@ -107,21 +134,28 @@ export class SalesChainPageComponent implements OnInit {
     private eventSalesChainService: EventSalesChainService,
     private adapterService: AdapterService,
     private salesFileService: SalesFileService,
+    private deliveryService: DeliveryChainService,
   ) {
   }
 
   ngOnInit(): void {
-    this.getAll()
-  }
-
-  getAll() {
     this.route.paramMap.pipe(
       map(params => params.get('id')),
       tap(id => this.saleChainId = +id),
-      switchMap(id => this.salesChainService.getById(+id)),
-      takeUntil(this.destroy$)
-    ).subscribe(saleChain => {
+    ).subscribe();
 
+    this.getAll()
+  }
+
+  getChain() {
+    if (this.isActivities) {
+      this.isLoadingActivities = true;
+      this.selectedEvent = null;
+      this.salesActivities = [];
+      this.isActivities = false;
+    }
+
+    this.salesChainService.getById(this.saleChainId).subscribe(saleChain => {
       this.saleChain = saleChain;
 
       this.salesActivities = saleChain.activities;
@@ -132,7 +166,12 @@ export class SalesChainPageComponent implements OnInit {
         return (dateB - dateA);
       });
       this.isLoading = false;
-    });
+      this.isLoadingActivities = false;
+    })
+  }
+
+  getAll() {
+    this.getChain();
     this.getReservation()
     this.getOffers()
     this.getAllFile()
@@ -144,6 +183,9 @@ export class SalesChainPageComponent implements OnInit {
   }
 
   getReservation() {
+    this.isLoadingReservation = true;
+    this.selectedSalesReservation = null;
+    this.salesReservation = [];
     this.salesChainService.getReservation(this.saleChainId).subscribe(salesReservation => {
       // @ts-ignore
       this.salesReservation = salesReservation
@@ -152,38 +194,27 @@ export class SalesChainPageComponent implements OnInit {
   }
 
   getOffers(): void {
-    this.offers = [
-      {
-        id: 1,
-        date: '2022-10-21',
-        customer: {
-          id: 1,
-          name: 'Customer Name'
-        },
-        sum: 97
-      },
-      {
-        id: 2,
-        date: '2022-10-21',
-        customer: {
-          id: 1,
-          name: 'Customer Name'
-        },
-        sum: 97
-      },
-    ];
+    this.isLoadingOffers = true;
+    this.offers = [];
+    this.selectedOffer = null;
+    this.salesChainService.getOffers(this.saleChainId)
+      .subscribe(res => {
+        this.offers = res;
+        this.isLoadingOffers = false;
+      });
   }
 
   onEditEvent() {
     this.eventSalesChainService.editCompanyToEvent(this.selectedEvent).subscribe(() => {
-      this.getAll()
+      this.isActivities = true;
+      this.getChain()
     })
   }
 
   editChainStatus() {
     this.salesChainService.editSalesChainStatus(this.saleChain).subscribe(res => {
       if (res) {
-        this.getAll()
+        this.getChain()
       }
     })
   }
@@ -193,7 +224,8 @@ export class SalesChainPageComponent implements OnInit {
       .subscribe(confirm => {
           if (confirm) {
             this.eventSalesChainService.updateEvent(this.selectedEvent.id, {is_done: true} as EventCompany).subscribe(() => {
-              this.getAll()
+              this.isActivities = true;
+              this.getChain()
             })
           }
         }
@@ -203,9 +235,10 @@ export class SalesChainPageComponent implements OnInit {
   onDeleteEvent() {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
-        this.eventSalesChainService.deleteEvent(this.selectedEvent).subscribe()
-        this.salesActivities = this.salesActivities.filter(a => a.id !== this.selectedEvent.id)
-        this.selectedEvent = null
+        this.eventSalesChainService.deleteEvent(this.selectedEvent).subscribe(() => {
+          this.salesActivities = this.salesActivities.filter(a => a.id !== this.selectedEvent.id)
+          this.selectedEvent = null;
+        })
       }
     })
   }
@@ -219,18 +252,23 @@ export class SalesChainPageComponent implements OnInit {
   onDeleteProduct() {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
-        this.salesChainService.deleteProduct(this.selectedSalesReservation.id).subscribe()
+        this.salesChainService.deleteProduct(this.selectedSalesReservation.id).subscribe(() => {
+          this.getReservation();
+        })
       }
     })
   }
 
   onAddProduct() {
-    this.salesChainService.createChoiseProduct(this.selectedSalesReservation).subscribe()
+    this.salesChainService.createChoiceProduct(this.selectedSalesReservation).subscribe()
   }
 
   getAllFile() {
+    this.isLoadingFiles = true;
+    this.files = [];
     this.salesChainService.getFile().subscribe(files => {
-      this.files = files
+      this.files = files;
+      this.isLoadingFiles = false;
     })
   }
 
@@ -242,11 +280,8 @@ export class SalesChainPageComponent implements OnInit {
   onAddFile() {
     this.salesChainService.createSalesFileModal(this.saleChainId).subscribe(file => {
       if (file) {
-        console.log(file)
-        this.files.push(file)
-        this.files = this.files.map(f => f)
+        this.getAllFile();
       }
-      this.getAllFile()
     })
   }
 
@@ -273,10 +308,17 @@ export class SalesChainPageComponent implements OnInit {
     })
   }
 
+  hasConfirmedOffer() {
+    return this.offers.some(value => value.is_confirmed);
+  }
+
   onDeleteOffer() {
-    console.log(this.selectedOffer)
-    this.salesChainService.removeGenerateOffer(this.selectedOffer.id).subscribe(res => {
-      console.log(res)
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.salesChainService.deleteOffer(this.saleChainId, this.selectedOffer.id).subscribe(() => {
+          this.getOffers();
+        })
+      }
     })
   }
 
@@ -286,4 +328,56 @@ export class SalesChainPageComponent implements OnInit {
     })
   }
 
+  generateOffer() {
+    this.isCreatingOffer = true;
+    this.salesChainService.generateOffer(this.saleChainId)
+      .pipe(
+        finalize(() => this.isCreatingOffer = false)
+      ).subscribe(res => {
+      this.getOffers();
+    });
+  }
+
+  onSelectOffer() {
+    this.offersMenu[0].items[0].disabled = this.selectedOffer && !this.selectedOffer.is_confirmed;
+    this.offersMenu[0].items[1].disabled = this.selectedOffer && this.selectedOffer.is_confirmed;
+  }
+
+  private generatePdf() {
+  }
+
+  confirmOffer() {
+    this.salesChainService.confirmOffer(this.selectedOffer.id)
+      .subscribe(res => {
+        this.getOffers();
+      });
+  }
+
+  createDeliveryChain() {
+    this.modalService.confirm('success').subscribe(res => {
+      if (res) {
+        this.isCreateingDelivery = true;
+        const data = {
+          sales_chain_id: Number(this.saleChainId),
+          status: {
+            id: 1,
+            name: 'new',
+          },
+        };
+        this.deliveryService.create(data).pipe(
+          finalize(() => this.isCreateingDelivery = false)
+        ).subscribe(res => {
+          this.getChain()
+        });
+      }
+    });
+  }
+
+  editOfferPrices() {
+    this.salesChainService.editOfferPriceDialog(this.selectedOffer, this.saleChainId).subscribe(res => {
+      if (res) {
+        this.getOffers();
+      }
+    })
+  }
 }

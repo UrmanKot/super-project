@@ -19,4 +19,5 @@ export class Request {
   locators?: any;
   warehouse_quantity?: any;
   is_reserved?: boolean;
+  qc_delivery_status?: any;
 }

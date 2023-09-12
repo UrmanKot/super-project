@@ -5,7 +5,24 @@
       <h1>Positions</h1>
     </div>
     <div class="page__tools">
-      <button pButton type="button" icon="pi pi-plus" label="New Position" (click)="addPosition()"></button>
+      <button pButton type="button" icon="pi pi-plus" label="New Department" (click)="addDepartment()"></button>
+      <button pButton type="button" icon="pi pi-plus" class="ml-2 mr-4" label="New Position" (click)="addPosition()"></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-down"
+        label="Expand All"
+        class="mr-2"
+        (click)="expandCollapse()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="mr-2"
+        icon="pi pi-angle-up"
+        label="Collapse All"
+        (click)="expandCollapse(false)"
+      ></button>
     </div>
   </div>
 </div>
@@ -13,60 +30,44 @@
 <div class="page__content">
   <div class="page__card">
     <div class="page__table">
-      <p-table
-        #dt
+      <p-treeTable
+        [value]="tree"
         selectionMode="single"
-        scrollHeight="calc(100vh - 18.8rem)"
+        [(selection)]="selected"
         [scrollable]="true"
-        [paginator]="positions.length > 0"
-        [rows]="10"
-        [(selection)]="selectedPosition"
-        [value]="positions"
+
+        scrollHeight="calc(100vh - 19.2rem)"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
-            <p class="subtitle" *ngIf="!selectedPosition">Choose the Position to edit</p>
-            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedPosition"></p-menubar>
+          <div class="action-buttons">
+            <p-menubar
+              *ngIf="selected && selected.data.position"
+              class="ml-auto"
+              [model]="menuItemsPositions"
+              [class.disabled]="!selected"></p-menubar>
+            <p-menubar
+              *ngIf="selected && selected.data.department"
+              class="ml-auto"
+              [model]="menuItemsDepartments"
+              [class.disabled]="!selected || selected?.data?.department?.id == 90000000"></p-menubar>
           </div>
         </ng-template>
+
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5%" class="text-center">#</th>
-            <th style="width: 45%">Title</th>
+            <th style="padding-left: 52px; width: 60%">Name</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-position let-i="rowIndex">
-          <tr [pSelectableRow]="position">
-            <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
-            <td style="width: 45%">{{ position.title }}</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="5">
-              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoading">No Records Found</span>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+            <td style="width: 100%">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{rowData.department?.title}}
+              {{rowData.position?.title}}
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <p-button
-            type="button"
-            (click)="dt.paginator=false"
-            styleClass="p-button-text"
-          >All
-          </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-    <div *ngIf="!dt.paginator && !isLoading && positions.length > 0" class="paginator-return-pagination">
-      <p-button
-        type="button"
-        (click)="dt.paginator=true"
-        styleClass="p-button-text"
-      >
-        Return pagination
-      </p-button>
+      </p-treeTable>
     </div>
   </div>
 </div>

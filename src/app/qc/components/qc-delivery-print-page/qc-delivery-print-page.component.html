@@ -1,0 +1,458 @@
+<div class="qc-delivery-print-page" *ngIf="!orderedProducts">
+  <div class="qc-delivery-print-page__header">
+    <div>
+      <h2>Code</h2>
+      <p>{{rootList?.nomenclature.code}}</p>
+    </div>
+    <div>
+      <h2>Name</h2>
+      <p>{{rootList?.nomenclature?.name}}</p>
+    </div>
+    <div>
+      <h2>Order ID</h2>
+      <p>{{orderId}}</p>
+    </div>
+    <div>
+      <h2></h2>
+      <p></p>
+    </div>
+    <div>
+      <h2>Production List Creation Date</h2>
+      <p>{{rootList?.list?.created | date: 'dd.MM.y' }}</p>
+    </div>
+    <div>
+      <h2>Request Creation Date</h2>
+      <p>
+        <ng-container *ngIf="currentReqDate">
+          {{currentReqDate | date: 'dd.MM.y' }}
+        </ng-container>
+      </p>
+    </div>
+
+    <div class="col-2">
+      <h2>Technologies</h2>
+      <p>
+        <span *ngFor="let tech of technologies; let last=last">
+          {{tech}} {{last ? '' : ','}}
+        </span>
+      </p>
+    </div>
+    
+  </div>
+
+  <div *ngIf="outsourcer">
+    <div class="qc-delivery-print-page__table">
+      <div>
+        <h2 style="white-space: nowrap">Outsourcer</h2>
+        <h4><span>Name:</span> {{outsourcer.name}}</h4>
+        <h4>
+          <span>Category:</span>
+          <ng-container *ngFor="let item of outsourcer.categories; let idx = index">
+            <!--              {{categories[item]}}-->
+            <span *ngIf="idx !== outsourcer.categories.length - 1">,</span>
+          </ng-container>
+        </h4>
+        <h4><span>Address:</span> {{outsourcer.address}}</h4>
+        <h4><span>Tax Number:</span> {{outsourcer.tax_number}}</h4>
+        <h4><span>Register Number:</span> {{outsourcer.registration_number}}</h4>
+        <h4><span>Nomenclature:</span> {{outsourcer.supplier_nomenclature}}</h4>
+        <h4><span>Description:</span></h4>
+        <p>{{outsourcer.comment}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qc-delivery-print-page__table">
+    <div
+      *ngFor="let request of requests"
+      class="qc-delivery-print-page__row"
+    >
+      <div class="qc-delivery-print-page__box">
+        <div class="qc-delivery-print-page__col">
+          <h3>ID</h3>
+          <p>{{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span></p>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Code</h3>
+          <div *ngIf="request.material_nomenclature">
+            {{request.material_nomenclature.code}}
+          </div>
+          <div *ngIf="request.order_product_nomenclature">
+            {{request.order_product_nomenclature.code}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            {{request.list_product.nomenclature.code}}
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Name</h3>
+          <div *ngIf="request.material_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.material_nomenclature.name}}
+          </div>
+          <div *ngIf="request.order_product_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.order_product_nomenclature.name}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+            {{request.list_product.nomenclature.name}}
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col_half">
+          <h3>Technology</h3>
+          <span *ngIf="request.technology">{{request.technology}}</span>
+        </div>
+        <div class="qc-delivery-print-page__col_half">
+          <h3>UOM</h3>
+          <div
+            *ngIf="request.material_nomenclature">
+            {{request.material_nomenclature?.category?.unit_of_measure?.symbol ? request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
+          <div
+            *ngIf="request.order_product_nomenclature">
+            {{request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
+          <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+            {{request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Required Quantity</h3>
+          {{request.total_required_quantity}}
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Locator</h3>
+          <div *ngIf="request.locators">
+            <div *ngFor="let locator of request.unique_locators; let last=last">
+              {{locator.name}}<span *ngIf="!last">,</span>
+            </div>
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Type</h3>
+          <p>{{getType(request.list_product?.nomenclature?.type)}}</p>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Status</h3>
+          <p>{{request.qc_delivery_status?.name}}</p>
+        </div>
+      </div>
+      <div class="qc-delivery-print-page__col">
+        <h3>Quantity</h3>
+        <p>_________</p>
+      </div>
+      <div class="qc-delivery-print-page__col">
+        <h3>Packing</h3>
+        <p>_________</p>
+      </div>
+    </div>
+
+
+  <div *ngIf="technicalEquipments.length > 0">
+    <div class="qc-delivery-print-page__header">
+      <div>
+        <h2 style="white-space: nowrap">Technical Equipments</h2>
+      </div>
+    </div>
+  </div>
+
+  <div  *ngIf="technicalEquipments.length > 0" class="qc-delivery-print-page__table">
+    <div
+      *ngFor="let technicalEquipment of technicalEquipments"
+      class="qc-delivery-print-page__row"
+    >
+      <div class="qc-delivery-print-page__box">
+        <div class="qc-delivery-print-page__col">
+          <h3>Code</h3>
+          <div>
+            {{getNomenclature(technicalEquipment.nomenclature).code}}</div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Name</h3>
+          {{getNomenclature(technicalEquipment.nomenclature).name}}
+        </div>
+
+        <div class="qc-delivery-print-page__col">
+          <h3>Locators</h3>
+          <div *ngIf="technicalEquipment.locators.length > 0">
+            <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+              {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+            </div>
+          </div>
+          <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+                </span>
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Required Quantity</h3>
+          {{technicalEquipment.max_initial_quantity}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qc-delivery-print-page__bottom">
+    <div class="qc-delivery-print-page__column">
+      <div class="qc-delivery-print-page__left">
+        <div>
+          <h3>Sent</h3>
+          <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p>{{currentDate | date: 'dd.MM.y'}}</p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+      <div class="qc-delivery-print-page__right">
+        <div>
+          <h3>Retrieved</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!--  Grouped By OrderProduct -->
+<div class="qc-delivery-print-page" *ngIf="orderedProducts">
+  <div class="qc-delivery-print-page__header">
+    <div>
+      <h2>Code</h2>
+      <p>{{rootList?.nomenclature?.code}}</p>
+    </div>
+    <div>
+      <h2>Name</h2>
+      <p>{{rootList?.nomenclature?.name}}</p>
+    </div>
+    <div>
+      <h2>Order ID</h2>
+      <p>{{orderId}}</p>
+    </div>
+    <div>
+      <h2></h2>
+      <p></p>
+    </div>
+    <div>
+      <h2>Production List Creation Date</h2>
+      <p>{{rootList?.list?.created | date: 'dd.MM.y' }}</p>
+    </div>
+    <div>
+      <h2>Request Creation Date</h2>
+      <p>
+        <ng-container *ngIf="currentReqDate">
+          {{currentReqDate | date: 'dd.MM.y' }}
+        </ng-container>
+      </p>
+    </div>
+    <div class="col-2">
+      <h2>Technologies</h2>
+      <p>
+        <span *ngFor="let tech of technologies; let last=last">
+          {{tech}} {{last ? '' : ','}}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="outsourcer">
+    <div class="qc-delivery-print-page__table">
+      <div>
+        <h2 style="white-space: nowrap">Outsourcer</h2>
+        <h4><span>Name:</span> {{outsourcer.name}}</h4>
+        <h4>
+          <span>Category:</span>
+          <ng-container *ngFor="let item of outsourcer.categories; let idx = index">
+            <!--              {{categories[item]}}-->
+            <span *ngIf="idx !== outsourcer.categories.length - 1">,</span>
+          </ng-container>
+        </h4>
+        <h4><span>Address:</span> {{outsourcer.address}}</h4>
+        <h4><span>Tax Number:</span> {{outsourcer.tax_number}}</h4>
+        <h4><span>Register Number:</span> {{outsourcer.registration_number}}</h4>
+        <h4><span>Nomenclature:</span> {{outsourcer.supplier_nomenclature}}</h4>
+        <h4><span>Description:</span></h4>
+        <p>{{outsourcer.comment}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let orderProduct of orderedProducts; let lastGroup=last" class="order-product-page"
+       [class.not-last-group]="!lastGroup">
+    <h3>{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}}
+      Quantity:  {{orderProduct.quantity}}</h3>
+    <div class="qc-delivery-print-page__table">
+      <div
+        *ngFor="let request of orderProduct.children; let index=index"
+        class="qc-delivery-print-page__row">
+        <div class="qc-delivery-print-page__box">
+          <div class="qc-delivery-print-page__col">
+            <h3>ID</h3>
+            <p>{{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span></p>
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Code</h3>
+            <div *ngIf="request.material_nomenclature">
+              {{request.material_nomenclature.code}}
+            </div>
+            <div *ngIf="request.order_product_nomenclature">
+              {{request.order_product_nomenclature.code}}
+            </div>
+            <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+              {{request.list_product.nomenclature.code}}
+            </div>
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Name</h3>
+            <div *ngIf="request.material_nomenclature">
+              <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+              {{request.material_nomenclature.name}}
+            </div>
+            <div *ngIf="request.order_product_nomenclature">
+              <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+              {{request.order_product_nomenclature.name}}
+            </div>
+            <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+              <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+              {{request.list_product.nomenclature.name}}
+            </div>
+          </div>
+          <div class="qc-delivery-print-page__col_half">
+            <h3>Technology</h3>
+            <span *ngIf="request.technology">{{request.technology}}</span>
+          </div>
+          <div class="qc-delivery-print-page__col_half">
+            <h3>UOM</h3>
+            <div
+              *ngIf="request.material_nomenclature">
+              {{request.material_nomenclature?.category?.unit_of_measure?.symbol ? request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+            </div>
+            <div
+              *ngIf="request.order_product_nomenclature">
+              {{request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+            </div>
+            <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+              {{request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+            </div>
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Required Quantity</h3>
+            {{request.total_required_quantity}}
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Locator</h3>
+            <div *ngIf="request.locators">
+              <div *ngFor="let locator of request.unique_locators; let last=last">
+                {{locator.name}}<span *ngIf="!last">,</span>
+              </div>
+            </div>
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Type</h3>
+            <p>{{getType(request.list_product?.nomenclature?.type)}}</p>
+          </div>
+          <div class="qc-delivery-print-page__col">
+            <h3>Status</h3>
+            <p>{{request.qc_delivery_status?.name}}</p>
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Quantity</h3>
+          <p>_________</p>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Packing</h3>
+          <p>_________</p>
+        </div>
+    </div>
+  </div>  
+
+  <div *ngIf="technicalEquipments.length > 0">
+    <div class="qc-delivery-print-page__header">
+      <div>
+        <h2 style="white-space: nowrap">Technical Equipments</h2>
+      </div>
+    </div>
+  </div>
+
+  <div  *ngIf="technicalEquipments.length > 0" class="qc-delivery-print-page__table">
+    <div
+      *ngFor="let technicalEquipment of technicalEquipments"
+      class="qc-delivery-print-page__row"
+    >
+      <div class="qc-delivery-print-page__box">
+        <div class="qc-delivery-print-page__col">
+          <h3>Code</h3>
+          <div>
+            {{getNomenclature(technicalEquipment.nomenclature).code}}</div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Name</h3>
+          {{getNomenclature(technicalEquipment.nomenclature).name}}
+        </div>
+
+        <div class="qc-delivery-print-page__col">
+          <h3>Locators</h3>
+          <div *ngIf="technicalEquipment.locators.length > 0">
+            <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+              {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+            </div>
+          </div>
+          <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+                </span>
+          </div>
+        </div>
+        <div class="qc-delivery-print-page__col">
+          <h3>Required Quantity</h3>
+          {{technicalEquipment.max_initial_quantity}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qc-delivery-print-page__bottom">
+    <div class="qc-delivery-print-page__column">
+      <div class="qc-delivery-print-page__left">
+        <div>
+          <h3>Sent</h3>
+          <p>{{auth.user.first_name}} {{auth.user.last_name}}</p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p>{{currentDate | date: 'dd.MM.y'}}</p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+      <div class="qc-delivery-print-page__right">
+        <div>
+          <h3>Retrieved</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Date</h3>
+          <p></p>
+        </div>
+        <div>
+          <h3>Signed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

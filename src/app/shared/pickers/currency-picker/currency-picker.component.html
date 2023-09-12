@@ -1,5 +1,6 @@
 <p-dropdown
   [filter]="true"
+  *ngIf="!isLoading else spinner"
   [showClear]="showClear"
   [(ngModel)]="currency"
   [options]="currencies"
@@ -9,3 +10,9 @@
   optionLabel="name"
   placeholder="Choose Currency">
 </p-dropdown>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

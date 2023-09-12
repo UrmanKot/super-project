@@ -2,6 +2,7 @@ import {OrderProduct} from '../../procurement/models/order-product';
 import {WarehouseProduct} from './warehouse-product';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {TechnicalEquipmentInUse} from './technical-equipment-in-use';
+import {Locator} from './locator';
 
 export class OrderTechnicalEquipment {
   readonly id: number;
@@ -19,7 +20,8 @@ export class OrderTechnicalEquipment {
   in_use: Boolean;
   in_qc: Boolean;
   quality_control?: number;
-  locators?: string[]
+  max_initial_quantity?: number;
+  locators?: any[];
   available_locators?: string[]
   in_use_product_id?: { technicalEquipment: TechnicalEquipmentInUse, quantity: number, isolated_quantity?: number }[];
 }

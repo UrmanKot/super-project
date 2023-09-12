@@ -47,7 +47,7 @@
       type="checkbox"
       class="task-checkbox"
     >
-<!--      [style.left]="production.hasChildren ? -(33 + production.product.level * 7) + 'px' : ''"-->
+    <!--      [style.left]="production.hasChildren ? -(33 + production.product.level * 7) + 'px' : ''"-->
     <button
       class="task-btn"
       *ngIf="production?.hasChildren && chart.mode === 'add-items'"
@@ -78,13 +78,23 @@
       <!-- Название продукта -->
       <div class="task-item task-item-name">
       <span class="production-name" [style.width.px]="productionNameWidth">
+        <b *ngIf="production?.product.nomenclature.bulk_or_serial === '1' &&
+                  production.reservedFromOtherTaskQuantity > 0">
+          (R-{{production.reservedFromOtherTaskQuantity}})&nbsp;
+        </b>
         <b *ngIf="production?.product.nomenclature.bulk_or_serial === '1'">(S)</b>
         <b *ngIf="production?.product.nomenclature.has_technical_equipment">(T)</b>
+        <b *ngIf="production.task.refunded_orders.length > 0 && !production.task.is_refunded">(RR)</b>
+        <b *ngIf="production.task.is_in_rma_process">(Reordered)</b>
         {{production?.product.nomenclature.name}}
       </span>
 
         <span class="production-name production-name_hide" [style.width.px]="productionNameWidth">
-        <span class="text">{{production?.product.nomenclature.name}}</span>
+        <span class="text">
+          <b *ngIf="production.task.refunded_orders.length > 0 && !production.task.is_refunded">(RR)</b>
+          <b *ngIf="production.task.is_in_rma_process">(Reordered)</b>
+          {{production?.product.nomenclature.name}}
+        </span>
       </span>
       </div>
 
@@ -120,7 +130,7 @@
            (chart.selectedFilterTechnologies.length && !chart.selectedFilterTechnologies.includes(task.technology)) ||
            (chart.selectedProductionTypes.length && !chart.selectedProductionTypes.includes(task.production_type))"
         [class.is-saved]="task.isSaved"
-        [class.small]="task.width <= 24"
+        [class.small]="task.width <= 24 && chart.selectedDisplay === 'days'"
         [class.not-planned]="!task.is_planned"
         [class.planned]="task.is_planned"
         [class.deficit_not-planned]="task.status === 'Deficit' && !task.is_planned"
@@ -133,6 +143,7 @@
         [class.rework]="task.status === 'Rework'"
         [ngStyle]="{'left': task.left + 'px', 'width' : task.width + 'px'}"
         [id]="production.product.id"
+        [class.small-font]="chart.selectedDisplay === 'weeks'"
         cdkDrag
         cdkDragLockAxis="x"
         (cdkDragStarted)="dragging = true"
@@ -144,6 +155,7 @@
         (resizeEnd)="resize(task, $event)"
         [validateResize]="validateResize"
         (click)="onTaskClick(task, production, $event)"
+        [pTooltip]="(task.refunded_orders.length > 0 && !task.is_refunded ? '(RR) ' : '') + (task.is_in_rma_process ? '(Reordered) ' : '') + (task.technology ?? 'Purchased')"
       >
         <svg [style.width]="task.width" height="22" *ngIf="task.status === 'Rework'">
           <defs>
@@ -168,13 +180,15 @@
           <div
             *ngFor="let day of task.days"
             class="day"
-            [style.width]="chart.vacationCoords + 'px'"
+            [style.width]="chart.selectedDisplay === 'days' ? chart.vacationCoords + 'px' : chart.weekWeekDayCoords + 'px'"
             [class.day_is-vac]="day.isVac"
             [style.left.px]="day.x"
           >
           </div>
         </div>
         <div class="tech-name" [class.tech-name_small]="chart.planScale === 25">
+          <b *ngIf="task.refunded_orders.length > 0 && !task.is_refunded">(RR)</b>
+          <b *ngIf="task.is_in_rma_process">(Reordered)</b>
           {{task.technology ? task.technology : type(task.list_product.nomenclature.type)}}
         </div>
         <div

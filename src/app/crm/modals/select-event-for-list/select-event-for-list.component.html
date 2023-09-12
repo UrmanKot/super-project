@@ -1,0 +1,103 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Choice Event
+  </h2>
+</div>
+
+<form [formGroup]="searchForm">
+  <p-calendar class="max-w-full"
+              formControlName='date'
+              [inline]="true"></p-calendar>
+
+  <div *ngIf="searchForm.get('date').value" class="table-pagination-preloader search-event-picker">
+    <p-table
+      #dt
+      [value]="eventsList"
+      [(selection)]="selectedEvent"
+      [rows]="10"
+      dataKey="id"
+      scrollHeight="calc(100vh - 18.8rem)"
+      [scrollable]="true"
+      selectionMode="single"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5%" class="text-center">#</th>
+          <th style="width: 25%">Name</th>
+          <th style="width: 25%">Description</th>
+          <th style="width: 25%">Companies Name</th>
+          <th style="width: 10%" class="text-center">Event Start</th>
+          <th style="width: 10%">Event End</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-filterEvent let-i="rowIndex">
+        <tr [pSelectableRow]="filterEvent">
+          <td style="width: 7%" class="text-center">{{(this.searchForm.get('page').value - 1) * 10 + i + 1}}</td>
+          <td style="width: 20%">
+            {{ filterEvent.event_type?.name }}
+            <span *ngIf="filterEvent.sales_chain">
+                - {{filterEvent.sales_chain_status ? filterEvent.sales_chain_status.name : 'New'}}
+              </span>
+          </td>
+          <td style="width: 30% " class="hovered-info">
+            <span class="comment">
+              <div>
+              {{ filterEvent.description }}
+              </div>
+            </span>
+            <pek-hover-detailed-info-component
+              [moveLeft]="20"
+              *ngIf="filterEvent.description"
+            >
+            <span>
+               {{ filterEvent.description }}
+            </span>
+            </pek-hover-detailed-info-component>
+          </td>
+          <td style="width: 15%" class="text-center">
+            <ng-container *ngIf="filterEvent.on_companies.length === 0">
+              Not Companies
+            </ng-container>
+
+            <ng-container *ngIf="filterEvent.on_companies.length > 0">
+                <span *ngFor="let company of filterEvent.on_companies">
+                  {{ company.company_name }} <br>
+                </span>
+            </ng-container>
+          </td>
+          <td style="width: 15%" class="text-center">
+            {{ filterEvent.start | date: "dd/MM/yyyy, HH:mm" }}
+          </td>
+          <td style="width: 15%" class="text-center">
+            {{ filterEvent.end | date: "dd/MM/yyyy, HH:mm" }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-3" [attr.colspan]="5">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="pagination-preloader" *ngIf="isLoading">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+    </div>
+  </div>
+  <div class="empty-message" *ngIf="!searchForm.get('date').value">Please Select The Date</div>
+</form>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Accept'"
+    [disabled]="!selectedEvent"
+    (click)="onAccept()"
+  ></button>
+</mat-dialog-actions>

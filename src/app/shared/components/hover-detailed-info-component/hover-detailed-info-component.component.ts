@@ -10,6 +10,7 @@ export class HoverDetailedInfoComponentComponent implements OnInit, AfterViewIni
   parentContainer: HTMLElement;
   element: HTMLElement;
   @Input() moveLeft = 0;
+  @Input() align: 'left' | 'right' = 'right';
   interval;
   intervalMain;
   constructor() { }
@@ -37,13 +38,23 @@ export class HoverDetailedInfoComponentComponent implements OnInit, AfterViewIni
 
   private setPosition() {
     const top = this.parentContainer.getBoundingClientRect().top;
-    const right = this.parentContainer.getBoundingClientRect().right;
+
     const parentHeight = this.parentContainer.getBoundingClientRect().height;
     const elementHeight = this.element.getBoundingClientRect().height;
     const topPosition = (top + (parentHeight / 2)) - (elementHeight / 2);
-    requestAnimationFrame(() => {
-      this.element.setAttribute('style', `top: ${topPosition}px; left: ${right - this.moveLeft}px;`);
-    });
+    if (this.align === 'right') {
+      const right = this.parentContainer.getBoundingClientRect().right;
+      requestAnimationFrame(() => {
+        this.element.setAttribute('style', `top: ${topPosition}px; left: ${right - this.moveLeft}px;`);
+      });
+    }
+    if (this.align === 'left') {
+      const left = this.parentContainer.getBoundingClientRect().left;
+      requestAnimationFrame(() => {
+        this.element.setAttribute('style', `top: ${topPosition}px; left: ${left - this.moveLeft}px;`);
+      });
+    }
+
   }
 
   ngOnDestroy(): void {

@@ -5,11 +5,16 @@ import {ProductStructureCompare} from '../../models/product-structure-compare';
 import {AuthService} from '../../../auth/auth.service';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {CompareChangedCodeName} from '../../models/compare-changed-code-name';
+import {CompareImportServiceService} from '../../services/compare-import-service.service';
+import {AncestorProductStructureCompare} from '../../models/product-structure-compare-result';
+import {ProductService} from '../../services/product.service';
+import {deepCopy} from 'deep-copy-ts';
 
 @Component({
   selector: 'pek-compare-structure',
   templateUrl: './compare-structure.component.html',
-  styleUrls: ['./compare-structure.component.scss']
+  styleUrls: ['./compare-structure.component.scss'],
+  providers: [CompareImportServiceService],
 })
 export class CompareStructureComponent implements OnInit {
   currentProductsTree: TreeNode<ProductStructureCompare>[] = [];
@@ -18,6 +23,8 @@ export class CompareStructureComponent implements OnInit {
   hasCyclingProduct = false;
   hasChangedName = false;
   changedCodeNamesList: CompareChangedCodeName[] = [];
+
+  ancestorsProducts: AncestorProductStructureCompare[];
 
   newSelectedItem: TreeNode<ProductStructureCompare>;
   newMenuItems: MenuItem[] = [
@@ -33,6 +40,23 @@ export class CompareStructureComponent implements OnInit {
           label: 'Set Current Name',
           icon: 'pi pi-replay',
           command: () => this.onAcceptCurrentName(this.newSelectedItem.data),
+        },
+        {
+          label: 'Compare With Original',
+          icon: 'pi pi-eye',
+          command: () => this.onViewStructureDifference(this.newSelectedItem),
+        }
+      ]
+    }
+  ];
+  newMenuOriginalTreeItems: MenuItem[] = [
+    {
+      label: 'Selected Product',
+      items: [
+        {
+          label: 'Compare With Original',
+          icon: 'pi pi-eye',
+          command: () => this.onViewStructureDifference(this.newSelectedItem),
         }
       ]
     }
@@ -58,14 +82,18 @@ export class CompareStructureComponent implements OnInit {
   ];
 
   constructor(
-    private dialogRef: MatDialogRef<CompareStructureComponent>,
     public auth: AuthService,
+    private productService: ProductService,
+    private dialogRef: MatDialogRef<CompareStructureComponent>,
+    private compareImportServiceService: CompareImportServiceService,
     @Inject(MAT_DIALOG_DATA) public data: {
       newResult: TreeNode<ProductStructureCompare>[],
       oldResult: TreeNode<ProductStructureCompare>[],
       hasCyclingProduct: boolean,
       hasChangedName: boolean,
       changedNamesList: CompareChangedCodeName[],
+      ancestorsProducts: AncestorProductStructureCompare[],
+      isCompareView: boolean
     },
   ) {
   }
@@ -76,8 +104,8 @@ export class CompareStructureComponent implements OnInit {
     this.hasCyclingProduct = this.data.hasCyclingProduct;
     this.hasChangedName = this.data.hasChangedName;
     this.changedCodeNamesList = this.data.changedNamesList;
+    this.ancestorsProducts = this.data.ancestorsProducts;
   }
-
 
 
   onCancel() {
@@ -144,6 +172,7 @@ export class CompareStructureComponent implements OnInit {
 
     nameInList.selectedName = nameInList.newName;
     this.updateNamesInNodes(nameInList);
+    this.selectionChanged();
   }
 
   private onAcceptCurrentName(data) {
@@ -151,6 +180,7 @@ export class CompareStructureComponent implements OnInit {
 
     nameInList.selectedName = nameInList.currentName;
     this.updateNamesInNodes(nameInList);
+    this.selectionChanged();
   }
 
   updateNamesInNodes(nameInList) {
@@ -199,7 +229,7 @@ export class CompareStructureComponent implements OnInit {
     if (name) {
       return isNewStructure ? name.currentName : name.newName;
     } else {
-      return ''
+      return '';
     }
   }
 
@@ -211,5 +241,34 @@ export class CompareStructureComponent implements OnInit {
     return this.changedCodeNamesList.map(change => change.code).findIndex(el => {
       return this.changedCodeNamesList.filter(change => change.code === el).length > 1;
     }) > -1;
+  }
+
+  private onViewStructureDifference(data: TreeNode<ProductStructureCompare>) {
+    const newStructure = this.compareImportServiceService.duplicateTreeDataForCompare(data.data);
+
+    let treeData = this.compareImportServiceService.setDataToInitializeStructure(
+      newStructure,
+      deepCopy(data.data.existing_structure),
+      this.ancestorsProducts
+    );
+
+    this.productService.openCompareStructureDialog(
+      treeData.newProductsTree,
+      treeData.currentProductsTree,
+      this.hasCyclingProduct,
+      this.hasChangedName,
+      this.changedCodeNamesList,
+      this.ancestorsProducts,
+      true).subscribe(res => {
+      this.compareImportServiceService.clearData();
+    });
+  }
+
+  selectionChanged() {
+    const disabledChangeNames = this.hasNoMultipleNames(this.newSelectedItem.data) ||
+      this.codeHasMoreThanOne(this.newSelectedItem.data);
+    this.newMenuItems[0].items[2].disabled = !this.newSelectedItem.data.existing_structure;
+    this.newMenuItems[0].items[0].disabled = disabledChangeNames;
+    this.newMenuItems[0].items[1].disabled = disabledChangeNames;
   }
 }

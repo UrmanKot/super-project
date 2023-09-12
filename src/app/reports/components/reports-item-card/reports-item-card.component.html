@@ -1,0 +1,165 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Item Card</h1>
+    </div>
+    <div class="page__tools">
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+
+    <div
+      class="form mb-2"
+    >
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label>Nomenclature</label>
+
+            <p-dropdown
+              [options]="products$ | async"
+              optionLabel="fullName"
+              (onFilter)="this.search$.next($event.filter ?? '')"
+              [showClear]="true"
+              [emptyMessage]="isLoadingNomenclatures ? 'Loading...' : 'No Records Found'"
+              [emptyFilterMessage]="isLoadingNomenclatures ? 'Loading...' : 'No Records Found'"
+              [resetFilterOnHide]="false"
+              filterMatchMode="empty"
+              placeholder="Enter a Nomenclature Name"
+              [filter]="true"
+              (onChange)="this.loadHistory$.next()"
+              [(ngModel)]="selectedProduct"
+            >
+            </p-dropdown>
+
+          </div>
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+      </div>
+    </div>
+
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [value]="items$ | async"
+        [paginator]="itemsCount > 0"
+        [rows]="10"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex">
+            <!--            <p class="subtitle" *ngIf="!selectedCurrency">Choose the Currency to edit</p>-->
+            <!--            <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedCurrency"></p-menubar>-->
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 3%">#</th>
+            <th style="width: 10%">Code</th>
+            <th style="width: 11%">Name</th>
+            <th class="text-center" style="width: 4%">UOM</th>
+            <th class="text-center" style="width: 4%">Order</th>
+            <th class="text-center" style="width: 6%">Invoice</th>
+            <th class="text-center" style="width: 7%">Technology</th>
+            <th style="width: 14%">Supplier</th>
+            <th class="text-center" style="width: 6%">Date</th>
+            <th class="text-center" style="width: 6%">Type</th>
+            <th class="text-center" style="width: 5%">Quantity</th>
+            <th class="text-center" style="width: 6%">Unit Price</th>
+            <th class="text-center" style="width: 6%">Total Price</th>
+            <th class="text-center" style="width: 6%">Unit Cost</th>
+            <th class="text-center" style="width: 6%">Total Cost</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td class="text-center" style="width: 3%">{{i + 1}}</td>
+            <td style="width: 10%">{{product.nomenclature?.code}}</td>
+            <td style="width: 11%">{{product.nomenclature?.name}}</td>
+            <td class="text-center" style="width: 4%">
+              {{product.nomenclature?.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs' }}
+              {{product.nomenclature?.root_category ? product.nomenclature.root_category.unit_of_measure.symbol : 'Pcs' }}
+            </td>
+            <td class="text-center" style="width: 4%">
+              <a target="_blank" *ngIf="product.nomenclature?.type=='0'"
+                 [routerLink]="['/dash/procurement/orders/products/', product.order]">{{product.order}}</a>
+              <a target="_blank" *ngIf="product.nomenclature?.type!='0'"
+                 [routerLink]="['/dash/outsource/outsource-chain/products/', product.order]">{{product.order}}</a>
+            </td>
+            <td class="text-center" style="width: 6%">
+              <a rel="noopener noreferrer" *ngIf="product.invoice" target="_blank"
+                 [routerLink]="['/dash/accounting/invoices/products/',product.invoice.id]">{{product.invoice.self_serial_number}}</a>
+            </td>
+            <td class="text-center" style="width: 7%">{{product.current_technology}}</td>
+            <td style="width: 14%">{{product.supplier}}</td>
+            <td class="text-center" style="width: 6%">
+              <ng-container *ngIf="product.document_creation_date">
+                {{product.document_creation_date | date: 'dd/MM/yyyy'}}
+              </ng-container>
+              <ng-container *ngIf="product.created">
+                {{product.created | date: 'dd/MM/yyyy'}}
+              </ng-container>
+            </td>
+            <td class="text-center" style="width: 6%">
+              <ng-container *ngIf="product.type !== 'in'">
+                <div>out</div>
+                <div>wh balance</div>
+              </ng-container>
+              <ng-container *ngIf="product.type === 'in'">in</ng-container>
+            </td>
+            <td class="text-center" style="width: 5%">
+              <ng-container *ngIf="product.quantity">
+                <div>{{product.quantity}}</div>
+                <div>{{product.remains}}</div>
+              </ng-container>
+              <ng-container *ngIf="product.accepted_quantity">{{product.accepted_quantity}}</ng-container>
+            </td>
+            <td class="text-center" style="width: 6%">{{product.supplier_unit_price | moneyFormat}} €</td>
+            <td class="text-center" style="width: 6%">{{product.supplier_total_price | moneyFormat}} €</td>
+            <td class="text-center" style="width: 6%">{{product.supplier_unit_cost | moneyFormat}} €</td>
+            <td class="text-center" style="width: 6%">{{product.supplier_total_cost | moneyFormat}} €</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="18">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <ng-container *ngIf="!isLoading">
+                <ng-container *ngIf="isStarted">No Records Found</ng-container>
+                <ng-container *ngIf="!isStarted">Select an Nomenclature</ng-container>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && itemsCount > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

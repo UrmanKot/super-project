@@ -1,0 +1,54 @@
+.page__card {
+  position: relative;
+}
+
+form {
+  margin-top: -0.25rem;
+}
+
+a {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.root_product {
+
+  a {
+    position: relative;
+    white-space: nowrap;
+
+    .root_list_products {
+      display: none;
+      min-width: 6.25rem;
+      height: auto;
+      z-index: 2;
+    }
+  }
+
+  &:hover {
+    a {
+      .root_list_products {
+        display: block;
+      }
+    }
+  }
+}
+
+.warehouse-delivery-requests {
+  .custom-tabs {
+    &::ng-deep {
+      .p-tabview-panels {
+        padding: 0.75rem 0 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  .action-buttons {
+    position: relative;
+    margin-top: -1.75rem;
+  }
+}

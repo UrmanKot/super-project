@@ -15,8 +15,8 @@ import {Paginator} from 'primeng/paginator';
 })
 export class ExpansesComponent implements OnInit {
   @ViewChild('paginator') paginator: Paginator;
-  isLoading: boolean;
-  expenses: Expense[];
+  isLoading: boolean = true;
+  expenses: Expense[] = [];
   selectedExpense: Expense;
   menuItems: MenuItem[] = [{
     label: 'Selected Expense',
@@ -48,6 +48,7 @@ export class ExpansesComponent implements OnInit {
 
   tableScrollHeight = '24.125rem';
   isHideFilters = false;
+
   constructor(
     private expenseService: ExpenseService,
     private modalService: ModalService,
@@ -108,26 +109,27 @@ export class ExpansesComponent implements OnInit {
   }
 
   getPaginated() {
+    this.isLoading = true;
     this.expenseService
       .getPaginated(this.query)
-      .pipe(take(1))
       .subscribe((res) => {
         this.expenses = res.results;
         this.count = res.count;
         this.selectedExpense = null;
+        this.isLoading = false;
       });
   }
 
   getAll() {
+    this.isLoading = true;
     this.expenseService
       .get()
-      .pipe(take(1))
       .subscribe((res) => {
         this.expenses = res;
         this.selectedExpense = null;
+        this.isLoading = false;
         if (this.isStartOnePage) {
           this.paginator?.changePage(0);
-          this.isLoading = false;
         }
       });
   }

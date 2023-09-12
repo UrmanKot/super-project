@@ -13,7 +13,8 @@ export class MultiProductCategoriesPickerComponent implements OnInit {
   @Output() choiceCategories: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Output() choiceCategoryFolAllIds: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Input() ignoredCategoryId: number;
-  @Input() currentCategoryId: number;
+  @Input() currentCategoryIds: number[] = [];
+  @Input() isDisabled = false;
 
   isLoading = true;
   categories: Category[] = [];
@@ -39,8 +40,69 @@ export class MultiProductCategoriesPickerComponent implements OnInit {
       }
 
       this.createTree();
+
+      this.fillSelected(this.currentCategoryIds)
+
       this.isLoading = false;
     });
+  }
+
+  fillSelected(ids: number[]) {
+    if (!ids?.length) {
+      this.selectedCategories = [];
+      return
+    }
+
+    const fill = (nodes: TreeNode<any>[], id) => {
+      const findCategory = nodes.find(n => n.data.id === id);
+
+      if (findCategory) {
+        this.selectedCategories.push(findCategory);
+      } else {
+        nodes.forEach(n => {
+          if (n.children.length) {
+            fill(n.children, id)
+          }
+        })
+      }
+    }
+
+    if (ids?.length) {
+      this.selectedCategories = [];
+
+      ids.forEach(id => {
+        fill(this.categoriesTree, id)
+      })
+    }
+  }
+
+  choiceProductForAllIds() {
+    if (!this.selectedCategories?.length) {
+      this.choiceCategoryFolAllIds.emit(null);
+      return;
+    }
+
+    const find = (nodes: TreeNode<Category>[]) => {
+      nodes.forEach(node => {
+        ids.push(node.data.id);
+
+        if (node.children.length > 0) {
+          find(node.children);
+        }
+      });
+    };
+
+
+    const ids = [];
+
+    this.selectedCategories.forEach(n => {
+      ids.push(n.data.id);
+
+      if (n.children.length) {
+        find(n.children)
+      }
+    })
+    this.choiceCategoryFolAllIds.emit(ids);
   }
 
   createTree() {
@@ -80,6 +142,7 @@ export class MultiProductCategoriesPickerComponent implements OnInit {
       this.selectedCategories = [];
     }
 
+    this.choiceProductForAllIds();
     this.choiceCategories.emit(this.selectedCategories.map(n => n?.data?.id));
   }
 

@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{title ? title : '...'}}
+  </h2>
+</div>
+
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group" *ngIf="errorMessage.includes('NO_TAX_NUMBER')">
+      <label>Tax Number</label>
+      <input type="text" pInputText class="form-control" formControlName="value">
+    </div>
+
+    <ng-container *ngIf="
+      errorMessage.includes('NO_NOMENCLATURE_COUNTRY') ||
+      errorMessage.includes('NO_NOMENCLATURE_TARIFF_CODE')
+    ">
+      <div class="form-group">
+        <label>Country of origin</label>
+        <input type="text" pInputText class="form-control" formControlName="country_of_origin">
+      </div>
+
+      <div class="form-group">
+        <label>Tariff Code</label>
+        <input type="number" pInputText class="form-control" formControlName="tariff_code">
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="errorMessage.includes('NO_NOMENCLATURE_NUMBER')">
+      <div class="form-group">
+        <label>Supplier</label>
+        <input type="text" pInputText class="form-control" value="Sample Company" disabled>
+      </div>
+
+      <div class="form-group">
+        <label>Invoice Date</label>
+        <input type="text" pInputText class="form-control" value="1.1.2023" disabled>
+      </div>
+
+      <div class="form-group">
+        <label>Invoice Number</label>
+        <input type="text" pInputText class="form-control" value="sample-inv-23-12345" disabled>
+      </div>
+
+      <div class="form-group">
+        <label>Accounting Number</label>
+        <input type="text" pInputText class="form-control" formControlName="value">
+      </div>
+    </ng-container>
+
+    <div class="form-group" *ngIf="
+      errorMessage.includes('NO_AUXILIARY_INVOICE_NUMBER') ||
+      errorMessage.includes('NO_COMPANY_NUMBER') ||
+      errorMessage.includes('NO_TECHNOLOGY_NUMBER')
+      "
+    >
+      <label>Accounting Number</label>
+      <input type="text" pInputText class="form-control" formControlName="value">
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    [loading]="isSaving"
+    class="p-button-success"
+    [label]="'Generate'"
+    [disabled]="form.invalid"
+    (click)="send()"
+  ></button>
+</mat-dialog-actions>

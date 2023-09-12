@@ -1,0 +1,43 @@
+<div class="guide-map">
+  <div class="guide-map__row">
+    <div class="guide-map__column-left">
+      <input
+        [(ngModel)]="searchTitle"
+        pInputText
+        class="form-control"
+        type="text"
+        placeholder="Search..."
+      />
+      <ul class="guide-map__list">
+        <li
+          class="guide-map__item"
+          [class.active]="selectedGuideMapItem?.title === item.title"
+          *ngFor="let item of items| glossarySearch: searchTitle"
+          (click)="onSelectItem(item)"
+        >
+          {{item.title}}
+        </li>
+      </ul>
+    </div>
+    <div class="guide-map__column-right">
+      <div class="guide-map__box">
+        <h2>{{selectedGuideMapItem?.title ?? 'Choice Item'}}</h2>
+        <div class="guide-map__description">
+<!--          <ng-container [ngSwitch]="type">-->
+<!--            <ng-container *ngSwitchCase="'manufacturing-process'">-->
+<!--              <pek-guide-map-manufacturing-process></pek-guide-map-manufacturing-process>-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngSwitchCase="'outsoursing-procurement'">-->
+<!--              <pek-guide-map-outsoursing-procurement></pek-guide-map-outsoursing-procurement>-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngSwitchCase="'production-list-preparation-by-warehouse'">-->
+<!--              <pek-guide-map-production-list-preparation-by-warehouse></pek-guide-map-production-list-preparation-by-warehouse>-->
+<!--            </ng-container>-->
+<!--          </ng-container>-->
+
+          <ng-container dynamicComponentLoader></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

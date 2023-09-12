@@ -61,7 +61,10 @@ export class OutsourcingChainsComponent implements OnInit {
     created_after: [null],
     created_before: [null],
     contains_declined_payment: [null],
+    contains_nomenclature_name: [null],
     page: [1],
+    contains_nomenclature_code: [null],
+    id: [null],
   });
 
   orders: Order[] = [];
@@ -72,6 +75,7 @@ export class OutsourcingChainsComponent implements OnInit {
 
   nomenclaturesList: Nomenclature[] = [];
   rootLists: any[] = [];
+  productionPlanLinkBase = "/manufacturing/plans/plan/";
 
   query: QuerySearch[] = [];
   queryProdList: QuerySearch[] = [];
@@ -84,6 +88,8 @@ export class OutsourcingChainsComponent implements OnInit {
   countOrders: any;
 
   loadedIdsQuery: QuerySearch[];
+
+  isRootListShown: boolean = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -108,9 +114,44 @@ export class OutsourcingChainsComponent implements OnInit {
         if (this.isStartOnePage) {
           this.paginator?.changePage(0);
         }
+        let fetchedOrders = this.isShowAll ? (orders as Order[]) : (orders as Orders).results;
+        fetchedOrders.forEach(order => {
+          order.uniqueOrderProducts = [];
 
+          order.order_products.forEach(product => {
+            const existingInList = order.uniqueOrderProducts.find(unProduct =>
+              unProduct.current_technology === product.current_technology &&
+              unProduct.nomenclature.id === product.nomenclature.id);
+
+            if (!existingInList) {
+              order.uniqueOrderProducts.push(product);
+            }
+          });
+
+          order.root_production_list_products.forEach((root) => {
+
+            order.root_production_plans.forEach((plan: any) => {
+              if (plan.list_product.id == root.id) {
+                root.productionPlanId = plan.id;
+              }
+            });
+            this.rootLists.push(root);
+          });
+
+          const lists: { list: ListProduct, count?: number, allLists: ListProduct[] }[] = [];
+          order.root_production_list_products.forEach((res: ListProduct) => {
+            const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
+            if (found) {
+              found.count++;
+              found.allLists.push(res);
+            } else {
+              lists.push({list: res, count: 1, allLists: [res]});
+            }
+          });
+          order.display_production_list_products = lists;
+        });
         this.isStartOnePage = false;
-        return this.orderService.modifyOrders(this.isShowAll ? (orders as Order[]) : (orders as Orders).results);
+        return this.orderService.modifyOrders(fetchedOrders);
       }),
       tap(orders => this.orders = orders),
       tap(() => this.generateNomenclaturesListAndRootLists()),
@@ -139,7 +180,17 @@ export class OutsourcingChainsComponent implements OnInit {
         }
       });
 
-      order.root_production_list_products.forEach(root => this.rootLists.push(root));
+      order.root_production_list_products.forEach((root) => {
+
+        order.root_production_plans.forEach((plan: any) => {
+          if (plan.list_product.id == root.id) {
+            root.productionPlanId = plan.id
+          }
+        })
+        this.rootLists.push(root);
+      });
+
+      order.root_lists_display = this.getRootLists(order.root_production_list_products);
 
       this.rootLists = this.rootLists.map(root => {
         return {
@@ -177,14 +228,17 @@ export class OutsourcingChainsComponent implements OnInit {
     });
   }
 
-  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
-    const lists: { list: ListProduct, count?: number }[] = [];
+  getRootLists(rootLists: ListProduct[]): { root_list: ListProduct, list: ListProduct[], count: number, total_quantity: number }[] {
+    const lists: { root_list: ListProduct, list: ListProduct[], count: number, total_quantity: number }[] = [];
     rootLists.forEach((res: ListProduct) => {
-      const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
-      if (found) {
-        found.count++;
+      const index = lists.findIndex(el => el.root_list.nomenclature.name === res.nomenclature.name);
+      if (index >= 0) {
+        lists[index].list.push(res);
+        lists[index].count++;
+        lists[index].total_quantity += res.required_quantity;
+
       } else {
-        lists.push({list: res, count: 1});
+        lists.push({root_list: res, list: [res], count: 1, total_quantity: res.required_quantity });
       }
     });
     return lists;
@@ -228,8 +282,17 @@ export class OutsourcingChainsComponent implements OnInit {
 
     this.query = [
       {name: 'accounting_type', value: 2},
-      {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected},
     ];
+
+    if (this.searchForm.get('id').value) {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: false}
+      );
+    } else {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
+      );
+    }
 
     if (!this.isShowAll) {
       this.query.push(
@@ -380,5 +443,10 @@ export class OutsourcingChainsComponent implements OnInit {
   setOrderNomenclature($event: number) {
     this.searchForm.get('contains_nomenclature').setValue($event);
     this.resetPage();
+  }
+
+  goProductionList(id: number) {
+    const link = `${this.productionPlanLinkBase}${id}`;
+    window.open(link, '_blank');
   }
 }

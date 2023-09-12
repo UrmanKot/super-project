@@ -1,0 +1,99 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Additional Expenses
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form class="form-row" [formGroup]="form">
+    <div class="form-group">
+      <label>Service*</label>
+      <p-dropdown
+        formControlName="accountingservice"
+        [showClear]="true"
+        placeholder="Service"
+        optionValue="value"
+        optionLabel="label"
+        [options]="servicesType"
+      >
+
+      </p-dropdown>
+    </div>
+    <div class="form-group">
+      <label>Cost*</label>
+      <input pInputText type="number" formControlName="value">
+    </div>
+    <button
+      pButton
+      type="button"
+      class="p-button-icon"
+      icon="pi pi-plus"
+      label="Add"
+      [loading]="isPending"
+      [disabled]="form.invalid"
+      (click)="add()"
+    ></button>
+  </form>
+
+  <p-table
+  #st
+  selectionMode="single"
+  [rows]="10"
+  [scrollable]="true"
+  [paginator]="services.length > 0"
+  scrollHeight="calc(100vh - 19rem)"
+  [value]="services"
+  [(selection)]="selectedProformaInvoice"
+>
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="index-header text-center" style="width: 10%">#</th>
+        <th style="width: 45%" class="text-center">Service</th>
+        <th style="width: 30%" class="text-center">Price</th>
+        <th style="width: 15%"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product let-i="rowIndex">
+      <tr>
+        <td style="width: 10%" class="text-center">{{i + 1}}</td>
+        <td style="width: 45%" class="text-center">{{product?.accountingservice}}</td>
+        <td style="width: 30%" class="text-center">{{product?.value | moneyFormat}} €</td>
+        <td style="width: 15%">
+<!--          <div class="remove-btn">-->
+<!--            <i class="pi pi-times" (click)="remove(product.id)"></i>-->
+<!--          </div>-->
+
+          <button
+            [loading]="deletion.has(product.id)"
+            (click)="remove(product.id)"
+            pButton
+            icon="pi pi-times"
+            type="button"
+            class="p-button-danger p-button-icon"
+          >
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="10">
+          <span>No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+<!--  <button-->
+<!--    pButton-->
+<!--    type="button"-->
+<!--    class="p-button-success"-->
+<!--    label="Upload"-->
+<!--    [loading]="isPending"-->
+<!--    [disabled]="uploadFiles.length === 0"-->
+<!--    (click)="onUploadFiles()"-->
+<!--  ></button>-->
+</mat-dialog-actions>

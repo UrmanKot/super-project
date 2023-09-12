@@ -1,0 +1,124 @@
+.warehouse-delivery-chain-print {
+  display: block;
+
+  h2 {
+    font-size: 24px !important;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.125rem;
+
+    p {
+      font-weight: 500;
+      line-height: 1.4;
+      font-size: 18px;
+      margin-bottom: 0.5rem;
+    }
+
+    h4 {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  &__header-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__header-col {
+    max-width: 25%;
+  }
+
+  &__box {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__row {
+    border: 1px solid #000;
+    border-bottom: none;
+    padding: 10px;
+
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid #000;
+    }
+  }
+
+  &__col {
+    width: 25%;
+    padding: 5px;
+    word-break: break-all;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 3px;
+  }
+
+  p {
+    font-size: 17px;
+  }
+
+  &__column {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    h3 {
+      font-size: 17px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    div {
+      width: 25%;
+    }
+
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+  }
+
+  &__left,
+  &__right {
+    div {
+      margin-bottom: 40px;
+    }
+  }
+
+  &__bottom {
+    @media print {
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+  }
+
+  &__table {
+    margin-bottom: 60px;
+
+    @media print {
+      page-break-after: auto;
+    }
+  }
+}

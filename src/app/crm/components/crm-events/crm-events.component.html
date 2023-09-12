@@ -11,7 +11,7 @@
         type="button"
         (click)="toggleAutoEvents()"
         [icon]="'pi' + ' ' + (hideAutoEvents ? 'pi-eye' : 'pi-eye-slash')"
-        [label]="hideAutoEvents ? 'Show Auto Events' : 'Hide Auto Events'"
+        [label]="hideAutoEvents ? 'Show Sales Chain Status' : 'Hide Sales Chain Status'"
       >
       </button>
       <button
@@ -35,7 +35,7 @@
   </div>
 </div>
 
-<div class="page__content">
+<div class="page__content calendar-events-page">
   <div class="page__card calendar mb-4">
     <div class="main-calendar">
       <p-calendar
@@ -49,10 +49,20 @@
         [minDate]="minDateRange"
       >
         <ng-template pTemplate="date" let-date>
-          <b *ngIf="getEventsCount(date)" class="event-count">{{getEventsCount(date)}}</b>
-          <b *ngIf="getExternalEventsCount(date)" class="external-event-count">{{ getExternalEventsCount(date)}}</b>
-          <b *ngIf="getAutoStatusCount(date)" class="event-count auto-event-count">{{ getAutoStatusCount(date)}}</b>
-          <span>{{ date.day }}</span>
+            <b *ngIf="getEventsCount(date)" class="event-count">{{getEventsCount(date)}}</b>
+            <b *ngIf="getExternalEventsCount(date)" class="external-event-count">{{ getExternalEventsCount(date)}}</b>
+            <b *ngIf="getAutoStatusCount(date)" class="event-count auto-event-count">{{ getAutoStatusCount(date)}}</b>
+            <span>{{ date.day }}</span>
+            <span *ngIf="isDateFirst(date)" class="range-border start-date"></span>
+            <span *ngIf="isDateLast(date)" class="range-border end-date"></span>
+            <i *ngIf="datesNotEqual() && isDateFirst(date)" class="pi pi-angle-double-right date-arrow forward-date-arrow"></i>
+            <i *ngIf="datesNotEqual() && isDateLast(date)" class="pi pi-angle-double-left date-arrow backward-date-arrow"></i>
+          <span
+            class="hover-register"
+            #dateElement
+            [class.is-in-selected-mode]="isSelectedInSelectedNode(date, dateElement)"
+            (mouseenter)="monthHoveredOver(date)">
+          </span>
         </ng-template>
       </p-calendar>
     </div>
@@ -142,8 +152,26 @@
               <input class="form-control" formControlName="description" pInputText #searchBoxDescription>
             </div>
           </div>
-          <div class="col-3"></div>
-          <div class="col-3">
+          <div class="col-2">
+            <div class="form-group">
+              <label class="capitalize">sales chain statuses</label>
+              <pek-multi-sales-status-picker (selectNumericStatuses)="salesChainStatusesSelected($event)"></pek-multi-sales-status-picker>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label class="capitalize">enable event type colors</label>
+              <p-checkbox
+                class="checkbox-big mt-1"
+                name="group1"
+                [binary]="true"
+                inputId="enableColors"
+                formControlName="enableColors"
+              >
+              </p-checkbox>
+            </div>
+          </div>
+          <div class="col-2">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
         </div>
@@ -172,21 +200,21 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-filterEvent let-i="rowIndex">
-          <tr [pSelectableRow]="filterEvent">
+          <tr [pSelectableRow]="filterEvent"
+              [class.show-colored]="searchForm.get('enableColors').value"
+              [class.is-inner]="filterEvent.is_inner"
+              [class.is-external]="!filterEvent.is_inner"
+              [class.chain-status]="filterEvent.sales_chain"
+          >
             <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
             <td style="width: 20%">
               {{ filterEvent.event_type?.name }}
+              <span *ngIf="filterEvent.sales_chain">
+                - {{filterEvent.sales_chain_status ? filterEvent.sales_chain_status.name : 'New'}}
+              </span>
             </td>
             <td style="width: 30%">
-                  <span *ngIf="filterEvent.sales_chain else emptySale">
-                  <a target="blank"
-                     [routerLink]="['/dash/sales/sales-procurement-chains/chain-page', filterEvent.sales_chain]">
-                    {{ filterEvent.description }}
-                  </a>
-              </span>
-              <ng-template #emptySale>
-                {{ filterEvent.description }}
-              </ng-template>
+              {{ filterEvent.description }}
             </td>
 
             <td style="width: 15%" class="text-center">
@@ -195,9 +223,9 @@
               </ng-container>
 
               <ng-container *ngIf="filterEvent.employee.length > 0">
-                <span *ngFor="let employee of filterEvent.employee">
+                <div *ngFor="let employee of filterEvent.employee">
                   {{ employee.first_name + " " + employee.last_name }} <br>
-                </span>
+                </div>
               </ng-container>
             </td>
             <td style="width: 15%" class="text-center">
@@ -240,12 +268,20 @@
     </div>
   </div>
 
-  <div class="event-full-calendar mt-5" *ngIf="eventsList.length > 0">
+  <div class="event-full-calendar mt-5">
+
+<!-- [eventList]="eventsList" -->
     <pek-crm-full-calendar
-      [eventList]="eventsList"
+      [hideAutoEvents]="hideAutoEvents"
+      [description]="searchForm.get('description').value"
+      [employee]="searchForm.get('employee').value"
+      [eventsTypes]="searchForm.get('events').value"
+      [externalEvent]="searchForm.get('externalEvent').value"
+    ></pek-crm-full-calendar>
+<!--
       [startDate]="searchForm.get('start').value"
       [endDate]="searchForm.get('end').value"
-    ></pek-crm-full-calendar>
+      -->
   </div>
 </div>
 

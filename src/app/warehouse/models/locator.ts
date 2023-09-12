@@ -1,4 +1,4 @@
-import {Warehouse} from './warehouse';
+import {Currency} from './warehouse';
 
 export class Locator {
   readonly id: number;
@@ -8,5 +8,5 @@ export class Locator {
   shelf: number;
   place: number;
   description: string;
-  warehouse: Warehouse;
+  warehouse: Currency;
 }

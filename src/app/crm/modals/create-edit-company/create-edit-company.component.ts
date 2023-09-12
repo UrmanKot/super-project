@@ -53,7 +53,6 @@ export class CreateEditCompanyComponent implements OnInit {
       this.currentCategoriesIds = this.data.company.categories?.map(c => c.id);
 
       this.form.get('contact_persons').patchValue(this.data.company.contact_persons?.map(c => c.id));
-      console.log('this.form. EDIT', this.form.value);
     }
   }
 

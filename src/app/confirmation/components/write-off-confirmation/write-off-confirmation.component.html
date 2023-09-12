@@ -7,94 +7,194 @@
   </div>
 </div>
 
+
 <div class="page__content">
-  <div class="page__card">
-    <div class="page__table">
-      <p-table
-        #dt
-        selectionMode="single"
-        scrollHeight="calc(100vh - 18.65rem)"
-        [scrollable]="true"
-        [paginator]="warehouseProducts.length > 0"
-        [rows]="10"
-        [(selection)]="selectedWarehouseProducts"
-        [value]="warehouseProducts"
-        dataKey="id"
+  <div class="page__tabs">
+    <p-tabView class="custom-tabs">
+      <p-tabPanel
+        header="Invoice Items"
+        [selected]="true"
       >
-        <ng-template pTemplate="caption">
-          <div class="d-flex align-items-center">
-            <button
-              pButton
-              type="button"
-              icon="pi pi-times"
-              label="Decline"
-              class="ml-auto p-button-danger p-button-icon mr-2"
-              (click)="onDecline()"
-              [loading]="isPendingDecline"
-              [disabled]="selectedWarehouseProducts?.length === 0"
-            ></button>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-check"
-              label="Confirm"
-              class="p-button-success p-button-icon"
-              (click)="onConfirm()"
-              [loading]="isPendingConfirm"
-              [disabled]="selectedWarehouseProducts?.length === 0"
-            ></button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 3%">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th class="text-center" style="width: 5%">#</th>
-            <th style="width: 30%">Code</th>
-            <th style="width: 27%">Name</th>
-            <th style="width: 15%"  class="text-center">Quantity</th>
-            <th style="width: 20%"  class="text-center">Write Off Quantity</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr>
-            <td style="width: 3%">
-              <p-tableCheckbox [value]="product"></p-tableCheckbox>
-            </td>
-            <td class="text-center" style="width: 5%">{{i + 1}}</td>
-            <td style="width: 30%">{{product.nomenclature.code}}</td>
-            <td style="width: 27%">{{product.nomenclature.name}}</td>
-            <td style="width: 15%" class="text-center">{{product.total_area_locator_quantity}}</td>
-            <td style="width: 20%" class="text-center">{{product.quantity_to_write_off}}</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td class="text-center p-4" [attr.colspan]="6">
-              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoading">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
+        <div class="page__table">
+          <p-table
+            #dt
+            selectionMode="checkbox"
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="invoiceProducts.length > 0"
+            [rows]="10"
+            [value]="invoiceProducts"
+            [(selection)]="selectedInvoiceProducts"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  label="Decline"
+                  class="ml-auto p-button-danger p-button-icon mr-2"
+                  [disabled]="true"
+                  [loading]="isPendingInvoiceProductsDecline"
+                  (click)="onDeclineInvoiceProducts()"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-check"
+                  label="Confirm"
+                  class="p-button-success p-button-icon"
+                  [disabled]="selectedInvoiceProducts?.length === 0"
+                  [loading]="isPendingInvoiceProductsConfirm"
+                  (click)="onConfirmInvoiceProducts()"
+                ></button>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center" style="width: 5%">
+                  <p-tableHeaderCheckbox class="mr-3"></p-tableHeaderCheckbox>
+                  #
+                </th>
+                <th style="width: 25%">Name</th>
+                <th style="width: 30%">Code</th>
+                <th class="text-center" style="width: 20%">Quantity</th>
+                <th class="text-center" style="width: 20%">Write Off Quantity</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td class="text-center" style="width: 5%">
+                  <p-tableCheckbox class="mr-3" [value]="product"></p-tableCheckbox>
+                  {{i + 1}}
+                </td>
+                <td style="width: 25%">{{product.nomenclature.code}}</td>
+                <td style="width: 30%">{{product.nomenclature.name}}</td>
+                <td class="text-center" style="width: 20%">{{product.quantity}}</td>
+                <td class="text-center" style="width: 20%">{{product.quantity_to_write_off ?? 0}}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="6">
+                  <i *ngIf="isLoadingInvoiceProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoadingInvoiceProducts">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="dt.paginator=false"
+                styleClass="p-button-text"
+              >All
+              </p-button>
+            </ng-template>
+          </p-table>
+        </div>
+        <div *ngIf="!dt.paginator && !isLoadingInvoiceProducts && invoiceProducts.length > 0"
+             class="paginator-return-pagination">
           <p-button
             type="button"
-            (click)="dt.paginator=false"
+            (click)="dt.paginator=true"
             styleClass="p-button-text"
-          >All
+          >
+            Return pagination
           </p-button>
-        </ng-template>
-      </p-table>
-    </div>
-    <div *ngIf="!dt.paginator && !isLoading && warehouseProducts.length > 0" class="paginator-return-pagination">
-      <p-button
-        type="button"
-        (click)="dt.paginator=true"
-        styleClass="p-button-text"
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel
+        header="Order Items"
       >
-        Return pagination
-      </p-button>
-    </div>
+        <div class="page__table">
+          <p-table
+            #st
+            selectionMode="checkbox"
+            scrollHeight="calc(100vh - 18.8rem)"
+            [scrollable]="true"
+            [paginator]="orderProducts.length > 0"
+            [rows]="10"
+            [value]="orderProducts"
+            [(selection)]="selectedOrderProducts"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  label="Decline"
+                  class="ml-auto p-button-danger p-button-icon mr-2"
+                  [disabled]="true"
+                  [loading]="isPendingOrderProductsDecline"
+                  (click)="onDeclineOrderProducts()"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-check"
+                  label="Confirm"
+                  class="p-button-success p-button-icon"
+                  [disabled]="selectedOrderProducts?.length === 0"
+                  [loading]="isPendingOrderProductsConfirm"
+                  (click)="onConfirmOrderProducts()"
+                ></button>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center" style="width: 5%">
+                  <p-tableHeaderCheckbox class="mr-3"></p-tableHeaderCheckbox>
+                  #
+                </th>
+                <th style="width: 25%">Name</th>
+                <th style="width: 30%">Code</th>
+                <th class="text-center" style="width: 20%">Quantity</th>
+                <th class="text-center" style="width: 20%">Write Off Quantity</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr [pSelectableRow]="product">
+                <td class="text-center" style="width: 5%">
+                  <p-tableCheckbox class="mr-3" [value]="product"></p-tableCheckbox>
+                  {{i + 1}}
+                </td>
+                <td style="width: 25%">{{product.nomenclature.code}}</td>
+                <td style="width: 30%">{{product.nomenclature.name}}</td>
+                <td class="text-center" style="width: 20%">{{product.quantity}}</td>
+                <td class="text-center" style="width: 20%">{{product.quantity_to_write_off ?? 0}}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center p-4" [attr.colspan]="6">
+                  <i *ngIf="isLoadingOrderProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                  <span *ngIf="!isLoadingOrderProducts">No Records Found</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              <p-button
+                type="button"
+                (click)="st.paginator=false"
+                styleClass="p-button-text"
+              >All
+              </p-button>
+            </ng-template>
+          </p-table>
+        </div>
+        <div *ngIf="!st.paginator && !isLoadingOrderProducts && orderProducts.length > 0"
+             class="paginator-return-pagination">
+          <p-button
+            type="button"
+            (click)="st.paginator=true"
+            styleClass="p-button-text"
+          >
+            Return pagination
+          </p-button>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>

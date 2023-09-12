@@ -18,6 +18,14 @@
 
 <div class="page__content">
   <div class="page__card">
+
+    <div class="filters-visibility">
+      <div class="d-flex align-items-center">
+        <p class="mt-0 mb-0 subtitle" *ngIf="!selectedVehicle">Choose the Vehicle to edit</p>
+        <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedVehicle"></p-menubar>
+      </div>
+    </div>
+
     <div class="page__table">
       <div class="table-pagination-preloader">
         <p-table
@@ -29,12 +37,12 @@
           [scrollable]="true"
           [value]="vehicles"
         >
-          <ng-template pTemplate="caption">
-            <div class="d-flex align-items-center">
-              <p class="subtitle ml-1 mr-2" *ngIf="!selectedVehicle">Choose the Vehicle to edit</p>
-              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedVehicle"></p-menubar>
-            </div>
-          </ng-template>
+<!--          <ng-template pTemplate="caption">-->
+<!--            <div class="d-flex align-items-center">-->
+<!--              <p class="subtitle ml-1 mr-2" *ngIf="!selectedVehicle">Choose the Vehicle to edit</p>-->
+<!--              <p-menubar class="ml-auto mr-2" [model]="menuItems" [class.disabled]="!selectedVehicle"></p-menubar>-->
+<!--            </div>-->
+<!--          </ng-template>-->
           <ng-template pTemplate="colgroup">
             <colgroup>
               <col class="index-header"/>

@@ -21,6 +21,15 @@ import {
 import {
   WarehouseProductionRequestComponent
 } from './components/warehouse-production-request/warehouse-production-request.component';
+import {
+  WarehouseDeliveryRequestsComponent
+} from './components/warehouse-delivery-requests/warehouse-delivery-requests.component';
+import {
+  WarehouseDeliveryRequestComponent
+} from './components/warehouse-delivery-request/warehouse-delivery-request.component';
+import {
+  WarehouseDeliveryChainComponent
+} from './components/warehouse-delivery-chain/warehouse-delivery-chain.component';
 import {ProductionListsComponent} from './components/production-lists/production-lists.component';
 import {ProductionListComponent} from './components/production-lists/production-list/production-list.component';
 import {WarehouseQcComponent} from './components/warehouse-qc/warehouse-qc.component';
@@ -35,12 +44,6 @@ import {
   WarehouseIsolatorOrdersComponent
 } from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
 import {WarehouseIsolatorComponent} from './components/warehouse-isolator/warehouse-isolator.component';
-import {
-  WarehouseShippingRequestsComponent
-} from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
-import {
-  WarehouseShippingRequestComponent
-} from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
 
 
 const routes: Routes = [
@@ -62,6 +65,13 @@ const routes: Routes = [
         path: 'production-requests', children: [
           {path: '', title: 'Production Requests', component: WarehouseProductionRequestsComponent},
           {path: ':id', title: 'Production Request', component: WarehouseProductionRequestComponent}
+        ]
+      },
+      {
+        path: 'delivery-requests', children: [
+          {path: '', title: 'Devivery Requests', component: WarehouseDeliveryRequestsComponent},
+          {path: ':id', title: 'Devivery Request', component: WarehouseDeliveryRequestComponent},
+          {path: 'chain/:id', title: 'Devivery Chain', component: WarehouseDeliveryChainComponent}
         ]
       },
       {
@@ -94,12 +104,6 @@ const routes: Routes = [
           {path: '', title: 'Isolator', component: WarehouseIsolatorComponent},
           {path: 'invoices/:id', title: 'Isolator Invoices', component: WarehouseIsolatorInvoicesComponent},
           {path: 'orders/:id', title: 'Isolator Orders', component: WarehouseIsolatorOrdersComponent}
-        ]
-      },
-      {
-        path: 'shipments-requests', children: [
-          {path: '', title: 'Shipments Requests', component: WarehouseShippingRequestsComponent},
-          {path: ':id', title: 'Shipment Request', component: WarehouseShippingRequestComponent},
         ]
       }
     ]

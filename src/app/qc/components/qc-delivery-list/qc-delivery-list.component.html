@@ -1,0 +1,358 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'quality-control'" [isActive]="true"></pek-module-icon>
+      <h1>Delivery</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__tabs">
+    <form
+      [formGroup]="searchForm"
+      class="form mb-3"
+    >
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label>QC Started Date From</label>
+            <p-calendar
+              formControlName="qc_delivery_started_date_after"
+              dateFormat="dd/mm/yy"
+              dataType="date"
+              [readonlyInput]="true"
+              (ngModelChange)="searchItems()"
+              [showButtonBar]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="form-group">
+            <label>QC Started Date To</label>
+            <p-calendar
+              formControlName="qc_delivery_started_date_before"
+              dateFormat="dd/mm/yy"
+              dataType="date"
+              [readonlyInput]="true"
+              (ngModelChange)="searchItems()"
+              [showButtonBar]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="form-group">
+            <label>Status</label>
+            
+            <pek-qc-delivery-statuses-picker
+              (selectStatuses)="onChoiceQcDeliveryStatuses($event)"
+            ></pek-qc-delivery-statuses-picker>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label>QC Closed Date From</label>
+            <p-calendar
+              formControlName="qc_delivery_closed_date_after"
+              dateFormat="dd/mm/yy"
+              dataType="date"
+              [readonlyInput]="true"
+              (ngModelChange)="searchItems()"
+              [showButtonBar]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="form-group">
+            <label>QC Closed Date To</label>
+            <p-calendar
+              formControlName="qc_delivery_closed_date_before"
+              dateFormat="dd/mm/yy"
+              dataType="date"
+              [readonlyInput]="true"
+              (ngModelChange)="searchItems()"
+              [showButtonBar]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </form>
+    <p-tabView class="custom-tabs">      
+      <p-tabPanel header="Delivery to customers">            
+        <ng-container *ngIf="invoicesOrderType === 'list'">
+          <div class="page__table">
+            <p-table
+              #ot
+              selectionMode="single"
+              scrollHeight="calc(100vh - 18.8rem)"
+              dataKey="id"
+              [scrollable]="true"
+              [paginator]="deliveryChainsList.length > 0"
+              [rows]="10"
+              [(selection)]="selectedDeliveryChain"
+              [value]="deliveryChainsList"
+            >
+              <ng-template pTemplate="caption">
+                <div class="d-flex">
+                  <p
+                    class="subtitle"
+                    *ngIf="!selectedOrderItem">
+                    Сhoose the Outsoursing Materials Delivery to view Items
+                  </p>
+
+                  <a
+                    pButton
+                    type="button"
+                    icon="pi pi-bars"
+                    label="Items"
+                    class="ml-auto mr-2"
+                    [class.disabled]="!selectedDeliveryChain"
+                    [routerLink]="['chain', selectedDeliveryChain?.id]"
+                    target="_blank"
+                  ></a>
+                  <button
+                    [disabled]="invoicesOrderType === 'list'"
+                    pButton
+                    type="button"
+                    class="mr-2"
+                    label="List"
+                    icon="pi pi-list"
+                    (click)="onSelectOrderType('list')"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    label="Hierarchy"
+                    icon="pi pi-table"
+                    (click)="onSelectOrderType('hierarchy')"
+                  ></button>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%;" class="text-center">#</th>
+                  <th style="width: 25%" class="text-center">
+                    QC Started Date
+                  </th>
+                  <th style="width: 25%" class="text-center" *ngIf="showClosedChains">
+                    QC Closed Date
+                  </th>
+                  <th style="width: 10%" class="text-center">Delivery Chain ID</th>
+                  <th style="width: 10%" class="text-center">Sales Chain ID</th>
+                  <th style="width: 25%" class="text-center">Customer</th>
+                  <th style="width: 10%;" class="text-center">Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-order let-i="rowIndex">
+                <tr [pSelectableRow]="order">
+                  <td class="text-center">{{i + 1}}</td>
+                  <td style="width: 25%" class="text-center">
+                    {{order.qc_delivery_started_date | date: 'dd/MM/yyyy HH:mm'}}
+                  </td>
+                  <td style="width: 20%;" class="text-center" *ngIf="showClosedChains">
+                    <span>
+                      {{order?.qc_delivery_closed_date | date:'dd/MM/yyyy HH:mm'}}
+                    </span>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <a (click)="onGoToDeliveryChainLink(order.id)" target="_blank">
+                    {{order.id}}
+                    </a>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <a (click)="onGoToSalesChainLink(order.sales_chain_id)" target="_blank">
+                    {{order.sales_chain_id}}
+                    </a>
+                  </td>
+                  <td style="width: 25%" class="text-center">
+                    {{order.customer?.name}}
+                  </td>
+                  <td style="width: 10%">
+                    {{order.qc_delivery_status?.name}}
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td class="text-center p-4" [attr.colspan]="7">
+                    <i *ngIf="isLoadingChains" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                    <span *ngIf="!isLoadingChains">No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                <p-button
+                  type="button"
+                  (click)="ot.paginator=false"
+                  styleClass="p-button-text"
+                >All
+                </p-button>
+              </ng-template>
+            </p-table>
+          </div>
+          <div *ngIf="!ot.paginator && !isLoadingChains && ordersList.length > 0" class="paginator-return-pagination">
+            <p-button
+              type="button"
+              (click)="ot.paginator=true"
+              styleClass="p-button-text"
+            >
+              Return pagination
+            </p-button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="invoicesOrderType === 'hierarchy'">            
+          In development
+        </ng-container>
+      </p-tabPanel>
+      <p-tabPanel
+        [header]="'Outsoursing Materials Delivery'"
+        [selected]="true"
+      >
+
+        <ng-container *ngIf="invoicesOrderType === 'list'">
+          <div class="page__table">
+            <p-table
+              #ot
+              selectionMode="single"
+              scrollHeight="calc(100vh - 18.8rem)"
+              dataKey="id"
+              [scrollable]="true"
+              [paginator]="ordersList.length > 0"
+              [rows]="10"
+              [(selection)]="selectedOrderItem"
+              [value]="ordersList"
+            >
+              <ng-template pTemplate="caption">
+                <div class="d-flex">
+                  <p
+                    class="subtitle"
+                    *ngIf="!selectedOrderItem">
+                    Сhoose the Outsoursing Materials Delivery to view Items
+                  </p>
+
+                  <a
+                    pButton
+                    type="button"
+                    icon="pi pi-bars"
+                    label="Items"
+                    class="ml-auto mr-2"
+                    [class.disabled]="!selectedOrderItem"
+                    [routerLink]="['../', 'delivery', selectedOrderItem?.id]"
+                    target="_blank"
+                  ></a>
+                  <button
+                    [disabled]="invoicesOrderType === 'list'"
+                    pButton
+                    type="button"
+                    class="mr-2"
+                    label="List"
+                    icon="pi pi-list"
+                    (click)="onSelectOrderType('list')"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    label="Hierarchy"
+                    icon="pi pi-table"
+                    (click)="onSelectOrderType('hierarchy')"
+                  ></button>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%;" class="text-center">#</th>
+                  <th style="width: 25%" class="text-center">
+                    QC Started Date
+                  </th>
+                  <th style="width: 25%" class="text-center" *ngIf="showClosedOrders">
+                    QC Closed Date
+                  </th>
+                  <th style="width: 10%" class="text-center">Order ID</th>
+                  <!-- <th style="width: 15%;" class="text-center">Items Reception Date</th> -->
+                  <th style="width: 20%;">Root List</th>
+                  <th style="width: 20%;" class="text-center">Technologies</th>
+                  <th style="width: 10%;" class="text-center">Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-order let-i="rowIndex">
+                <tr [pSelectableRow]="order">
+                  <td class="text-center">{{i + 1}}</td>
+                  <td style="width: 25%" class="text-center">
+                    {{order.qc_material_started_date | date: 'dd/MM/yyyy HH:mm'}}
+                  </td>
+                  <td style="width: 20%;" class="text-center" *ngIf="showClosedOrders">
+                    <span>
+                      {{order?.qc_material_closed_date | date:'dd/MM/yyyy HH:mm'}}
+                    </span>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    {{order.id}}
+                  </td>
+
+                  <td style="width: 20%;">
+                    <div *ngFor="let root_plan of order.unique_root_production_plans">
+                      {{root_plan.list_product.nomenclature.code}}~{{root_plan.list_product.nomenclature.name}}
+                    </div>
+                  </td>
+                  <td style="width: 20%;">
+                    <span *ngFor="let tech of order.ordered_products_unique_technologies; let last=last">
+                      {{tech}}<span *ngIf="!last">,</span>
+                    </span>
+                  </td>
+                  <td style="width: 10%">
+                    {{order.qc_delivery_status?.name}}
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td class="text-center p-4" [attr.colspan]="7">
+                    <i *ngIf="isLoadingOrders" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                    <span *ngIf="!isLoadingOrders">No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                <p-button
+                  type="button"
+                  (click)="ot.paginator=false"
+                  styleClass="p-button-text"
+                >All
+                </p-button>
+              </ng-template>
+            </p-table>
+          </div>
+          <div *ngIf="!ot.paginator && !isLoadingOrders && ordersList.length > 0" class="paginator-return-pagination">
+            <p-button
+              type="button"
+              (click)="ot.paginator=true"
+              styleClass="p-button-text"
+            >
+              Return pagination
+            </p-button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="invoicesOrderType === 'hierarchy'">            
+          In development
+        </ng-container>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

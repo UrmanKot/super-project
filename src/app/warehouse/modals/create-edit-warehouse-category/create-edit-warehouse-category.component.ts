@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {WarehouseService} from '../../services/warehouse.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
-import {Warehouse} from '../../models/warehouse';
+import {Currency} from '../../models/warehouse';
 import {Category} from '../../../product-structure/models/category';
 import {CategoriesService} from '../../../product-structure/services/categories.service';
 
@@ -70,7 +70,7 @@ export class CreateEditWarehouseCategoryComponent implements OnInit {
   }
 
   editCategory() {
-    const send = <Partial<Warehouse>>this.form.value;
+    const send = <Partial<Currency>>this.form.value;
     this.categoriesService.updatePartly(send).subscribe({
       next: category => this.dialogRef.close(category),
       error: () => this.isSaving = false,

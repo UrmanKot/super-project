@@ -1,0 +1,193 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Roles
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <p-table [value]="roles$ | async" [(selection)]="selectedRoles" dataKey="id" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th style="width: 100%">Name</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-role let-i="rowIndex">
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="role"></p-tableCheckbox>
+        </td>
+        <td style="width: 100%">{{role.name}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="10">
+          <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoading">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-paginator
+    #paginator
+    *ngIf="count"
+    [rows]="10"
+    [totalRecords]="count"
+    (onPageChange)="paginate($event)">
+  </p-paginator>
+
+
+  <form [formGroup]="form">
+    <h3 class="mt-4 mb-2">Company Categories & Event Types Permissions</h3>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label>Company Categories</label>
+          <p-multiSelect
+            *ngIf="!isLoadingCategories; else spinner"
+            optionLabel="name"
+            optionValue="id"
+            formControlName="categories"
+            appendTo="body"
+            [options]="categories"
+          ></p-multiSelect>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>Event Types</label>
+          <p-multiSelect
+            *ngIf="!isLoadingEventTypes; else spinner"
+            appendTo="body"
+            optionLabel="name"
+            optionValue="id"
+            formControlName="eventTypes"
+            [options]="eventTypes"
+          ></p-multiSelect>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>External Event Types</label>
+          <p-multiSelect
+            *ngIf="!isLoadingExternalEventTypes; else spinner"
+            appendTo="body"
+            optionLabel="name"
+            optionValue="id"
+            formControlName="externalEventTypes"
+            [options]="externalEventTypes"
+          ></p-multiSelect>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <h3 class="mt-4 mb-2">Business Trips Employee Permissions</h3>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="form-group">
+        <label>Employee Business Trips</label>
+
+        <p-multiSelect
+          *ngIf="!isLoadingEmployees && !isLoadingPermissions; else spinner"
+          optionValue="id"
+          optionLabel="first_name"
+          [options]="employees"
+          [(ngModel)]="businessTripEmployeesIds"
+          appendTo="body"
+        >
+          <ng-template let-contact pTemplate="item">
+            <div class="contact-item">
+              <div>{{contact.first_name}} {{contact.last_name}}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+
+      <div class="form-group">
+        <label for="other">Allow Verify Expenses</label>
+        <p-checkbox
+          id="other"
+          [(ngModel)]="canVerifyTripExpenses"
+          [binary]="true"
+          [ngModelOptions]="{standalone: true}"
+        ></p-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="mt-4 mb-2">Correspondent Incoming Categories</h3>
+
+  <div class="row">
+    <form [formGroup]="form">
+      <div class="col-12">
+        <div class="form-group">
+          <label>Correspondent Incoming Categories</label>
+
+          <p-treeSelect
+            *ngIf="!isLoadingIncomingCategories; else spinner"
+            appendTo="body"
+            label="name"
+            formControlName="incomingCorrespondentCategoryPermissions"
+            [options]="incomingCategoriesTree"
+            selectionMode="checkbox"
+            placeholder="Select Categories"
+          ></p-treeSelect>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label>Correspondent Outgoing Categories</label>
+
+          <p-treeSelect
+            *ngIf="!isLoadingOutgoingCategories; else spinner"
+            appendTo="body"
+            label="name"
+            formControlName="outgoingCorrespondentCategoryPermissions"
+            [options]="outgoingCategoriesTree"
+            selectionMode="checkbox"
+            placeholder="Select Categories"
+          ></p-treeSelect>
+        </div>
+      </div>
+    </form>
+    <div class="col-12">
+      <div class="form-group">
+        <label for="other">Can Accept Changes On Import</label>
+        <p-checkbox
+          id="canAcceptChanges"
+          [(ngModel)]="canAcceptChangesOnImport"
+          [binary]="true"
+          [ngModelOptions]="{standalone: true}"
+        ></p-checkbox>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>
+<!--appendTo="body"-->

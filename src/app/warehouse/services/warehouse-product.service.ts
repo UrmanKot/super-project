@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
 import {WarehouseProduct, WarehouseProductExtraInfo, WarehouseProducts} from '../models/warehouse-product';
 import {map} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {ModalActionType} from '@shared/models/modal-action';
@@ -14,6 +14,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MoveWarehouseProductComponent} from '../modals/move-warehouse-product/move-warehouse-product.component';
 import {Nomenclature} from '@shared/models/nomenclature';
 import {NomenclatureSerialInfoComponent} from '../modals/nomenclature-serial-info/nomenclature-serial-info.component';
+import {ReservationInfoComponent} from '../modals/reservation-info/reservation-info.component';
 import {
   SearchProductInWarehouseComponent
 } from '../../outsourcing/modals/search-product-in-warehouse/search-product-in-warehouse.component';
@@ -49,6 +50,31 @@ export class WarehouseProductService {
 
   getReservations(): Observable<WarehouseProduct[]> {
     return this.httpClient.get<{ data: WarehouseProduct[] }>(this.API_URL + 'warehouse_products_reservations/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  getPagination(query?: { name: string, value: any }[]): Observable<WarehouseProducts> {
+    let qString = '';
+    if (query) {
+      query.forEach((element, index) => {
+        if (index > 0) {
+          qString += '&' + element.name + '=' + element.value;
+        } else {
+          qString += '?' + element.name + '=' + element.value;
+        }
+
+      });
+    }
+    return this.httpClient.get<{ data: WarehouseProducts }>(this.API_URL + this.url + qString).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
+  getReservationInfo(ids): Observable<WarehouseProduct[]> {
+    const params = new HttpParams()
+      .set('ids', ids)
+    return this.httpClient.get<{ data: WarehouseProduct[] }>(this.API_URL + this.url + 'reserved_products_info/', {params: params}).pipe(
       map(response => response.data)
     );
   }
@@ -158,6 +184,20 @@ export class WarehouseProductService {
       .afterClosed()
       .pipe();
   }
+
+  openReservationInfoModal(extraInfo: WarehouseProductExtraInfo[]): any {
+    return this.dialog
+      .open<ReservationInfoComponent>(ReservationInfoComponent, {
+        width: '650px',
+        height: 'auto',
+        data: {extraInfo},
+        disableClose: true,
+        autoFocus: false,
+      })
+      .afterClosed()
+      .pipe();
+  }
+
 
   openSearchInWarehouseModal(): Observable<WarehouseProduct>{
     return this.dialog

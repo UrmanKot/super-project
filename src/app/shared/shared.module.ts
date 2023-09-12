@@ -52,6 +52,7 @@ import { MultiProductStructureCategoriesPickerComponent } from './pickers/multi-
 import { MultiCompanyPickerComponent } from './pickers/multi-company-picker/multi-company-picker.component';
 import { MultiSalesStatusPickerComponent } from './pickers/multi-sales-status-picker/multi-sales-status-picker.component';
 import { MultiCompanyCategoryPickerComponent } from './pickers/multi-company-category-picker/multi-company-category-picker.component';
+import { QcDeliveryStatusesPickerComponent } from './pickers/qc-delivery-statuses-picker/qc-delivery-statuses-picker.component';
 import { CompanyPickerComponent } from './pickers/company-picker/company-picker.component';
 import { CompanyCategoryPickerComponent } from './pickers/company-category-picker/company-category-picker.component';
 import { RegionPickerComponent } from './pickers/region-picker/region-picker.component';
@@ -75,7 +76,7 @@ import { OrderPageComponent } from './components/order-page/order-page.component
 import { AddFileToOrderComponent } from './modals/add-file-to-order/add-file-to-order.component';
 import { EditOrderComponent } from './modals/edit-order/edit-order.component';
 import {ProcurementModule} from '../procurement/procurement.module';
-import {MultiStatusesPickerComponent} from '@shared/pickers/multi-statuses-picker/multi-statuses-picker.component';
+import { MultiStatusesPickerComponent } from './pickers/multi-statuses-picker/multi-statuses-picker.component';
 import { StatusesPickerComponent } from './pickers/statuses-picker/statuses-picker.component';
 import { OrderStatusesComponent } from './components/order-statuses/order-statuses.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
@@ -99,6 +100,7 @@ import { RootListPickerByOrderTypeComponent } from './pickers/root-list-picker-b
 import { ProductListsNomenclaturePickerComponent } from './pickers/product-lists-nomenclature-picker/product-lists-nomenclature-picker.component';
 import {MiddleMouseClickDirective} from '@shared/directives/middle-mouse-click.directive';
 import { OrderTenderSupplierComponent } from './components/order-page/order-tender-supplier/order-tender-supplier.component';
+import {AllocateItemsComponent} from "@shared/modals/allocate-items/allocate-items.component";
 
 import { MultiVehiclePickerComponent } from './pickers/multi-vehicle-picker/multi-vehicle-picker.component';
 
@@ -107,6 +109,17 @@ import { ChoiceDateComponent } from './modals/choice-date/choice-date.component'
 import { ChoicePeriodDateComponent } from './modals/choice-period-date/choice-period-date.component';
 import { EmployeePositionPickerComponent } from './pickers/employee-position-picker/employee-position-picker.component';
 import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-list-picker.component';
+import { SalesStatusPickerComponent } from './pickers/sales-status-picker/sales-status-picker.component';
+import { ConfirmWithDetailsComponent } from './modals/confirm-with-details/confirm-with-details.component';
+import { ScanNextComponent } from './modals/scan-next/scan-next.component';
+import { SignatureModalComponent } from './modals/signature-modal/signature-modal.component';
+import {AngularSignaturePadModule} from '@almothafar/angular-signature-pad';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { InputThreeValuesComponent } from './components/input-three-values/input-three-values.component';
+import {CountryPickerComponent} from "@shared/pickers/country-picker/country-picker.component";
+import { BaseServicePickerComponent } from './pickers/base-service-picker/base-service-picker.component';
+import { DynamicComponentLoaderDirective } from './directives/dynamic-component-loader.directive';
+import { AccountingNumberPickerComponent } from './pickers/accounting-number-picker/accounting-number-picker.component';
 
 
 @NgModule({
@@ -163,6 +176,7 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     AddFileToOrderComponent,
     EditOrderComponent,
     MultiStatusesPickerComponent,
+    QcDeliveryStatusesPickerComponent,
     StatusesPickerComponent,
     OrderStatusesComponent,
     CreateEditStatusComponent,
@@ -190,10 +204,22 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     OrderTenderSupplierComponent,
     RootListPickerByOrderTypeComponent,
     ProductListsNomenclaturePickerComponent,
+    AllocateItemsComponent,
     MultiVehiclePickerComponent,
+    SalesStatusPickerComponent,
+    ConfirmWithDetailsComponent,
+    ScanNextComponent,
+    SignatureModalComponent,
+    ClickOutsideDirective,
+    InputThreeValuesComponent,
+    CountryPickerComponent,
+    BaseServicePickerComponent,
+    DynamicComponentLoaderDirective,
+    AccountingNumberPickerComponent,
   ],
   exports: [
     MultiStatusesPickerComponent,
+    QcDeliveryStatusesPickerComponent,
     ButtonModule,
     InputTextModule,
     TreeTableModule,
@@ -274,6 +300,13 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     ProductListsNomenclaturePickerComponent,
     MiddleMouseClickDirective,
     MultiVehiclePickerComponent,
+    SalesStatusPickerComponent,
+    ClickOutsideDirective,
+    InputThreeValuesComponent,
+    CountryPickerComponent,
+    BaseServicePickerComponent,
+    DynamicComponentLoaderDirective,
+    AccountingNumberPickerComponent,
   ],
   imports: [
     MultiSelectModule,
@@ -299,6 +332,7 @@ import { RootListPickerComponent } from '@shared/pickers/root-list-picker/root-l
     NgxMaskModule.forRoot(),
     FileUploadModule,
     DragDropModule,
+    AngularSignaturePadModule,
   ]
 })
 export class SharedModule { }

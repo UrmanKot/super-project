@@ -11,12 +11,9 @@ import {Paginator} from 'primeng/paginator';
 import {fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
 import {debounceTime, map, tap} from 'rxjs/operators';
 import {MenuItem} from 'primeng/api';
-import {CRMEmployee} from '../../models/crm-employee';
 import {EventType} from '../../models/event-type';
 import {AddEventModalType} from '../../models/company';
-import {
-  logExperimentalWarnings
-} from '@angular-devkit/build-angular/src/builders/browser-esbuild/experimental-warnings';
+
 
 @Component({
   selector: 'pek-crm-events',
@@ -60,6 +57,8 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
     end: [null],
     events: [[]],
     externalEvent: [[]],
+    salesChainStatuses: [[]],
+    enableColors: [null],
   });
 
   destroy$ = new Subject();
@@ -83,7 +82,16 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
   external: any = {};
   autoEvents: any = {};
 
+  isSelectingRangeMode: boolean = false;
+
   dSub: Subscription;
+  enableColors: boolean = false;
+
+  lastHoveredDate: Date;
+  startDate: Date;
+
+
+
 
   constructor(
     private fb: FormBuilder,
@@ -149,11 +157,16 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.searchForm.get('end').patchValue(this.rangeCalendar[1]);
       this.search();
       this.minDateRange = null;
-    } else if (this.rangeCalendar[0]) {
-      this.minDateRange = this.rangeCalendar[0];
-    }
 
-    console.log(this.rangeCalendar);
+      this.isSelectingRangeMode = false;
+      this.lastHoveredDate = null;
+      this.startDate = null;
+    } else if (this.rangeCalendar[0]) {
+      this.startDate = this.rangeCalendar[0];
+      this.isSelectingRangeMode = true;
+      this.minDateRange = this.rangeCalendar[0];
+      this.minDateRange.setHours(0, 0, 0, 0);
+    }
   }
 
   search() {
@@ -167,6 +180,13 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.query.push({
         name: 'start_end_range_after',
         value: this.adapterService.dateAdapter(new Date(this.searchForm.get('start').value)),
+      });
+    }
+
+    if (this.searchForm.get('salesChainStatuses').value) {
+      this.query.push({
+        name: 'sales_chain_statuses',
+        value: this.searchForm.get('salesChainStatuses').value,
       });
     }
 
@@ -191,19 +211,27 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    if (this.searchForm.get('events').value || this.searchForm.get('externalEvent').value) {
+    if (this.searchForm.get('events').value) {
       const eventsIds: number[] = [];
 
       if (this.searchForm.get('events').value.length > 0) {
         this.searchForm.get('events').value.forEach(id => eventsIds.push(id));
       }
 
+      if (eventsIds.length > 0) {
+        this.query.push({name: 'event_type_ids', value: eventsIds.join(',')});
+      }
+    }
+
+    if (this.searchForm.get('externalEvent').value) {
+      const eventsIds: number[] = [];
+
       if (this.searchForm.get('externalEvent').value.length > 0) {
         this.searchForm.get('externalEvent').value.forEach(id => eventsIds.push(id));
       }
 
       if (eventsIds.length > 0) {
-        this.query.push({name: 'event_type_ids', value: eventsIds.join(',')});
+        this.query.push({name: 'external_event_type_ids', value: eventsIds.join(',')});
       }
     }
 
@@ -368,7 +396,7 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedEventItem).subscribe(event => {
       if (event) {
         const typesIds = this.searchForm.get('events').value;
-        const canShowByEventTypeFiltered = typesIds.length > 0 ? this.searchForm.get('events').value.some(el => el === event.event_type.id): true;
+        const canShowByEventTypeFiltered = typesIds.length > 0 ? this.searchForm.get('events').value.some(el => el === event.event_type.id) : true;
         if (canShowByEventTypeFiltered) {
           this.getUpdatedEvent(event.id);
         } else {
@@ -397,5 +425,82 @@ export class CrmEventsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+
+  monthHoveredOver(date: any) {
+    if (this.isSelectingRangeMode) {
+      this.lastHoveredDate = new Date();
+      this.lastHoveredDate.setDate(date.day);
+      this.lastHoveredDate.setMonth(date.month);
+      this.lastHoveredDate.setFullYear(date.year);
+      this.lastHoveredDate.setHours(0, 0, 0, 0);
+    }
+  }
+
+  isSelectedInSelectedNode(date: any, dateElement: HTMLSpanElement) {
+    if (this.isSelectingRangeMode && this.lastHoveredDate && this.startDate) {
+      const displayingDate = new Date();
+      displayingDate.setDate(date.day);
+      displayingDate.setMonth(date.month);
+      displayingDate.setFullYear(date.year);
+      displayingDate.setHours(0, 0, 0, 0);
+      const isInSelection = displayingDate.getTime() <= this.lastHoveredDate.getTime() && displayingDate.getTime() >= this.startDate.getTime();
+
+      if (isInSelection && !dateElement.parentElement.classList.contains('p-disabled')) {
+        dateElement.parentElement.classList.add('is-selected');
+      } else {
+        dateElement.parentElement.classList.remove('is-selected');
+      }
+      return isInSelection;
+    }
+  }
+
+  getDisplayDate(date: any) {
+    const displayingDate = new Date();
+    displayingDate.setDate(date.day);
+    displayingDate.setMonth(date.month);
+    displayingDate.setFullYear(date.year);
+    displayingDate.setHours(0, 0, 0, 0);
+    return displayingDate;
+  }
+
+  isDateLast(date) {
+    if (this.isSelectingRangeMode && this.lastHoveredDate) {
+      const displayingDate = this.getDisplayDate(date);
+      return displayingDate.getTime() == this.lastHoveredDate.getTime();
+    } else {
+      if (this.rangeCalendar[0] && this.rangeCalendar[1]) {
+        const displayingDate = this.getDisplayDate(date);
+        return displayingDate.getTime() == this.rangeCalendar[1].setHours(0,0,0,0);
+      }
+    }
+  }
+
+  isDateFirst(date) {
+    if (this.isSelectingRangeMode && this.startDate) {
+      const displayingDate = this.getDisplayDate(date);
+      return displayingDate.getTime() == this.startDate.getTime();
+    } else {
+      if (this.rangeCalendar[0] && this.rangeCalendar[1]) {
+        const displayingDate = this.getDisplayDate(date);
+        return displayingDate.getTime() == this.rangeCalendar[0].setHours(0,0,0,0);
+      }
+    }
+  }
+
+  datesNotEqual() {
+    if (this.isSelectingRangeMode && this.startDate  && this.lastHoveredDate) {
+      return this.lastHoveredDate.getTime() !== this.startDate.getTime();
+    } else {
+      if (this.rangeCalendar[0] && this.rangeCalendar[1]) {
+        return this.rangeCalendar[0].setHours(0,0,0,0) !== this.rangeCalendar[1].setHours(0,0,0,0);
+      }
+    }
+  }
+
+  salesChainStatusesSelected($event: number[]) {
+    this.searchForm.get('salesChainStatuses').setValue($event);
+    this.search();
   }
 }

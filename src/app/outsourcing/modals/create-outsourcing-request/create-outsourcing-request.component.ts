@@ -4,7 +4,7 @@ import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {QuerySearch} from '@shared/models/other';
-import {Nomenclature} from '@shared/models/nomenclature';
+import {ENomenclatureApproval, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, finalize, map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -65,6 +65,9 @@ export class CreateOutsourcingRequestComponent implements OnInit {
     tap(() => this.isLoading = false),
     untilDestroyed(this)
   );
+
+  protected readonly ENomenclatureApproval = ENomenclatureApproval;
+  protected readonly ENomenclatureType = ENomenclatureType;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -156,4 +159,5 @@ export class CreateOutsourcingRequestComponent implements OnInit {
       this.dialogRef.close(order);
     });
   }
+
 }

@@ -1,0 +1,843 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1 class="align-items-center d-flex">
+        Requests for Order
+
+        <a *ngIf="order?.accounting_type == 2"
+           (click)="goOrder(2, order.id)"
+           class="ml-2"
+        >
+          {{orderId}}
+        </a>
+
+        <span *ngIf="order?.root_production_plans" class="ml-2">
+      <span *ngIf="order?.root_production_plans.length > 0"
+            class="order-ids-container">
+        <a>
+          {{order?.root_production_plans[0].list_product.nomenclature.name}}
+        </a>
+        <div *ngIf="order?.root_production_plans.length > 1" class="orders-ids">
+          <div *ngFor="let root_plan of order.root_production_plans">
+            <a (click)="onGoProd(root_plan.id)">
+             {{root_plan.list_product.nomenclature.name}} ({{root_plan.id}})
+            </a>
+          </div>
+        </div>
+      </span>
+    </span>
+        <div class="colors">
+          <div class="colors__color">
+            <div class="colors__color-block colors__color-block_scanned"></div>
+            <p>Scanned</p>
+          </div>
+          <div class="colors__color">
+            <div class="colors__color-block colors__color-block_partly-scanned"></div>
+            <p>Partly Scanned</p>
+          </div>
+        </div>
+      </h1>
+    </div>
+    <div class="page__tools">
+      <p-menubar
+        class="ml-auto mr-2"
+        [model]="printMenuItems">
+      </p-menubar>
+      <button
+        [loading]="albumService.loading$ | async"
+        pButton
+        *ngIf="isAlbumPrint"
+        class="p-button-success mr-2"
+        type="button"
+        label="Print Album"
+        (click)="printAlbum()"
+        [disabled]="selectedRequest?.length === 0 || viewMode !== viewModes.LIST"
+      >
+      </button>
+      <button
+        pButton
+        [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
+        class="mr-2"
+        type="button"
+        [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
+        (click)="togglePrintAlbumMode()"
+        [disabled]="isLoading"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
+        class="p-button-info mr-2"
+        icon="pi pi-check"
+        label="Complete"
+        (click)="complete()"
+        [disabled]="!order?.qc_delivery_status?.is_ready_to_complete"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="p-button-info mr-2"
+        icon="pi pi-check"
+        label="To QC"
+        (click)="materialsToQc()"
+        [disabled]="!order?.qc_delivery_closed_date && order?.qc_delivery_started_date || order?.qc_delivery_status?.is_ready_to_complete"
+      ></button>
+      <button
+        pButton
+        class="p-button-danger ml-2"
+        icon="pi pi-times"
+        type="button"
+        label="Cancelation"
+        (click)="onCancel()"
+      ></button>
+
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        icon="pi pi-angle-double-right"
+        [class.disabled]="!order || isAlbumPrint"
+        label="Go to Order"
+        (click)="goToOrder()"
+      >
+      </a>
+      <a
+        pButton
+        class="ml-2"
+        type="button"
+        icon="pi pi-file-edit"
+        [class.disabled]="!order || isAlbumPrint"
+        label="Signature"
+        (click)="signatures()"
+      >
+      </a>
+    </div>
+  </div>
+</div>
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table selectionMode="single">
+        <ng-template pTemplate="caption">
+          <div class="table-tools">
+        <h2 class="subtitle">Outsourcer</h2>
+          <h4><span>Name:</span> {{order?.supplier?.name}}</h4>
+          <h4>
+            <span>Category:</span>
+            <ng-container *ngFor="let item of order?.supplier?.categories; let idx = index">
+              <!--              {{categories[item]}}-->
+              <span *ngIf="idx !== order?.supplier?.categories.length - 1">,</span>
+            </ng-container>
+          </h4>
+          <h4><span>Address:</span> {{order?.supplier?.address}}</h4>
+          <h4><span>Tax Number:</span> {{order?.supplier?.tax_number}}</h4>
+          <h4><span>Register Number:</span> {{order?.supplier?.registration_number}}</h4>
+          <h4><span>Nomenclature:</span> {{order?.supplier?.supplier_nomenclature}}</h4>
+          <h4><span>Description:</span></h4>
+          <p>{{order?.supplier?.comment}}</p>
+          </div>
+          </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<div class="page__content">
+  <div class="page__card">
+    <ng-container *ngIf="viewMode === viewModes.LIST">
+      <div class="page__table">
+        <p-table
+          #dt
+          [paginator]="listRequests.length > 0"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="!dt.paginator"
+          class="adaptive-table print-table"
+          [rows]="10"
+          [value]="listRequests"
+          [(first)]="firstPage"
+          [globalFilterFields]="['name']"
+          dataKey="id"
+          [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
+          [(selection)]="selectedRequest"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex table-caption">
+              <p class="subtitle" *ngIf="!selectedRequest && !isAlbumPrint">Choose the Request to edit</p>
+              <p-menubar
+                class="ml-auto mr-2"
+                [model]="requestMenuItems"
+                [class.disabled]="!selectedRequest || isAlbumPrint">
+              </p-menubar>
+
+              <button
+                class="mr-2 p-button-icon"
+                pButton
+                type="button"
+                icon="pi pi-camera"
+                label="Scan QR Codes"
+                (click)="onStartScanning()"
+              >
+              </button>
+              <button
+                [disabled]="viewMode === viewModes.LIST"
+                pButton
+                type="button"
+                class="mr-2"
+                label="List"
+                icon="pi pi-list"
+                (click)="changeView(viewModes.LIST)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Hierarchy"
+                icon="pi pi-table"
+                (click)="changeView(viewModes.HIERARCHY)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-th-large"
+                label="Detailed Hierarchy"
+                (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="colgroup">
+            <colgroup>
+              <col class="index-header">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center" style="width: 5%;">
+                <div class="row-toggler">
+                  <div class="toggle">
+                    <p-tableHeaderCheckbox *ngIf="isAlbumPrint"></p-tableHeaderCheckbox>
+                  </div>
+                  #
+                </div>
+              </th>
+              <th class="text-center" style="width: 5%;">ID</th>
+              <th style="width: 15%;">Code</th>
+              <th style="width: 15%;">Name</th>
+              <th style="width: 10%;" class="text-center">Serial Number</th>
+              <th style="width: 12%;" class="text-center">Technology</th>
+              <th class="text-center" style="width: 14%;">Required Quantity</th>
+              <th class="text-center" style="width: 10%;">Locator</th>
+              <th class="text-center" style="width: 4%;">UOM</th>
+              <th class="text-center" style="width: 10%;">Available Quantity</th>
+              <ng-container *ngIf="order?.accounting_type == 2">
+              <th class="text-center" style="width: 10%;">Status</th>
+              </ng-container>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-request let-i="rowIndex">
+            <tr class="pagebreak" [pSelectableRow]="request"
+                [class.last-scanned]="request.id === lastScannedId"
+                [class.partly-scanned]="isPartlyScanned(request)"
+                [class.is-added-after-order-creation]="request.material_nomenclature"
+                [class.qr-code-scanned]="isFullyScanned(request)"
+                [class.is-wrong-qc]="request.qc_delivery_status?.is_wrong">
+              <td style="width: 5%;" class="text-center">
+                <div class="row-toggler">
+                  <h3 class="td-title">#</h3>
+                  <div class="toggle">
+                    <p-tableCheckbox *ngIf="isAlbumPrint" [value]="request"></p-tableCheckbox>
+                  </div>
+                  {{i + 1}}
+                </div>
+              </td>
+              <td style="width: 5%;" class="text-center ids-container hovered-info">
+                <h3 class="td-title">ID</h3>
+                {{request.id}} <span *ngIf="request.ids?.length > 0">L({{request.ids?.length + 1}})</span>
+
+                <pek-hover-detailed-info-component
+                  [moveLeft]="0"
+                  *ngIf="request.ids?.length > 0">
+                <span
+                  [class.is-fixed]="listRequests.length <= 10"
+                  [class.is-absolute]="listRequests.length > 10"
+                  [class.is-last]="listRequests.length - 10 <= i"
+                  class="ids">
+                  <div>
+                    {{request.id}}
+                  </div>
+                  <div *ngFor="let id of request.ids">
+                    {{id}}
+                  </div>
+                </span>
+                </pek-hover-detailed-info-component>
+
+              </td>
+              <td style="width: 15%;">
+                <h3 class="td-title">Code</h3>
+                <div *ngIf="request.material_nomenclature">
+                  {{request.material_nomenclature.code}}
+                </div>
+                <div *ngIf="request.order_product_nomenclature">
+                  {{request.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  {{request.list_product.nomenclature.code}}
+                </div>
+              </td>
+              <td style="width: 15%;" class="serial-numbers-container">
+                <h3 class="td-title">Name</h3>
+                <div *ngIf="request.material_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.material_nomenclature.name}}
+                </div>
+                <div *ngIf="request.order_product_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  <b *ngIf="request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{request.list_product.nomenclature.name}}
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Serial number</h3>
+                <span *ngIf="request.reserved_serial_products?.length === 1">
+                {{request.reserved_serial_products[0].serial_number.type_with_number}}
+                </span>
+              </td>
+              <td style="width: 12%" class="text-center">
+                <h3 class="td-title">Technology</h3>
+                <span *ngIf="request.technology">{{request.technology}}</span>
+              </td>
+              <td style="width: 14%;" class="text-center">
+                <h3 class="td-title">Required Quantity</h3>
+                {{request.total_required_quantity}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Locator</h3>
+                <div *ngIf="request.locators">
+                  <div *ngFor="let locator of request.unique_locators; let last=last">
+                    {{locator.name}} <span *ngIf="!last">,</span>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 4%" class="text-center">
+                <h3 class="td-title">UOM</h3>
+                <div
+                  *ngIf="request.material_nomenclature">
+                  {{request.material_nomenclature?.category?.unit_of_measure?.symbol ? request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div
+                  *ngIf="request.order_product_nomenclature">
+                  {{request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div *ngIf="!request.material_nomenclature && !request.order_product_nomenclature">
+                  {{request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+              </td>
+              <td style="width: 10%;" class="text-center">
+                <h3 class="td-title">Available Quantity</h3>
+                {{request.available_quantity_sum}}
+              </td>
+              <ng-container *ngIf="order?.accounting_type == 2">
+              <td style="width: 10%;" class="text-center">
+                <h3 class="td-title">Status</h3>
+                {{request.qc_delivery_status?.name}}
+              </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr class="tr-spinner">
+              <td class="text-center p-4" [attr.colspan]="9">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="dt.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!dt.paginator && !isLoading && listRequests.length > 0" class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="dt.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModes.HIERARCHY">
+      <p-treeTable
+        class="orders-tree"
+        [value]="requestTree"
+        selectionMode="single"
+        [(selection)]="selectedRequestNode"
+        scrollHeight="calc(100vh - 16.5rem)"
+      >
+        <ng-template pTemplate="caption">
+          <div class="d-flex table-caption">
+            <p class="subtitle" *ngIf="!selectedRequestNode">Choose the Request to edit</p>
+            <p-menubar class="ml-auto mr-2" [model]="requestNodeMenuItems"
+                       [class.disabled]="!selectedRequestNode"></p-menubar>
+            <button
+              class="mr-2 p-button-icon"
+              pButton
+              type="button"
+              icon="pi pi-camera"
+              label="Scan QR Codes"
+              (click)="onStartScanning()"
+            >
+            </button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              icon="pi pi-angle-down"
+              label="Expand all"
+              (click)="expandCollapseAllOrders()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              icon="pi pi-angle-up"
+              label="Collapse all"
+              (click)="expandCollapseAllOrders(false)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              icon="pi pi-list"
+              label="List"
+              (click)="changeView(viewModes.LIST)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="mr-2"
+              label="Hierarchy"
+              icon="pi pi-table"
+              (click)="changeView(viewModes.HIERARCHY)"
+              [disabled]="viewMode === viewModes.HIERARCHY"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Detailed Hierarchy"
+              icon="pi pi-th-large"
+              (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 16%; padding-left: 3.3125rem">ID</th>
+            <th style="width: 18%;">Code</th>
+            <th style="width: 10%;">Name</th>
+            <th style="width: 10%;" class="text-center">Serial Number</th>
+            <th style="width: 10%;" class="text-center">Technology</th>
+            <th class="text-center" style="width: 10%;">Required Quantity</th>
+            <th class="text-center" style="width: 4%;">UOM</th>
+            <th class="text-center" style="width: 10%;">Locator</th>
+            <th class="text-center" style="width: 12%;">Available Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+          <tr
+            class="pagebreak"
+            [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttSelectableRowDisabled]="rowData.level < 4"
+            [class.last-scanned]="rowData.request?.id === lastScannedId"
+            [id]="rowData.request ? 'row-' + rowData.request?.id : null"
+            [class.partly-scanned]="rowData.request ? isPartlyScanned(rowData.request) : false"
+            [class.qr-code-scanned]="rowData.request ? isFullyScanned(rowData.request) : false"
+            [class.is-added-after-order-creation]="rowData.request?.material_nomenclature"
+            [class.tr-toggler]="rowNode.node.children.length > 0"
+          >
+            <td style="width: 16%;" class="text-center ids-container">
+              <h3 class="td-title">ID</h3>
+              <div class="toggle-row hovered-info">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span [class.bold]="rowData.level < 4">
+                    {{rowData.name}}
+                  </span>
+                <span *ngIf="rowData.level === 4">
+                     {{rowData.request.id}}
+                  <span *ngIf="rowData.request.ids?.length > 0">L({{rowData.request.ids?.length + 1}})</span>
+
+                   <pek-hover-detailed-info-component
+                     [moveLeft]="0"
+                     *ngIf="rowData.request.ids?.length > 0">
+                                     <span class="ids">
+                    <div>
+                      {{rowData.request.id}}
+                    </div>
+                    <div *ngFor="let id of rowData.request.ids">
+                      {{id}}
+                    </div>
+                  </span>
+                  </pek-hover-detailed-info-component>
+                  </span>
+              </div>
+            </td>
+            <td style="width: 18%;">
+              <h3 class="td-title">Code</h3>
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.material_nomenclature">
+                  {{rowData.request.material_nomenclature.code}}
+                </div>
+                <div *ngIf="rowData.request.order_product_nomenclature">
+                  {{rowData.request.order_product_nomenclature.code}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  {{rowData.request.list_product.nomenclature.code}}
+                </div>
+              </div>
+
+            </td>
+            <td style="width: 10%;" class="serial-numbers-container">
+              <h3 class="td-title">Name</h3>
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.material_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.material_nomenclature.name}}
+                </div>
+                <div *ngIf="rowData.request.order_product_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.order_product_nomenclature.name}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                  {{rowData.request.list_product.nomenclature.name}}
+                </div>
+              </div>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Serial Number</h3>
+              <div *ngIf="rowData.level === 4">
+                <span *ngIf="rowData.request.reserved_serial_products?.length === 1">
+                {{rowData.request.reserved_serial_products[0].serial_number.type_with_number}}
+                </span>
+              </div>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Technology</h3>
+              <div *ngIf="rowData.level === 4">
+                <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
+              </div>
+            </td>
+            <td style="width: 10%;" class="text-center">
+              <h3 class="td-title">Required Quantity</h3>
+              <div *ngIf="rowData.level === 4">
+                {{rowData.request.total_required_quantity}}
+              </div>
+            </td>
+            <td style="width: 14%;" class="text-center">
+              <h3 class="td-title">UOM</h3>
+              <div *ngIf="rowData.level === 4">
+                <div
+                  *ngIf="rowData.request.material_nomenclature">
+                  {{rowData.request.material_nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.material_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div
+                  *ngIf="rowData.request.order_product_nomenclature">
+                  {{rowData.request.order_product_nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.order_product_nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+                <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                  {{rowData.request.list_product.nomenclature?.category?.unit_of_measure?.symbol ? rowData.request.list_product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+                </div>
+              </div>
+            </td>
+            <td style="width: 10%" class="text-center">
+              <h3 class="td-title">Locator</h3>
+              <div *ngIf="rowData.level === 4">
+                <div *ngIf="rowData.request.locators">
+                  <div *ngFor="let locator of rowData.request.unique_locators; let last=last">
+                    {{locator.name}}<span *ngIf="!last">,</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td style="width: 12%;" class="text-center">
+              <h3 class="td-title">Available Quantity</h3>
+              <div *ngIf="rowData.level === 4">
+                {{rowData.request.available_quantity_sum}}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr class="tr-spinner">
+            <td class="text-center p-4" [attr.colspan]="8">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </ng-container>
+
+    <ng-container *ngIf="viewMode === viewModes.DETAILED_HIERARCHY">
+      <div class="page__table">
+        <p-treeTable
+          class="orders-tree"
+          [value]="detailedRequestTree"
+          (onNodeExpand)="onNodeExpand($event)"
+          scrollHeight="calc(100vh - 16.5rem)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex table-caption">
+              <button
+                pButton
+                type="button"
+                class="ml-auto mr-2"
+                label="Expand all"
+                icon="pi pi-angle-down"
+                (click)="expandCollapseDetailedView()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Collapse all"
+                icon="pi pi-angle-up"
+                (click)="expandCollapseDetailedView(false)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="List"
+                icon="pi pi-list"
+                (click)="changeView(viewModes.LIST)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="mr-2"
+                label="Hierarchy"
+                icon="pi pi-table"
+                (click)="changeView(viewModes.HIERARCHY)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Detailed Hierarchy"
+                icon="pi pi-th-large"
+                [disabled]="viewMode === viewModes.DETAILED_HIERARCHY"
+                (click)="changeView(viewModes.DETAILED_HIERARCHY)"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 16%; padding-left: 3.3125rem">ID</th>
+              <th style="width: 18%;">Code</th>
+              <th style="width: 20%;">Name</th>
+              <th style="width: 10%;" class="text-center">Technology</th>
+              <th class="text-center" style="width: 14%;">Required Quantity</th>
+              <th class="text-center" style="width: 10%;">Locator</th>
+              <th class="text-center" style="width: 12%;">Available Quantity</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              class="pagebreak"
+              [ttRow]="rowNode"
+              [class.in-plan]="rowData.request"
+              [class.placeholder]="!rowData.request"
+              [class.tr-toggler]="rowNode.node.children?.length > 0"
+            >
+              <td style="width: 16%;" class="text-center">
+                <div class="toggle-row">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span *ngIf="rowData.loading" [class.bold]="!rowData.request">
+                      {{rowData.loading}}
+                    </span>
+                  <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.id}}
+                    </span>
+                  <span *ngIf="rowData.request">
+                     {{rowData.request.id}}
+                    </span>
+                </div>
+              </td>
+              <td style="width: 18%;">
+                   <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.code}}
+                  </span>
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    {{rowData.request.material_nomenclature.code}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    {{rowData.request.order_product_nomenclature.code}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    {{rowData.request.list_product.nomenclature.code}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 20%;">
+                   <span *ngIf="!rowData.request" [class.bold]="!rowData.request">
+                      {{rowData.name}}
+                     {{rowData.serialNumber}}
+                  </span>
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.material_nomenclature.name}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.order_product_nomenclature.name}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.list_product.nomenclature.name}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div *ngIf="rowData.request">
+                  <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
+                </div>
+              </td>
+              <td style="width: 14%;" class="text-center">
+                <div *ngIf="rowData.request">
+                  {{rowData.request.required_quantity}}
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div *ngIf="rowData.request">
+                  <div *ngIf="rowData.request.locators">
+                    <div *ngFor="let locator of rowData.request.locators">
+                      {{locator.name}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 12%;" class="text-center">
+                <div *ngIf="rowData.request">
+                  {{rowData.request.available_quantity_sum}}
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr class="tr-spinner">
+              <td class="text-center p-4" [attr.colspan]="9">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table selectionMode="single" [value]="technicalEquipments">
+        <ng-template pTemplate="caption">
+          <div class="table-tools" *ngIf="technicalEquipments">
+            <h2 class="subtitle">Technical Equipments</h2>
+            <div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%" class="index-header text-center">#</th>
+            <th style="width: 35%">Code</th>
+            <th style="width: 30%">Name</th>
+            <th style="width: 30%">Locator</th>
+            <th style="width: 30%" class="text-center">Quantity</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-technicalEquipment let-i="rowIndex">
+          <tr [pSelectableRow]="technicalEquipment" class="table-row">
+            <td class="text-center">{{i + 1}}</td>
+            <td>{{technicalEquipment.nomenclature.code}}</td>
+            <td>{{technicalEquipment.nomenclature.name}}</td>
+            <td>
+              <div *ngIf="technicalEquipment.locators.length > 0">
+                <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+                  {{locator.name}}<span *ngIf="!last">, </span>
+                </div>
+              </div>
+              <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{locator.name}}<span *ngIf="!last">, </span>
+                </span>
+              </div>
+            </td>
+            <td class="text-center">{{technicalEquipment.max_initial_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">
+              Choice ordered item
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr class="tr-spinner">
+            <td class="text-center p-5" [attr.colspan]="7">
+              <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin fa-3x "></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<div class="print-page" *ngIf="isShowPrint">
+  <div>
+    <pek-warehouse-delivery-request-print-page
+      [rootList]="rootList"
+      [orderId]="+orderId"
+      [requests]="listRequests"
+      [currentReqDate]="currentReqDate"
+      [technologies]="order?.ordered_items_technologies"
+      [outsourcer]="order?.supplier"
+      [technicalEquipments]="technicalEquipments"
+    ></pek-warehouse-delivery-request-print-page>
+  </div>
+</div>
+
+<div class="print-page" *ngIf="isShowPrintGrouped">
+  <div>
+    <pek-warehouse-delivery-request-print-page
+      [rootList]="rootList"
+      [orderedProducts]="orderedProductsForPrint"
+      [orderId]="+orderId"
+      [requests]="listRequests"
+      [currentReqDate]="currentReqDate"
+      [technologies]="order?.ordered_items_technologies"
+      [outsourcer]="order?.supplier"
+      [technicalEquipments]="technicalEquipments"
+    ></pek-warehouse-delivery-request-print-page>
+  </div>
+</div>
+
+<pek-qr-code-scanner
+  *ngIf="isScanned"
+  (scanned)="onScanned($event)"
+  (cancel)="onCancelScanned()"
+></pek-qr-code-scanner>

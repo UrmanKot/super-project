@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ModalService} from '@shared/services/modal.service';
 import {Paginator} from 'primeng/paginator';
@@ -12,6 +12,7 @@ import {MenuItem, TreeNode} from 'primeng/api';
 import * as cloneDeep from 'lodash/cloneDeep';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {environment} from '@env/environment';
+import {DOCUMENT} from '@angular/common';
 
 export enum ViewMode {
   LIST = 0,
@@ -93,7 +94,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   isHideFilters = false;
 
   viewModeType = ViewMode;
-  viewMode: ViewMode = ViewMode.LIST;
+  viewMode: ViewMode = ViewMode.HIERARCHY;
   queryKey = 'name:/code:/responsible_employee_id:null/date_created_after:null/date_created_before:null/category_ids:null/root_categories:null';
 
   searchForm: FormGroup = this.fb.group({
@@ -122,6 +123,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   private destroy$ = new Subject();
+  isDesktopVersion: boolean = false;
 
   constructor(
     private modalService: ModalService,
@@ -129,6 +131,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
     private readonly adapterService: AdapterService,
     private productStructureCategoriesService: ProductStructureCategoryService,
     private fb: FormBuilder,
+    @Inject(DOCUMENT) private document: Document
   ) {
   }
 
@@ -153,6 +156,7 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
+    this.onResize();
     this.getCategories();
     this.getProductionListsForPagination();
   }
@@ -814,5 +818,10 @@ export class ProductionListsComponent implements OnInit, AfterViewInit, OnDestro
         });
       }
     }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.isDesktopVersion = document.body.getBoundingClientRect().width > 1280;
   }
 }

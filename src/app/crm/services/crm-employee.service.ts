@@ -44,8 +44,6 @@ export class CrmEmployeeService {
       });
     }
 
-    console.log('query', query);
-
     return this.httpClient.get<{ data: CRMEmployee[] }>(this.API_URL + this.url  + queryParams).pipe(
       map(response => {
         const employees = response.data.map(e => {

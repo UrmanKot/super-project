@@ -30,12 +30,12 @@ export class InvoiceFilesComponent implements OnInit {
     private readonly invoiceService: InvoiceService,
     private readonly adapterService: AdapterService,
     private readonly modalService: ModalService,
-    @Inject(MAT_DIALOG_DATA) private invoice: Invoice,
+    @Inject(MAT_DIALOG_DATA) private id: number,
   ) {
   }
 
   ngOnInit(): void {
-    this.invoiceId = this.invoice.id;
+    this.invoiceId = this.id;
     this.getFiles();
   }
 

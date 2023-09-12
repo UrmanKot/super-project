@@ -14,4 +14,5 @@ export class Category {
   tree_id?: number;
   // categories?: Nomenclature[];
   categories?: any[];
+  isExpanded?: boolean;
 }

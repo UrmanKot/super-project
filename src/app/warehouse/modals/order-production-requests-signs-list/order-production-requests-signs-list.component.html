@@ -1,0 +1,84 @@
+<div class="modal-header  justify-content-between">
+  <h2 class="modal-header__title">
+    Production Request Signatures
+  </h2>
+
+  <button
+    pButton
+    type="button"
+    icon="pi pi-pencil"
+    label="Sign"
+    (click)="signRequest()"
+  ></button>
+</div>
+<mat-dialog-content>
+  <div class="row">
+    <p-table
+      class="table-full-loading adaptive-table adaptive-table_filters"
+      [rows]="5"
+      [paginator]="true"
+      [value]="orderProductionSignatures"
+      selectionMode="single"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 40%">Full Name</th>
+          <th style="width: 40%">Signed Date</th>
+          <th style="width: 20%">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-signature let-i="rowIndex">
+        <tr [pSelectableRow]="signature">
+          <td style="width: 40%">
+            {{ signature.full_name }}
+          </td>
+          <td style="width: 40%">
+            {{ signature.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}
+          </td>
+          <td style="width: 20%">
+            <div class="d-flex justify-content-center">
+              <button
+                pButton
+                (click)="downloadFile(signature)"
+                type="button"
+                class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                icon="pi pi-download"
+              ></button>
+<!--              <button-->
+<!--                pButton-->
+<!--                (click)="deleteOrderSignature(signature.id)"-->
+<!--                type="button"-->
+<!--                class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"-->
+<!--                icon="pi pi-trash"-->
+<!--              ></button>-->
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr class="no-content">
+          <td style="width: 100%;" class="text-center p-4" [attr.colspan]="3">
+              <span>
+              No Files Found
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <div class="d-flex">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-secondary"></button>
+  </div>
+
+<!--  <button-->
+<!--    pButton-->
+<!--    type="button"-->
+<!--    [label]="'Sign'"-->
+<!--    (click)="sign()"-->
+<!--    class="p-button-success"-->
+<!--  ></button>-->
+</mat-dialog-actions>

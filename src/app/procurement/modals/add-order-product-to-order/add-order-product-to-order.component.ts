@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, finalize, map, tap} from 'rxjs/operators';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {QuerySearch} from '@shared/models/other';
-import {Nomenclature} from '@shared/models/nomenclature';
+import {ENomenclatureApproval, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Paginator} from 'primeng/paginator';
 import {AdapterService} from '@shared/services/adapter.service';
@@ -35,6 +35,7 @@ export class AddOrderProductToOrderComponent implements OnInit {
     quantity: [0, [Validators.required, Validators.min(1)]],
     order: [this.data.orderId],
     nomenclature: [null, Validators.required],
+    is_added_directly: [true],
   });
 
   isStartFirstPage = false;
@@ -62,6 +63,9 @@ export class AddOrderProductToOrderComponent implements OnInit {
     tap(() => this.isLoading = false),
     untilDestroyed(this)
   );
+
+  protected readonly ENomenclatureApproval = ENomenclatureApproval;
+  protected readonly ENomenclatureType = ENomenclatureType;
 
   constructor(
     private readonly fb: FormBuilder,

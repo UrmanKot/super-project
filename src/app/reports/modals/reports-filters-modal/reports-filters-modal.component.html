@@ -1,0 +1,125 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Choice Report Filter
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <p-table
+    #rt
+    selectionMode="single"
+    scrollHeight="calc(100vh - 18.8rem)"
+    [scrollable]="true"
+    [paginator]="reportFilters.length > 0"
+    [rows]="10"
+    [(selection)]="selectedReportsFilter"
+    [value]="reportFilters"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3%" class="text-center">#</th>
+        <th style="width: 9%">Filter Name</th>
+        <th style="width: 11%">Nomenclature Name</th>
+        <th style="width: 11%">Nomenclature Code</th>
+        <th style="width: 10%">Company</th>
+        <th style="width: 6%" class="text-center">Company Category</th>
+        <th style="width: 8%" class="text-center">Warehouse category</th>
+        <th style="width: 6%" class="text-center">Creation From</th>
+        <th style="width: 6%" class="text-center">Creation <br>To</th>
+        <th style="width: 8%" class="text-center">Invoice <br>Recieved From</th>
+        <th style="width: 6%" class="text-center">Invoice <br>Recieved To</th>
+        <th style="width: 8%" class="text-center">Items <br>Recieved From</th>
+        <th style="width: 7%" class="text-center">Items <br>Recieved To</th>
+        <th style="width: 5%" class="text-center">Payment</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-filter let-i="rowIndex">
+      <tr [pSelectableRow]="filter">
+        <td style="width: 3%" class="text-center">{{i + 1}}</td>
+        <td style="width: 9%">{{filter.name}}</td>
+        <td style="width: 11%">
+          {{filter.nomenclature_name}}
+          <span *ngIf="!filter.nomenclature_name">—</span>
+        </td>
+        <td style="width: 11%">
+          {{filter.nomenclature_code}}
+          <span *ngIf="!filter.nomenclature_code">—</span>
+        </td>
+        <td style="width: 10%">{{filter.supplier ? filter.supplier.name : 'All companies'}}</td>
+        <td class="text-center" style="width: 6%">
+          <span *ngIf="filter.supplier_category">{{filter.supplier_category?.name}}</span>
+          <span *ngIf="!filter.supplier_category">—</span>
+        </td>
+        <td style="width: 8%">
+          <div class="d-flex justify-content-center filter-wh-category">
+            <span *ngIf="!filter.nomenclature_categories">—</span>
+            <span *ngIf="filter.nomenclature_categories">
+                      <button
+                        class="cat-eye"
+                        (click)="openFilter(filter)"
+                        pButton
+                        [icon]="!filter.opened ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                      ></button>
+
+                      <div class="category-opened" *ngIf="filter.opened">
+                        <pek-multi-product-categories-picker
+                          [isDisabled]="true"
+                          [currentCategoryIds]="getCategories(filter.nomenclature_categories)"
+                        ></pek-multi-product-categories-picker>
+                      </div>
+                    </span>
+          </div>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.system_creation_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.system_creation_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.system_creation_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.system_creation_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 8%">
+          {{filter.invoice_reception_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.invoice_reception_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 6%">
+          {{filter.invoice_reception_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.invoice_reception_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 8%">
+          {{filter.items_reception_date_after | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.items_reception_date_after">—</span>
+        </td>
+        <td class="text-center" style="width: 7%">
+          {{filter.items_reception_date_before | date: 'dd/MM/y'}}
+          <span *ngIf="!filter.items_reception_date_before">—</span>
+        </td>
+        <td class="text-center" style="width: 5%">
+          <i class="pi pi-check text-success" *ngIf="filter.is_paid === true"></i>
+          <i class="pi pi-times text-danger" *ngIf="filter.is_paid === false"></i>
+          <span *ngIf="filter.is_paid === null">—</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="18">
+          <i *ngIf="isLoadingReportFilters" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoadingReportFilters">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Apply Filter'"
+    [disabled]="!selectedReportsFilter"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

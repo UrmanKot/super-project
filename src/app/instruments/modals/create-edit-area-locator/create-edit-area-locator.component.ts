@@ -33,7 +33,7 @@ export class CreateEditAreaLocatorComponent implements OnInit, OnDestroy {
     if (this.data.type === 'edit') {
       this.form.addControl(<any>'id', new FormControl(this.data.locator.id));
       this.form.patchValue(<any>this.data.locator);
-      this.form.get('area').patchValue(this.data.locator.area.id);
+      this.form.get('area').patchValue(this.data.locator.area);
     } else {
       this.form.get('area').patchValue(this.data.areaId);
 

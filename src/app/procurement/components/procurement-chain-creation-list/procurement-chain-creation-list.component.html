@@ -187,7 +187,8 @@
                 class="text-center  hovered-info">{{product.request_date | date:'dd/MM/yyyy HH:mm'}}</td>
             <td class="text-center" style="width: 6%;">
               <ng-container *ngIf="product.request_type==1">Auto</ng-container>
-              <ng-container *ngIf="product.request_type==0">Manual</ng-container>
+              <ng-container *ngIf="product.request_type == OrderRequestType.MANUALLY || product.request_type == OrderRequestType.REQUEST_BY_VOLUME">Manual</ng-container>
+              <ng-container *ngIf="product.request_type==2">Tool Request</ng-container>
             </td>
             <td style="width: 6%;" class="text-center">
               <ng-container *ngFor="let order of product.orders; let idx = index">
@@ -201,9 +202,21 @@
             </td>
 
             <td style="width: 9%;">
-              <ng-container *ngFor="let list of product.root_production_list_products; let idx = index">
-                {{list}}<span *ngIf="idx !== product.root_production_list_products.length - 1">,</span>
-              </ng-container>
+              <span class="capitalize" *ngIf="product.request_type === OrderRequestType.REQUEST_BY_VOLUME">
+                requested by minimum volume
+              </span>
+              <span *ngIf="product.request_type !== OrderRequestType.REQUEST_BY_VOLUME">
+              <div *ngIf="product.request_type==2 else prodList">
+                <div *ngFor="let request of product.uniqueToolRequests; let last=last">
+                  {{request?.toolRequest?.tool_order?.area_locator?.name}}<span *ngIf="!last">,</span>
+                </div>
+              </div>
+              <ng-template #prodList>
+                <ng-container *ngFor="let list of product.root_production_list_products; let idx = index">
+                  {{list}}<span *ngIf="idx !== product.root_production_list_products.length - 1">,</span>
+                </ng-container>
+              </ng-template>
+              </span>
             </td>
             <td style="width: 9%;">
               <ng-container *ngFor="let list of product.production_list_products; let idx = index">

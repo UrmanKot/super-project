@@ -9,6 +9,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {WarehouseProductService} from '../../../warehouse/services/warehouse-product.service';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime} from 'rxjs/operators';
+import {ENomenclatureApproval, ENomenclatureType} from '@shared/models/nomenclature';
 
 @Component({
   selector: 'pek-warehouse-search',
@@ -43,6 +44,9 @@ export class WarehouseSearchComponent implements OnInit, OnDestroy {
     {name: 'at_area', value: false}
   ];
   private destroy$ = new Subject();
+
+  protected readonly ENomenclatureApproval = ENomenclatureApproval;
+  protected readonly ENomenclatureType = ENomenclatureType;
 
   constructor(
     private fb: FormBuilder,
@@ -205,5 +209,9 @@ export class WarehouseSearchComponent implements OnInit, OnDestroy {
 
   select() {
     this.dialogRef.close(this.selectedNode);
+  }
+
+  showIsReserved(items: any[]) {
+    if (items) return items.some(i => i.reserved_by_opened_production_lists_quantity > 0 || i.reserved_by_tool_requests_quantity > 0)
   }
 }

@@ -1,0 +1,18 @@
+<div class="base-service-picker">
+  <p-treeSelect
+    selectionMode="single"
+    [filter]="true"
+    *ngIf="!isLoading; else spinner"
+    [options]="servicesTree"
+    [(ngModel)]="selectedService"
+    [showClear]="true"
+    placeholder="Choice Service Name"
+    (ngModelChange)="onChoiceService()"
+  ></p-treeSelect>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</div>

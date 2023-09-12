@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {WarehouseService} from '../../services/warehouse.service';
-import {Warehouse} from '../../models/warehouse';
+import {Currency} from '../../models/warehouse';
 
 @Component({
   selector: 'pek-create-edit-warehouse',
@@ -22,7 +22,7 @@ export class CreateEditWarehouseComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly warehouseService: WarehouseService,
     private dialogRef: MatDialogRef<CreateEditWarehouseComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, warehouse: Warehouse }
+    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, warehouse: Currency }
   ) {
   }
 
@@ -49,7 +49,7 @@ export class CreateEditWarehouseComponent implements OnInit {
   }
 
   createWarehouse() {
-    const send = <Partial<Warehouse>>this.form.value;
+    const send = <Partial<Currency>>this.form.value;
     this.warehouseService.create(send).subscribe({
       next: warehouse => this.dialogRef.close(warehouse),
       error: () => this.isSaving = false,
@@ -57,7 +57,7 @@ export class CreateEditWarehouseComponent implements OnInit {
   }
 
   editWarehouse() {
-    const send = <Partial<Warehouse>>this.form.value;
+    const send = <Partial<Currency>>this.form.value;
     this.warehouseService.update(send).subscribe({
       next: warehouse => this.dialogRef.close(warehouse),
       error: () => this.isSaving = false,

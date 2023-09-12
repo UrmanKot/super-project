@@ -23,6 +23,15 @@ import {
 import {
   ManufacturingPickerProductComponent
 } from '../../manufacturing/modals/manufacturing-picker-product/manufacturing-picker-product.component';
+import {
+  AddAccountingNumberToCategoryComponent
+} from "../../product-structure/modals/add-accounting-number-to-category/add-accounting-number-to-category.component";
+import {
+  EditNomenclatureAccountingNumberComponent
+} from "../../product-structure/modals/edit-nomenclature-accounting-number/edit-nomenclature-accounting-number.component";
+import {
+  EditNomenclaturePriceComponent
+} from "../../sales/modals/edit-nomenclature-price/edit-nomenclature-price.component";
 
 @Injectable({
   providedIn: 'root'
@@ -230,10 +239,29 @@ export class NomenclatureService {
     );
   }
 
+  updateAccountingNumber(entity: any) {
+    return this.httpClient.patch(this.API_URL + this.url + entity.id + '/', entity);
+  }
+
+  updateCountryOfOrigin(data) {
+    return this.httpClient.patch(this.API_URL + this.url + data.id + '/', data);
+  }
+
+  updateTariffCode(data) {
+    return this.httpClient.patch(this.API_URL + this.url + data.id + '/', data);
+  }
+
+
   bulkCreateUpdateTechnicalEquipments(nomenclatureId: number, data): Observable<any> {
     return this.httpClient.post<{ data: TechnicalEquipment }>(this.API_URL + this.url + nomenclatureId + '/bulk_update_technical_equipments/', data).pipe(
       map(response => response.data)
     );
+  }
+
+  checkStructureForErrors(nomenclatureId: number): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + nomenclatureId + '/check_structure_for_errors/', nomenclatureId).pipe(
+      map(response => response
+      ));
   }
 
   showSerialConfirmationModal(product: Partial<Product>, warehouseQuantity: number) {
@@ -259,6 +287,42 @@ export class NomenclatureService {
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
+      .afterClosed();
+  }
+
+  addAccountingNumberDialog(): Observable<Nomenclature> {
+    return this.dialog
+      .open<AddAccountingNumberToCategoryComponent>(AddAccountingNumberToCategoryComponent, {
+        width: '25rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  editNomenclatureAccountingNumber(nomenclature: Nomenclature): Observable<Nomenclature> {
+    return this.dialog.open<EditNomenclatureAccountingNumberComponent>(EditNomenclatureAccountingNumberComponent, {
+      width: '25rem',
+      height: 'auto',
+      panelClass: 'modal-overflow-visible',
+      data: {nomenclature},
+      autoFocus: false,
+      enterAnimationDuration: '250ms'
+    })
+      .afterClosed();
+  }
+
+  editNomenclaturePriceDialog(nomenclature: Nomenclature): Observable<Nomenclature> {
+    return this.dialog.open<EditNomenclaturePriceComponent>(EditNomenclaturePriceComponent, {
+      width: '25rem',
+      height: 'auto',
+      panelClass: 'modal-overflow-visible',
+      data: {nomenclature},
+      autoFocus: false,
+      enterAnimationDuration: '250ms'
+    })
       .afterClosed();
   }
 }

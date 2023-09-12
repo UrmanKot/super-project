@@ -58,7 +58,7 @@ export class QcAcceptTechnicalEquipmentComponent implements OnInit {
 
       item.in_use_product_id.forEach(in_use_prod => {
         const inLocator = (in_use_prod.technicalEquipment.warehouse_product as WarehouseProduct).locator;
-        const foundItem = inLocator.warehouse.id === locator.warehouse.id && inLocator.id !== locator.id;
+        const foundItem = inLocator?.warehouse.id === locator?.warehouse.id && inLocator?.id !== locator?.id;
         if (foundItem) {
           isUnsupportedItem = true;
         }

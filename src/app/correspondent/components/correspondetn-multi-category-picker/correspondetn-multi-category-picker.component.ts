@@ -41,7 +41,7 @@ export class CorrespondetnMultiCategoryPickerComponent implements OnInit, OnDest
   createTree() {
     const getChildren = (nodes: TreeNode<CorrespondentsCategory>[]) => {
       nodes.forEach(node => {
-        const children = this.categories.filter(c => c.parent === node.data.id);
+        const children = this.categories.filter(c => c.parent?.id === node.data.id);
 
         if (children.length > 0) {
           node.children = children.map(category => {

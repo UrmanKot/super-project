@@ -6,14 +6,25 @@
 
 <mat-dialog-content class="overflow-auto">
   <div class="d-flex indicators col-12 mb-3">
-    <div class="сol-6 mr-2">
+    <div class="mr-2" [class.сol-6]="production === 'own'" [class.сol-4]="production === 'outsource'">
       <input id="own" type="radio" value="own" name="production" [(ngModel)]="production" (ngModelChange)="checkTasksTechnicalEquipment()">
       <label for="own">Own production</label>
     </div>
-    <div class="col-6">
+    <div [class.сol-6]="production === 'own'" [class.сol-4]="production === 'outsource'">
       <input id="outsource" class="radio-outsource" type="radio" value="outsource" name="production"
              [(ngModel)]="production" (ngModelChange)="checkTasksTechnicalEquipment()">
       <label for="outsource">Outsource production</label>
+    </div>
+    <div class="col-4">
+      <button
+        *ngIf="production === 'outsource'"
+        class="mr-2"
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="Add To Outsourcing Chain"
+        (click)="onAddTasksToChain()"
+      ></button>
     </div>
   </div>
 

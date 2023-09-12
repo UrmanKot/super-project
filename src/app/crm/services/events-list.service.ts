@@ -16,6 +16,7 @@ import {CreateEditEventComponent} from '../modals/create-edit-event/create-edit-
 import {AddEventModalType} from '../models/company';
 import {EventCompany} from '../models/event-company';
 import {EventCompanySetStateComponent} from '../modals/event-company-set-state/event-company-set-state.component';
+import {SelectEventForListComponent} from '../modals/select-event-for-list/select-event-for-list.component';
 
 @Injectable({
   providedIn: 'root'
@@ -174,6 +175,19 @@ export class EventsListService {
         width: '60rem',
         height: 'auto',
         data: {modalType, type, event, companyId, isLinkedEvent},
+        autoFocus: false,
+        panelClass: 'modal-overflow-visible',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  openEventGetEventForFilter(event?: EventItem): Observable<{ event: EventItem }> {
+    return this.dialog
+      .open<SelectEventForListComponent>(SelectEventForListComponent, {
+        width: '85rem',
+        height: 'auto',
+        data: {event},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

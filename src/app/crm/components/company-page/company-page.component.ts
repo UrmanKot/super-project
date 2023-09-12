@@ -15,8 +15,9 @@ import {CompanyFile} from '../../models/company-file';
 import {AdapterService} from '@shared/services/adapter.service';
 import {CompanyActivity} from '../../models/company-activity';
 import {EventCompanyService} from '../../services/event-company.service';
-import {EventCompany} from '../../models/event-company';
+import {EventCompany, Impression} from '../../models/event-company';
 import {environment} from '@env/environment';
+import {EventsListService} from '../../services/events-list.service';
 
 @Component({
   selector: 'pek-company-page',
@@ -120,6 +121,8 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
   companyId: number;
   company: Company;
   destroy$ = new Subject();
+  enableColors: boolean = false;
+  Impression = Impression;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -131,6 +134,7 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
     private readonly companyFileService: CompanyFileService,
     private readonly adapterService: AdapterService,
     private readonly eventCompanyService: EventCompanyService,
+    private readonly eventListService: EventsListService,
   ) {
   }
 
@@ -288,8 +292,18 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
   }
 
   goToInvoice() {
-    const link = `${this.link}accounting/invoices/products/view/${this.selectedInvoice.id}`;
+    const link = `/reports/invoices/invoice/${this.selectedInvoice.id}`;
     window.open(link, '_blank');
+  }
+
+  goToOrder() {
+    if (this.selectedInvoice.order.accounting_type === 1) {
+      window.open(`procurement/chains/order/` + this.selectedInvoice.order.id);
+    }
+
+    if (this.selectedInvoice.order.accounting_type === 2) {
+      window.open(`outsourcing/chains/order/` + this.selectedInvoice.order.id);
+    }
   }
 
   onAddFile() {
@@ -353,7 +367,12 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
   }
 
   onEventSelectionChange() {
-    this.eventMenuItems[0].items[0].disabled = !!this.selectedCompanyActivity?.is_done;
+    // update text for selected event company
+    if (this.selectedCompanyActivity?.is_done) {
+      this.eventMenuItems[0].items[0].label = 'Edit result';
+    } else {
+      this.eventMenuItems[0].items[0].label = 'Done';
+    }
   }
 
   onRemoveEvent() {
@@ -369,13 +388,16 @@ export class CompanyPageComponent implements OnInit, OnDestroy {
   }
 
   onDoneEvent() {
-    this.modalService.confirm('success').subscribe(confirm => {
-      if (confirm) {
-        this.eventCompanyService.update(
-          this.selectedCompanyActivity.id, {is_done: true} as EventCompany
-        ).subscribe(event => {
-          this.getCompany();
-        });
+    const toUpdate: EventCompany = {
+      id: this.selectedCompanyActivity.id,
+      is_done: this.selectedCompanyActivity.is_done,
+      comment: this.selectedCompanyActivity.comment,
+      impression: this.selectedCompanyActivity.impression
+    }
+    this.eventListService.openEventCompanySetStateModal(toUpdate).subscribe(res => {
+      if (res) {
+        this.selectedCompanyActivity.is_done = res.eventCompany.is_done;
+        this.selectedCompanyActivity.impression = res.eventCompany.impression;
       }
     });
   }

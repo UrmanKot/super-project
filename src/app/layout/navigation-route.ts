@@ -12,14 +12,16 @@ export class NavigationLink {
    * The fragments are applied to the current URL or the one provided  in the `relativeTo` property
    * of the options object, if supplied.
    */
-  commands: any[];
+  commands?: any[];
   /** An options object that determines how the URL should be constructed or interpreted. */
   extras?: NavigationExtras;
   isExternal?: boolean;
   /** Needed permissions */
   /** Недоступно */
   disabled?: boolean;
+  isClicked?: boolean;
   aclLogic?: 'all' | 'any';
+  children?: NavigationLink[];
 }
 
 export class NavigationGroup {

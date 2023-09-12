@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {NomenclatureImage} from '@shared/models/nomenclature';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
@@ -9,6 +9,8 @@ import {NomenclatureService} from '@shared/services/nomenclature.service';
   styleUrls: ['./image-gallery.component.scss']
 })
 export class ImageGalleryComponent implements OnInit {
+  @ViewChild('imageGalleryContainer') imageGalleryContainer: ElementRef;
+
   images: NomenclatureImage[] = [];
   offsetSlider = 0;
   activeSlideIndex = 1;
@@ -20,6 +22,7 @@ export class ImageGalleryComponent implements OnInit {
     private readonly nomenclatureService: NomenclatureService,
     @Inject(MAT_DIALOG_DATA) public data: { images: NomenclatureImage[], nomenclatureId: number, activeIdx: number },
   ) {
+    this.onResize();
   }
 
   ngOnInit(): void {
@@ -66,6 +69,20 @@ export class ImageGalleryComponent implements OnInit {
     } else {
       this.offsetSlider = (this.activeSlideIndex - 2) * this.galleryWidth;
       this.activeSlideIndex--;
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    const documentWidth = document.body.getBoundingClientRect().width;
+
+    if (documentWidth < 1625) {
+      this.galleryWidth = documentWidth * (80 / 100);
+      console.log('Is smaller');
+    }
+    if (documentWidth < 768) {
+      this.galleryWidth = documentWidth * (95 / 100);
+      console.log('Is smaller');
     }
   }
 }

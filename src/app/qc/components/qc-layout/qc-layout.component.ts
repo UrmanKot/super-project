@@ -10,6 +10,7 @@ export class QcLayoutComponent implements OnInit {
 
   routes: NavigationLink[] = [
     {label: 'Invoices', commands: ['list']},
+    {label: 'Delivery', commands: ['delivery']},
   ];
 
   settingRoutes: NavigationLink[] = [

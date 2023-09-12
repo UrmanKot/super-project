@@ -1,0 +1,18 @@
+<mat-dialog-content>
+  <div class="confirm">
+    <div class="confirm__text">
+      Scan Another QR Code?
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-secondary"></button>
+  <button
+    pButton
+    type="button"
+    [label]="'Scan'"
+    [mat-dialog-close]="true"
+    class="p-button-success"
+  ></button>
+</mat-dialog-actions>

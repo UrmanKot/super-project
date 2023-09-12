@@ -57,7 +57,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
   queryKey = 'created_after:null/created_before:null/closing_date_after:null/closing_date_before:null/category__in:null/root_categories:null/accounting_type:null/is_production_requests_fully_completed:null';
 
   query: QuerySearch[] = [
-    {name: 'accounting_type__in', value: '2,3'},
+    {name: 'accounting_type__in', value: '3'},
     {name: 'is_prepared', value: false},
     {name: 'paginated', value: true},
     {name: 'page', value: this.searchForm.get('page').value}
@@ -162,7 +162,7 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
     }
 
     this.query = [
-      {name: 'accounting_type__in', value: '2,3'},
+      {name: 'accounting_type__in', value: '3'},
       {name: 'is_prepared', value: false},
     ];
 
@@ -324,13 +324,13 @@ export class WarehouseProductionRequestsComponent implements OnInit, OnDestroy {
   }
 
   goProductionList(id: number) {
-    const link = `${this.link}production/plan/tasks/${id}`;
+    const link = `/manufacturing/plans/plan/${id}`;
     window.open(link, '_blank');
   }
 
 
   onGoProd(id: number) {
-    window.open(`${this.link}production/plan/tasks/` + id, '_blank');
+    window.open(`/manufacturing/plans/plan/` + id, '_blank');
   }
 
   ngOnDestroy() {

@@ -83,6 +83,7 @@ export class Task {
   /** @deprecated */
   tools?: any;
   tasks?: Task[];
+  ids?: number[];
   created_order?: any;
   is_in_qc?: boolean;
   is_in_qc_wh?: boolean;
@@ -100,6 +101,10 @@ export class Task {
   use_technical_equipment?: boolean;
   needs_technical_equipment?: boolean;
   production_list_id: string;
+  refunded_orders?: number[]
+  is_refunded?: boolean;
+  created_orders?: any[];
+  is_in_rma_process?: boolean;
 }
 
 export class TaskSet extends Task {

@@ -1,0 +1,204 @@
+
+.form-upload {
+  margin: -1.25rem auto 0;
+
+  .drop-area {
+    width: 100%;
+    border: 1px dashed var(--theme-color-primary);
+    cursor: pointer;
+    border-radius: 0.5rem;
+    margin-bottom: 0;
+    display: block;
+    padding: 3.75rem 4.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .drop-area-placeholder {
+    text-align: center;
+    font-size: 16px;
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  .upload-header {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 2rem 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h4 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+  }
+
+  .file {
+    display: flex;
+    font-size: 1rem;
+    align-items: center;
+
+    margin-bottom: 0.625rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    button {
+      margin-left: 0.75rem;
+      padding: 0.25rem 0.25rem !important;
+    }
+  }
+
+  .loading {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 1;
+    position: absolute;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    h5 {
+      font-size: 1.375rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .pi {
+      font-size: 2rem
+    }
+  }
+}
+
+p-table {
+  margin-bottom: 0;
+}
+
+td, th {
+  vertical-align: middle !important;
+  border: 1px solid #d7dadc !important;
+  border-right: none !important;
+  border-left: none !important;
+
+  &:last-child {
+    border-right: none !important;
+  }
+}
+
+tr:first-child {
+  td {
+    vertical-align: middle !important;
+    border-top: none !important;
+  }
+}
+
+.correct {
+  width: 23px;
+  height: 23px;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+}
+
+.bord {
+  border-right: 1px solid #d7dadc !important;
+}
+
+.no-full {
+  background: #f9f7e4 !important;
+}
+
+.full {
+  background: #f1f5dd !important;
+}
+
+.filters-checker {
+  margin-bottom: 15px;
+}
+
+.table {
+  h3 {
+    margin: 0;
+    font-size: 1.1875rem;
+    font-weight: 600;
+  }
+}
+
+.tables {
+  .confirm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    align-self: center;
+  }
+}
+
+.tables__inner {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.table-no,
+.exclude-payments {
+  width: 48%;
+}
+
+.page__card {
+  padding: 2em;
+}
+
+.table-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  min-height: 36px;
+}
+
+.is-first {
+  border-top: 2px solid #6c757d  !important;
+}
+
+.is-last {
+  border-bottom: 2px solid #6c757d  !important;
+}
+
+.is-grouped {
+  background: #e9e7e7 !important;
+}
+
+.weight {
+  font-weight: 500;
+}
+
+.disabled {
+  pointer-events: none;
+
+  th {
+    color: #495057 !important;
+  }
+}

@@ -1,6 +1,8 @@
 :host {
   flex: 1;
   display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 img {
@@ -11,9 +13,10 @@ img {
 .guide-glossary {
   flex: 1;
   display: flex;
+  overflow: hidden;
+  height: 100%;
 
   &__list {
-    height: 60vh;
     overflow: auto;
 
     &::-webkit-scrollbar-thumb {
@@ -41,15 +44,21 @@ img {
   &__column-left {
     flex: 0 0 30rem;
     padding: 0.25rem 0.25rem 0;
-    margin-top: -0.375rem;
+    //margin-top: -0.375rem;
+    display: flex;
+    flex-direction: column;
   }
 
   &__column-right {
     padding-left: 2rem;
     width: 100%;
+    display: flex;
   }
 
   &__box {
+    display: flex;
+    flex-direction: column;
+
     h2 {
       font-size: 1.5rem;
       font-weight: 500;
@@ -63,10 +72,10 @@ img {
   }
 
   &__description {
-    height: 62vh;
     overflow: auto;
     display: flex;
     flex-direction: column;
+    padding-right: 1rem;
 
     &::-webkit-scrollbar-thumb {
       border-radius: 0.625rem;

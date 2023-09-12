@@ -18,7 +18,9 @@
   <div class="page__content">
 
     <p-tabView class="custom-tabs" [(activeIndex)]="tabIndex">
-      <p-tabPanel header="Payments" [selected]="true">
+      <p-tabPanel
+        [header]="'Production Lists Procurement and Outsourcing Payments (' + (isLoadingPayments ? '...' : paymentsCount) + ')'"
+        [selected]="true">
         <div class="page__table">
           <form
             [formGroup]="searchPaymentsForm"
@@ -93,143 +95,361 @@
 
             </div>
           </form>
-          <p-table
-            #dt
-            selectionMode="single"
-            scrollHeight="calc(100vh - 28.25rem)"
-            [scrollable]="true"
-            [paginator]="payments.length > 0"
-            [rows]="10"
-            [(selection)]="selectedPayment"
-            [value]="payments"
-            (selectionChange)="onSelectPayment()"
-          >
-            <ng-template pTemplate="caption">
-              <div class="d-flex buttons align-items-center">
-                <p class="subtitle" *ngIf="!selectedPayment">Choose the Payment to edit</p>
-                <button
-                  class="ml-auto mr-2"
-                  pButton
-                  type="button"
-                  icon="pi pi-angle-double-right"
-                  label="Invoice"
-                  (click)="goToPaymentInvoice()"
-                  [disabled]="!selectedPayment || selectedPayment?.invoices?.length !== 1"
-                >
-                </button>
-                <button
-                  class="mr-2"
-                  pButton
-                  type="button"
-                  icon="pi pi pi-angle-double-right"
-                  label="Order"
-                  (click)="goToPaymentOrder()"
-                  [disabled]="!selectedPayment || selectedPayment?.invoices?.length !== 1"
-                >
-                </button>
-                <p-menubar
-                  [model]="menuItems"
-                  [class.disabled]="!selectedPayment"
-                ></p-menubar>
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th class="text-center" style="width: 4%">#</th>
-                <th style="width: 10%" class="text-center">Payment ID</th>
-                <th style="width: 10%">Date</th>
-                <th style="width: 16%">Supplier</th>
-                <th style="width: 10%" class="text-center">Invoice</th>
-                <th style="width: 10%" class="text-center">Amount</th>
-                <th style="width: 10%" class="text-center">Converted Amount</th>
-                <th style="width: 10%" class="text-center">Order ID</th>
-                <th style="width: 10%" class="text-center">Status</th>
-                <th style="width: 10%" class="text-center">Root list</th>
-                <th style="width: 10%" class="text-center">Payment method</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-payment let-i="rowIndex">
-              <tr [pSelectableRow]="payment">
-                <td class="text-center" style="width: 4%">{{i + 1}}</td>
-                <td style="width: 10%" class="text-center">{{payment.id}}</td>
-                <td style="width: 10%">
-                  <div class="payment-paperclip">
-                    {{payment.payment_date | date:'dd/MM/yyyy'}}
-                    <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
-                  </div>
-                </td>
-                <td style="width: 16%">
-                  <div *ngFor="let invoice of payment.invoices">
-                    <div class="word-break">{{invoice.supplier.name}}</div>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.invoices">
-                    <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
-                <td style="width: 10%" class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.invoices">
-                    <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div
-                    [ngClass]="{
+          <ng-container *ngIf="viewMode === ViewMode.HIERARCHY">
+            <p-treeTable
+              selectionMode="single"
+              [value]="paymentTree"
+              [(selection)]="selectedTreePayment"
+              scrollHeight="calc(100vh - 32.8rem)"
+              [scrollable]="true"
+              (selectionChange)="onSelectPayment()"
+            >
+              <ng-template pTemplate="caption">
+                <div class="d-flex buttons align-items-center">
+                  <span>
+                    Total Amount Paid: {{isLoadingPayments ? '...' : paymentsTotalAmountPaid | moneyFormat}} €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Confirmed: {{isLoadingPayments ? '...' : paymentsTotalAmountConfirmed | moneyFormat}} €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Waiting: {{isLoadingPayments ? '...' : paymentsTotalAmountWaiting | moneyFormat}} €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Declined: {{isLoadingPayments ? '...' : paymentsTotalAmountDeclined | moneyFormat}} €
+                  </span>
+                  <button
+                    class="ml-auto mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi-angle-double-right"
+                    label="Company"
+                    (click)="goToPaymentCompany()"
+                    [disabled]="!selectedTreePayment || selectedTreePayment?.data.invoices?.length !== 1"
+                  >
+                  </button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi-angle-double-right"
+                    label="Invoice"
+                    (click)="goToPaymentInvoice()"
+                    [disabled]="!selectedTreePayment || selectedTreePayment?.data.invoices?.length !== 1"
+                  >
+                  </button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi pi-angle-double-right"
+                    label="Order"
+                    (click)="goToPaymentOrder()"
+                    [disabled]="!selectedTreePayment || selectedTreePayment?.data.invoices?.length !== 1"
+                  >
+                  </button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi pi-list"
+                    label="List"
+                    (click)="viewMode = ViewMode.LIST"
+                  >
+                  </button>
+                  <p-menubar
+                    [model]="menuItems"
+                    [class.disabled]="!selectedTreePayment"
+                  ></p-menubar>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th [style.width.%]="10" class="text-center">Payment ID</th>
+                  <th [style.width.%]="10">Creation Date</th>
+                  <th [style.width.%]="10">Supplier</th>
+                  <th [style.width.%]="10" class="text-center">Invoice</th>
+                  <th [style.width.%]="10" class="text-center">Amount</th>
+                  <th [style.width.%]="10" class="text-center">Converted Amount</th>
+                  <th [style.width.%]="10" class="text-center">Order ID</th>
+                  <th [style.width.%]="10" class="text-center">Status</th>
+                  <th [style.width.%]="10">Payment Date</th>
+                  <th [style.width.%]="10" class="text-center">Root list</th>
+                  <th [style.width.%]="10" class="text-center">Payment method</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-paymentNode let-payment="rowData" let-i="rowIndex">
+                <tr [ttRow]="paymentNode"
+                    [ttSelectableRow]="paymentNode"
+                    [ttSelectableRowDisabled]="!payment.invoices">
+                  <td [style.width.%]="!payment.invoices ? 10 : 30" [class.text-center]="payment.invoices">
+                    <div class="table-toggler" *ngIf="!payment.invoices">
+                      <p-treeTableToggler [rowNode]="paymentNode"></p-treeTableToggler>
+                      {{payment.name}}
+                    </div>
+                    <span *ngIf="payment.invoices">
+                    {{payment.id}}
+                  </span>
+                  </td>
+                  <td [style.width.%]="10">
+                    <div *ngFor="let invoice of payment.invoices">
+                      <div class="word-break">
+                        {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                      </div>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10">
+                    <div *ngFor="let invoice of payment.invoices">
+                      <div class="word-break">
+                        <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                      </div>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                    <div *ngFor="let invoice of payment.invoices">
+                      <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                  <span *ngIf="payment.invoices">
+                    {{payment.amount | moneyFormat}} €
+                  </span>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                  <span *ngIf="payment.invoices">
+                    {{payment.converted_amount | moneyFormat}} €
+                  </span>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                    <div *ngFor="let invoice of payment.invoices">
+                      <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                    <div
+                      [ngClass]="{
                     'text-primary': payment.status==='PAID',
                     'text-success': payment.status==='CONFIRMED',
                     'text-danger': payment.status==='DECLINED',
                     'text-warning': payment.status==='WAITING'
                 }"
+                    >
+                      {{payment.status}}
+                    </div>
+                  </td>
+                  <td [style.width.%]="10">
+                    <div class="payment-paperclip">
+                      {{payment.payment_date | date : 'dd/MM/yyyy'}}
+                      <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                    <div *ngFor="let plan of payment.unique_root_plans; let idx = index">
+                      {{plan.planName}} <span *ngIf="plan.count > 1">({{plan.count}})</span>
+                    </div>
+                  </td>
+                  <td [style.width.%]="10" class="text-center">
+                    {{payment.payment_method}}
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td class="text-center p-4" [attr.colspan]="10">
+                    <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                    <span *ngIf="!isLoadingPayments">No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treeTable>
+          </ng-container>
+
+          <ng-container *ngIf="viewMode === ViewMode.LIST">
+            <div class="table-pagination-preloader">
+              <p-table
+                #dt
+                selectionMode="single"
+                [rows]="10"
+                [paginator]="payments.length > 0"
+                [scrollable]="true"
+                scrollHeight="calc(100vh - 24.25rem)"
+                [value]="payments"
+                [(selection)]="selectedPayment"
+                (selectionChange)="selectPaymentTreeData()"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="text-center" [style.width.%]="5">#</th>
+                    <th [style.width.%]="10" class="text-center">Payment ID</th>
+                    <th [style.width.%]="10">Creation Date</th>
+                    <th [style.width.%]="10">Supplier</th>
+                    <th [style.width.%]="5" class="text-center">Invoice</th>
+                    <th [style.width.%]="10" class="text-center">Amount</th>
+                    <th [style.width.%]="10" class="text-center">Converted Amount</th>
+                    <th [style.width.%]="10" class="text-center">Order ID</th>
+                    <th [style.width.%]="10" class="text-center">Status</th>
+                    <th [style.width.%]="10">Payment Date</th>
+                    <th [style.width.%]="10" class="text-center">Root list</th>
+                    <th [style.width.%]="10" class="text-center">Payment method</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="caption">
+                  <div class="d-flex buttons align-items-center">
+                  <span>
+                    Total Amount Paid: {{isLoadingPayments ? '...' : paymentsTotalAmountPaid | moneyFormat}} €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Confirmed: {{isLoadingPayments ? '...' : paymentsTotalAmountConfirmed | moneyFormat}} €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Waiting: {{isLoadingPayments ? '...' : paymentsTotalAmountWaiting | moneyFormat}} €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Declined: {{isLoadingPayments ? '...' : paymentsTotalAmountDeclined | moneyFormat}} €
+                  </span>
+                    <button
+                      class="ml-auto mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-double-right"
+                      label="Company"
+                      (click)="goToPaymentCompany()"
+                      [disabled]="!selectedPayment || selectedPayment.invoices?.length !== 1"
+                    >
+                    </button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-double-right"
+                      label="Invoice"
+                      (click)="goToPaymentInvoice()"
+                      [disabled]="!selectedPayment || selectedPayment.invoices?.length !== 1"
+                    >
+                    </button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi pi-angle-double-right"
+                      label="Order"
+                      (click)="goToPaymentOrder()"
+                      [disabled]="!selectedPayment || selectedPayment.invoices?.length !== 1"
+                    >
+                    </button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-table"
+                      label="Hierarchy View"
+                      (click)="viewMode = ViewMode.HIERARCHY"
+                    >
+                    </button>
+                    <p-menubar
+                      [model]="menuItems"
+                      [class.disabled]="!selectedPayment"
+                    ></p-menubar>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="body" let-payment let-i="rowIndex">
+                  <tr [pSelectableRow]="payment">
+                    <td [style.width.%]="5" class="text-center">{{i + 1 }}</td>
+                    <td [style.width.%]="10" class="text-center">{{payment.id}}</td>
+                    <td [style.width.%]="10">
+                      <div *ngFor="let invoice of payment.invoices">
+                        {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                      </div>
+                    </td>
+                    <td [style.width.%]="10">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <div class="word-break">
+                          <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                        </div>
+                      </div>
+                    </td>
+                    <td [style.width.%]="5" class="text-center">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                      </div>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                  <span *ngIf="payment.invoices">
+                    {{payment.amount | moneyFormat}} €
+                  </span>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                  <span *ngIf="payment.invoices">
+                    {{payment.converted_amount | moneyFormat}} €
+                  </span>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                      </div>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                      <div
+                        [ngClass]="{
+                    'text-primary': payment.status==='PAID',
+                    'text-success': payment.status==='CONFIRMED',
+                    'text-danger': payment.status==='DECLINED',
+                    'text-warning': payment.status==='WAITING'
+                }"
+                      >
+                        {{payment.status}}
+                      </div>
+                    </td>
+                    <td [style.width.%]="10">
+                      <div class="payment-paperclip">
+                        {{payment.payment_date | date : 'dd/MM/yyyy'}}
+                        <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                      </div>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                      <div *ngFor="let plan of payment.unique_root_plans; let idx = index">
+                        {{plan.planName}} <span *ngIf="plan.count > 1">({{plan.count}})</span>
+                      </div>
+                    </td>
+                    <td [style.width.%]="10" class="text-center">
+                      {{payment.payment_method}}
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="16">
+                      <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoadingPayments">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                  <p-button
+                    type="button"
+                    (click)="dt.paginator = false"
+                    styleClass="p-button-text"
                   >
-                    {{payment.status}}
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.invoices; let idx = index">
-                    <span *ngFor="let root of invoice.order.root_production_list_products">
-                      {{root.nomenclature.name}}<i
-                      *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
-                    </span>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  {{payment.payment_method}}
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td class="text-center p-4" [attr.colspan]="10">
-                  <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                  <span *ngIf="!isLoadingPayments">No Records Found</span>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="paginatorright">
+                    All
+                  </p-button>
+                </ng-template>
+              </p-table>
+            </div>
+            <div *ngIf="!dt.paginator && !isLoadingPayments && payments.length > 0" class="paginator-return-pagination">
               <p-button
                 type="button"
-                (click)="dt.paginator=false"
+                (click)="dt.paginator = true"
                 styleClass="p-button-text"
-              >All
+              >
+                Return pagination
               </p-button>
-            </ng-template>
-          </p-table>
-        </div>
-        <div *ngIf="!dt.paginator && !isLoadingPayments && payments.length > 0" class="paginator-return-pagination">
-          <p-button
-            type="button"
-            (click)="dt.paginator=true"
-            styleClass="p-button-text"
-          >
-            Return pagination
-          </p-button>
+            </div>
+          </ng-container>
         </div>
       </p-tabPanel>
 
-      <p-tabPanel header="Auxiliary Invoice Payments">
+      <p-tabPanel
+        [header]="'General Procurement Payments (' + (isLoadingAuxPayments ? '...' : paymentsServiceCount) + ')'">
         <div class="page__table">
           <form
             [formGroup]="searchPaymentsAuxiliaryForm"
@@ -304,139 +524,472 @@
 
             </div>
           </form>
+          <ng-container *ngIf="viewServiceInvoiceMode === ViewMode.HIERARCHY">
+            <p-treeTable
+              selectionMode="single"
+              [value]="serviceInvoicePaymentsTree"
+              [(selection)]="selectedServiceInvoiceTreePayments"
+              scrollHeight="calc(100vh - 32.8rem)"
+              [scrollable]="true"
+              (selectionChange)="onSelectAuxiliaryPayment()"
+            >
+              <ng-template pTemplate="caption">
+                <div class="d-flex buttons align-items-center">
+                  <span>
+                    Total Amount Paid: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountPaid | moneyFormat}} €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Confirmed: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountConfirmed | moneyFormat}}
+                    €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Waiting: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountWaiting | moneyFormat}}
+                    €
+                  </span>
+                  <span class="ml-4">
+                    Total Amount Declined: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountDeclined | moneyFormat}}
+                    €
+                  </span>
+                </div>
+                <div class="d-flex buttons align-items-center">
+                  <button
+                    class="ml-auto mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi-angle-double-right"
+                    label="Company"
+                    (click)="goToServicePaymentCompany()"
+                    [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                  >
+                  </button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi-angle-double-right"
+                    label="Invoice"
+                    (click)="goToServicePaymentInvoice()"
+                    [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                  >
+                  </button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi pi-angle-double-right"
+                    label="Order"
+                    (click)="goToServicePaymentOrder()"
+                    [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-angle-down"
+                    label="Expand All"
+                    class="mr-2"
+                    (click)="expandCollapse()"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    class="mr-2"
+                    icon="pi pi-angle-up"
+                    label="Collapse All"
+                    (click)="expandCollapse(false)"
+                  ></button>
+                  <button
+                    class="mr-2"
+                    pButton
+                    type="button"
+                    icon="pi pi pi-list"
+                    label="List"
+                    (click)="viewServiceInvoiceMode = ViewMode.LIST"
+                  >
+                  </button>
+                  <p-menubar
+                    [model]="menuItemsAux"
+                    [class.disabled]="!selectedServiceInvoiceTreePayments"
+                  ></p-menubar>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 10%" class="text-center">Payment ID</th>
+                  <th style="width: 10%">Creation Date</th>
+                  <th style="width: 16%">Supplier</th>
+                  <th style="width: 10%" class="text-center">Invoice</th>
+                  <th style="width: 10%" class="text-center">Amount</th>
+                  <th style="width: 10%" class="text-center">Converted Amount</th>
+                  <th style="width: 10%" class="text-center">Order ID</th>
+                  <th style="width: 10%" class="text-center">Status</th>
+                  <th style="width: 10%">Payment Date</th>
+                  <th style="width: 10%" class="text-center">Root list</th>
+                  <th style="width: 10%" class="text-center">Payment method</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-paymentNode let-payment="rowData" let-i="rowIndex">
+                <tr [ttRow]="paymentNode"
+                    [ttSelectableRow]="paymentNode"
+                    [ttSelectableRowDisabled]="!payment.invoices && !payment.service_invoices">
+                  <td
+                    [style.width.%]="!payment.invoices || !payment.service_invoices  ? 10 : 30"
+                    [class.text-center]="payment.invoices || payment.service_invoices"
+                  >
+                    <div class="table-toggler" *ngIf="!payment.invoices && !payment.service_invoices">
+                      <p-treeTableToggler [rowNode]="paymentNode"></p-treeTableToggler>
+                      {{payment.name}}
+                    </div>
+                    <ng-container *ngIf="payment.invoices">
+                     <span *ngIf="payment.invoices">
+                      {{payment.id}}
+                     </span>
+                    </ng-container>
+                    <ng-container *ngIf="payment.service_invoices">
+                      {{payment.id}}
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%">
+                    <ng-container *ngIf="payment.invoices">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <div class="word-break">
+                          {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="payment.service_invoices">
+                      <div *ngFor="let invoice of payment.service_invoices">
+                        <div class="word-break">
+                          {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                        </div>
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="width: 16%">
+                    <ng-container *ngIf="payment.invoices">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <div class="word-break">
+                          <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="payment.service_invoices">
+                      <div *ngFor="let invoice of payment.service_invoices">
+                        <div class="word-break">
+                          <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <ng-container *ngIf="payment.invoices">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="payment.service_invoices">
+                      <div *ngFor="let invoice of payment.service_invoices">
+                        <a (click)="goToLinkServicePaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <ng-container *ngIf="payment.service_invoices || payment.invoices">
+                      {{payment.amount | moneyFormat}} €
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <ng-container *ngIf="payment.service_invoices || payment.invoices">
+                      {{payment.converted_amount | moneyFormat}} €
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <ng-container *ngIf="payment.invoices">
+                      <div *ngFor="let invoice of payment.invoices">
+                        <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                      </div>
+                    </ng-container>
 
-          <p-table
-            #st
-            selectionMode="single"
-            scrollHeight="calc(100vh - 28.25rem)"
-            [scrollable]="true"
-            [paginator]="servicePayments.length > 0"
-            [rows]="10"
-            [(selection)]="selectedServicePayment"
-            [value]="servicePayments"
-            (selectionChange)="onSelectAuxiliaryPayment()"
-          >
-            <ng-template pTemplate="caption">
-              <div class="d-flex buttons align-items-center">
-                <p class="subtitle" *ngIf="!selectedServicePayment">Choose the Auxiliary Payment to edit</p>
-                <button
-                  class="ml-auto mr-2"
-                  pButton
-                  type="button"
-                  icon="pi pi-angle-double-right"
-                  label="Invoice"
-                  (click)="goToServicePaymentInvoice()"
-                  [disabled]="!selectedServicePayment || selectedServicePayment?.service_invoices?.length !== 1"
-                >
-                </button>
-                <button
-                  class="mr-2"
-                  pButton
-                  type="button"
-                  icon="pi pi pi-angle-double-right"
-                  label="Order"
-                  (click)="goToServicePaymentOrder()"
-                  [disabled]="!selectedServicePayment || selectedServicePayment?.service_invoices?.length !== 1"
-                ></button>
-                <p-menubar
-                  [model]="menuItemsAux"
-                  [class.disabled]="!selectedServicePayment"
-                ></p-menubar>
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th class="text-center" style="width: 4%">#</th>
-                <th style="width: 10%" class="text-center">Payment ID</th>
-                <th style="width: 10%">Date</th>
-                <th style="width: 16%">Supplier</th>
-                <th style="width: 10%" class="text-center">Invoice</th>
-                <th style="width: 10%" class="text-center">Amount</th>
-                <th style="width: 10%" class="text-center">Converted Amount</th>
-                <th style="width: 10%" class="text-center">Order ID</th>
-                <th style="width: 10%" class="text-center">Status</th>
-                <th style="width: 10%" class="text-center">Root list</th>
-                <th style="width: 10%" class="text-center">Payment method</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-payment let-i="rowIndex">
-              <tr [pSelectableRow]="payment">
-                <td class="text-center" style="width: 4%">{{i + 1}}</td>
-                <td style="width: 10%" class="text-center">{{payment.id}}</td>
-                <td style="width: 10%">
-                  <div class="payment-paperclip">
-                    {{payment.payment_date | date:'dd/MM/yyyy'}}
-                    <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
-                  </div>
-                </td>
-                <td style="width: 16%">
-                  <div *ngFor="let invoice of payment.service_invoices">
-                    <div class="word-break">{{invoice.supplier.name}}</div>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.service_invoices">
-                    <a (click)="goToLinkServicePaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">{{payment.amount | moneyFormat}} €</td>
-                <td style="width: 10%" class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.service_invoices">
-                    <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div
-                    [ngClass]="{
+                    <ng-container *ngIf="payment.service_invoices">
+                      <div *ngFor="let invoice of payment.service_invoices">
+                        <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <div
+                      [ngClass]="{
                     'text-primary': payment.status==='PAID',
                     'text-success': payment.status==='CONFIRMED',
                     'text-danger': payment.status==='DECLINED',
                     'text-warning': payment.status==='WAITING'
                 }"
+                    >
+                      {{payment.status}}
+                    </div>
+                  </td>
+                  <td style="width: 10%">
+                    <div class="payment-paperclip">
+                      {{payment.payment_date | date:'dd/MM/yyyy'}}
+                      <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                    </div>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    <div *ngFor="let plan of payment.unique_root_plans; let idx = index">
+                      {{plan.planName}} <span *ngIf="plan.count > 1">({{plan.count}})</span>
+                    </div>
+                  </td>
+                  <td style="width: 10%" class="text-center">
+                    {{payment.payment_method}}
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td class="text-center p-4" [attr.colspan]="10">
+                    <i *ngIf="isLoadingAuxPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                    <span *ngIf="!isLoadingAuxPayments">No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treeTable>
+          </ng-container>
+          <ng-container *ngIf="viewServiceInvoiceMode === ViewMode.LIST">
+            <div class="table-pagination-preloader">
+              <p-table
+                #dt2
+                selectionMode="single"
+                [rows]="10"
+                [paginator]="serviceInvoicePayments.length > 0"
+                [scrollable]="true"
+                scrollHeight="calc(100vh - 24.25rem)"
+                [value]="serviceInvoicePayments"
+                [(selection)]="selectedServicePayments"
+                (selectionChange)="listAuxiliaryPaymentSelected()"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="text-center" style="width: 5%;">#</th>
+                    <th style="width: 5%" class="text-center">Payment ID</th>
+                    <th style="width: 10%">Creation Date</th>
+                    <th style="width: 16%">Supplier</th>
+                    <th style="width: 10%" class="text-center">Invoice</th>
+                    <th style="width: 10%" class="text-center">Amount</th>
+                    <th style="width: 10%" class="text-center">Converted Amount</th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 10%" class="text-center">Status</th>
+                    <th style="width: 10%">Payment Date</th>
+                    <th style="width: 10%" class="text-center">Root list</th>
+                    <th style="width: 10%" class="text-center">Payment method</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="caption">
+                  <div class="d-flex buttons align-items-center">
+                <span>
+                    Total Amount Paid: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountPaid | moneyFormat}} €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Confirmed: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountConfirmed | moneyFormat}}
+                      €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Waiting: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountWaiting | moneyFormat}}
+                      €
+                  </span>
+                    <span class="ml-4">
+                    Total Amount Declined: {{isLoadingAuxPayments ? '...' : serviceInvoicesTotalAmountDeclined | moneyFormat}}
+                      €
+                  </span>
+                    <button
+                      class="ml-auto mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-double-right"
+                      label="Company"
+                      (click)="goToServicePaymentCompany()"
+                      [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                    >
+                    </button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-double-right"
+                      label="Invoice"
+                      (click)="goToServicePaymentInvoice()"
+                      [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                    >
+                    </button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi pi-angle-double-right"
+                      label="Order"
+                      (click)="goToServicePaymentOrder()"
+                      [disabled]="!selectedServiceInvoiceTreePayments ||
+                   isDisabledServiceInvoiceBtn()"
+                    ></button>
+                    <button
+                      class="mr-2"
+                      pButton
+                      type="button"
+                      icon="pi pi-table"
+                      label="Hierarchy View"
+                      (click)="viewServiceInvoiceMode = ViewMode.HIERARCHY"
+                    >
+                    </button>
+                    <p-menubar
+                      [model]="menuItemsAux"
+                      [class.disabled]="!selectedServiceInvoiceTreePayments"
+                    ></p-menubar>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="body" let-payment let-i="rowIndex">
+                  <tr [pSelectableRow]="payment">
+                    <td style="width: 5%;" class="text-center">{{i + 1 }}</td>
+                    <td
+                      [style.width.%]="!payment.invoices || !payment.service_invoices  ? 10 : 30"
+                      [class.text-center]="payment.invoices || payment.service_invoices"
+                    >
+                      <ng-container *ngIf="payment.invoices">
+                         <span *ngIf="payment.invoices">
+                          {{payment.id}}
+                         </span>
+                      </ng-container>
+                      <ng-container *ngIf="payment.service_invoices">
+                        {{payment.id}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%">
+                      <ng-container *ngIf="payment.invoices">
+                        <div *ngFor="let invoice of payment.invoices">
+                          <div class="word-break">
+                            {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="payment.service_invoices">
+                        <div *ngFor="let invoice of payment.service_invoices">
+                          <div class="word-break">
+                            {{invoice.system_creation_date | date : 'dd/MM/yyyy'}}
+                          </div>
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td style="width: 16%">
+                      <ng-container *ngIf="payment.invoices">
+                        <div *ngFor="let invoice of payment.invoices">
+                          <div class="word-break">
+                            <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="payment.service_invoices">
+                        <div *ngFor="let invoice of payment.service_invoices">
+                          <div class="word-break">
+                            <a  [href]="'/crm/business-partners/company-page/' + invoice.supplier.id" target="_blank">{{invoice.supplier.name}}</a>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="payment.invoices">
+                        <div *ngFor="let invoice of payment.invoices">
+                          <a (click)="goToLinkPaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="payment.service_invoices">
+                        <div *ngFor="let invoice of payment.service_invoices">
+                          <a (click)="goToLinkServicePaymentInvoice(invoice)">{{invoice.self_serial_number}}</a>
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="payment.service_invoices || payment.invoices">
+                        {{payment.amount | moneyFormat}} €
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="payment.service_invoices || payment.invoices">
+                        {{payment.converted_amount | moneyFormat}} €
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="payment.invoices">
+                        <div *ngFor="let invoice of payment.invoices">
+                          <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="payment.service_invoices">
+                        <div *ngFor="let invoice of payment.service_invoices">
+                          <a (click)="goToLinkPaymentOrder(invoice.order)">{{invoice.order.id}}</a>
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <div
+                        [ngClass]="{
+                          'text-primary': payment.status==='PAID',
+                          'text-success': payment.status==='CONFIRMED',
+                          'text-danger': payment.status==='DECLINED',
+                          'text-warning': payment.status==='WAITING'
+                          }"
+                      >
+                        {{payment.status}}
+                      </div>
+                    </td>
+                    <td style="width: 10%">
+                      <div class="payment-paperclip">
+                        {{payment.payment_date | date:'dd/MM/yyyy'}}
+                        <i *ngIf="payment.related_files" class="pi pi-paperclip"></i>
+                      </div>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <div *ngFor="let plan of payment.unique_root_plans; let idx = index">
+                        {{plan.planName}} <span *ngIf="plan.count > 1">({{plan.count}})</span>
+                      </div>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      {{payment.payment_method}}
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="16">
+                      <i *ngIf="isLoadingAuxPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoadingAuxPayments">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                  <p-button
+                    type="button"
+                    (click)="dt2.paginator = false"
+                    styleClass="p-button-text"
                   >
-                    {{payment.status}}
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  <div *ngFor="let invoice of payment.service_invoices">
-                    <span *ngFor="let root of invoice.order.root_production_list_products; let idx = index">
-                      {{root.nomenclature.name}}<i
-                      *ngIf="idx !== invoice.order.root_production_list_products.length - 1">,</i>
-                    </span>
-                  </div>
-                </td>
-                <td style="width: 10%" class="text-center">
-                  {{payment.payment_method}}
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td class="text-center p-4" [attr.colspan]="10">
-                  <i *ngIf="isLoadingAuxPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                  <span *ngIf="!isLoadingAuxPayments">No Records Found</span>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="paginatorright">
+                    All
+                  </p-button>
+                </ng-template>
+              </p-table>
+            </div>
+            <div *ngIf="!dt2.paginator && !isLoadingAuxPayments && serviceInvoicePayments.length > 0"
+                 class="paginator-return-pagination">
               <p-button
                 type="button"
-                (click)="st.paginator=false"
+                (click)="dt2.paginator = true"
                 styleClass="p-button-text"
-              >All
+              >
+                Return pagination
               </p-button>
-            </ng-template>
-          </p-table>
-        </div>
-        <div *ngIf="!st.paginator && !isLoadingAuxPayments && payments.length > 0" class="paginator-return-pagination">
-          <p-button
-            type="button"
-            (click)="st.paginator=true"
-            styleClass="p-button-text"
-          >
-            Return pagination
-          </p-button>
+            </div>
+          </ng-container>
         </div>
       </p-tabPanel>
     </p-tabView>

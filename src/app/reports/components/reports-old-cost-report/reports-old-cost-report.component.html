@@ -1,0 +1,220 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Cost Report</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <h2 class="mb-4">Additional Expenses</h2>
+
+  <div class="page__card mb-4">
+    <div class="row pt-3">
+      <div *ngIf="loading" class="d-flex justify-content-center">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+      </div>
+
+      <div class="col-6" *ngFor="let item of additionalExpenses">
+        <span>{{item.accountingservice}} : {{item.value | moneyFormat}} € </span>
+      </div>
+
+      <div class="additional-none pl-3" *ngIf="additionalExpenses.length === 0 && !loading">
+        <span>Additional Expenses None</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-page-header mb-4">
+    <h2>Cost Report</h2>
+
+    <div class="d-flex">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-down"
+        label="Expand All"
+        class="mr-2"
+        (click)="expandCollapse()"
+        [disabled]="loading"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="mr-2"
+        icon="pi pi-angle-up"
+        label="Collapse All"
+        (click)="expandCollapse(false)"
+        [disabled]="loading"
+      ></button>
+      <button
+        pButton
+        type="button"
+        [icon]="hide ? 'pi pi-eye' : 'pi pi-eye-slash'"
+        [label]="hide ? 'Show All' : 'Hide zeros'"
+        (click)="onToggleHide()"
+        [disabled]="loading"
+      ></button>
+    </div>
+  </div>
+
+  <div class="page__card cost-report-table">
+    <p-treeTable
+      #tt [value]="treeProducts" selectionMode="single" [(selection)]="selectedNode"
+      [resizableColumns]="true">
+      <ng-template pTemplate="caption">
+
+        <div class="d-flex">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-plus"
+            label="Additional Expenses"
+            class="ml-auto"
+            (click)="services()"
+            [disabled]="!selectedNode || selectedNode?.parent"
+          ></button>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 23%" class="th-code">Code</th>
+          <th style="width: 11%">Name</th>
+          <th style="width: 6%" class="text-center">Required Qty</th>
+          <th style="width: 3%" class="text-center">UOM</th>
+          <th style="width: 3%" class="text-center">Order</th>
+          <th style="width: 5%" class="text-center">Invoice</th>
+          <th style="width: 9%">Supplier</th>
+          <th style="width: 5%" class="text-center">Date</th>
+          <th style="width: 5%" class="text-center">Quantity</th>
+          <th style="width: 5%" class="text-center">Unit Price</th>
+          <th style="width: 5%" class="text-center">Total Price</th>
+          <th style="width: 5%" class="text-center">Unit Cost</th>
+          <th style="width: 5%" class="text-center">Total Cost</th>
+          <th style="width: 5%" class="text-center">Price SUM</th>
+          <th style="width: 5%" class="text-center">Cost SUM</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns" let-index="rowIndex">
+        <tr [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode" [class.hide]="!rowData.visible && hide">
+          <td [ngStyle]="{'padding-left': rowNode.level*10+'px'}">
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            <span class="drag-cursor">
+                        {{rowData.nomenclature.code}}
+                    </span>
+          </td>
+          <td>
+            {{rowData.nomenclature.name}}
+          </td>
+          <td class="text-center">
+            {{rowData.required_quantity}}
+          </td>
+          <td class="text-center">
+            {{rowData.nomenclature.category ? rowData.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.order?.id}}
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li routerLinkActive="router-link-active" *ngFor="let item of rowData.from_products">
+                <a [routerLink]="['/procurement/chains/order/',item.order?.id]"
+                   rel="noopener noreferrer">{{item?.order?.id}}</a>
+              </li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.invoice?.self_serial_number}}
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">
+                <a [routerLink]="['/reports/invoices/invoice/',item.invoice?.id]"
+                   rel="noopener noreferrer">{{item.invoice?.self_serial_number}}</a>
+              </li>
+            </ul>
+          </td>
+          <td>
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.supplier}}
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.supplier}}</li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.document_creation_date | date:'dd/MM/yyyy'}}
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.document_creation_date | date:'dd/MM/yyyy'}}
+              </li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.accepted_quantity}}
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.quantity}}</li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.supplier_unit_price | moneyFormat}} €
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.unit_price | moneyFormat}} €</li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.supplier_total_price | moneyFormat}} €
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.total_price | moneyFormat}} €</li>
+            </ul>
+            <!--          <div>{{rowData.sumTotal | moneyFormat}} €</div>-->
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.supplier_unit_cost| moneyFormat}} €
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.unit_cost | moneyFormat}} €</li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.assembly_info">
+              {{rowData.assembly_info.supplier_total_cost| moneyFormat}} €
+            </div>
+            <ul class="p-0" *ngIf="rowData.from_products" [class.m-0]="rowData.from_products">
+              <li *ngFor="let item of rowData.from_products">{{item.total_cost | moneyFormat}} €</li>
+            </ul>
+            <!--          {{rowData.visible}}-->
+          </td>
+
+          <td class="text-center">
+                  <span *ngIf="isShowSum(rowData)">
+                    {{rowData.sumTotal | moneyFormat}} €
+                  </span>
+          </td>
+          <td class="text-center">
+                  <span *ngIf="isShowSum(rowData)">
+                         {{rowData.sumCost | moneyFormat}} €
+                  </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="15">
+            <i *ngIf="loading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!loading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>

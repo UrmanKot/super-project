@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Administration',
     icon: 'icon-administration',
-    routerLink: ['/external', `${environment.link_url}dash/admin/users-list`],
+    routerLink: ['/admin'],
     requiredModulePermission: 'can_edit_administration'
   }, {
     label: 'Corespondents',
@@ -90,12 +90,12 @@ export class DashboardComponent implements OnInit {
   }, {
     label: 'Reports',
     icon: 'icon-reports',
-    routerLink: ['/external', `${environment.link_url}dash/accounting/cost-reports`],
+    routerLink: ['/reports'],
     requiredModulePermission: 'can_edit_reports'
   }, {
-    label: 'Delivery',
-    icon: 'icon-delivery-procurement-chains',
-    routerLink: ['/external', `${environment.link_url}dash/delivery-chains`],
+    label: 'Delivery Chains',
+    icon: 'pi pi-truck',
+    routerLink: ['/delivery-chains'],
     requiredModulePermission: 'can_edit_delivery_chain'
   }, {
     label: 'Business Trips',
@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit {
     label: 'ERP Statistics',
     icon: 'pi pi-chart-bar',
     routerLink: ['/statistics'],
-    requiredModulePermission: 'can_edit_instruments_and_tools'
+    requiredModulePermission: 'can_edit_instruments_and_tools',
   }];
 
   constructor(

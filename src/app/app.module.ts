@@ -23,6 +23,8 @@ import {QrCodeModule} from './qr-code/qr-code.module';
 import {PurchasingModule} from './purchasing/purchasing.module';
 import {OutsourcingModule} from './outsourcing/outsourcing.module';
 import {ProcurementModule} from './procurement/procurement.module';
+import {DecimalPipe} from "@angular/common";
+import {MoneyFormatPipe} from "@shared/pipes/money-format.pipe";
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -60,6 +62,8 @@ const INTERCEPTORS_ERROR: Provider = {
     ProcurementModule,
   ],
   providers: [
+    DecimalPipe,
+    MoneyFormatPipe,
     MessageService,
     INTERCEPTOR_PROVIDER,
     INTERCEPTORS_ERROR,

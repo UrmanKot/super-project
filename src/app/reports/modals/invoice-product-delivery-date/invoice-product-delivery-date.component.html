@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Delivery Date
+  </h2>
+</div>
+
+<mat-dialog-content class="overflow-visible">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Delivery Date*</label>
+      <p-calendar
+        formControlName="rma_reception_date"
+        [showButtonBar]="true"
+        dateFormat="dd/mm/yy"
+        [readonlyInput]="true"
+      >
+      </p-calendar>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="d-flex justify-content-between">
+  <button
+    class="p-button-danger"
+    pButton
+    type="button"
+    [mat-dialog-close]="false"
+    label="Cancel"
+  >
+  </button>
+
+  <div class="d-flex">
+    <button
+      pButton
+      type="button"
+      class="p-button-danger mr-2"
+      (click)="reset()"
+      label="Reset"
+      [loading]="isReset"
+    >
+    </button>
+
+    <button
+      [loading]="isSaving"
+      class="p-button-success"
+      pButton
+      type="button"
+      (click)="save()"
+      [disabled]="form.invalid"
+      label="Save"
+    >
+    </button>
+  </div>
+</mat-dialog-actions>

@@ -1,0 +1,47 @@
+<div class="modal-header ">
+  <h2 class="modal-header__title">
+    {{modalData.headerTitle ? modalData.headerTitle : 'Sign Document'}}
+  </h2>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input class="form-control" formControlName="fullName" pInputText>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label>Signature</label>
+          <signature-pad #signature [options]="signaturePadOptions" (drawStart)="drawStart($event)"></signature-pad>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <div class="d-flex">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-secondary"></button>
+    <button
+      pButton
+      type="button"
+      [label]="'Clear'"
+      (click)="clear()"
+      class="p-button-outlined ml-2"
+    ></button>
+  </div>
+
+  <button
+    pButton
+    type="button"
+    [disabled]="form.invalid || signaturePad.isEmpty()"
+    [label]="'Sign'"
+    (click)="sign()"
+    class="p-button-success"
+  ></button>
+</mat-dialog-actions>

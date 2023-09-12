@@ -1,0 +1,45 @@
+::ng-deep .cdk-overlay-pane {
+  //overflow: auto !important;
+}
+
+::ng-deep a.desc-link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: 18.75rem;
+  white-space: nowrap;
+  margin-top: 0.5rem;
+}
+
+.modal-container {
+  position: relative;
+}
+
+.err {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.modal-header {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  &__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__column {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .right {
+    text-align: right;
+  }
+}

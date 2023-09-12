@@ -1,0 +1,29 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        {{data.productFound ? 'Product List Found' : 'Product List Not Found'}}
+        Scan Next QR?
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-actions class="justify-content-between">
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+
+  <button
+    pButton
+    type="button"
+    label="Scan"
+    class="p-button-success"
+    (click)="scanNext()"
+  >
+  </button>
+</mat-dialog-actions>

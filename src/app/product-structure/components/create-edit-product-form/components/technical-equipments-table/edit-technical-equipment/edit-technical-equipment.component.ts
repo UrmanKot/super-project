@@ -25,13 +25,16 @@ export class EditTechnicalEquipmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('this.technicalEquipment', this.technicalEquipment);
     this.technologies = this.technicalEquipment.technologies;
     this.form.get('quantity').patchValue(this.technicalEquipment.technicalEquipment.quantity)
-    this.form.get('technology').patchValue(this.technicalEquipment.technicalEquipment.technology.id)
+    this.form.get('technology').patchValue(this.technicalEquipment.technicalEquipment.technology?.id)
     this.equipment = this.technicalEquipment.technicalEquipment;
   }
 
   onSave() {
+    console.log('this.form.valid', this.form.valid);
+    console.log('this.form', this.form);
     if (this.form.valid) {
       const data: TechnicalEquipment = {
         id: this.equipment.id,

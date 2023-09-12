@@ -1,3 +1,4 @@
+@import "src/app/shared/styles/screens-variables";
 
 .warning-quantity-more {
   color: var(--theme-color-success)
@@ -22,4 +23,33 @@
 .right-side {
   width: 100%;
   margin-left: 1.75rem;
+}
+
+@media (max-width: $tablet-width) {
+  .page__card {
+    flex-direction: column;
+  }
+
+  .left-side {
+    width: calc(100% - 1rem);
+    padding: 0.5rem;
+  }
+
+  .right-side {
+    margin-left: 0;
+    margin-top: 1rem;
+
+    form {
+      padding: 0.5rem;
+    }
+  }
+}
+
+.mobile-version {
+  &.mobile-scan {
+    position: fixed;
+    top: 10px;
+    right: 50px;
+    z-index: 4;
+  }
 }

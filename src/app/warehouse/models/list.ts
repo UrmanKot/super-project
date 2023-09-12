@@ -12,10 +12,12 @@ export class List {
   fullName?: string;
   nomenclature?: Nomenclature;
   label?: string;
-  list?: any;
+  list?: List;
   root_production_plans?: any[];
   unique_root_production_plans?: any[];
   full_statistics?: any;
+  needs_procurement_requests?: boolean;
+  family_id?: string;
 }
 
 export class Lists {

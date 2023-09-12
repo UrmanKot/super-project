@@ -51,8 +51,8 @@
         </div>
         <div class="warehouse-tool-request-print-page__col" style="width: 10%">
           <h3>Units</h3>
-          <div *ngIf="request.nomenclature.category.unit_of_measure.symbol">
-            {{request.nomenclature.category.unit_of_measure.symbol}}
+          <div *ngIf="request.nomenclature.category?.unit_of_measure.symbol">
+            {{request.nomenclature.category?.unit_of_measure.symbol}}
           </div>
         </div>
         <div class="warehouse-tool-request-print-page__col" style="width: 30%">

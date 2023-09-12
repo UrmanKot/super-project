@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Prices
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div class="rows" *ngIf="!isLoading; else spinner">
+    <div class="row" *ngFor="let item of items">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input
+            pInputText
+            type="text"
+            id="code"
+            value="{{
+                item.nomenclature?.code
+                || item.warehouse_product?.nomenclature.code
+                || item.list_product?.nomenclature.code
+            }}"
+            disabled
+          >
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            pInputText
+            type="text"
+            id="name"
+            value="{{
+                item.nomenclature?.name
+                || item.warehouse_product?.nomenclature.name
+                || item.list_product?.nomenclature.name
+            }}"
+            disabled
+          >
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input
+            pInputText
+            type="number"
+            id="price"
+            [(ngModel)]="item.price"
+            min="0"
+            step="0.01"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    (click)="save()"
+  ></button>
+</mat-dialog-actions>
+
+
+<ng-template #spinner>
+  <div class="d-flex justify-content-center">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+  </div>
+</ng-template>

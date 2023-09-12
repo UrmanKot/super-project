@@ -1,0 +1,58 @@
+.cost-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cost-report-table {
+  ::ng-deep {
+    li {
+      list-style: none;
+      margin-bottom: 5px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .p-treetable-wrapper {
+      td {
+        font-size: 14px !important;
+      }
+
+      th {
+        font-size: 14px !important;
+      }
+    }
+  }
+}
+
+h2  {
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+
+.additional-none {
+  font-weight: 500;
+}
+
+.th-code {
+  padding-left: 44px !important;
+}
+
+ul {
+  margin: 5px 0;
+}
+
+.info-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.hide {
+  display: none;
+}

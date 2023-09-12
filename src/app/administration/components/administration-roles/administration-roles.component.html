@@ -1,0 +1,91 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'administration'" [isActive]="true"></pek-module-icon>
+      <h1>Roles</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="Create Role"
+        (click)="createRole()"
+      >
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div class="page__content">
+  <div class="page__card">
+    <p-table
+      #dt
+      selectionMode="single"
+      [rows]="10"
+      [scrollable]="true"
+      [(selection)]="selectedRole"
+      scrollHeight="calc(100vh - 27rem)"
+      [value]="roles$ | async"
+    >
+      <ng-template pTemplate="caption">
+        <div class="d-flex">
+          <p class="subtitle" *ngIf="!selectedRole">Choose the Role to edit</p>
+          <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedRole"></p-menubar>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center" style="width: 5%">#</th>
+          <th style="width: 95%">Name</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-role let-i="rowIndex">
+        <tr [pSelectableRow]="role">
+          <td style="width: 5%" class="text-center">{{(currentPage - 1) * 10 + i + 1}}</td>
+          <td style="width: 95%">{{role.name}}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="10">
+            <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div
+      *ngIf="!isShowAll"
+      class="paginator-wrapper"
+      [class.paginator-wrapper_hide]="count === 0"
+    >
+      <p-paginator
+        #paginator
+        [rows]="10"
+        [totalRecords]="count"
+        (onPageChange)="paginate($event)"
+      >
+      </p-paginator>
+      <p-button
+        (click)="onShowAll(true)"
+        class="paginator-all"
+        type="button"
+        styleClass="p-button-text"
+      >
+        All
+      </p-button>
+    </div>
+    <div *ngIf="isShowAll" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="onShowAll(false)"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

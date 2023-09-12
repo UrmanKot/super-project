@@ -7,6 +7,8 @@ export class ProductStructureCompare {
   quantity: number;
   children?: ProductStructureCompare[];
   parent?: ProductStructureCompare;
+  existing_structure?: ProductStructureCompare;
+  unchangedStructure?: ProductStructureCompare;
   isNew?: boolean;
   isDeleted?: boolean;
   hasNameChanged?: boolean;

@@ -37,4 +37,13 @@
     [disabled]="form.invalid"
     (click)="onAccept()"
   ></button>
+  <button
+    pButton
+    type="button"
+    label="Distribute to PL"
+    class="p-button-success"
+    [disabled]="items.length > 1"
+    (click)="onDistributeToPL()"
+  >
+  </button>
 </mat-dialog-actions>

@@ -13,6 +13,7 @@ import {
 } from "../modals/create-choice-product-modal/create-choice-product-modal.component";
 import {CreateSalesFileModalComponent} from "../modals/create-sales-file-modal/create-sales-file-modal.component";
 import {CompanyFile} from "../../crm/models/company-file";
+import {EditOfferPriceComponent} from "../modals/edit-offer-price/edit-offer-price.component";
 
 @Injectable({
   providedIn: 'root'
@@ -90,6 +91,18 @@ export class SalesChainService {
     )
   }
 
+  updateItem(data: any): Observable<any> {
+    return this.httpClient.post<{ data: Request[] }>(this.API_URL + 'sales_chain_reservation/complete_delivery_qc/', data).pipe(
+      map(response => response.data)
+    );
+  }
+
+  resetConfirmation(data: any): Observable<any> {
+    return this.httpClient.post<{ data: Request[] }>(this.API_URL + 'sales_chain_reservation/reset_delivery_qc_confirmation/', data).pipe(
+      map(response => response.data)
+    );
+  }
+
   updateStatus(id: number, salesChain):Observable<SalesChain> {
     return this.httpClient.patch<{data: SalesChain}>(this.API_URL + '' + `sales_chains/${id}/`, salesChain).pipe(
       map(response => response.data)
@@ -116,6 +129,60 @@ export class SalesChainService {
   //   return this.httpClient.get(this.API_URL + 'sales_chains/' + id + '/generate_offer/', {observe: 'response', responseType: 'blob'});
   // }
 
+  getConfirmedOffer(chainId) {
+    const url = this.API_URL + 'sales_chains/' + chainId + '/confirmed_offers/'
+    return this.httpClient.get<{data: any}>(url).pipe(map((response) => {
+      return response.data;
+    }));
+  }
+
+  generateOffer(id) {
+    const url = this.API_URL + 'sales_chains/' + id + '/generate_offer/';
+    const data = {};
+    return this.httpClient.post(url, data);
+  }
+
+  deleteOffer(chainId, offerId) {
+    const url = this.API_URL + 'sales_chains/' + chainId + '/delete_offer/' + offerId + '/';
+    return this.httpClient.delete(url);
+  }
+
+  confirmOffer(offerId) {
+    const url = this.API_URL + 'sales_chains/' + offerId + '/confirm_offer/';
+    const data = {};
+    return this.httpClient.post(url, data);
+  }
+
+  getOffers(id) {
+    const url = this.API_URL + 'sales_chains/' + id + '/offers/';
+    return this.httpClient.get<{data: any}>(url).pipe(map((response) => {
+      return response.data;
+    }));
+  }
+
+  getOfferItems(offerId) {
+    const url = this.API_URL + 'sales_chains/' + offerId + '/get_offer_items/';
+    return this.httpClient.get<{data: any}>(url).pipe(map((response) => {
+      return response.data;
+    }))
+  }
+
+  updateOffer(chainId, offerId, items) {
+    const url = this.API_URL + 'sales_chains/' + chainId + '/update_offer/' + offerId + '/';
+    return this.httpClient.patch(url, items);
+  }
+
+  editOfferPriceDialog(offer: any, chainId: number) {
+    return this.dialog
+      .open<EditOfferPriceComponent>(EditOfferPriceComponent, {
+        width: '50rem',
+        height: 'auto',
+        data: {offer, chainId},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
 
   createEditSalesChainModal(): Observable<SalesChain> {
     return this.dialog
@@ -132,20 +199,23 @@ export class SalesChainService {
   editSalesChainStatus(salesChain: SalesChain): Observable<any> {
     return this.dialog
       .open<EditStatusesModalComponent>(EditStatusesModalComponent, {
-        width: '800px',
+        width: '50rem',
+        panelClass: 'modal-overflow-visible',
         data: {type: 'edit', salesChain},
         disableClose: true,
+        autoFocus: false,
       })
       .afterClosed()
       .pipe();
   }
 
-  createChoiseProduct(selectedSalesReservation: SalesReservation): Observable<any> {
+  createChoiceProduct(selectedSalesReservation: SalesReservation): Observable<any> {
     return this.dialog
       .open<CreateChoiceProductModalComponent>(CreateChoiceProductModalComponent, {
-        width: '800px',
+        width: '80vw',
         data: {type: 'edit', selectedSalesReservation},
         disableClose: true,
+        autoFocus: false,
       })
       .afterClosed()
       .pipe();
@@ -153,13 +223,12 @@ export class SalesChainService {
   createSalesFileModal(saleChainId: number): Observable<any> {
     return this.dialog
       .open<CreateSalesFileModalComponent>(CreateSalesFileModalComponent, {
-        width: '800px',
+        width: '50rem',
         data: {type: 'edit', saleChainId},
         disableClose: true,
+        autoFocus: false,
       })
       .afterClosed()
       .pipe();
   }
-
-
 }

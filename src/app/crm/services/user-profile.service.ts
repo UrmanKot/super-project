@@ -9,7 +9,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
 import {EventType} from '../models/event-type';
 import {CreateEditEventTypeComponent} from '../modals/create-edit-event-type/create-edit-event-type.component';
-import {User} from '@shared/models/user';
+import {User} from '../../administration/models/user';
 import {CreateEditUserProfileComponent} from '../modals/create-edit-user-profile/create-edit-user-profile.component';
 
 @Injectable({

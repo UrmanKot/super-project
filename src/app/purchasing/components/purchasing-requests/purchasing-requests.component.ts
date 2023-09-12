@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Paginator} from 'primeng/paginator';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderProduct, OrderRequestType} from '../../../procurement/models/order-product';
 import {BehaviorSubject, iif, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -47,6 +47,7 @@ export class PurchasingRequestsComponent implements OnInit {
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   name$: Subject<void> = new Subject<void>();
+  OrderRequestType = OrderRequestType;
 
   orderProducts$: Observable<OrderProduct[]> = this.search$.pipe(
     tap(() => this.prepareForSearch()),

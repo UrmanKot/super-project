@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Warehouse} from '../../../warehouse/models/warehouse';
+import {Currency} from '../../../warehouse/models/warehouse';
 import {Subject, takeUntil} from 'rxjs';
 import {UnitMeasureService} from '../../../warehouse/services/unit-measure.service';
 import {UnitMeasure} from '../../../product-structure/models/unit-measure';

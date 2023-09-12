@@ -12,8 +12,15 @@ import {Nomenclature} from '@shared/models/nomenclature';
 import {UploadProductStructureComponent} from '../modals/upload-product-structure/upload-product-structure.component';
 import {ProductFilesComponent} from '../modals/product-files/product-files.component';
 import {CompareStructureComponent} from '../modals/compare-structure/compare-structure.component';
-import {ProductStructureCompareResult} from '../models/product-structure-compare-result';
+import {
+  AncestorProductStructureCompare,
+  ProductStructureCompareResult
+} from '../models/product-structure-compare-result';
 import {CompareChangedCodeName} from '../models/compare-changed-code-name';
+import {List} from '../../warehouse/models/list';
+import {
+  StructureErrorMessageModalComponent
+} from '../modals/structure-error-message-modal/structure-error-message-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -231,19 +238,39 @@ export class ProductService {
       .afterClosed();
   }
 
+  showProductStructureError(errorMessage: string): Observable<void> {
+    return this.dialog
+      .open<StructureErrorMessageModalComponent>(StructureErrorMessageModalComponent, {
+        width: '40rem',
+        height: 'auto',
+        data: {errorMessage},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
 
   openCompareStructureDialog(
     newResult: any,
     oldResult: any,
     hasCyclingProduct: boolean,
     hasChangedName: boolean,
-    changedNamesList: CompareChangedCodeName[]
+    changedNamesList: CompareChangedCodeName[],
+    ancestorsProducts: AncestorProductStructureCompare[],
+    isCompareView: boolean = false
   ): Observable<boolean | { code: string, selected_name: string }[]> {
     return this.dialog
       .open<CompareStructureComponent>(CompareStructureComponent, {
-        width: '80rem',
+        width: isCompareView ? '70rem' : '80rem',
         height: 'auto',
-        data: {newResult, oldResult, hasCyclingProduct, hasChangedName, changedNamesList},
+        data: {newResult,
+          oldResult,
+          hasCyclingProduct,
+          hasChangedName,
+          changedNamesList,
+          ancestorsProducts,
+          isCompareView},
         panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'

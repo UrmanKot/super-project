@@ -66,7 +66,8 @@ import { HotelListItemComponent } from './components/edit-business-trip/componen
         WebcamModule,
     ],
     exports: [
-        CrmPositionPickerComponent
+        CrmPositionPickerComponent,
+        BusinessTripsMultiEmployeeWithCustomComponent
     ],
     providers: [DatePipe]
 })

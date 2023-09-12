@@ -1,4 +1,4 @@
-import {Warehouse} from './warehouse';
+import {Currency} from './warehouse';
 import {Locator} from './locator';
 import {Product} from '../../product-structure/models/product';
 import {SerialNumber} from '../../procurement/models/invoice';
@@ -8,7 +8,7 @@ export class PhysicalInventory {
   status: '0' | '1';
   completed: boolean;
   system_creation_date: string;
-  warehouses: Warehouse[];
+  warehouses: Currency[];
   locators: Locator[];
 }
 

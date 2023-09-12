@@ -1,0 +1,15 @@
+.form {
+  margin-top: -0.25rem;
+}
+
+.report-table {
+  &::ng-deep {
+    p-table {
+      tr {
+        td, th {
+          font-size: 14px !important;
+        }
+      }
+    }
+  }
+}

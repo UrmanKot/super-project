@@ -5,104 +5,199 @@
 </div>
 
 <mat-dialog-content>
-  <form [formGroup]="form">
-    <div class="form-group">
-      <label>Supplier*</label>
-      <pek-company-picker
-        [currentCompanyId]="form.get('supplier').value"
-        (selectCompanyFull)="onSelectCompany($event)"
-        [isDisabled]="data.type === 'edit' || isDisabledCompanyPicker"
-      >
-      </pek-company-picker>
-    </div>
-    <div class="form-group">
-      <label>Invoice*</label>
-      <ng-container *ngIf="!isLoading; else spinner">
-        <ng-container *ngIf="data.type === 'create'">
-          <p-multiSelect
-            formControlName="service_invoices"
-            class="disabled"
-            placeholder="Choose Invoice"
-            [options]="serviceInvoices"
-            optionValue="id"
-            optionLabel="label"
-            (onChange)="countSum()"
-          >
-          </p-multiSelect>
+  <section pekPasteScreenImage (imageAdded)="fileAdded($event)">
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Supplier*</label>
+        <pek-company-picker
+          [currentCompanyId]="form.get('supplier').value"
+          (selectCompanyFull)="onSelectCompany($event)"
+          [isDisabled]="data.type === 'edit' || isDisabledCompanyPicker"
+        >
+        </pek-company-picker>
+      </div>
+      <div class="form-group">
+        <label>Invoice*</label>
+        <ng-container *ngIf="!isLoading; else spinner">
+
+          <p *ngIf="showInvoiceError" class="invoice-error text-warning mb-2">
+            <b>Warning: </b> Invoices do not have the same currency or exchange rate, select invoices with the same values.
+          </p>
+
+          <ng-container *ngIf="data.type === 'create'">
+            <p-multiSelect
+              formControlName="service_invoices"
+              class="disabled"
+              placeholder="Choose Invoice"
+              [options]="serviceInvoices"
+              optionLabel="label"
+              (onChange)="countSum()"
+            >
+            </p-multiSelect>
+          </ng-container>
+          <ng-container *ngIf="data.type === 'edit'">
+            <p-multiSelect
+              formControlName="service_invoices"
+              class="disabled"
+              placeholder="Choose Invoice"
+              [options]="serviceInvoices"
+              optionLabel="self_serial_number"
+            >
+            </p-multiSelect>
+          </ng-container>
         </ng-container>
-        <ng-container *ngIf="data.type === 'edit'">
-          <p-multiSelect
-            formControlName="service_invoices"
-            class="disabled"
-            placeholder="Choose Invoice"
-            [options]="serviceInvoices"
-            optionValue="id"
-            optionLabel="self_serial_number"
-            (onChange)="countSum()"
-          >
-          </p-multiSelect>
-        </ng-container>
-      </ng-container>
-    </div>
-    <div class="form-group">
-      <label>Payment Amount*</label>
-      <input
-        class="p-inputtext"
-        formControlName="amount"
-      >
-    </div>
-    <div class="form-group">
-      <label>Converted Payment Amount</label>
-      <input
-        class="p-inputtext disabled"
-        formControlName="converted_amount"
-      >
-    </div>
-    <div class="form-group">
-      <label>Exchange Rate*</label>
-      <input
-        class="p-inputtext"
-        formControlName="exchange_rate"
-        (ngModelChange)="countSum()"
-        type="number"
-      >
-    </div>
-    <div class="row">
-      <div class="col-6">
-        <div class="form-group">
-          <label>Date*</label>
-          <p-calendar
-            formControlName="payment_date"
-            dateFormat="dd/mm/yy"
-            [readonlyInput]="true"
-          >
-          </p-calendar>
+      </div>
+      <div class="form-group">
+        <label>Payment Amount*
+          <span *ngIf="form.get('service_invoices').value.length">
+            ({{form.get('service_invoices').value[0]?.currency?.symbol}})
+          </span>
+        </label>
+        <input
+          class="p-inputtext"
+          formControlName="amount"
+          (ngModelChange)="onChangeAmount()"
+        >
+      </div>
+      <div class="form-group">
+        <label>Converted Payment Amount (€)</label>
+        <input
+          class="p-inputtext disabled"
+          formControlName="converted_amount"
+        >
+      </div>
+      <div class="form-group">
+        <label>Exchange Rate*</label>
+        <input
+          class="p-inputtext"
+          formControlName="exchange_rate"
+          type="number"
+          step="0.0001"
+          (ngModelChange)="onChangeRate()"
+        >
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Payment Date</label>
+            <p-calendar
+              formControlName="payment_date"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>Accountant Number*</label>
+            <input class="p-inputtext" formControlName="accountant_number">
+          </div>
         </div>
       </div>
-      <div class="col-6">
-        <div class="form-group">
-          <label>Accountant Number*</label>
-          <input class="p-inputtext" formControlName="accountant_number">
-        </div>
+      <div class="form-group">
+        <label>Paid by card</label>
+        <p-checkbox formControlName="paid_by_card" [binary]="true" inputId="binary"></p-checkbox>
+      </div>
+    </form>
+    <div>
+      <pek-upload-file
+        [uploadFiles]="uploadFiles"
+        [multiple]="true"
+        (selectFile)="onSelectFiles($event)"
+      ></pek-upload-file>
+
+      <div class="product-files">
+        <h3 class="product-files__caption">Uploaded Files</h3>
+        <p-table
+          selectionMode="single"
+          [value]="files"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="index-header text-center" style="width: 5%">#</th>
+              <th style="width: 75%">Name</th>
+              <th style="width: 20%">Download</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-file let-i="rowIndex">
+            <tr>
+              <td class="text-center" style="width: 5%">{{i + 1}}</td>
+              <td style="width: 75%" class="word-break">
+                <a [href]="link + file.file">
+                  {{getFileName(file.file)}}
+                </a>
+              </td>
+              <td style="width: 20%">
+                <div class="d-flex">
+                  <button
+                    pButton
+                    (click)="onDownloadFile(file)"
+                    [loading]="addition.has(file.id)"
+                    type="button"
+                    class="p-button-primary p-button-rounded p-button-outlined p-button-rounded_small mr-2"
+                    icon="pi pi-download"
+                  ></button>
+                  <button
+                    pButton
+                    (click)="onRemoveFile(file.id)"
+                    [loading]="deletion.has(file.id)"
+                    type="button"
+                    class="p-button-danger p-button-rounded p-button-outlined p-button-rounded_small"
+                    icon="pi pi-trash"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-2" [attr.colspan]="3">
+                <i *ngIf="isLoadingFiles" class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+                <span *ngIf="!isLoadingFiles">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
-    <div class="form-group">
-      <label>Paid by card</label>
-      <p-checkbox formControlName="paid_by_card" [binary]="true" inputId="binary"></p-checkbox>
-    </div>
-  </form>
+  </section>
 </mat-dialog-content>
 <mat-dialog-actions class="justify-content-between">
   <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <ng-container *ngIf="data.type == 'create'">
+    <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Create"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button> 
+  </ng-container>
+
+  <ng-container *ngIf="data.type == 'edit'">
+  <div>
   <button
     pButton
     type="button"
     class="p-button-success"
-    [label]="data.type"
+    label="Save"
     [loading]="isSaving"
     [disabled]="form.invalid"
     (click)="onSave()"
+  ></button>  
+  <button
+    pButton type="button"
+    label="Save & Pay"
+    [disabled]="!isConfirmed"
+    class="p-button-success ml-2"
+    (click)="onSaveAndPayPayment()"
   ></button>
+</div>
+</ng-container>
 </mat-dialog-actions>
 
 <ng-template #spinner>

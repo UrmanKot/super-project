@@ -82,3 +82,31 @@ tr {
   background: #e1efe2 !important;
   font-weight: 500;
 }
+
+.original-structure-changing {
+  background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0.2196078431) , rgba(245, 158, 11, 0.2196078431) 5px, #c7c6c5 5px, #c7c6c5 10px), #f59e0b38 !important;
+  font-weight: 500;
+}
+
+tr.original-structure-changing {
+  font-weight: 500;
+  &:not(.p-highlight) {
+    &.name-changed {
+      background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0) , rgba(245, 158, 11, 0) 5px, #c7c6c5 5px, #c7c6c5 10px), #f59e0b38 !important;
+    }
+    &.is-deleted {
+      background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0) , rgba(245, 158, 11, 0) 5px, #c7c6c5 5px, #c7c6c5 10px), #f5dfe1 !important;
+    }
+    &.quantity-changed {
+      background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0) , rgba(245, 158, 11, 0) 5px, #c7c6c5 5px, #c7c6c5 10px), rgb(215 249 253) !important;
+    }
+    &.is-cycled {
+      background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0) , rgba(245, 158, 11, 0) 5px, #c7c6c5 5px, #c7c6c5 10px), rgb(199 198 197) !important;
+    }
+    &.is-new {
+      background: repeating-linear-gradient(48deg, rgba(245, 158, 11, 0) , rgba(245, 158, 11, 0) 5px, #c7c6c5 5px, #c7c6c5 10px), #e1efe2 !important;
+    }
+
+  }
+}
+

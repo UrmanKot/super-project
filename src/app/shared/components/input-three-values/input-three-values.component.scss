@@ -1,0 +1,35 @@
+.column-filter-box {
+    button {
+      width: 2.375rem;
+      height: 2.375rem;
+      border-radius: 0.625rem;
+      border: 1px solid #ced4da;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+
+      &:hover {
+        border-color: var(--theme-color-primary);
+      }
+
+      &.active {
+        background: var(--theme-color-primary);
+
+        &:focus {
+          box-shadow: 0 0 0 0.2rem var(--theme-color-primary-hover);
+        }
+      }
+
+      &:disabled {
+        cursor: default;
+        border: 1px solid #ced4da !important;
+
+        &.active {
+          opacity: 0.8;
+        }
+      }
+    }
+}

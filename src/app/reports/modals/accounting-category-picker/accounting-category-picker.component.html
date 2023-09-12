@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Choice Accounting Category
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div class="region-picker">
+    <p-dropdown
+      *ngIf="!isLoading; else spinner"
+      [options]="categories"
+      placeholder="Select Accounting Category"
+      [(ngModel)]="selectedCategory"
+      optionLabel="name"
+      [showClear]="true"
+      [filter]="true"
+    >
+    </p-dropdown>
+  </div>
+
+  <ng-template #spinner>
+    <div class="spinner-input">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+    </div>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Choice Category'"
+    (click)="onSelect()"
+  ></button>
+</mat-dialog-actions>

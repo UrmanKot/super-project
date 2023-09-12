@@ -11,9 +11,17 @@ import {AdapterService} from '@shared/services/adapter.service';
 import {Country} from '@shared/models/country';
 import {SubRegion} from '@shared/models/sub-region';
 import {Region} from '@shared/models/region';
-import { Impression } from '../../models/event-company';
-import {filter} from 'rxjs/operators';
+import {EventCompany, Impression} from '../../models/event-company';
+import {debounceTime, filter} from 'rxjs/operators';
+import {EventsListService} from '../../services/events-list.service';
+import {Checkbox} from 'primeng/checkbox';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {MenuItem} from 'primeng/api';
+import {ActivatedRoute, Router} from '@angular/router';
+import {EventCompanyService} from '../../services/event-company.service';
+import {ModalService} from '@shared/services/modal.service';
 
+@UntilDestroy()
 @Component({
   selector: 'pek-crm-events-reports',
   templateUrl: './crm-events-reports.component.html',
@@ -25,12 +33,44 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   @ViewChild('paginator') paginator: Paginator;
 
   private destroy$ = new Subject();
+  private updateSearch: Subject<void> = new Subject<void>();
 
   isShowAll = false;
   isStartOnePage = false;
   reportsCount = 0;
   isLastDateDefaultFilterSelected = true;
   isNextDateDefaultFilterSelected = true;
+
+  eventCompanyMenuItems: MenuItem[] = [{
+    label: 'Selected Company Event',
+    items: [
+      {
+        label: 'View Company',
+        icon: 'pi pi-eye',
+        command: () => this.onViewCompany()
+      },
+      {
+        label: 'Create Linked Event',
+        icon: 'pi pi-share-alt',
+        command: () => this.onCreateLinkedEvent()
+      },
+      {
+        label: 'Done',
+        icon: 'pi pi-check',
+        command: () => this.onDoneCompany()
+      },
+      {
+        label: 'Edit comment',
+        icon: 'pi pi-pencil',
+        command: () => this.onEditCompany()
+      },
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: () => this.onRemoveTechnology()
+      }
+    ]
+  }];
 
   dateFilters: { name: string, value: string }[] = [
     {
@@ -72,6 +112,110 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
 
   public dateRangeLimit: Date;
+
+
+  searchForm: FormGroup = this.fb.group({
+    page: [1],
+    id: [null],
+    id__in: [[]],
+    company_category_ids: [null],
+    countries: [null],
+    regions: [null],
+    sub_regions: [null],
+    categories_ids: [null],
+    chain_status_ids: [null],
+    employees_ids: [null],
+    is_null_chain_status: [null],
+    order_by_name: [false],
+    order_by_date: [true],
+    order_by_date_end: [null],
+    order_by_next_event_date: [null],
+    order_by_next_event_date_end: [null],
+    event_date_start: [null],
+    event_date_end: [null],
+    last_events_date_start: [null],
+    last_events_date_end: [null],
+    feature_events_date_start: [null],
+    feature_events_date_end: [null],
+    last_events_date_start_after: [null],
+    last_events_date_start_before: [null],
+    last_events_date_end_after: [null],
+    last_events_date_end_before: [null],
+    next_events_date_start_after: [null],
+    next_events_date_start_before: [null],
+    next_events_date_end_after: [null],
+    next_events_date_end_before: [null],
+    dateFilterType: [null],
+    datesLastFilterType: [null],
+    datesFutureFilterType: [null],
+    autoEvents: [true],
+    groupView: [false],
+    enableColors: [false],
+    intersect_last_event: [false],
+    intersect_next_event: [false],
+    event_id: [null],
+  });
+
+  rangeCalendar: any = [new Date(), new Date()];
+
+  today: Date;
+  isLoading = false;
+
+  lastTenDays: Date;
+  nextYear: Date;
+
+  eventsReports: EventReport[];
+  selectedEventsReport: EventReport;
+
+  selectedFilterType = 'lastNextDate';
+
+  queryKey = 'id:null/categories_ids:null/chain_status_ids:null/employees_ids:null/is_null_chain_status:null';
+
+  dateLastFilterTypes = [
+    {name: 'Last events date start', value: 'lastStart'},
+    {name: 'Last events date end', value: 'lastEnd'}
+  ];
+
+  dateFutureFilterTypes = [
+    {name: 'Future events date start', value: 'futureStart'},
+    {name: 'Future events date end', value: 'futureEnd'}
+  ];
+
+  query: QuerySearch[] = [
+    {name: 'page', value: this.searchForm.get('page').value},
+    {name: 'ordering', value: '-last_event_start'},
+    {name: 'test_method', value: 'true'},
+  ];
+  enableColors = false;
+  isFilteredByEvent: boolean = false;
+  selectedEventCompany: EventCompany;
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly eventsReportService: EventsReportService,
+    private readonly eventsListService: EventsListService,
+    private readonly eventCompanyService: EventCompanyService,
+    private readonly modalService: ModalService,
+    private adapterService: AdapterService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.dateRangeLimit = new Date();
+    let date = new Date();
+    this.lastTenDays = new Date(date.setDate(date.getDate() - 10));
+    date = new Date();
+    this.nextYear = new Date(date.setDate(date.getDate() + 365.2422));
+    this.today = new Date();
+
+    this.updateSearch.pipe(debounceTime(200), untilDestroyed(this)).subscribe(() => {
+      this.search();
+    });
+
+    this.updateSearch.next();
+  }
 
   get() {
     this.eventsReportService.get(this.query).pipe(
@@ -343,93 +487,8 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  searchForm: FormGroup = this.fb.group({
-    page: [1],
-    id: [null],
-    company_category_ids: [null],
-    countries: [null],
-    regions: [null],
-    sub_regions: [null],
-    categories_ids: [null],
-    chain_status_ids: [null],
-    employees_ids: [null],
-    is_null_chain_status: [null],
-    order_by_name: [false],
-    order_by_date: [true],
-    order_by_date_end: [null],
-    order_by_next_event_date: [null],
-    order_by_next_event_date_end: [null],
-    event_date_start: [null],
-    event_date_end: [null],
-    last_events_date_start: [null],
-    last_events_date_end: [null],
-    feature_events_date_start: [null],
-    feature_events_date_end: [null],
-    last_events_date_start_after: [null],
-    last_events_date_start_before: [null],
-    last_events_date_end_after: [null],
-    last_events_date_end_before: [null],
-    next_events_date_start_after: [null],
-    next_events_date_start_before: [null],
-    next_events_date_end_after: [null],
-    next_events_date_end_before: [null],
-    dateFilterType: [null],
-    datesLastFilterType: [null],
-    datesFutureFilterType: [null],
-    autoEvents: [true],
-    groupView: [false],
-    enableColors: [false],
-    intersect_last_event: [false],
-    intersect_next_event: [false],
-  });
-
-  rangeCalendar: any = [new Date(), new Date()];
-
-  today: Date;
-  isLoading = false;
-
-  lastTenDays: Date;
-  nextYear: Date;
-
-  eventsReports: EventReport[];
-  selectedEventsReport: EventReport;
-
-  selectedFilterType = 'lastNextDate';
-
-  queryKey = 'id:null/categories_ids:null/chain_status_ids:null/employees_ids:null/is_null_chain_status:null';
-
-  dateLastFilterTypes = [
-    {name: 'Last events date start', value: 'lastStart'},
-    {name: 'Last events date end', value: 'lastEnd'}
-  ];
-
-  dateFutureFilterTypes = [
-    {name: 'Future events date start', value: 'futureStart'},
-    {name: 'Future events date end', value: 'futureEnd'}
-  ];
-
-  query: QuerySearch[] = [
-    {name: 'page', value: this.searchForm.get('page').value},
-    {name: 'ordering', value: '-last_event_start'},
-    {name: 'test_method', value: 'true'},
-  ];
-  enableColors = false;
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly eventsReportService: EventsReportService,
-    private adapterService: AdapterService,
-  ) {
-  }
-
-  ngOnInit(): void {
-    this.dateRangeLimit = new Date();
-    let date = new Date();
-    this.lastTenDays = new Date(date.setDate(date.getDate() - 10));
-    date = new Date();
-    this.nextYear = new Date(date.setDate(date.getDate() + 365.2422));
-    this.today = new Date();
-    this.search();
+  emitChange() {
+    this.updateSearch.next();
   }
 
   search() {
@@ -465,7 +524,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     if (this.searchForm.get('chain_status_ids').value && this.searchForm.get('chain_status_ids').value.length > 0) {
       this.query.push({
         name: 'chain_status_ids',
-        value: this.searchForm.get('chain_status_ids').value
+        value: this.searchForm.get('chain_status_ids').value.join(',')
       });
     }
 
@@ -644,6 +703,21 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       name: 'sub_regions',
       value: this.searchForm.get('sub_regions').value.map(region => region.id)
     });
+
+    if (this.searchForm.get('id__in').value) {
+      this.query.push({
+        name: 'id__in',
+        value: this.searchForm.get('id__in').value
+      });
+    }
+
+    if (this.searchForm.get('event_id').value) {
+      this.query.push({
+        name: 'event_id',
+        value: this.searchForm.get('event_id').value
+      });
+    }
+
     if (this.isShowAll) {
       this.searchForm.get('page').patchValue(1);
       this.get();
@@ -734,7 +808,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
 
     if (updateFromDB) {
-      this.search();
+      this.emitChange();
     } else {
       this.sortEvents();
     }
@@ -752,7 +826,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
     if (startDateValue && endDateValue) {
       this.rangeCalendar = [this.searchForm.get('event_date_start').value, this.searchForm.get('event_date_end').value];
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -762,7 +836,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.lastAfterStartDateSelected = startDateValue;
     this.lastBeforeStartDateSelected = endDateValue;
     if (startDateValue && endDateValue) {
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -772,7 +846,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.lastAfterEndDateSelected = startDateValue;
     this.lastBeforeEndDateSelected = endDateValue;
     if (startDateValue && endDateValue) {
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -782,7 +856,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.featureAfterStartDateSelected = startDateValue;
     this.featureBeforeStartDateSelected = endDateValue;
     if (startDateValue && endDateValue) {
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -792,7 +866,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     this.featureAfterEndDateSelected = startDateValue;
     this.featureBeforeEndDateSelected = endDateValue;
     if (startDateValue && endDateValue) {
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -806,7 +880,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
     if (startDateValue && endDateValue) {
       this.rangeCalendar = [this.searchForm.get('event_date_start').value, this.searchForm.get('event_date_end').value];
-      this.search();
+      this.emitChange();
     }
   }
 
@@ -814,7 +888,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     if (!evt.value) {
       this.searchForm.get('last_events_date_start').setValue(null);
       this.searchForm.get('last_events_date_end').setValue(null);
-      this.search();
+      this.emitChange();
     } else {
       this.searchByLastDate();
     }
@@ -824,7 +898,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     if (!evt.value) {
       this.searchForm.get('feature_events_date_start').setValue(null);
       this.searchForm.get('feature_events_date_end').setValue(null);
-      this.search();
+      this.emitChange();
     } else {
       this.searchByFeatureDate();
     }
@@ -833,26 +907,26 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
   onShowAll() {
     this.isShowAll = true;
     this.dt.scrollable = true;
-    this.search();
+    this.emitChange();
   }
 
   onShowPartial() {
     this.isShowAll = false;
     this.dt.scrollable = false;
-    this.search();
+    this.emitChange();
   }
 
   paginate(evt: any) {
     // Если начинаем с первой страницы, не выполняем запрос повторно, т.к. он и так выполняется
     if (!this.isStartOnePage) {
       this.searchForm.get('page').patchValue(evt.page + 1);
-      this.search();
+      this.emitChange();
     }
   }
 
   onSelectCompany(id: number) {
     this.searchForm.get('id').patchValue(id);
-    this.search();
+    this.emitChange();
   }
 
   onSelectEventTypes(eventTypes: EventType[]) {
@@ -861,12 +935,12 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     } else {
       this.searchForm.get('categories_ids').patchValue(null);
     }
-    this.search();
+    this.emitChange();
   }
 
-  onSelectStatuses(ids: string) {
+  onSelectStatuses(ids: number[]) {
     this.searchForm.get('chain_status_ids').patchValue(ids);
-    this.search();
+    this.emitChange();
   }
 
   onSelectEmployees(ids: number[]) {
@@ -876,7 +950,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.searchForm.get('employees_ids').patchValue(null);
     }
 
-    this.search();
+    this.emitChange();
   }
 
   ngOnDestroy() {
@@ -888,7 +962,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
 
   }
 
-  updated($event: any) {
+  updated(updateView: boolean = true) {
     this.isLastEventStartFilterOpen = this.selectedFilters.findIndex(el => el === 'last_events_date_start') > -1;
     this.isLastEventEndFilterOpen = this.selectedFilters.findIndex(el => el === 'last_events_date_end') > -1;
     this.isFeatureEventStartFilterOpen = this.selectedFilters.findIndex(el => el === 'future_events_date_start') > -1;
@@ -921,13 +995,14 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     if (!this.isFeatureEventStartFilterOpen && !this.isFeatureEventEndFilterOpen) {
       this.searchForm.get('intersect_next_event').reset(false);
     }
-
-    this.search();
+    if (updateView) {
+      this.emitChange();
+    }
   }
 
   onSelectCompanyCategory(companyCategoryIds: number[]) {
     this.searchForm.get('company_category_ids').setValue(companyCategoryIds);
-    this.search();
+    this.emitChange();
   }
 
   onSelectCountry(countries: Country[]) {
@@ -938,7 +1013,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
     this.searchForm.get('sub_regions').setValue(null);
     this.searchForm.get('regions').setValue(null);
-    this.search();
+    this.emitChange();
   }
 
   onSelectRegion(regions: Region[]) {
@@ -949,7 +1024,7 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
     }
     this.searchForm.get('sub_regions').setValue(null);
 
-    this.search();
+    this.emitChange();
   }
 
   toggleFilterVisibility() {
@@ -986,6 +1061,135 @@ export class CrmEventsReportsComponent implements OnInit, OnDestroy {
       this.searchForm.get('sub_regions').setValue(null);
     }
 
-    this.search();
+    this.emitChange();
+  }
+
+  searchEvent(checkbox: Checkbox) {
+
+    if (this.searchForm.get('id__in').value?.length <= 0) {
+      this.eventsListService.openEventGetEventForFilter().subscribe(res => {
+        if (res.event) {
+          this.selectedFilters = [];
+
+          const currentDateTime = new Date().getTime();
+          const event_companies = res.event.on_companies.map(c => c.company_id);
+
+          // Clearing filters if we have selected event from the list
+          this.searchForm.get('id').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('id__in').setValue(event_companies, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('company_category_ids').patchValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('countries').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('regions').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('sub_regions').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('categories_ids').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('chain_status_ids').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('employees_ids').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('is_null_chain_status').setValue(null, {emitEvent: false, onlySelf: true});
+          this.searchForm.get('event_id').setValue(res.event.id, {emitEvent: false, onlySelf: true});
+          //
+          // this.searchForm.get('page').setValue(1, {emitEvent: false, onlySelf: true});
+          this.isFilteredByEvent = true;
+          checkbox.writeValue(true);
+
+          if (res.event.start.getTime() > currentDateTime) {
+            this.selectedFilters.push('future_events_date_start');
+            this.searchForm.get('next_events_date_start_after').setValue(new Date(currentDateTime), {
+              emitEvent: false,
+              onlySelf: true
+            });
+            this.searchForm.get('next_events_date_start_before').setValue(res.event.start, {
+              emitEvent: false,
+              onlySelf: true
+            });
+          } else {
+            this.selectedFilters.push('last_events_date_start');
+            this.searchForm.get('last_events_date_start_after').setValue(new Date(res.event.start), {
+              emitEvent: false,
+              onlySelf: true
+            });
+            this.searchForm.get('last_events_date_start_before').setValue(new Date(currentDateTime), {
+              emitEvent: false,
+              onlySelf: true
+            });
+          }
+          this.updated();
+        } else {
+          this.isFilteredByEvent = false;
+          checkbox.writeValue(false);
+        }
+      });
+    } else {
+      this.searchForm.get('id__in').setValue([]);
+      this.searchForm.get('event_id').setValue(null);
+
+      this.isFilteredByEvent = false;
+      checkbox.writeValue(false);
+      this.selectedFilters = [];
+      this.updated();
+    }
+  }
+
+
+  private onViewCompany() {
+    // this.router.navigate(['/crm/business-partners/company-page/', this.selectedEventCompany.company.id]);
+    window.open(`/crm/business-partners/company-page/${this.selectedEventCompany.company.id}`, '_blank');
+  }
+
+  onCreateLinkedEvent() {
+    this.eventsListService.openCreateEventEventModal('create', 'withEmployee',
+      this.selectedEventCompany.event,
+      this.selectedEventCompany.company.id,
+      true).subscribe(event => {
+      if (event) {
+        this.emitChange();
+      }
+    });
+  }
+
+  onDoneCompany() {
+    this.eventsListService.openEventCompanySetStateModal(this.selectedEventCompany).subscribe(res => {
+      if (res) {
+        this.selectedEventCompany = null;
+        this.emitChange();
+      }
+    });
+  }
+
+  onEditCompany() {
+    if (this.selectedEventCompany) {
+      this.eventCompanyService.openEditModal(this.selectedEventCompany).subscribe(company => {
+        if (company) {
+          this.selectedEventCompany = null;
+          this.emitChange();
+        }
+      });
+    }
+  }
+
+  onRemoveTechnology() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.eventCompanyService.delete(this.selectedEventCompany.id).subscribe(() => {
+          this.selectedEventCompany = null;
+          this.emitChange();
+        });
+      }
+    });
+  }
+
+  selectedReport(event: any, company: any) {
+    if (this.selectedEventCompany && this.selectedEventCompany.id == event.event_id) {
+      this.selectedEventCompany = null;
+    } else {
+      this.selectedEventCompany = {
+        comment: event.event_comment,
+        id: event.event_id,
+        impression: event.impression,
+        is_done: event.is_done,
+        company: company,
+        event: event
+      };
+    }
+
   }
 }

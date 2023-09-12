@@ -2,6 +2,7 @@ import {Nomenclature} from "@shared/models/nomenclature";
 import {WarehouseProduct} from "../../warehouse/models/warehouse-product";
 import {Company} from "../../crm/models/company";
 import {EventItem} from "../../crm/models/event-item";
+import {QcDeliveryStatus} from '../../procurement/models/qc-delivery-status';
 
 export class SalesChain {
   chain_status: SalesStatus;
@@ -13,7 +14,8 @@ export class SalesChain {
   files: any[];
   id: number;
   statuses: []
-  activities: SalesActivity[]
+  activities: SalesActivity[];
+  delivery_chain?: any;
 }
 
 export class SalesChains {
@@ -25,14 +27,16 @@ export class SalesChains {
 
 export class SalesStatus {
   id: number;
-  date: string;
+  date?: string;
   name?: string;
-  is_active: boolean;
-  sales_chain: number;
-  status: {
-    id: number
-    name: string
-  };
+  is_active?: boolean;
+  sales_chain?: number;
+  status?: SalesChainStatus;
+}
+
+export class SalesChainStatus {
+  id: number
+  name: string
 }
 
 export class SalesReservation {
@@ -44,6 +48,7 @@ export class SalesReservation {
   quantity: number;
   sales_chain: number;
   warehouse_product: WarehouseProduct;
+  qc_delivery_status?: QcDeliveryStatus; 
 }
 
 export class SalesActivity {

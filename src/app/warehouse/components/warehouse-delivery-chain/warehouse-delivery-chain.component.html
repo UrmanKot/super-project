@@ -1,0 +1,167 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+      <h1>
+        Requests for Delivery Chain
+        <a
+          *ngIf="!isLoading"
+          (click)="onGoToChainLink()"
+        >
+          #{{chain?.serial_number}}
+        </a>
+        <ng-container *ngIf="isLoading">...</ng-container>
+      </h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        class="p-button-icon mr-2"
+        icon="pi pi-check"
+        label="To QC"
+        [loading]="isCompleting"
+        (click)="itemsToQc()"
+        [disabled]="!chain?.qc_delivery_closed_date && chain?.qc_delivery_started_date || chain?.qc_delivery_status?.is_ready_to_complete"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="p-button-icon mr-2"
+        icon="pi pi-check"
+        [label]="chain?.closed_at ? 'Already Completed' : 'Complete'"
+        [loading]="isCompleting"
+        (click)="onComplete()"
+        [disabled]="!chain?.qc_delivery_status?.is_ready_to_complete"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        class="p-button-icon"
+        icon="pi pi-print"
+        label="Print Delivery Note"
+        (click)="onPrint()"
+        [disabled]="isLoading"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table selectionMode="single">
+        <ng-template pTemplate="caption">
+          <div class="table-tools">
+            <h2 class="subtitle">Customer</h2>
+          <div class="row">
+            <div class="col-md-5">
+              <h4>Company Name: {{ chain?.customer?.name }}</h4>
+              <h4>Address: {{ chain?.customer?.address }}</h4>
+              <h4>Email: {{ chain?.customer?.email }}</h4>
+              <h4>Phone Number: {{ chain?.customer?.phone_number }}</h4>
+              <h4>Website: {{ chain?.customer?.website }}</h4>
+              <h4>Tax Number: {{ chain?.customer?.tax_number }}</h4>
+              <h4>Register Number: {{ chain?.customer?.registration_number }}</h4>
+            </div>
+            <div class="col-md-7">
+              <h4>Nomenclature: {{ chain?.customer?.supplier_nomenclature }}</h4>
+              <h4>Description: {{ chain?.customer?.comment }}</h4>
+              <h4>
+                Country:
+                <span *ngIf="chain?.customer?.country">{{chain?.customer?.country?.name}}</span>
+              </h4>
+              <h4>
+                Region:
+                <span *ngIf="chain?.customer?.region">{{chain.customer?.region?.name}}</span>
+              </h4>
+              <h4>
+                Status:
+                <span>{{chain?.status.name | uppercase}} - {{chain?.estimate_date | date:'dd.MM.yyyy'}} </span>
+              </h4>
+              <h4>
+                Comment: {{chain?.comment}}
+              </h4>
+            </div>
+          </div>
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="page__table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="products.length > 0"
+        [rows]="10"
+        [value]="products"
+      >
+        <ng-template pTemplate="caption"></ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%;">#</th>
+            <th class="text-center" style="width: 20%;">Serial number</th>
+            <th style="width: 20%;">Code</th>
+            <th style="width: 20%;">Name</th>
+            <th class="text-center" style="width: 15%;">Quantity</th>
+            <th class="text-center" style="width: 20%;">Locator</th>
+            <th class="text-center" style="width: 20%;">QC Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-i="rowIndex">
+          <tr>
+            <td class="text-center">{{i + 1}}</td>
+            <td class="text-center">{{item.warehouse_product.serial_number?.type_with_number}}</td>
+            <td>{{item.warehouse_product.nomenclature.code}}</td>
+            <td>{{item.warehouse_product.nomenclature.name}}</td>
+            <td class="text-center">{{item.quantity}}</td>
+            <td class="text-center">{{ translateLocator(item.warehouse_product.locator) }}</td>
+            <td class="text-center">{{item.qc_delivery_status?.name}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="10">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >
+            All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && products.length > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<div class="print-page">
+  <pek-warehouse-delivery-chain-print
+    [chain]="chain"
+    [items]="products"
+    [locators]="locators"
+  ></pek-warehouse-delivery-chain-print>
+</div>

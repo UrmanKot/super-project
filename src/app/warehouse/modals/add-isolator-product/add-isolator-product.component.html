@@ -1,0 +1,117 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Add product to Isolator
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div *ngIf="!isSelectProductMode; else nomenclaturePicker">
+    <form [formGroup]="form">
+
+      <div class="form-group">
+        <label>
+          Product*
+          <ng-container *ngIf="selectedNomenclature">
+            : {{selectedNomenclature.code}} {{selectedNomenclature.name}}
+          </ng-container>
+        </label>
+
+        <div class="custom-button" *ngIf="!selectedNomenclature">
+          <p-button
+            icon="pi pi-plus"
+            (click)="onSelectProductMode()"
+            type="button"
+            styleClass="p-button-text"
+          >
+            Select Product
+          </p-button>
+        </div>
+
+        <div class="custom-button" *ngIf="selectedNomenclature">
+          <p-button
+            icon="pi pi-replay"
+            (click)="onReselectProduct()"
+            type="button"
+            styleClass="p-button-text"
+          >
+            Reselect Product
+          </p-button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Quantity*</label>
+        <input type="number" min="0" id="name" pInputText formControlName="quantity">
+      </div>
+
+      <div
+        class="form-group"
+        *ngIf="selectedNomenclature &&
+        selectedNomenclature.type !== nomenclatureType.PURCHASED &&
+        selectedNomenclatureTechnologiesIds.length > 0"
+      >
+        <label>Technology*</label>
+        <pek-technology-picker
+          (selectTechnology)="selectTechnology($event)"
+          [acceptedTechnologyIds]="selectedNomenclatureTechnologiesIds"
+        ></pek-technology-picker>
+      </div>
+      
+      <div class="form-group">
+        <label>Comment</label>
+        <textarea
+          id="comment"
+          [rows]="2"
+          pInputTextarea
+          [autoResize]="false"
+          formControlName="comment"
+        ></textarea>
+      </div>
+      
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions
+  class="justify-content-between"
+  [class.buttons]="isSelectProductMode"
+>
+  <button
+    pButton
+    type="button"
+    label="Cancel"
+    [mat-dialog-close]="false"
+    class="p-button-danger"
+  ></button>
+  <button
+    *ngIf="!isSelectProductMode"
+    pButton
+    type="button"
+    label="Add Product"
+    class="p-button-success"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+
+  <button
+    *ngIf="isSelectProductMode"
+    pButton
+    type="button"
+    label="Select Product"
+    class="p-button-success"
+    [disabled]="!selectedNomenclature"
+    (click)="onChoiceProduct()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #nomenclaturePicker>
+  <pek-nomenclature-picker
+    (selectProduct)="onSelectNomenclature($event)"
+    [paginationAbsolute]="true"
+  ></pek-nomenclature-picker>
+</ng-template>

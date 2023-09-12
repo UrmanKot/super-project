@@ -56,6 +56,7 @@
           color: #fff;
         }
       }
+
       .external-event-count {
         background: #55b157;
         color: white;
@@ -78,6 +79,7 @@
           padding-bottom: 0;
         }
       }
+
       .p-datepicker table td > span {
         width: 3rem;
         height: 3rem;
@@ -89,15 +91,18 @@
           font-size: 15px;
         }
       }
+
       .p-datepicker td > span,
       .p-monthpicker-month {
         overflow: visible;
       }
+
       .p-datepicker.p-datepicker-multiple-month .p-datepicker-group {
         width: 100%;
       }
     }
   }
+
   .filters {
     background-color: #f8f9fa;
   }
@@ -106,6 +111,7 @@
   .card {
     overflow: visible;
   }
+
   label {
     color: #495057;
     font-weight: 500;
@@ -113,6 +119,7 @@
 
   .event-container {
     overflow: auto;
+
     .event-date {
       display: flex;
       justify-content: flex-start;
@@ -129,11 +136,13 @@
         }
       }
     }
+
     .event {
       display: flex;
       width: fit-content;
       padding-top: 7px;
     }
+
     .range-item {
       height: 100%;
       border-radius: 8px;
@@ -157,4 +166,107 @@ h2 {
 
 .form {
   margin-top: -0.125rem;
+}
+
+::ng-deep {
+  .table-pagination-preloader {
+    p-table {
+      tr {
+        &.show-colored {
+          &.is-inner {
+            background-color: var(--theme-color-primary-hover);
+
+            td {
+              color: white;
+            }
+          }
+
+          &.is-external {
+            background-color: #55b157;
+
+            td {
+              color: white;
+            }
+          }
+
+          &.chain-status {
+            background-color: var(--theme-color-warning);
+
+            td {
+              color: white;
+
+              a {
+                color: white;
+              }
+            }
+          }
+
+          &:hover {
+            td {
+              a {
+                color: #495057;
+              }
+
+              color: #495057;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+b, span {
+  position: relative;
+  z-index: 3;
+}
+
+span.hover-register {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.date-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--theme-color-primary-hover);
+
+  &.forward-date-arrow {
+    right: -20px;
+  }
+
+  &.backward-date-arrow {
+    left: -20px;
+  }
+}
+
+.range-border{
+  position: absolute;
+  width: 15px;
+  height: 100%;
+  border: 2px solid var(--theme-color-primary-hover);
+  top: 50%;
+  transform: translateY(-50%);
+
+  &.start-date {
+    border-right: none;
+    left: -20px;
+  }
+  &.end-date {
+    border-left: none;
+    right: -20px;
+  }
+}
+
+::ng-deep {
+  .is-selected {
+    background-color: #EFF6FF;
+  }
 }

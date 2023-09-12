@@ -11,6 +11,10 @@ import {Company} from '../../../crm/models/company';
 import {ServiceInvoicePaymentService} from '../../services/service-invoice-payment.service';
 import {ServiceInvoiceService} from '@shared/services/service-invoice.service';
 import {Invoice} from '../../../procurement/models/invoice';
+import {ServiceInvoicePaymentFile} from '../../models/service-invoice-payment';
+import {environment} from '@env/environment';
+import {ModalService} from '@shared/services/modal.service';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'pek-create-edit-service-payment-form',
@@ -20,31 +24,54 @@ import {Invoice} from '../../../procurement/models/invoice';
 export class CreateEditServicePaymentFormComponent implements OnInit {
   isDisabledCompanyPicker = false;
   isLoading = false;
+  isLoadingFiles = false;
+  isConfirmed = false;
+
 
   form = this.fb.group({
     supplier: [<number>null, Validators.required],
-    service_invoices: [<number[]>[], Validators.required],
+    service_invoices: [<Invoice[]>[], Validators.required],
     amount: [<number>0, [Validators.required, Validators.min(0)]],
     converted_amount: [0],
     exchange_rate: [1, Validators.required],
     payment_date: [<Date | string>'', Validators.required],
-    accountant_number: ['', Validators.required],
+    accountant_number: [1, Validators.required],
     paid_by_card: [false],
+    is_paid: [false],
   });
   isSaving = false;
-  serviceInvoices: Invoice[] = [];
+  serviceInvoices: any[] = [];
   amount: number = 0;
+
+  // Edit Files
+  readonly deletion = new Set<number>();
+  readonly addition = new Set<number>();
+
+  uploadFiles: File[] = [];
+  files: ServiceInvoicePaymentFile[] = [];
+  isPending = false;
+  link = environment.image_path;
+  paymentId: number;
 
   constructor(
     private readonly fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateEditPaymentFormComponent>,
     private readonly adapterService: AdapterService,
-    private invoiceService: InvoiceService,
-    private paymentService: PaymentService,
     private serviceInvoicePaymentService: ServiceInvoicePaymentService,
     private serviceInvoice: ServiceInvoiceService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, payment: Payment, companyId: number, orderId?: number }
+    private modalService: ModalService,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      type: ModalActionType,
+      payment: Payment,
+      companyId: number,
+      orderId?: number
+      isDelivery: boolean;
+    }
   ) {
+  }
+
+  get formInvoices(): Invoice[] {
+    return this.form.get('service_invoices').value as Invoice[];
   }
 
   ngOnInit(): void {
@@ -52,17 +79,36 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
 
     if (this.data.type === 'create')
       this.form.get('service_invoices').disable();
+      this.form.get('payment_date').patchValue(<any>new Date());
 
     if (this.data.type === 'edit') {
+      this.paymentId = this.data.payment.id;
       this.form.patchValue(<any>this.data.payment);
       this.form.addControl('id' as any, this.fb.control(this.data.payment.id));
       this.form.get('supplier').patchValue(this.data.payment.service_invoices[0].supplier.id);
-      const ids = this.data.payment.service_invoices.map(i => i.id);
-      this.form.get('service_invoices').patchValue(ids);
-      this.serviceInvoices = [...this.data.payment.service_invoices];
+
+      // this.form.get('service_invoices').patchValue(ids);
+      // this.serviceInvoices = [...this.data.payment.service_invoices];
+
+      this.form.get('service_invoices').patchValue(this.data.payment.service_invoices.map(i => {
+        if (i.is_proforma) {
+          i.label = i.self_proforma_serial_number + ` (Price ${i.total_price_converted} €)` +
+            `${i.currency?.code !== 'EUR' ? (' (Other Price: ' + i.total_price + ' ' + i.currency?.symbol + ')') : ''}`;
+        } else {
+          i.label = i.self_serial_number + ' (Invoice)' + ` (Price: ${i.total_price_converted} €)` +
+            `${i.currency?.code !== 'EUR' ? (' (Other Price: ' + i.total_price + ' ' + i.currency?.symbol + ')') : ''}`;
+        }
+
+        return {
+          ...i,
+          label: i.label
+        }
+      }));
+      this.serviceInvoices = this.data.payment.service_invoices.map(i => i);
       this.form.get('payment_date').patchValue(new Date(this.data.payment.payment_date));
       this.form.get('service_invoices').disable();
       this.amount = this.data.payment.amount;
+      this.isConfirmed = this.data.payment.status === 'CONFIRMED';
     }
 
     if (this.data.companyId) {
@@ -70,6 +116,34 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
       this.onSelectCompany({id: this.data.companyId});
       this.isDisabledCompanyPicker = true;
     }
+    this.getFiles();
+  }
+
+  onSaveAndPayPayment() {
+    this.modalService.confirm('success').subscribe(confirm => {
+      if (confirm) {
+
+        const send = this.form.value;
+        send.is_paid = true;
+        send.payment_date = this.adapterService.dateAdapter(new Date(send.payment_date));
+        this.serviceInvoicePaymentService.update(send).subscribe({
+          next: payment => {
+            if (this.uploadFiles.length > 0) {
+              this.onUploadFiles(payment);
+            } else {
+              this.dialogRef.close(payment);
+            }
+          },
+          error: () => this.isSaving = false,
+        });
+
+        this.serviceInvoicePaymentService.pay(
+          {
+            id: this.data.payment.id,
+            is_paid: true
+          });
+      }
+    });
   }
 
   onSave() {
@@ -87,20 +161,55 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     }
   }
 
+  onChangeAmount() {
+    this.countConvertedAmount();
+  }
+
+  countConvertedAmount() {
+    this.form.get('converted_amount').patchValue(this.form.get('amount').value * this.form.get('exchange_rate').value);
+  }
+
+  onChangeRate() {
+    this.countConvertedAmount();
+  }
+
   createPayment() {
-    const send = this.form.value;
+    const send = {...this.form.value};
     send.payment_date = this.adapterService.dateAdapter(new Date(send.payment_date));
+    // @ts-ignore
+    send.service_invoices = send.service_invoices.map(i => i.id);
+    delete send.converted_amount;
+
+    if (this.data.isDelivery) {
+      // @ts-ignore
+      send.delivery_chain = this.data.orderId
+    }
+
     this.serviceInvoicePaymentService.create(send).subscribe({
-      next: payment => this.dialogRef.close(payment),
+      next: payment => {
+        this.paymentId = payment.id;
+        if (this.uploadFiles.length > 0) {
+          this.onUploadFiles(payment);
+        } else {
+          this.dialogRef.close(payment);
+        }
+      },
       error: () => this.isSaving = false,
     });
   }
 
   editPayment() {
-    const send = this.form.value;
+    const send = {...this.form.value};
     send.payment_date = this.adapterService.dateAdapter(new Date(send.payment_date));
     this.serviceInvoicePaymentService.update(send).subscribe({
-      next: payment => this.dialogRef.close(payment),
+      next: payment => {
+        this.paymentId = payment.id;
+        if (this.uploadFiles.length > 0) {
+          this.onUploadFiles(payment);
+        } else {
+          this.dialogRef.close(payment);
+        }
+      },
       error: () => this.isSaving = false,
     });
   }
@@ -125,17 +234,27 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
       {name: 'supplier', value: this.form.get('supplier').value},
     ];
 
-    if (this.data.orderId) {
+    if (this.data.orderId && !this.data.isDelivery) {
       query.push({name: 'order', value: this.data.orderId});
     }
 
     this.serviceInvoice.get(query).subscribe(invoices => {
-      this.serviceInvoices = invoices;
       invoices.forEach(i => {
         if (i.is_proforma) {
-          i.label = i.self_proforma_serial_number + ` (price ${i.total_price_converted} €)`;
+          i.label = i.self_proforma_serial_number + ` (Price ${i.total_price_converted} €)` +
+            `${i.currency.code !== 'EUR' ? (' (Other Price: ' + i.total_price + ' ' + i.currency?.symbol + ')') : ''}`;
         } else {
-          i.label = i.self_serial_number + ' (Invoice)' + ` (price: ${i.total_price_converted} €)`;
+          i.label = i.self_serial_number + ' (Invoice)' + ` (Price: ${i.total_price_converted} €)` +
+            `${i.currency.code !== 'EUR' ? (' (Other Price: ' + i.total_price + ' ' + i.currency?.symbol + ')') : ''}`;
+        }
+      });
+
+      this.serviceInvoices = invoices.map(invoice => {
+        return {
+          ...invoice,
+          label: invoice.label,
+          value: invoice,
+          disabled: false,
         }
       });
 
@@ -147,32 +266,83 @@ export class CreateEditServicePaymentFormComponent implements OnInit {
     return Math.round(value * Math.pow(10, 2)) / Math.pow(10, 2);
   }
 
+  showInvoiceError = false;
+
   countSum() {
-    const ids = this.form.get('service_invoices').value as number[];
-    let sum = 0;
-    console.log(sum);
-    if (ids.length > 0) {
-      ids.forEach(id => {
-        const findInvoice = this.serviceInvoices.find(inv => inv.id === id);
-        if (findInvoice) {
-          sum += findInvoice.total_price_converted;
-        }
-      });
-      const exchangeNum = this.form.get('exchange_rate').value;
-      if (exchangeNum < 0) {
-        const num = 1;
-        this.form.get('exchange_rate').patchValue(num);
-      }
+    const totalSum = this.formInvoices.reduce((sum, invoice,) => sum += invoice.total_price, 0);
+    const convertedSum = this.formInvoices.reduce((sum, invoice,) => sum += invoice.total_price_converted, 0);
+
+    this.form.get('amount').patchValue(totalSum);
+    this.form.get('converted_amount').patchValue(convertedSum);
+    this.form.get('exchange_rate').patchValue(this.roundValue(this.formInvoices[0]?.exchange_rate ? this.formInvoices[0]?.exchange_rate : 1));
+
+
+    if (this.formInvoices.length) {
+      this.serviceInvoices.forEach(invoice => {
+        invoice.disabled = Boolean(this.formInvoices[0]?.exchange_rate !== invoice.exchange_rate || this.formInvoices[0]?.currency.code !== invoice.currency.code);
+      })
+    } else {
+      this.serviceInvoices.forEach(invoice => {
+        invoice.disabled = false;
+      })
     }
 
-    if (this.data.type === 'create') {
-      this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * sum);
-      this.form.get('amount').patchValue(sum);
-      sum = this.roundValue(sum);
-    } else {
-      this.form.get('converted_amount').patchValue(this.form.get('exchange_rate').value * +this.amount);
+    this.showInvoiceError = this.serviceInvoices.some(invoice => invoice.disabled);
+  }
+
+  // Edit Files
+  getFiles() {
+    if (this.data.payment && this.paymentId) {
+      this.serviceInvoicePaymentService.getAuxiliaryPaymentFiles(this.paymentId).subscribe(files => {
+        console.log(`Files`, files);
+        this.files = files;
+        this.isLoading = false;
+      });
     }
   }
 
+  getFileName(file: string) {
+    let name = file.split('/');
+    return name[name.length - 1];
+  }
 
+  onSelectFiles(files: File[]) {
+    this.uploadFiles = files;
+  }
+
+  onDownloadFile(file: ServiceInvoicePaymentFile) {
+    this.addition.add(file.id);
+    this.serviceInvoicePaymentService.downloadAuxiliaryPaymentFile(file.id).subscribe(response => {
+      const fileName = this.getFileName(file.file);
+      this.adapterService.downloadFile(fileName, response);
+      this.addition.clear();
+    });
+  }
+
+  onRemoveFile(id: number) {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.deletion.add(id);
+
+        this.serviceInvoicePaymentService.removeAuxiliaryPaymentFile(id).subscribe(() => {
+          const index = this.files.findIndex(f => f.id === id);
+          this.files.splice(index, 1);
+          this.deletion.clear();
+        });
+      }
+    });
+  }
+
+  onUploadFiles(payment) {
+    this.isPending = true;
+    this.serviceInvoicePaymentService.severalUploadFiles(this.paymentId, this.uploadFiles)
+      .pipe(
+        finalize(() => this.isPending = false)
+      )
+      .subscribe(files => this.dialogRef.close(payment));
+  }
+
+  fileAdded(file: File) {
+    this.uploadFiles.push(file);
+  }
 }

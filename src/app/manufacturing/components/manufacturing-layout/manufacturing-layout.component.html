@@ -2,5 +2,42 @@
   [module]="'Manufacturing'"
   [routes]="routes"
   [settingsRoutes]="settingsRoutes"
-></pek-header>
+>
+  <div additionalButtons>
+    <button
+      pButton
+      [disabled]="expandCollapseHeaderService.isCollapseSingleDisabled | async"
+      type="button"
+      icon="pi pi-angle-down"
+      label="Expand"
+      class="mr-2"
+      (click)="expandCollapse()"
+    ></button>
+    <button
+      pButton
+      [disabled]="expandCollapseHeaderService.isCollapseSingleDisabled | async"
+      type="button"
+      icon="pi pi-angle-up"
+      label="Collapse"
+      class="mr-2"
+      (click)="expandCollapse(false)"
+    ></button>
+    <button
+      class="mr-2"
+      pButton
+      type="button"
+      label="Expand All"
+      icon="pi pi-angle-down"
+      (click)="expandCollapseAll()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Collapse All"
+      icon="pi pi-angle-up"
+      class="mr-2"
+      (click)="expandCollapseAll(false)"
+    ></button>
+  </div>
+</pek-header>
 <router-outlet></router-outlet>

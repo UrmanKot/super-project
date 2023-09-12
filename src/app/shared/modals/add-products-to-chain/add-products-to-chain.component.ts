@@ -49,18 +49,20 @@ export class AddProductsToChainComponent implements OnInit {
       if (this.searchForm.get('with_free_product').value) {
         const requiredNomenclatureId = this.data.products[0].nomenclature.id;
         orders.forEach(order => {
-          // requiredNomenclatureId
+
           const nomenclatureOrderProducts = order.order_products?.filter(orderProduct =>
             !orderProduct.is_subtracted_from_free_quantity && orderProduct.nomenclature.id == requiredNomenclatureId);
-          // OrderRequestType
+
           nomenclatureOrderProducts.forEach(orderProduct => {
             if (!order.freeNomenclatureQuantityAtChain) order.freeNomenclatureQuantityAtChain = 0;
-            if (orderProduct.request_type === OrderRequestType.MANUALLY) {
-              const quantity = orderProduct.sent_to_qc_quantity ? orderProduct.quantity - orderProduct.sent_to_qc_quantity : orderProduct.quantity;
+            const quantity = (orderProduct.invoice_quantity > 0 || orderProduct.proforma_invoice_quantity > 0)
+              ? this.isNumber(orderProduct.smallest_available_at_invoice_quantity) ?
+                orderProduct.smallest_available_at_invoice_quantity  :  orderProduct.quantity :
+              orderProduct.quantity;
+            if (orderProduct.request_type === OrderRequestType.MANUALLY || orderProduct.request_type === OrderRequestType.REQUEST_BY_VOLUME) {
               order.freeNomenclatureQuantityAtChain += quantity;
             }
-            if (orderProduct.request_type === OrderRequestType.AUTOMATICALLY) {
-              const quantity = orderProduct.sent_to_qc_quantity ? orderProduct.quantity - orderProduct.sent_to_qc_quantity : orderProduct.quantity;
+            if (orderProduct.request_type === OrderRequestType.AUTOMATICALLY || orderProduct.request_type === OrderRequestType.TOOL_REQUEST) {
               if (orderProduct.initial_quantity < quantity) {
                 order.freeNomenclatureQuantityAtChain += quantity - orderProduct.initial_quantity;
               }
@@ -76,6 +78,8 @@ export class AddProductsToChainComponent implements OnInit {
     untilDestroyed(this)
   );
 
+  isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); }
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly orderService: OrderService,
@@ -87,7 +91,6 @@ export class AddProductsToChainComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('this.data.products', this.data.products);
   }
 
   prepareForSearch() {

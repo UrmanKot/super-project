@@ -30,8 +30,6 @@ export class CrmContactPersonPickerComponent implements OnInit {
     ).subscribe(contactPersons => {
       this.contactPersons = contactPersons;
 
-      console.log(this.currentContactPersonId);
-
       if (this.currentContactPersonId) {
         this.selectedContactPersonId = this.currentContactPersonId;
       }

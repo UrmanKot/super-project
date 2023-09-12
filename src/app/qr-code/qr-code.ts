@@ -5,6 +5,10 @@ export class QrCode {
   name: string;
   serial_number?: string;
   qr_src: string | SafeUrl;
+  root_list_id?: number;
+  list_id?: number;
+  lists_ids?: number[];
+  total_quantity?: number;
 }
 
 export class QrCodes {

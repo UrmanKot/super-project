@@ -14,6 +14,7 @@ import {map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Table} from 'primeng/table';
 import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
+import {OrderRequestType} from '../../../procurement/models/order-product';
 
 @UntilDestroy()
 @Component({
@@ -53,8 +54,11 @@ export class PurchasingChainsComponent implements OnInit {
     created_before: [null],
     root_production_list_products_root_categories: [null],
     contains_nomenclatures_by_categories: [null],
+    contains_nomenclature_name: [null],
     contains_declined_payment: [null],
-    purchase_categories: [null]
+    purchase_categories: [null],
+    contains_nomenclature_code: [null],
+    id: [null],
   });
 
   orders: Order[] = [];
@@ -74,6 +78,8 @@ export class PurchasingChainsComponent implements OnInit {
   firstPage: number = 0;
   finalStatusSelected = false;
 
+  isRootListShown: boolean = false;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly orderService: OrderService,
@@ -88,7 +94,46 @@ export class PurchasingChainsComponent implements OnInit {
       tap(() => this.prepareForSearch()),
       switchMap(() => this.orderService.get(this.query)),
       map(orders => this.orderService.modifyOrders(orders)),
-      tap(orders => this.orders = orders),
+      tap(orders => {
+        orders.forEach(order => {
+          order.hasRequestedByMinimumValueProducts = order.order_products
+            .some(product => product.request_type === OrderRequestType.REQUEST_BY_VOLUME);
+          order.uniqueOrderProducts = [];
+
+          order.order_products.forEach(product => {
+            const existingInList = order.uniqueOrderProducts.find(unProduct =>
+              unProduct.current_technology === product.current_technology &&
+              unProduct.nomenclature.id === product.nomenclature.id);
+
+            if (!existingInList) {
+              order.uniqueOrderProducts.push(product);
+            }
+          });
+
+          order.root_production_list_products.forEach((root) => {
+
+            order.root_production_plans.forEach((plan: any) => {
+              if (plan.list_product.id == root.id) {
+                root.productionPlanId = plan.id;
+              }
+            });
+            this.rootLists.push(root);
+          });
+
+          const lists: { list: ListProduct, count?: number, allLists: ListProduct[] }[] = [];
+          order.root_production_list_products.forEach((res: ListProduct) => {
+            const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
+            if (found) {
+              found.count++;
+              found.allLists.push(res);
+            } else {
+              lists.push({list: res, count: 1, allLists: [res]});
+            }
+          });
+          order.display_production_list_products = lists;
+        });
+        this.orders = orders;
+      }),
       tap(() => this.generateNomenclaturesListAndRootLists()),
       tap(() => this.isLoading = false),
       untilDestroyed(this)
@@ -173,8 +218,17 @@ export class PurchasingChainsComponent implements OnInit {
     this.query = [
       {name: 'accounting_type', value: 1},
       {name: 'has_purchase_category', value: true},
-      {name: 'exclude_with_active_final_status', value:  !this.finalStatusSelected}
     ];
+
+    if (this.searchForm.get('id').value) {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: false}
+      );
+    } else {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
+      );
+    }
 
     for (const key in this.searchForm.controls) {
       if (this.searchForm.controls[key].value !== null) {

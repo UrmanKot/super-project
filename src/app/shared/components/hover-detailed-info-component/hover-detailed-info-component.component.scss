@@ -2,12 +2,14 @@ section {
   position: fixed;
   opacity: 0;
   background: #fff;
-  z-index: 3;
   width: auto;
   padding: 0.75rem 1rem;
   box-shadow: 0 0 7px 1px rgb(0 0 0 / 15%);
   border-radius: 0.5rem;
   text-align: left;
+  z-index: 100000;
+  max-height: 37.5rem;
+  overflow-y: auto;
 
   &.show {
     opacity: 1;

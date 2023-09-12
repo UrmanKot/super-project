@@ -10,6 +10,9 @@ import {
 } from '../modals/create-edit-product-structure-category/create-edit-product-structure-category.component';
 import {ProductStructureCategory} from '../models/product-structure-category';
 import {Product} from '../models/product';
+import {
+  EditSalesChainsCategoriesComponent
+} from "../modals/edit-sales-chains-categories/edit-sales-chains-categories.component";
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +48,19 @@ export class ProductStructureCategoryService {
     }));
   }
 
+  getNoCache(): Observable<ProductStructureCategory[]> {
+    return this.httpClient.get<{ data: ProductStructureCategory[] }>(this.API_URL + 'root_categories/').pipe(map(response => {
+      let categories = response.data;
+
+      categories.forEach(category => {
+        if (!category.parent) category.lft = category.tree_id;
+      });
+
+      categories.sort((a, b) => a.lft - b.lft);
+      return categories;
+    }));
+  }
+
   create(category: Partial<ProductStructureCategory>): Observable<ProductStructureCategory> {
     return this.httpClient.post<{ data: ProductStructureCategory }>(this.API_URL + this.url, category).pipe(
       map(response => response.data)
@@ -74,6 +90,18 @@ export class ProductStructureCategoryService {
         height: 'auto',
         panelClass: 'modal-picker',
         data: {type, category},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  editSalesChains() {
+    return this.dialog
+      .open<EditSalesChainsCategoriesComponent>(EditSalesChainsCategoriesComponent, {
+        width: '42rem',
+        height: 'auto',
+        panelClass: 'modal-picker',
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

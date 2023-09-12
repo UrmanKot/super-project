@@ -1,790 +1,833 @@
-<div class="page">
-  <div class="page__header">
-    <div class="page__title">
-      <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-      <h1>QC-Warehouse</h1>
+<div class="warehouse-qc">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+        <h1>QC-Warehouse</h1>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="page__content">
-  <div class="page__tabs">
-    <p-tabView class="custom-tabs">
-      <p-tabPanel header="Production Lists Procurement and Outsourcing Invoices" [selected]="true">
-        <ng-container *ngIf="invoicesViewType === 'list'">
-          <div class="page__table">
-            <p-table
-              #dt
-              selectionMode="single"
-              scrollHeight="calc(100vh - 18.8rem)"
-              dataKey="id"
-              [scrollable]="true"
-              [paginator]="invoicesList.length > 0"
-              [rows]="10"
-              [(selection)]="selectedInvoiceItem"
-              [value]="invoicesList"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedInvoiceItem">
-                    Choose the Production Lists Procurement or Outsourcing Invoice to view Items
-                  </p>
-
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedInvoiceItem"
-                    [routerLink]="['invoice', selectedInvoiceItem?.id]"
-                  ></a>
-                  <button
-                    [disabled]="invoicesViewType === 'list'"
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectInvoiceType('list')"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectInvoiceType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 5%;" class="text-center">#</th>
-                  <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
-                  <th style="width: 10%" class="text-center">Invoice Number</th>
-                  <th style="width: 15%" class="text-center">Supplier</th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-                <tr [pSelectableRow]="invoice">
-                  <td style="width: 5%" class="text-center">
-                    {{i + 1}}
-                  </td>
-                  <td style="width: 25%" class="text-center">
-                    {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date : invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    {{invoice.supplier?.name}}
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    {{invoice.order?.id}}
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
-                  </td>
-                  <td style="width: 20%">
-                    <ng-container *ngIf="invoice.root_production_plans.length > 0">
-                      {{invoice.root_production_plans[0].list_product.nomenclature.code}}
-                      ~{{invoice.root_production_plans[0].list_product.nomenclature.name}}
-                    </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="7">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="paginatorright">
-                <p-button
-                  type="button"
-                  (click)="dt.paginator=false"
-                  styleClass="p-button-text"
-                >All
-                </p-button>
-              </ng-template>
-            </p-table>
-          </div>
-          <div *ngIf="!dt.paginator && !isLoading && invoicesList.length > 0" class="paginator-return-pagination">
-            <p-button
-              type="button"
-              (click)="dt.paginator=true"
-              styleClass="p-button-text"
-            >
-              Return pagination
-            </p-button>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="invoicesViewType === 'hierarchy'">
-          <div class="page__table">
-            <p-treeTable
-              [value]="invoiceManufacturedTree"
-              [scrollable]="true"
-              selectionMode="single"
-              scrollHeight="calc(100vh - 21.85rem)"
-              [(selection)]="selectedInvoiceNode"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedInvoiceNode">
-                    Choose the Production Lists Procurement or Outsourcing Invoice to view Items
-                  </p>
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedInvoiceNode"
-                    [routerLink]="['invoice', selectedInvoiceNode?.data.order ? selectedInvoiceNode?.data.order.id : selectedInvoiceNode?.data.id]"
-                    (click)="expandCollapseAllInvoices()"
-                  ></a>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-angle-down"
-                    label="Expand All"
-                    class="mr-2"
-                    (click)="expandCollapseAllInvoices()"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-angle-up"
-                    class="mr-2"
-                    label="Collapse All"
-                    (click)="expandCollapseAllInvoices(false)"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectInvoiceType('list')"
-                  ></button>
-                  <button
-                    [disabled]="invoicesViewType === 'hierarchy'"
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectInvoiceType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
-                  <th style="width: 10%" class="text-center">Invoice Number</th>
-                  <th style="width: 15%" class="text-center">Supplier</th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template
-                pTemplate="body"
-                let-invoiceNode
-                let-invoice="rowData"
+  <div class="page__content">
+    <div class="page__tabs">
+      <p-tabView class="custom-tabs">
+        <p-tabPanel header="Production Lists Procurement and Outsourcing Invoices" [selected]="true">
+          <ng-container *ngIf="invoicesViewType === 'list'">
+            <div class="page__table">
+              <p-table
+                #dt
+                selectionMode="single"
+                scrollHeight="calc(100vh - 18.8rem)"
+                dataKey="id"
+                [scrollable]="true"
+                [paginator]="invoicesList.length > 0"
+                [rows]="10"
+                [(selection)]="selectedInvoiceItem"
+                [value]="invoicesList"
               >
-                <tr
-                  [ttRow]="invoiceNode"
-                  [ttSelectableRowDisabled]="!invoice.order && !invoice.level || invoice.level < 4"
-                  [ttSelectableRow]="invoiceNode"
-                  *ngIf="!invoice.hideFromTable"
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedInvoiceItem">
+                      Choose the Production Lists Procurement or Outsourcing Invoice to view Items
+                    </p>
+
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedInvoiceItem"
+                      [routerLink]="['invoice', selectedInvoiceItem?.id]"
+                    ></a>
+                    <button
+                      [disabled]="invoicesViewType === 'list'"
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectInvoiceType('list')"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectInvoiceType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 5%;" class="text-center">#</th>
+                    <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
+                    <th style="width: 10%" class="text-center">Invoice Number</th>
+                    <th style="width: 15%" class="text-center">Supplier</th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+                  <tr [pSelectableRow]="invoice">
+                    <td style="width: 5%" class="text-center">
+                      <h3 class="td-title">#</h3>
+                      {{i + 1}}
+                    </td>
+                    <td style="width: 25%" class="text-center">
+                      <h3 class="td-title">QC-Wh Started Date</h3>
+                      {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date : invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title">Invoice Number</h3>
+                      {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title">Supplier</h3>
+                      {{invoice.supplier?.name}}
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title">Order ID</h3>
+                      {{invoice.order?.id}}
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title">Items Reception Date</h3>
+                      {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
+                    </td>
+                    <td style="width: 20%">
+                      <h3 class="td-title">Root List</h3>
+                      <ng-container *ngIf="invoice.root_production_plans.length > 0">
+                        {{invoice.root_production_plans[0].list_product.nomenclature.code}}
+                        ~{{invoice.root_production_plans[0].list_product.nomenclature.name}}
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="7">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                  <p-button
+                    type="button"
+                    (click)="dt.paginator=false"
+                    styleClass="p-button-text"
+                  >All
+                  </p-button>
+                </ng-template>
+              </p-table>
+            </div>
+            <div *ngIf="!dt.paginator && !isLoading && invoicesList.length > 0" class="paginator-return-pagination">
+              <p-button
+                type="button"
+                (click)="dt.paginator=true"
+                styleClass="p-button-text"
+              >
+                Return pagination
+              </p-button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="invoicesViewType === 'hierarchy'">
+            <div class="page__table">
+              <p-treeTable
+                [value]="invoiceManufacturedTree"
+                [scrollable]="true"
+                selectionMode="single"
+                scrollHeight="calc(100vh - 21.85rem)"
+                [(selection)]="selectedInvoiceNode"
+              >
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedInvoiceNode">
+                      Choose the Production Lists Procurement or Outsourcing Invoice to view Items
+                    </p>
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedInvoiceNode"
+                      [routerLink]="['invoice', selectedInvoiceNode?.data.order ? selectedInvoiceNode?.data.order.id : selectedInvoiceNode?.data.id]"
+                      (click)="expandCollapseAllInvoices()"
+                    ></a>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-down"
+                      label="Expand All"
+                      class="mr-2"
+                      (click)="expandCollapseAllInvoices()"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-up"
+                      class="mr-2"
+                      label="Collapse All"
+                      (click)="expandCollapseAllInvoices(false)"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectInvoiceType('list')"
+                    ></button>
+                    <button
+                      [disabled]="invoicesViewType === 'hierarchy'"
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectInvoiceType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
+                    <th style="width: 10%" class="text-center">Invoice Number</th>
+                    <th style="width: 15%" class="text-center">Supplier</th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template
+                  pTemplate="body"
+                  let-invoiceNode
+                  let-invoice="rowData"
                 >
-                  <td style="width: 30%" [class.text-center]="invoice.order">
-                    <div class="table-toggle">
-                      <p-treeTableToggler [rowNode]="invoiceNode"></p-treeTableToggler>
-                      <ng-container *ngIf="!invoice.order">
-                        <p [class.category-name]="invoice.level === 0 && invoice.hideFromTable !== false">
-                          {{invoice.name}}
-                          <span *ngIf="invoice.description">({{invoice.description}})</span>
-                          <i
-                            *ngIf="invoice.level < 4 && invoice.level > 0"
-                            style="font-style: normal"
+                  <tr
+                    [ttRow]="invoiceNode"
+                    [ttSelectableRowDisabled]="!invoice.order && !invoice.level || invoice.level < 4"
+                    [ttSelectableRow]="invoiceNode"
+                    *ngIf="!invoice.hideFromTable"
+                  >
+                    <td style="width: 30%" [class.text-center]="invoice.order">
+                      <div class="table-toggle">
+                        <p-treeTableToggler [rowNode]="invoiceNode"
+                                            [class.mobile-hide]="invoice.level === 4"></p-treeTableToggler>
+                        <ng-container *ngIf="!invoice.order">
+                          <p
+                            [class.category-name]="invoice.level === 0 && invoice.hideFromTable !== false"
                           >
-                            ({{invoice.categories}})
-                          </i>
-                        </p>
-                      </ng-container>
-                      <ng-container *ngIf="invoice.level === 4">
-                        <p>{{(invoice.order?.order?.qc_wh_started_date ? invoice.order?.order?.qc_wh_started_date :
-                          invoice.order.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}</p>
-                      </ng-container>
-                    </div>
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    <span
-                      *ngIf="invoice.level === 4"
-                      [class.text-warning]="invoice.order.unique_root_production_plans.length > 1"
-                    >
+                            {{invoice.name}}
+                            <span *ngIf="invoice.description">({{invoice.description}})</span>
+                            <i
+                              *ngIf="invoice.level < 4 && invoice.level > 0"
+                              style="font-style: normal"
+                            >
+                              ({{invoice.categories}})
+                            </i>
+                          </p>
+                        </ng-container>
+                        <ng-container *ngIf="invoice.level === 4">
+                          <div class="d-flex flex-column">
+                            <h3 class="td-title">QC-Wh Started Date</h3>
+                            <p>{{(invoice.order?.order?.qc_wh_started_date ? invoice.order?.order?.qc_wh_started_date :
+                              invoice.order.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}</p>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title" *ngIf="invoice.level === 4">Invoice Number</h3>
+                      <span
+                        *ngIf="invoice.level === 4"
+                        [class.text-warning]="invoice.order.unique_root_production_plans.length > 1"
+                      >
                     {{invoice.order.self_serial_number}} {{invoice.order.self_proforma_serial_number}}
                     </span>
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
-                      {{invoice.supplier?.name}}
-                    </ng-container>
-                    <span *ngIf="invoice.level === 4">
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title" *ngIf="invoice.level === 4">Supplier</h3>
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.supplier?.name}}
+                      </ng-container>
+                      <span *ngIf="invoice.level === 4">
                     {{invoice.order.supplier?.name}}
                   </span>
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                  <span *ngIf="invoice.level === 4">
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title" *ngIf="invoice.level === 4">Order ID</h3>
+                      <span *ngIf="invoice.level === 4">
                     {{invoice.order.order?.id}}
                   </span>
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
-                      {{invoice.order.items_reception_date | date: 'dd/MM/yyyy'}}
-                    </ng-container>
-                  </td>
-                  <td style="width: 20%">
-                  <span *ngIf="invoice.level === 4 && invoice.plan">
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title" *ngIf="invoice.level === 4">Items Reception Date</h3>
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.order.items_reception_date | date: 'dd/MM/yyyy'}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 20%">
+                      <h3 class="td-title" *ngIf="invoice.level === 4">Root List</h3>
+                      <span *ngIf="invoice.level === 4 && invoice.plan">
                     {{invoice.plan.list_product.nomenclature.code}}~{{invoice.plan.list_product.nomenclature.name}}
                   </span>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="6">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-treeTable>
-          </div>
-        </ng-container>
-      </p-tabPanel>
-      <p-tabPanel header="Own Production Invoices">
-        <ng-container *ngIf="invoicesOrderType === 'list'">
-          <div class="page__table">
-            <p-table
-              #ot
-              selectionMode="single"
-              scrollHeight="calc(100vh - 18.8rem)"
-              dataKey="id"
-              [scrollable]="true"
-              [paginator]="ordersList.length > 0"
-              [rows]="10"
-              [(selection)]="selectedOrderItem"
-              [value]="ordersList"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedOrderItem">
-                    Сhoose the Own Production Invoice to view Items
-                  </p>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="6">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-treeTable>
+            </div>
+          </ng-container>
+        </p-tabPanel>
+        <p-tabPanel header="Own Production Invoices">
+          <ng-container *ngIf="invoicesOrderType === 'list'">
+            <div class="page__table">
+              <p-table
+                #ot
+                selectionMode="single"
+                scrollHeight="calc(100vh - 18.8rem)"
+                dataKey="id"
+                [scrollable]="true"
+                [paginator]="ordersList.length > 0"
+                [rows]="10"
+                [(selection)]="selectedOrderItem"
+                [value]="ordersList"
+              >
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedOrderItem">
+                      Сhoose the Own Production Invoice to view Items
+                    </p>
 
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedOrderItem"
-                    [routerLink]="['order', selectedOrderItem?.id]"
-                  ></a>
-                  <button
-                    [disabled]="invoicesOrderType === 'list'"
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectOrderType('list')"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectOrderType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 5%;" class="text-center">#</th>
-                  <th style="width: 50%" class="text-center">
-                    QC-Wh Started Date
-                  </th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%;" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%;">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-order let-i="rowIndex">
-                <tr [pSelectableRow]="order">
-                  <td class="text-center">{{i + 1}}</td>
-                  <td style="width: 50%" class="text-center">
-                    {{(order?.qc_wh_started_date ? order?.qc_wh_started_date : order?.created) | date:'dd/MM/yyyy HH:mm'}}
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    {{order.id}}
-                  </td>
-                  <td style="width: 15%;" class="text-center">
-                    {{order.items_reception_date | date: 'dd/MM/yyyy'}}
-                  </td>
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedOrderItem"
+                      [routerLink]="['order', selectedOrderItem?.id]"
+                    ></a>
+                    <button
+                      [disabled]="invoicesOrderType === 'list'"
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectOrderType('list')"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectOrderType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 5%;" class="text-center">#</th>
+                    <th style="width: 50%" class="text-center">
+                      QC-Wh Started Date
+                    </th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%;" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%;">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-order let-i="rowIndex">
+                  <tr [pSelectableRow]="order">
+                    <td class="text-center">
+                      <h3 class="td-title">#</h3>
+                      {{i + 1}}
+                    </td>
+                    <td style="width: 50%" class="text-center">
+                      <h3 class="td-title">QC-Wh Started Date</h3>
+                      {{(order?.qc_wh_started_date ? order?.qc_wh_started_date : order?.created) | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title">Order ID</h3>
+                      {{order.id}}
+                    </td>
+                    <td style="width: 15%;" class="text-center">
+                      <h3 class="td-title">Items Reception Date</h3>
+                      {{order.items_reception_date | date: 'dd/MM/yyyy'}}
+                    </td>
 
-                  <td style="width: 20%;">
-                    <div *ngFor="let root_plan of order.unique_root_production_plans">
-                      {{root_plan.list_product.nomenclature.code}}~{{root_plan.list_product.nomenclature.name}}
-                    </div>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="7">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="paginatorright">
-                <p-button
-                  type="button"
-                  (click)="ot.paginator=false"
-                  styleClass="p-button-text"
-                >All
-                </p-button>
-              </ng-template>
-            </p-table>
-          </div>
-          <div *ngIf="!ot.paginator && !isLoading && ordersList.length > 0" class="paginator-return-pagination">
-            <p-button
-              type="button"
-              (click)="ot.paginator=true"
-              styleClass="p-button-text"
-            >
-              Return pagination
-            </p-button>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="invoicesOrderType === 'hierarchy'">
-          <div class="page__table">
-            <p-treeTable
-              [value]="ownProductionCategorizedList"
-              selectionMode="single"
-              scrollHeight="calc(100vh - 21.85rem)"
-              [(selection)]="selectedOrderNode"
-              [scrollable]="true"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedOrderNode">
-                    Choose the Own Production Invoice to view Items
-                  </p>
+                    <td style="width: 20%;">
+                      <h3 class="td-title">Root List</h3>
+                      <div *ngFor="let root_plan of order.unique_root_production_plans">
+                        {{root_plan.list_product.nomenclature.code}}~{{root_plan.list_product.nomenclature.name}}
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="7">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                  <p-button
+                    type="button"
+                    (click)="ot.paginator=false"
+                    styleClass="p-button-text"
+                  >All
+                  </p-button>
+                </ng-template>
+              </p-table>
+            </div>
+            <div *ngIf="!ot.paginator && !isLoading && ordersList.length > 0" class="paginator-return-pagination">
+              <p-button
+                type="button"
+                (click)="ot.paginator=true"
+                styleClass="p-button-text"
+              >
+                Return pagination
+              </p-button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="invoicesOrderType === 'hierarchy'">
+            <div class="page__table">
+              <p-treeTable
+                [value]="ownProductionCategorizedList"
+                selectionMode="single"
+                scrollHeight="calc(100vh - 21.85rem)"
+                [(selection)]="selectedOrderNode"
+                [scrollable]="true"
+              >
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedOrderNode">
+                      Choose the Own Production Invoice to view Items
+                    </p>
 
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedOrderNode"
-                    [routerLink]="['order', selectedOrderNode?.data.order.id]"
-                  ></a>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-angle-down"
-                    label="Expand All"
-                    class="mr-2"
-                    (click)="expandCollapseAllOrders()"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-angle-up"
-                    class="mr-2"
-                    label="Collapse All"
-                    (click)="expandCollapseAllOrders(false)"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectOrderType('list')"
-                  ></button>
-                  <button
-                    [disabled]="invoicesOrderType === 'hierarchy'"
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectOrderType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 55%; padding-left: 19px">
-                    QC-Wh started Date
-                  </th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%;" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%;">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-                <tr
-                  [ttRow]="rowNode"
-                  [ttSelectableRow]="rowNode"
-                  [ttSelectableRowDisabled]="rowData.level < 4"
-                  *ngIf="!rowData.hideFromTable"
-                >
-                  <td style="width: 55%" class="text-center">
-                    <div class="table-toggle">
-                      <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                      <span [class.category-name]="!rowData.level">
-                      {{rowData.name}}
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedOrderNode"
+                      [routerLink]="['order', selectedOrderNode?.data.order.id]"
+                    ></a>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-down"
+                      label="Expand All"
+                      class="mr-2"
+                      (click)="expandCollapseAllOrders()"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-up"
+                      class="mr-2"
+                      label="Collapse All"
+                      (click)="expandCollapseAllOrders(false)"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectOrderType('list')"
+                    ></button>
+                    <button
+                      [disabled]="invoicesOrderType === 'hierarchy'"
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectOrderType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 55%; padding-left: 19px">
+                      QC-Wh started Date
+                    </th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%;" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%;">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                  <tr
+                    [ttRow]="rowNode"
+                    [ttSelectableRow]="rowNode"
+                    [ttSelectableRowDisabled]="rowData.level < 4"
+                    *ngIf="!rowData.hideFromTable"
+                  >
+                    <td style="width: 55%" class="text-center">
+                      <div class="table-toggle">
+                        <p-treeTableToggler
+                          [rowNode]="rowNode"
+                          [class.mobile-hide]="rowData.level === 4"></p-treeTableToggler>
+                        <div class="d-flex flex-column">
+                          <h3 class="td-title" *ngIf="rowData.level === 4">QC-Wh started Date</h3>
+                          <span [class.category-name]="!rowData.level">
+                              {{rowData.name}}
 
-                        <i *ngIf="rowData.level < 4" style="font-style: normal">
-                        ({{rowData.categories}})
-                      </i>
+                            <i *ngIf="rowData.level < 4" style="font-style: normal">
+                              ({{rowData.categories}})
+                            </i>
                     </span>
-                      <span *ngIf="rowData.order">
+                        <span *ngIf="rowData.order">
                       {{(rowData.order?.qc_wh_started_date ? rowData.order?.qc_wh_started_date : rowData.order?.created) | date:'dd/MM/yyyy HH:mm'}}
                     </span>
-                    </div>
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                  <span
-                    *ngIf="rowData.order"
-                    [class.text-warning]="rowData.order.unique_root_production_plans.length > 1"
-                  >
+                        </div>
+                      </div>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title" *ngIf="rowData.level === 4">Order ID</h3>
+                      <span
+                        *ngIf="rowData.order"
+                        [class.text-warning]="rowData.order.unique_root_production_plans.length > 1"
+                      >
                     {{rowData.order.id}}
                   </span>
-                  </td>
-                  <td style="width: 15%;" class="text-center">
-                    <ng-container *ngIf="rowData.order">
-                      {{rowData.order.items_reception_date | date: 'dd/MM/yyyy'}}
-                    </ng-container>
-                  </td>
-                  <td style="width: 20%;">
-                    <ng-container *ngIf="rowData.order && rowData.plan">
-                      {{rowData.plan.list_product.nomenclature.code}}~{{rowData.plan.list_product.nomenclature.name}}
-                    </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="6">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-treeTable>
-          </div>
-        </ng-container>
-      </p-tabPanel>
-      <p-tabPanel header="General Procurement Invoices">
-        <ng-container *ngIf="invoicesPurchasedType === 'list'">
-          <div class="page__table">
-            <p-table
-              #pt
-              selectionMode="single"
-              scrollHeight="calc(100vh - 18.8rem)"
-              dataKey="id"
-              [scrollable]="true"
-              [paginator]="purchasedInvoicesList.length > 0"
-              [rows]="10"
-              [(selection)]="selectedInvoicePurchaseItem"
-              [value]="purchasedInvoicesList"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedInvoicePurchaseItem">
-                    Choose the General Procurement Invoice to view Items
-                  </p>
-
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedInvoicePurchaseItem"
-                    [routerLink]="['invoice', selectedInvoicePurchaseItem?.id]"
-                  ></a>
-                  <button
-                    [disabled]="invoicesPurchasedType=== 'list'"
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectPurchaseType('list')"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectPurchaseType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 5%;" class="text-center">#</th>
-                  <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
-                  <th style="width: 10%" class="text-center">Invoice Number</th>
-                  <th style="width: 15%" class="text-center">Supplier</th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-                <tr [pSelectableRow]="invoice">
-                  <td style="width: 5%" class="text-center">
-                    {{i + 1}}
-                  </td>
-                  <td style="width: 25%" class="text-center">
-                    {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
-                    invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    {{invoice.supplier?.name}}
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    {{invoice.order?.id}}
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
-                  </td>
-                  <td style="width: 20%">
-                    <ng-container *ngIf="invoice.root_production_plans.length > 0">
-                      {{invoice.root_production_plans[0].list_product.nomenclature.code}}
-                      ~{{invoice.root_production_plans[0].list_product.nomenclature.name}}
-                    </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="7">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="paginatorright">
-                <p-button
-                  type="button"
-                  (click)="pt.paginator=false"
-                  styleClass="p-button-text"
-                >All
-                </p-button>
-              </ng-template>
-            </p-table>
-          </div>
-          <div *ngIf="!pt.paginator && !isLoading && purchasedInvoicesList.length > 0" class="paginator-return-pagination">
-            <p-button
-              type="button"
-              (click)="pt.paginator=true"
-              styleClass="p-button-text"
-            >
-              Return pagination
-            </p-button>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="invoicesPurchasedType === 'hierarchy'">
-          <div class="page__table">
-            <p-treeTable
-              [value]="invoicePurchasedTree"
-              [scrollable]="true"
-              selectionMode="single"
-              scrollHeight="calc(100vh - 21.85rem)"
-              [(selection)]="selectedPurchasedInvoiceNode"
-            >
-              <ng-template pTemplate="caption">
-                <div class="d-flex">
-                  <p
-                    class="subtitle"
-                    *ngIf="!selectedOrderNode">
-                    Choose the General Procurement Invoice to view Items
-                  </p>
-
-                  <a
-                    pButton
-                    type="button"
-                    icon="pi pi-bars"
-                    label="Items"
-                    class="ml-auto mr-2"
-                    target="_blank"
-                    [class.disabled]="!selectedPurchasedInvoiceNode"
-                    [routerLink]="['invoice', selectedPurchasedInvoiceNode?.data.invoice ? selectedPurchasedInvoiceNode?.data.invoice.id :selectedPurchasedInvoiceNode?.data.id]"
-                  ></a>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-angle-down"
-                    label="Expand All"
-                    class="mr-2"
-                    (click)="expandCollapsePurchasedInvoices()"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    icon="pi pi-angle-up"
-                    label="Collapse All"
-                    (click)="expandCollapsePurchasedInvoices(false)"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    class="mr-2"
-                    label="List"
-                    icon="pi pi-list"
-                    (click)="onSelectPurchaseType('list')"
-                  ></button>
-                  <button
-                    [disabled]="invoicesPurchasedType === 'hierarchy'"
-                    pButton
-                    type="button"
-                    label="Hierarchy"
-                    icon="pi pi-table"
-                    (click)="onSelectPurchaseType('hierarchy')"
-                  ></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
-                  <th style="width: 10%" class="text-center">Invoice Number</th>
-                  <th style="width: 15%" class="text-center">Supplier</th>
-                  <th style="width: 10%" class="text-center">Order ID</th>
-                  <th style="width: 15%" class="text-center">Items Reception Date</th>
-                  <th style="width: 20%">Root List</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-invoiceNode let-invoice="rowData">
-                <tr
-                  [ttRow]="invoiceNode"
-                  [ttSelectableRowDisabled]="!invoice.order && !invoice.level || invoice.level < 4"
-                  [ttSelectableRow]="invoiceNode"
-                >
-                  <td style="width: 30%" [class.text-center]="invoice.order">
-                    <div class="table-toggle">
-                      <p-treeTableToggler [rowNode]="invoiceNode"></p-treeTableToggler>
-                      <ng-container *ngIf="!invoice.order">
-                        <p [class.category-name]="invoice.level === 0">{{invoice.name}}
-                          <span *ngIf="invoice.description">({{invoice.description}})</span>
-                          <i *ngIf="invoice.level < 4 && invoice.level > 0" style="font-style: normal">
-                            ({{invoice.categories}})
-                          </i>
-                        </p>
+                    </td>
+                    <td style="width: 15%;" class="text-center">
+                      <h3 class="td-title" *ngIf="rowData.level === 4">Items Reception Date</h3>
+                      <ng-container *ngIf="rowData.order">
+                        {{rowData.order.items_reception_date | date: 'dd/MM/yyyy'}}
                       </ng-container>
-                      <ng-container *ngIf="invoice.order">
-                        <p class="category-name">
-                          {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
-                          invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
-                        </p>
+                    </td>
+                    <td style="width: 20%;">
+                      <h3 class="td-title" *ngIf="rowData.level === 4">Root List</h3>
+                      <ng-container *ngIf="rowData.order && rowData.plan">
+                        {{rowData.plan.list_product.nomenclature.code}}~{{rowData.plan.list_product.nomenclature.name}}
                       </ng-container>
-<!--                      <span *ngIf="invoice.level === 4">-->
-<!--                      {{invoice.invoice.system_creation_date | date:'dd/MM/yyyy'}}-->
-<!--                    </span>-->
-                    </div>
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="6">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-treeTable>
+            </div>
+          </ng-container>
+        </p-tabPanel>
+        <p-tabPanel header="General Procurement Invoices">
+          <ng-container *ngIf="invoicesPurchasedType === 'list'">
+            <div class="page__table">
+              <p-table
+                #pt
+                selectionMode="single"
+                scrollHeight="calc(100vh - 18.8rem)"
+                dataKey="id"
+                [scrollable]="true"
+                [paginator]="purchasedInvoicesList.length > 0"
+                [rows]="10"
+                [(selection)]="selectedInvoicePurchaseItem"
+                [value]="purchasedInvoicesList"
+              >
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedInvoicePurchaseItem">
+                      Choose the General Procurement Invoice to view Items
+                    </p>
+
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedInvoicePurchaseItem"
+                      [routerLink]="['invoice', selectedInvoicePurchaseItem?.id]"
+                    ></a>
+                    <button
+                      [disabled]="invoicesPurchasedType=== 'list'"
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectPurchaseType('list')"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectPurchaseType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 5%;" class="text-center">#</th>
+                    <th style="width: 25%" class="text-center">QC-Wh Started Date</th>
+                    <th style="width: 10%" class="text-center">Invoice Number</th>
+                    <th style="width: 15%" class="text-center">Supplier</th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+                  <tr [pSelectableRow]="invoice">
+                    <td style="width: 5%" class="text-center">
+                      <h3 class="td-title">#</h3>
+                      {{i + 1}}
+                    </td>
+                    <td style="width: 25%" class="text-center">
+                      <h3 class="td-title">QC-Wh Started Date</h3>
+                      {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
+                      invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title">Invoice Number</h3>
                       {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
-                    </ng-container>
-                    <span
-                      *ngIf="invoice.level === 4"
-                      [class.text-warning]="invoice.invoice.unique_root_production_plans.length > 1"
-                    >
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title">Supplier</h3>
+                      {{invoice.supplier?.name}}
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <h3 class="td-title">Order ID</h3>
+                      {{invoice.order?.id}}
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <h3 class="td-title">Items Reception Date</h3>
+                      {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
+                    </td>
+                    <td style="width: 20%">
+                      <h3 class="td-title">Root List</h3>
+                      <ng-container *ngIf="invoice.root_production_plans.length > 0">
+                        {{invoice.root_production_plans[0].list_product.nomenclature.code}}
+                        ~{{invoice.root_production_plans[0].list_product.nomenclature.name}}
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="7">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                  <p-button
+                    type="button"
+                    (click)="pt.paginator=false"
+                    styleClass="p-button-text"
+                  >All
+                  </p-button>
+                </ng-template>
+              </p-table>
+            </div>
+            <div *ngIf="!pt.paginator && !isLoading && purchasedInvoicesList.length > 0"
+                 class="paginator-return-pagination">
+              <p-button
+                type="button"
+                (click)="pt.paginator=true"
+                styleClass="p-button-text"
+              >
+                Return pagination
+              </p-button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="invoicesPurchasedType === 'hierarchy'">
+            <div class="page__table">
+              <p-treeTable
+                [value]="invoicePurchasedTree"
+                [scrollable]="true"
+                selectionMode="single"
+                scrollHeight="calc(100vh - 21.85rem)"
+                [(selection)]="selectedPurchasedInvoiceNode"
+              >
+                <ng-template pTemplate="caption">
+                  <div class="d-flex header-buttons">
+                    <p
+                      class="subtitle"
+                      *ngIf="!selectedOrderNode">
+                      Choose the General Procurement Invoice to view Items
+                    </p>
+
+                    <a
+                      pButton
+                      type="button"
+                      icon="pi pi-bars"
+                      label="Items"
+                      class="ml-auto mr-2"
+                      target="_blank"
+                      [class.disabled]="!selectedPurchasedInvoiceNode"
+                      [routerLink]="['invoice', selectedPurchasedInvoiceNode?.data.invoice ? selectedPurchasedInvoiceNode?.data.invoice.id :selectedPurchasedInvoiceNode?.data.id]"
+                    ></a>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-angle-down"
+                      label="Expand All"
+                      class="mr-2"
+                      (click)="expandCollapsePurchasedInvoices()"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      icon="pi pi-angle-up"
+                      label="Collapse All"
+                      (click)="expandCollapsePurchasedInvoices(false)"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      class="mr-2"
+                      label="List"
+                      icon="pi pi-list"
+                      (click)="onSelectPurchaseType('list')"
+                    ></button>
+                    <button
+                      [disabled]="invoicesPurchasedType === 'hierarchy'"
+                      pButton
+                      type="button"
+                      label="Hierarchy"
+                      icon="pi pi-table"
+                      (click)="onSelectPurchaseType('hierarchy')"
+                    ></button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 30%; padding-left: 19px">QC-Wh Started Date</th>
+                    <th style="width: 10%" class="text-center">Invoice Number</th>
+                    <th style="width: 15%" class="text-center">Supplier</th>
+                    <th style="width: 10%" class="text-center">Order ID</th>
+                    <th style="width: 15%" class="text-center">Items Reception Date</th>
+                    <th style="width: 20%">Root List</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-invoiceNode let-invoice="rowData">
+                  <tr
+                    [ttRow]="invoiceNode"
+                    [ttSelectableRowDisabled]="!invoice.order && !invoice.level || invoice.level < 4"
+                    [ttSelectableRow]="invoiceNode"
+                  >
+                    <td style="width: 30%" [class.text-center]="invoice.order">
+                      <div class="table-toggle">
+                        <p-treeTableToggler [rowNode]="invoiceNode"></p-treeTableToggler>
+                        <ng-container *ngIf="!invoice.order">
+                          <p [class.category-name]="invoice.level === 0">{{invoice.name}}
+                            <span *ngIf="invoice.description">({{invoice.description}})</span>
+                            <i *ngIf="invoice.level < 4 && invoice.level > 0" style="font-style: normal">
+                              ({{invoice.categories}})
+                            </i>
+                          </p>
+                        </ng-container>
+                        <ng-container *ngIf="invoice.order">
+                          <p class="category-name">
+                            {{(invoice.order?.qc_wh_started_date ? invoice.order?.qc_wh_started_date :
+                            invoice.system_creation_date) | date:'dd/MM/yyyy HH:mm'}}
+                          </p>
+                        </ng-container>
+                        <!--                      <span *ngIf="invoice.level === 4">-->
+                        <!--                      {{invoice.invoice.system_creation_date | date:'dd/MM/yyyy'}}-->
+                        <!--                    </span>-->
+                      </div>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.self_serial_number}} {{invoice.self_proforma_serial_number}}
+                      </ng-container>
+                      <span
+                        *ngIf="invoice.level === 4"
+                        [class.text-warning]="invoice.invoice.unique_root_production_plans.length > 1"
+                      >
                     {{invoice.invoice.self_serial_number}} {{invoice.invoice.self_proforma_serial_number}}
                   </span>
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
-                      {{invoice.supplier?.name}}
-                    </ng-container>
-                    <ng-container *ngIf="invoice.level === 4">
-                      {{invoice.invoice.supplier?.name}}
-                    </ng-container>
-                  </td>
-                  <td style="width: 10%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
-                      {{invoice.order?.id}}
-                    </ng-container>
-                    <ng-container *ngIf="invoice.level === 4">
-                      {{invoice.invoice.order?.id}}
-                    </ng-container>
-                  </td>
-                  <td style="width: 15%" class="text-center">
-                    <ng-container *ngIf="invoice.order">
-                      {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
-                    </ng-container>
-                    <ng-container *ngIf="invoice.level === 4">
-                      {{invoice.invoice.items_reception_date | date: 'dd/MM/yyyy'}}
-                    </ng-container>
-                  </td>
-                  <td style="width: 20%">
-                    <ng-container *ngIf="invoice.order">
-                      <div *ngFor="let root_list of invoice.root_production_plans">
-                        {{root_list.list_product.nomenclature.name}}
-                      </div>
-                    </ng-container>
-                    <ng-container *ngIf="invoice.level === 4 && invoice.plan">
-                      {{invoice.plan.list_product.nomenclature.code}}~{{invoice.plan.list_product.nomenclature.name}}
-                    </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td class="text-center p-4" [attr.colspan]="6">
-                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-                    <span *ngIf="!isLoading">No Records Found</span>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-treeTable>
-          </div>
-        </ng-container>
-      </p-tabPanel>
-    </p-tabView>
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.supplier?.name}}
+                      </ng-container>
+                      <ng-container *ngIf="invoice.level === 4">
+                        {{invoice.invoice.supplier?.name}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 10%" class="text-center">
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.order?.id}}
+                      </ng-container>
+                      <ng-container *ngIf="invoice.level === 4">
+                        {{invoice.invoice.order?.id}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 15%" class="text-center">
+                      <ng-container *ngIf="invoice.order">
+                        {{invoice.items_reception_date | date: 'dd/MM/yyyy'}}
+                      </ng-container>
+                      <ng-container *ngIf="invoice.level === 4">
+                        {{invoice.invoice.items_reception_date | date: 'dd/MM/yyyy'}}
+                      </ng-container>
+                    </td>
+                    <td style="width: 20%">
+                      <ng-container *ngIf="invoice.order">
+                        <div *ngFor="let root_list of invoice.root_production_plans">
+                          {{root_list.list_product.nomenclature.name}}
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="invoice.level === 4 && invoice.plan">
+                        {{invoice.plan.list_product.nomenclature.code}}~{{invoice.plan.list_product.nomenclature.name}}
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center p-4" [attr.colspan]="6">
+                      <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                      <span *ngIf="!isLoading">No Records Found</span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-treeTable>
+            </div>
+          </ng-container>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
   </div>
 </div>

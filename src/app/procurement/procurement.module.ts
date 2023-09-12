@@ -18,6 +18,8 @@ import { CreateEditAuxiliaryInvoiceTypeComponent } from './modals/create-edit-au
 import { ProcurementOrderStatusesComponent } from './components/procurement-order-statuses/procurement-order-statuses.component';
 import { ProcurementChainCreationListComponent } from './components/procurement-chain-creation-list/procurement-chain-creation-list.component';
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import { EditAuxiliaryInvoicesAccountingNumberComponent } from './modals/edit-auxiliary-invoices-accounting-number/edit-auxiliary-invoices-accounting-number.component';
+import { InvoiceProductsRmaFilesComponent } from './modals/invoice-products-rma-files/invoice-products-rma-files.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
     CreateEditAuxiliaryInvoiceTypeComponent,
     ProcurementOrderStatusesComponent,
     ProcurementChainCreationListComponent,
+    EditAuxiliaryInvoicesAccountingNumberComponent,
+    InvoiceProductsRmaFilesComponent,
   ],
   exports: [
   ],

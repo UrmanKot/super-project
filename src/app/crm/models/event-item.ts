@@ -2,6 +2,7 @@ import {EventType} from './event-type';
 import {CRMEmployee} from './crm-employee';
 import {Company} from './company';
 import {ContactPerson} from '@shared/models/contact-person';
+import {SalesChainStatus} from '../../sales/models/sales-chain';
 
 export class EventItem {
   readonly id: number;
@@ -42,4 +43,7 @@ export class EventItem {
   root?: any;
   is_done?: boolean;
   impression?: string;
+  event_id?: number;
+  sales_chain_status?: SalesChainStatus;
+  sales_chain?: number;
 }

@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Structure Contains Errors
+  </h2>
+</div>
+
+<mat-dialog-content>
+  {{data.errorMessage}}
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-end">
+  <button pButton type="button" label="Close" [mat-dialog-close]="false" class="p-button-warning"></button>
+</mat-dialog-actions>

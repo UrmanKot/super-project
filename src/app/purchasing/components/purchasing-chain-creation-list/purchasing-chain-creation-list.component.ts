@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Paginator} from 'primeng/paginator';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
-import {OrderProduct} from '../../../procurement/models/order-product';
+import {OrderProduct, OrderRequestType} from '../../../procurement/models/order-product';
 import {BehaviorSubject, iif, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -48,6 +48,7 @@ export class PurchasingChainCreationListComponent implements OnInit {
   productsCount = 0;
 
   selectedProducts: OrderProduct[] = [];
+  OrderRequestType = OrderRequestType;
 
   search$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   name$: Subject<void> = new Subject<void>();
@@ -221,7 +222,10 @@ export class PurchasingChainCreationListComponent implements OnInit {
   }
 
   onDeleteOrders() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    const deleteItems = this.selectedProducts.map(product => {
+      return `${product.id} - ${product.nomenclature.code} ${product.nomenclature.name} Q(${product.initial_quantity})`;
+    });
+    this.modalService.confirmWithDetails(deleteItems, 'danger').subscribe(confirm => {
       if (confirm) {
         const notOrderedProducts = this.selectedProducts.filter(n => n.status === 'A2');
 

@@ -13,6 +13,9 @@ import {
 } from '../modals/create-edit-linked-company/create-edit-linked-company.component';
 import {AddCompanyToEventComponent} from '../modals/add-company-to-event/add-company-to-event.component';
 import {AddEventToCompanyComponent} from '../modals/add-event-to-company/add-event-to-company.component';
+import {
+  EditCompanyAccountingNumberComponent
+} from "../modals/edit-company-accounting-number/edit-company-accounting-number.component";
 
 
 @Injectable({
@@ -75,12 +78,12 @@ export class CompanyService {
     return this.httpClient.delete(this.API_URL + this.url + id + '/');
   }
 
-  getShorts(): Observable<Partial<Company>[]> {
+  getShorts(query?: QuerySearch[]): Observable<Partial<Company>[]> {
     if (this.isLoadingShortCompanies) {
       return this.shortsCompaniesResult;
     } else {
       this.isLoadingShortCompanies = true;
-      return this.getShortsCompanies();
+      return this.getShortsCompanies(query);
     }
   }
 
@@ -110,6 +113,14 @@ export class CompanyService {
     );
   }
 
+  addTaxNumber(send, id) {
+    return this.httpClient.post<{ data: Company }>(this.API_URL + this.url + `${id}/add_tax_number_to_company/`, send)
+      .pipe(map(response => {
+          return response.data;
+        })
+      );
+  }
+
   updatePartial(company: Partial<Company>): Observable<Company> {
     return this.httpClient.patch<{ data: Company }>(this.API_URL + this.url + company.id + '/', company).pipe(
       map(response => response.data)
@@ -118,6 +129,18 @@ export class CompanyService {
 
   deleteLinkedCompany(id: number): Observable<any> {
     return this.httpClient.delete(this.API_URL + 'linked_companies/' + id + '/');
+  }
+
+  updateAccountingNumber(company: Partial<Company>): Observable<Company> {
+    return this.httpClient.patch<{ data: Company }>(this.API_URL + this.url + company.id + '/', company).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getAccountingNumbers(): Observable<any[]> {
+    return this.httpClient.get<{data: any[]}>(this.API_URL  + this.url + 'get_unique_accounting_numbers/').pipe(
+      map(response => response.data)
+    )
   }
 
   createEditLinkCompany(id: number, company: Partial<Company>): Observable<Company> {
@@ -158,6 +181,19 @@ export class CompanyService {
         height: 'auto',
         panelClass: 'modal-overflow-visible',
         data: {type, company},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  editCompanyAccountingNumberDialog(company: Company): Observable<Company> {
+    return this.dialog
+      .open<EditCompanyAccountingNumberComponent>(EditCompanyAccountingNumberComponent, {
+        width: '50rem',
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        data: {company},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

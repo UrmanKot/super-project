@@ -70,7 +70,7 @@ export class QcListComponent implements OnInit {
     {name: 'by_qc_module_permission', value: true}
   ];
 
-  searchForm: FormGroup = this.fb.group({    
+  searchForm: FormGroup = this.fb.group({
     supplier: [null],
     qc_closed_date_after: [null],
     qc_closed_date_before: [null],
@@ -103,17 +103,21 @@ export class QcListComponent implements OnInit {
   searchInvoices() {
     this.isLoadingInvoices = true;
     this.destroyInvoices$.next(true);
+    this.invoiceManufacturedTree = [];
+    this.invoicePurchasedTree = [];
+    this.invoicesList = [];
+    this.purchasedInvoicesList = [];
     this.invoices = [];
     this.selectedInvoice = null;
     this.invoicesQuery = [
       {name: 'by_qc_module_permission', value: true}
     ];
 
-    if (!this.searchForm.get('qc_closed_date_after').value 
-        && !this.searchForm.get('qc_closed_date_before').value) {
+    if (!this.searchForm.get('qc_closed_date_after').value
+      && !this.searchForm.get('qc_closed_date_before').value) {
       this.invoicesQuery.push({
         name: 'needs_qc', value: true
-      })
+      });
       this.showClosedInvoices = false;
     } else {
       this.showClosedInvoices = true;
@@ -139,16 +143,18 @@ export class QcListComponent implements OnInit {
     this.isLoadingOrders = true;
     this.destroyOrders$.next(true);
     this.orders = [];
+    this.ordersList = [];
+    this.ownProductionCategorizedList = [];
     this.selectedOrderItem = null;
     this.ordersQuery = [
       {name: 'by_qc_module_permission', value: true}
     ];
 
-    if (!this.searchForm.get('qc_closed_date_after').value 
-        && !this.searchForm.get('qc_closed_date_before').value) {
+    if (!this.searchForm.get('qc_closed_date_after').value
+      && !this.searchForm.get('qc_closed_date_before').value) {
       this.ordersQuery.push({
         name: 'needs_qc', value: true
-      })
+      });
       this.showClosedOrders = false;
     } else {
       this.showClosedOrders = true;
@@ -204,11 +210,16 @@ export class QcListComponent implements OnInit {
     this.invoiceService.get(this.invoicesQuery).pipe(
       takeUntil(this.destroyInvoices$)
     ).subscribe(invoices => {
+      invoices.forEach(invoice => {
+        invoice.order = new Order(invoice.order);
+        invoice.order.generateUniqueToolRequests();
+      });
+
       this.invoices = invoices;
-      this.makeUniqueProductionPlansInvoice(),
-      this.resetProductPaymentTree(),
-      this.resetInvoicesList(),
-      this.isLoadingInvoices = false
+      this.makeUniqueProductionPlansInvoice();
+      this.resetProductPaymentTree();
+      this.resetInvoicesList();
+      this.isLoadingInvoices = false;
     });
   }
 
@@ -217,16 +228,18 @@ export class QcListComponent implements OnInit {
       takeUntil(this.destroyOrders$)
     ).subscribe(orders => {
       this.orders = orders;
-      this.makeUniqueProductionPlans(),
-      this.fillOwnProductionWithData(),
-      this.resetOrdersList(),
-      this.isLoadingOrders = false
+      this.makeUniqueProductionPlans();
+      this.fillOwnProductionWithData();
+      this.resetOrdersList();
+      this.isLoadingOrders = false;
     });
   }
 
   resetInvoicesList(): void {
     this.purchasedInvoicesList = this.invoices.filter(i => i.purchase_category);
     this.invoicesList = this.invoices.filter(i => !i.purchase_category);
+    this.invoicesList.sort((a, b) => b.rma_products_count - a.rma_products_count || new Date(b.qc_started_date).getTime() - new Date(a.qc_started_date).getTime());
+    this.purchasedInvoicesList.sort((a, b) => b.rma_products_count - a.rma_products_count || new Date(b.qc_started_date).getTime() - new Date(a.qc_started_date).getTime());
   }
 
   resetOrdersList(): void {
@@ -415,6 +428,7 @@ export class QcListComponent implements OnInit {
   separatePurchasedAndManufactured(): void {
     this.invoicePurchasedTree = this.invoiceTree.filter(invoice => invoice.data.id >= 0);
     this.invoiceManufacturedTree = this.invoiceTree.filter(invoice => invoice.data.id < 0);
+    console.log(this.invoiceManufacturedTree);
   }
 
   makeUniqueProductionPlans(): void {
@@ -576,7 +590,12 @@ export class QcListComponent implements OnInit {
     }
   }
 
-  appendCategories(node: TreeNode, categoriesTemp: { id: number, level: number, parentId: number, name: string }[]): void {
+  appendCategories(node: TreeNode, categoriesTemp: {
+    id: number,
+    level: number,
+    parentId: number,
+    name: string
+  }[]): void {
     if (!node.children) {
       node.children = [];
     }

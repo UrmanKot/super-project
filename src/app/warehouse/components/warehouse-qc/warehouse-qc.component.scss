@@ -2,3 +2,24 @@
   font-weight: 500;
   overflow-wrap: anywhere;
 }
+
+::ng-deep {
+  .category-name {
+    position: relative;
+  }
+}
+
+@media (max-width: 768px) {
+  .warehouse-qc {
+    &::ng-deep {
+      .p-treetable .p-treetable-tbody tr {
+        display: grid !important;
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+  }
+
+  .mobile-hide {
+    display: none;
+  }
+}

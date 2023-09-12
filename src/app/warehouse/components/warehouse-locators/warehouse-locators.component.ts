@@ -4,7 +4,7 @@ import {map, switchMap, tap} from 'rxjs/operators';
 import {LocatorService} from '../../services/locator.service';
 import {Locator} from '../../models/locator';
 import {WarehouseService} from '../../services/warehouse.service';
-import {Warehouse} from '../../models/warehouse';
+import {Currency} from '../../models/warehouse';
 import {MenuItem} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
 import {ModalService} from '@shared/services/modal.service';
@@ -32,7 +32,7 @@ export class WarehouseLocatorsComponent implements OnInit, OnDestroy {
   }];
 
   warehouseId: number;
-  currentWarehouse: Warehouse;
+  currentWarehouse: Currency;
 
   locators: Locator[] = [];
   selectedLocator: Locator;

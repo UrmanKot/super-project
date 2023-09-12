@@ -1,0 +1,23 @@
+form {
+  margin-top: -0.25rem;
+}
+
+.check-icon {
+  color: var(--theme-color-success);
+}
+
+.times-icon {
+  color: var(--theme-color-danger);
+}
+
+.edit-button {
+  display: flex;
+
+  button {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: 0.5rem;
+  }
+}
+
+

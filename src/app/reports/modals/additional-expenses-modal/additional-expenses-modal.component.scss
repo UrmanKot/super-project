@@ -1,0 +1,22 @@
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+  margin-top: -0.25rem;
+
+  .form-group {
+    width: 50%;
+  }
+
+  button {
+    margin-bottom: 0.625rem;
+  }
+}
+
+.remove-btn {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  color: var(--theme-color-danger)
+}

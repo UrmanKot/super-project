@@ -1,22 +1,34 @@
-<div class="guide">
+<div class="guide" [class.guide_hide-instruction]="!isShowInstruction">
   <ng-container *ngIf="guideType === 'flow'">
     <div
       #guidePanel
       class="guide__panel"
-      [style.paddingTop]="guideFlowType === 'all' || guideFlowType === 'product-structure' ? zoom * 24 + 'rem' : 0"
       [ngSwitch]="guideFlowType"
-      [style.zoom]="zoom"
     >
-
-      <div class="guide__box" *ngSwitchCase="'all'">
+      <div
+        class="guide__box"
+        *ngSwitchCase="'all'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="allGuideMargin"
+      >
         <ng-container *ngTemplateOutlet="main"></ng-container>
       </div>
 
-      <div class="guide__box" *ngSwitchCase="'product-structure'">
+      <div
+        class="guide__box"
+        *ngSwitchCase="'product-structure'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="allGuideMargin"
+      >
         <ng-container *ngTemplateOutlet="main"></ng-container>
       </div>
 
-      <div class="guide__box guide__qc" *ngSwitchCase="'qc'">
+      <div
+        class="guide__box guide__qc"
+        *ngSwitchCase="'qc'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="qcGuideMargin"
+      >
         <div class="guide__qc-box guide__qc-box_1">
 
           <div class="guide__qc-col guide__qc-col_1">
@@ -212,39 +224,89 @@
       </div>
 
 
-      <div *ngSwitchCase="'sales'">
+      <div
+        *ngSwitchCase="'sales'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="salesGuideMargin"
+      >
         <app-guide-sales></app-guide-sales>
       </div>
 
-      <div *ngSwitchCase="'outsource'">
+      <div
+        *ngSwitchCase="'outsource'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="outsourceGuideMargin"
+      >
         <app-guide-outsourcing></app-guide-outsourcing>
       </div>
 
-      <div *ngSwitchCase="'procurement'">
+      <div
+        *ngSwitchCase="'procurement'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="procurementGuideMargin"
+      >
         <app-guide-procurement></app-guide-procurement>
       </div>
 
-      <div *ngSwitchCase="'production'">
+      <div
+        *ngSwitchCase="'production'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="productionGuideMargin"
+      >
         <app-guide-production></app-guide-production>
       </div>
 
-      <ng-container *ngSwitchCase="'warehouse'">
+      <div
+        *ngSwitchCase="'warehouse'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="warehouseGuideMargin"
+      >
         <pek-guide-warehouse></pek-guide-warehouse>
-      </ng-container>
+      </div>
 
-      <ng-container *ngSwitchCase="'confirmation'">
+      <div
+        *ngSwitchCase="'confirmation'"
+        [style.transform]="'scale(' + zoom + ')'"
+        [style.margin]="confirmationGuideMargin"
+      >
         <pek-guide-confirmation></pek-guide-confirmation>
-      </ng-container>
+      </div>
     </div>
 
-    <div class="guide__instruction">
+    <div
+      class="guide__instruction"
+      mwlResizable
+      [style.flex]="'0 0 ' + instructionWidth + 'px'"
+      [enableGhostResize]="true"
+      [resizeSnapGrid]="{left: 12}"
+      (resizing)="moveInstruction($event)"
+      (resizeEnd)="onResizeEnd($event)"
+    >
+      <div class="resize-handle" mwlResizeHandle [resizeEdges]="{ left: true }"></div>
+      <div class="drag-handle" cdkDragHandle></div>
       <ng-container [ngSwitch]="guideFlowType">
         <ng-container *ngSwitchCase="'all'">
           <pek-main-instruction></pek-main-instruction>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'qc'">
+          <pek-qc-instruction></pek-qc-instruction>
+        </ng-container>
+
         <ng-container *ngSwitchCase="'sales'">
           <pek-sales-instruction></pek-sales-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'outsource'">
+          <pek-outsource-instruction></pek-outsource-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'procurement'">
+          <pek-procurement-instruction></pek-procurement-instruction>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'production'">
+          <pek-production-instruction></pek-production-instruction>
         </ng-container>
 
         <ng-container *ngSwitchCase="'warehouse'">
@@ -264,16 +326,18 @@
   </ng-container>
 
   <ng-container *ngIf="guideType === 'map'">
-    <div class="guide__map">
-      <h2>Under Construction</h2>
-    </div>
+    <pek-guide-map></pek-guide-map>
   </ng-container>
 
   <ng-container *ngIf="guideType === 'glossary'">
     <pek-guide-glossary></pek-guide-glossary>
   </ng-container>
 
-  <div class="guide__image-box" (click)="closeImageModal()"></div>
+  <div class="guide__image-box" (click)="closeImageModal()">
+  </div>
+  <button class="guide__image-box-close" (click)="closeImageModal()">
+    <i class="pi pi-times"></i>
+  </button>
   <!--  <button-->
   <!--    pButton-->
   <!--    *ngIf="data.type=='writeOff'"-->
@@ -286,7 +350,7 @@
   <button
     pButton
     type="button"
-    class="p-button-danger guide__close"
+    class="p-button-danger guide__close guide-action-button"
     label="Close Business guide"
     icon="pi pi-times"
     (click)="onClose()"
@@ -309,18 +373,36 @@
         (click)="plusScale()"
         pButton
         label="+"
-        [disabled]="zoom >= 1.3">
+        [disabled]="zoom >= 1.4">
       </button>
       <button
         pButton
         label="-"
         class="mr-3"
         (click)="minusScale()"
-        [disabled]="zoom <= 0.8"
+        [disabled]="zoom <= 0.7"
+      ></button>
+    </ng-container>
+
+    <ng-container *ngIf="guideType === 'flow'">
+      <button
+        (click)="isFullScreen ? closeFullScreen() : goToFullScreen()"
+        pButton
+        [label]="isFullScreen ? 'Exit Full Screen' : 'Full Screen'"
+        [icon]="isFullScreen ? 'pi pi-eye-slash' : 'pi pi-eye'"
+        class="mr-2"
+      ></button>
+      <button
+        (click)="toggleInstruction()"
+        pButton
+        [label]="isShowInstruction ? 'Hide Instruction' : 'Show Instruction'"
+        [icon]="isShowInstruction ? 'pi pi-eye-slash' : 'pi pi-eye'"
+        class="mr-3"
       ></button>
     </ng-container>
 
     <button
+      class="guide-action-button"
       pButton
       [disabled]="guideType === 'flow'"
       (click)="onChoiceGuideType('flow')"
@@ -330,7 +412,7 @@
     <button
       pButton
       [disabled]="guideType === 'map'"
-      class="ml-2"
+      class="ml-2 guide-action-button"
       (click)="onChoiceGuideType('map')"
       icon="pi pi-map"
       label="Business Processes Maps"
@@ -338,7 +420,7 @@
     <button
       [disabled]="guideType === 'glossary'"
       pButton
-      class="ml-2"
+      class="ml-2 guide-action-button"
       icon="pi pi-book"
       (click)="onChoiceGuideType('glossary')"
       label="Glossary"
@@ -361,6 +443,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Nomenclature Confirmation"
+        [i]="1"
         routeUrl="/confirmation/nomenclature"
         (navigate)="goToLinkWindow($event)"
         buttonsPosition="right"
@@ -386,12 +469,13 @@
     </div>
   </div>
   <div class="guide__col guide__col_2">
-    <div class="guide__button guide__button_arrow-right">
+    <div class="guide__button guide__button_arrow-right some-button-1">
       <pek-guide-button
         btnStyle="secondary"
         title="Creating structure of product"
         routeUrl="/dash/product-structure/products"
         buttonsPosition="bottom"
+        [i]="2"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <span></span>
@@ -401,6 +485,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Sales Chain Creating"
+        [i]="5"
       ></pek-guide-button>
       <div>
         <span></span>
@@ -426,6 +511,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Marketing and Sales Events"
+        [i]="7"
       ></pek-guide-button>
       <span class="top"></span>
       <span class="bottom"></span>
@@ -453,6 +539,7 @@
         [hideButtons]="true"
         btnStyle="secondary"
         title="Manufacturing parts in advance"
+        [i]="3"
       ></pek-guide-button>
       <div>
         <span></span>
@@ -473,6 +560,7 @@
 
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
+        [i]="6"
         btnStyle="secondary"
         title="Creation of delivery chain"
         buttonsPosition="right"
@@ -491,8 +579,9 @@
 
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
+        [i]="8"
         btnStyle="secondary"
-        title="Shipment request"
+        title="Delivery request"
         buttonsPosition="right"
       ></pek-guide-button>
       <span></span>
@@ -509,6 +598,7 @@
 
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
+        [i]="9"
         btnStyle="secondary"
         title="Delivery process"
         buttonsPosition="right"
@@ -538,12 +628,46 @@
     <div class="guide__button guide__button_arrow-right">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="4"
         title="Production request"
         routeUrl="/dash/warehouse/requests"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <span></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        [i]="54"
+        title="Confirmation of reparation"
+        routeUrl="/statistics"
+        buttonsPosition="top"
+      >
+      </pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        title="QC"
+        routeUrl="/quality-control"
+        buttonsPosition="right"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        title="Administration"
+        buttonsPosition="right"
+      ></pek-guide-button>
     </div>
   </div>
   <div class="guide__col guide__col_5">
@@ -582,7 +706,8 @@
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
         btnStyle="secondary"
-        title="Confirmation payments"
+        [i]="14"
+        title="Confirmed payment"
         buttonsPosition="left"
         routeUrl="/dash/confirmation"
       ></pek-guide-button>
@@ -602,6 +727,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Creating Production list"
+        [i]="10"
         routeUrl="/dash/sales/lists"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -609,8 +735,9 @@
       <span></span>
     </div>
 
-    <div class="guide__button guide__button_arrow-left">
+    <div class="guide__button guide__button_arrow-left some-button-2">
       <pek-guide-button
+        [i]="13"
         btnStyle="secondary"
         routeUrl="/dash/confirmation"
         title="Payments confirmation"
@@ -623,6 +750,7 @@
         btnStyle="secondary"
         routeUrl="/dash/confirmation"
         title="Tender"
+        [i]="15"
       ></pek-guide-button>
       <div>
         <span></span>
@@ -648,8 +776,24 @@
         btnStyle="secondary"
         routeUrl="/dash/confirmation"
         title="Tender"
+        [i]="19"
       ></pek-guide-button>
       <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button some-button-8">
+      <pek-guide-button
+        btnStyle="secondary"
+        routeUrl="/dash/confirmation"
+        title="Payment confirmation"
+        [i]="20"
+      ></pek-guide-button>
+      <div>
+        <span></span>
         <span></span>
         <span></span>
         <span></span>
@@ -659,8 +803,8 @@
     <div class="guide__button">
       <pek-guide-button
         btnStyle="secondary"
-        routeUrl="/dash/confirmation"
-        title="Payment confirmation"
+        title="Direct tools placement"
+        [i]="59"
       ></pek-guide-button>
       <div>
         <span></span>
@@ -681,10 +825,11 @@
       ></pek-guide-button>
     </div>
 
-    <div class="guide__button guide__button_arrow-bottom">
+    <div class="guide__button guide__button_arrow-bottom some-button-3">
       <pek-guide-button
         btnStyle="secondary"
         title="Procurement request"
+        [i]="12"
         routeUrl="/dash/procurement/request-creation"
         buttonsPosition="left"
         (navigate)="goToLinkWindow($event)"
@@ -706,6 +851,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Procurement"
+        [i]="16"
         buttonsPosition="left"
       ></pek-guide-button>
       <span class="top"></span>
@@ -723,6 +869,7 @@
 
     <div class="guide__button guide__button_arrow-top-bottom">
       <pek-guide-button
+        [i]="18"
         btnStyle="secondary"
         title="Procurement"
         buttonsPosition="left"
@@ -742,9 +889,10 @@
       ></pek-guide-button>
     </div>
 
-    <div class="guide__button guide__button_arrow-top">
+    <div class="guide__button guide__button_arrow-top some-button-7">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="22"
         title="Manual procurement request"
         buttonsPosition="left"
         [hideButtons]="true"
@@ -761,14 +909,15 @@
       ></pek-guide-button>
     </div>
 
-    <!--    <div class="guide__button">-->
-    <!--      <pek-guide-button-->
-    <!--        btnStyle="primary"-->
-    <!--        title="Instruments/ tools/ equipment"-->
-    <!--        buttonsPosition="left"-->
-    <!--        [hideButtons]="true"-->
-    <!--      ></pek-guide-button>-->
-    <!--    </div>-->
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="primary"
+        title="Instruments/ tools/ equipment"
+        buttonsPosition="top"
+        routeUrl="/dash/instruments/instruments-and-tools"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+    </div>
   </div>
   <div class="guide__col guide__col_8">
     <div class="guide__button">
@@ -782,10 +931,11 @@
       <span></span>
     </div>
 
-    <div class="guide__button">
+    <div class="guide__button some-button-4">
       <pek-guide-button
         btnStyle="secondary"
-        title="Schedule Confirmation"
+        [i]="24"
+        title="Manufacturing schedule confirmation"
         routeUrl="/confirmation"
         buttonsPosition="top"
         (navigate)="goToLink($event)"
@@ -801,6 +951,7 @@
     <div class="guide__button guide__button_arrow-right">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="11"
         title=" Production list deficit"
         routeUrl="/dash/warehouse/lists"
         buttonsPosition="top"
@@ -833,6 +984,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Delivery items"
+        [i]="17"
         routeUrl="test"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -851,6 +1003,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Rework"
+        [i]="28"
         routeUrl="test"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -868,6 +1021,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Delivered items"
+        [i]="21"
         buttonsPosition="left"
         [hideButtons]="true"
       ></pek-guide-button>
@@ -884,6 +1038,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Tool request"
+        [i]="31"
         buttonsPosition="left"
         [hideButtons]="true"
       ></pek-guide-button>
@@ -896,13 +1051,30 @@
 
     <div class="guide__button">
       <pek-guide-button
-        btnStyle="primary"
-        title="Instruments/ tools/ equipment"
-        buttonsPosition="top"
-        routeUrl="/dash/instruments/instruments-and-tools"
-        (navigate)="goToLinkWindow($event)"
+        btnStyle="secondary"
+        title="Automatic tool purchase order"
+        [i]="58"
+        buttonsPosition="left"
+        [hideButtons]="true"
       ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
+
+    <!--    <div class="guide__button">-->
+    <!--      <pek-guide-button-->
+    <!--        btnStyle="primary"-->
+    <!--        title="Instruments/ tools/ equipment"-->
+    <!--        buttonsPosition="top"-->
+    <!--        routeUrl="/dash/instruments/instruments-and-tools"-->
+    <!--        (navigate)="goToLinkWindow($event)"-->
+    <!--      ></pek-guide-button>-->
+    <!--    </div>-->
   </div>
   <div class="guide__col guide__col_9">
     <!--        <button-->
@@ -932,18 +1104,21 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Production request"
+        [i]="54"
         routeUrl="/dash/warehouse/requests"
         buttonsPosition="right"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
-
-      <span class="top"></span>
-      <span class="bottom"></span>
+      <div>
+        <span></span>
+        <span></span>
+        <span class="bottom"></span>
+      </div>
     </div>
 
     <div class="guide__button">
       <pek-guide-button
-        title="Production"
+        title="Manufacturing"
         routeUrl="/dash/production/plan"
         buttonsPosition="right"
         (navigate)="goToLinkWindow($event)"
@@ -953,7 +1128,8 @@
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
         btnStyle="secondary"
-        title="Order to our manufacture"
+        title="Order to our production"
+        [i]="26"
         routeUrl="/dash/production/orders"
         buttonsPosition="right"
         (navigate)="goToLinkWindow($event)"
@@ -963,7 +1139,7 @@
 
     <div class="guide__button">
       <pek-guide-button
-        title="Production"
+        title="Manufacturing"
         routeUrl="/dash/production/plan"
         buttonsPosition="right"
         (navigate)="goToLinkWindow($event)"
@@ -973,6 +1149,7 @@
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="27"
         title="Manufactured order"
         routeUrl="/dash/production/orders"
         buttonsPosition="right"
@@ -995,6 +1172,7 @@
     <div class="guide__button guide__button_arrow-bottom">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="30"
         title="QC passed"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="right"
@@ -1010,6 +1188,42 @@
         buttonsPosition="bottom"
         (navigate)="goToLink($event)"
       ></pek-guide-button>
+    </div>
+  </div>
+
+  <div class="guide__col guide__col_some-1">
+    <div class="guide__button">
+      <pek-guide-button
+        title="QC"
+        routeUrl="/quality-control"
+        buttonsPosition="bottom"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button  guide__button_arrow-top-bottom">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Confirmation of preparation"
+        [i]="52"
+        buttonsPosition="bottom"
+      ></pek-guide-button>
+      <span class="top"></span>
+      <span class="bottom"></span>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Delivery to outsourcer request"
+        [i]="23"
+        buttonsPosition="bottom"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 
@@ -1030,10 +1244,11 @@
       </div>
     </div>
 
-    <div class="guide__button guide__button_arrow-right">
+    <div class="guide__button guide__button_arrow-right some-button-5">
       <pek-guide-button
         btnStyle="secondary"
         title="Outsourcing orders"
+        [i]="25"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
@@ -1044,12 +1259,15 @@
     <div class="guide__button">
       <pek-guide-button
         btnStyle="secondary"
-        title="Rework order"
+        title="Rework production list creating"
+        [i]="29"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <div>
+        <span></span>
+        <span></span>
         <span></span>
         <span></span>
       </div>
@@ -1059,6 +1277,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="QC not passed"
+        [i]="40"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -1075,6 +1294,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Return to outsourcer"
+        [i]="42"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -1092,7 +1312,7 @@
       <pek-guide-button
         buttonsPosition="right"
         btnStyle="primary"
-        title="Manufacturing procurement"
+        title="Outsourcing"
         (navigate)="goToLinkWindow($event)"
         routeUrl="/dash/procurement/orders"
       ></pek-guide-button>
@@ -1108,6 +1328,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Delivered Items"
+        [i]="51"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -1131,7 +1352,7 @@
       ></pek-guide-button>
 
       <div class="rma">
-        RMA
+        RMA <i>i46</i>
         <span></span>
       </div>
     </div>
@@ -1140,6 +1361,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="QC not passed"
+        [i]="47"
         routeUrl="/dash/quality-control/invoices"
         buttonsPosition="bottom"
         (navigate)="goToLinkWindow($event)"
@@ -1153,8 +1375,9 @@
       </div>
     </div>
 
-    <div class="guide__button">
+    <div class="guide__button some-button-6">
       <pek-guide-button
+        [i]="32"
         btnStyle="secondary"
         title="QC Passed"
         routeUrl="/dash/outsource/outsource-chain"
@@ -1162,6 +1385,138 @@
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <div>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="guide__col guide__col_some-2">
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="53"
+        btnStyle="secondary"
+        title="Delivery to outsourcer"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide__col guide__col_some-3">
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="61"
+        btnStyle="secondary"
+        title="Moving to warehouse by decision of the commission"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide__col guide__col_some-4">
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Warehouse"
+        routeUrl="/warehouse"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="60"
+        btnStyle="secondary"
+        title="Direct inventarization"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide__col guide__col_some-5">
+    <div class="guide__button">
+      <pek-guide-button
+        buttonsPosition="right"
+        btnStyle="primary"
+        title="Warehouse"
+        routeUrl="/warehouse"
+        (navigate)="goToLink($event)"
+      ></pek-guide-button>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="55"
+        btnStyle="secondary"
+        title="Delivery from outsourcer"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="57"
+        btnStyle="secondary"
+        title="Request for delivery from outsourcer"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="guide__button">
+      <pek-guide-button
+        [i]="56"
+        btnStyle="secondary"
+        title="Delivered outsourced parts"
+        routeUrl="/dash/outsource/outsource-chain"
+        buttonsPosition="top"
+        (navigate)="goToLinkWindow($event)"
+      ></pek-guide-button>
+      <div>
+        <span></span>
         <span></span>
         <span></span>
         <span></span>
@@ -1181,6 +1536,7 @@
     <div class="guide__button guide__button_arrow-top">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="37"
         title="Confirmed payment"
       ></pek-guide-button>
       <span></span>
@@ -1196,6 +1552,7 @@
     <div class="guide__button guide__button_arrow-top">
       <pek-guide-button
         btnStyle="secondary"
+        [i]="33"
         title="Payment confirmation"
         routeUrl="/dash/confirmation"
       ></pek-guide-button>
@@ -1214,6 +1571,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Outsorsed parts"
+        [i]="38"
         routeUrl="test"
         buttonsPosition="right"
         (navigate)="goToLinkWindow($event)"
@@ -1237,6 +1595,7 @@
 
       <div class="rma">
         RMA
+        <i>i45</i>
         <span></span>
       </div>
 
@@ -1358,6 +1717,7 @@
         buttonsPosition="right"
         btnStyle="secondary"
         title="Tender"
+        [i]="35"
         routeUrl="/confirmation"
         (navigate)="goToLink($event)"
       ></pek-guide-button>
@@ -1372,6 +1732,7 @@
       <pek-guide-button
         [btnStyle]="'secondary'"
         title="Outsourcing"
+        [i]="36"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
@@ -1394,6 +1755,7 @@
       <pek-guide-button
         buttonsPosition="right"
         btnStyle="secondary"
+        [i]="39"
         title="Rework Request"
         routeUrl="/dash/confirmation"
       ></pek-guide-button>
@@ -1414,6 +1776,7 @@
       <pek-guide-button
         buttonsPosition="right"
         btnStyle="secondary"
+        [i]="41"
         title="Return to procurement"
         routeUrl="/dash/confirmation"
       ></pek-guide-button>
@@ -1434,6 +1797,7 @@
       <pek-guide-button
         buttonsPosition="right"
         btnStyle="secondary"
+        [i]="50"
         title="Delivered items"
         routeUrl="/dash/confirmation"
       ></pek-guide-button>
@@ -1564,6 +1928,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Disassembling request"
+        [i]="43"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
@@ -1589,6 +1954,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Disassembled items"
+        [i]="49"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
@@ -1672,6 +2038,7 @@
       <pek-guide-button
         btnStyle="secondary"
         title="Write off request"
+        [i]="44"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
@@ -1699,6 +2066,7 @@
         title="Write off"
         routeUrl="/dash/outsource/outsource-chain"
         buttonsPosition="top"
+        [i]="48"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
       <span></span>
@@ -1712,6 +2080,30 @@
         buttonsPosition="top"
         (navigate)="goToLinkWindow($event)"
       ></pek-guide-button>
+    </div>
+  </div>
+
+  <div class="guide__col guide__buttons guide__buttons_1">
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="primary"
+        routeUrl="/manufacturing/plans"
+        title="Manufacturing"
+        buttonsPosition="right"
+      ></pek-guide-button>
+    </div>
+    <div class="guide__button">
+      <pek-guide-button
+        btnStyle="secondary"
+        title="Service Order"
+        [i]="62"
+      ></pek-guide-button>
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 

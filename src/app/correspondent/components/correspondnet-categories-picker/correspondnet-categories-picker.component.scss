@@ -1,0 +1,11 @@
+::ng-deep {
+  .correspondent-picker {
+    div.p-treenode-content {
+      &:not(.p-treenode-selectable) {
+        .p-treenode-label {
+          opacity: .5;
+        }
+      }
+    }
+  }
+}

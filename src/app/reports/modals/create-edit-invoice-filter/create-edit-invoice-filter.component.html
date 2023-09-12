@@ -1,0 +1,138 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Invoice Filter
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-12">
+        <label for="name">Filter Name*</label>
+        <input type="text" id="name" pInputText formControlName="name">
+      </div>
+      <div class="col-6">
+        <label>Company</label>
+        <pek-company-picker
+          [currentCompanyId]="form.get('supplier').value"
+          (selectCompany)="onSelectCompany($event)"
+        ></pek-company-picker>
+      </div>
+      <div class="col-6">
+        <label>Company Category</label>
+        <pek-company-category-picker
+          [selectedCategoryId]="this.form.get('supplier_category').value"
+          (selectCompanyCategory)="onSelectCompanyCategory($event)"
+        ></pek-company-category-picker>
+      </div>
+      <div class="col-6">
+        <label>Creation From</label>
+        <p-calendar
+          formControlName="system_creation_date_after"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Creation To</label>
+        <p-calendar
+          formControlName="system_creation_date_before"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Invoice Recieved From</label>
+        <p-calendar
+          formControlName="invoice_reception_date_after"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Invoice Recieved To</label>
+        <p-calendar
+          formControlName="invoice_reception_date_before"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Items Recieved From</label>
+        <p-calendar
+          formControlName="items_reception_date_after"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Items Recieved To</label>
+        <p-calendar
+          formControlName="items_reception_date_before"
+          [showButtonBar]="true"
+          dataType="date"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+        ></p-calendar>
+      </div>
+      <div class="col-6">
+        <label>Type</label>
+        <p-dropdown
+          formControlName="type"
+          [options]="invoicesTypes"
+          placeholder="Choice Type"
+          [showClear]="true"
+          optionValue="value"
+          optionLabel="name"
+        ></p-dropdown>
+      </div>
+
+      <div class="col-6 checkboxes">
+        <div class="filters-checkbox">
+          <label>Related</label>
+          <pek-input-three-values
+            [filterValue]="columnFilterService.getFilterValue(form.get('has_proformas').value)"
+            (changeValue)="toggleRelatedStatus($event)"
+          ></pek-input-three-values>
+        </div>
+        <div class="filters-checkbox">
+          <label>Payment</label>
+          <pek-input-three-values
+            [filterValue]="columnFilterService.getFilterValue(form.get('is_paid').value)"
+            (changeValue)="togglePaidStatus($event)"
+          ></pek-input-three-values>
+        </div>
+        <div class="filters-checkbox">
+          <label>Complete</label>
+          <pek-input-three-values
+            [filterValue]="columnFilterService.getFilterValue(form.get('completed').value)"
+            (changeValue)="toggleCompletedStatus($event)"
+          ></pek-input-three-values>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

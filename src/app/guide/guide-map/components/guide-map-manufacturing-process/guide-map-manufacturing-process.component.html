@@ -1,0 +1,303 @@
+<div class="guide-map-item">
+  <img src="assets/images/business-map/manufacturing-process/1.png" alt="Image">
+
+  <h3>Setting actual quantity for for production list</h3>
+
+  <p>
+    In the Warehouse/Production lists menu, select the required production list. Click the Selected Production List/Set
+    List Locator button to select the warehouse locator where the items prepared for this production list will be
+    placed. Then click the Selected Production List/Production List button to open the production list structure.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/2.png" alt="Image">
+
+  <p>
+    Each position of the production list has the required quantity, free quantity in stock and a locator where this
+    position is located. It is necessary to find this position, collect the required quantity, put it on the selected
+    production sheet locator and set the taken quantity in the ERP system.
+    If you use a mobile device to prepare a production sheet, select the required position, click the Scan QR Codes
+    button, scan the expected QR code for the desired position. If an invalid code is scanned, you will see this in a
+    pop-up window and you need to click the cancel button. If the correct code is scanned, a pop-up window will prompt
+    you to enter the amount taken for this position and print the QR code.
+  </p>
+
+  <p>
+    If a mobile device is not used, you can print the production list using the Root Production List/Print button,
+    collect the necessary positions and enter the result into the ERP system. To do this, select the desired position,
+    press the Selected Production List / Set Actual Qty button and enter the collected quantity.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/3.png" alt="Image">
+
+  <h3>Planning of tasks</h3>
+
+  <p>
+    The production plan is a hierarchical product structure in a gannt style with the ability to plan and set up
+    operations for each assembly and position of the plan. The initial product structure is created in the Product
+    structure menu and then sent to production.
+  </p>
+
+  <p>
+    The list of production plans is displayed in the menu Manufacturing/Plans. To work with a specific plan, select the
+    desired plan from the list and click the Selected plans button. The plan will then open in a new window. It is
+    possible to select several plans at once and work with them in one window.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/4.png" alt="Image">
+
+  <p>
+    For all assemblies and produced items, one or more technologies are specified that are required for the production
+    of this assembly or produced item. Thus, the technology is a task, after completing which we will get a ready
+    position or assembly.
+  </p>
+
+  <p>
+    In the production plan, we display technologies in the form of separate tasks, by completing which we will receive
+    the final product of production. Tasks are displayed on the calendar bar, so we can see when the task will be
+    completed and we will get the position in the warehouse. The sequence of tasks execution is determined by the
+    structure of the product. For example, we cannot make an assembly without making all the positions included in this
+    assembly. Also, if one position requires several technologies - tasks, we cannot produce the next task until the
+    previous one is completed.
+  </p>
+
+  <p>
+    For purchased items, the technology is not specified, and the process for obtaining this item is the purchasing
+    process and is displayed in the plan as purchased.
+    After the actual quantity is entered by the warehouse, the state of the tasks will be visible in the plan:
+  </p>
+
+  <ol>
+    <li>red — position or technology is out of stock, shortage</li>
+    <li>green - available</li>
+    <li>yellow - ordered</li>
+    <li>green with stripes — the position is in the state of rework</li>
+  </ol>
+
+  <img src="assets/images/business-map/manufacturing-process/5.png" alt="Image">
+
+  <p>
+    For purchased items and for items sent to outsourcing, the date of receipt is set automatically according to the
+    estimated date of receipt in the purchasing chain, set by the purchasing manager. Dates for such positions cannot be
+    set in the plan.
+  </p>
+
+  <p>
+    For assemblies and produced items with a shortage status, and for items sent to your own production, you must
+    specify an estimated production start date and a readiness date. In this way, the planning of the date of receipt of
+    the final manufactured product takes place.
+  </p>
+
+  <p>
+    In order to change the start date and readiness, you can move the computer mouse cursor to the left or right edge of
+    the task, hold down the left button and drag. Or click on the task with the right mouse button and make the
+    necessary settings in the modal window that opens.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/6.png" alt="Image">
+
+  <p>
+    To select a start and end date, click on the appropriate field and set the date and time in the calendar.<br>
+    Also in this window it is possible to specify the employees and machines that will be needed to complete this task
+    and the time that will be required to complete the task (ttc - time to complete).
+  </p>
+
+  <p>
+    To go to the order for this task, click on the order number.<br>
+    If you need to add an additional technology to the position, click on the Add technology button, choose where to add
+    a new non-technology - before or after this task and select the required technology from the list. It is impossible
+    to add technology before a ready or ordered task.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/7.png" alt="Image">
+
+  <p>
+    To carry out group planning of several tasks at once, select the task planning button in the lower menu, select
+    technologies for planning in the filter or select them by clicking on the task and press the edit task button.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/8.png" alt="Image">
+
+  <img src="assets/images/business-map/manufacturing-process/9.png" alt="Image">
+
+  <p>
+    You must specify the section to be used for group scheduling. The main planning settings correspond to the settings
+    for one task. Additionally, you can select the period by which you want to shift the start and readiness dates for
+    the selected tasks.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/10.png" alt="Image">
+
+  <p>
+    If the date of the items, which is obtained automatically from the purchasing chain, has been changed, this will be
+    displayed in the plan with a frame with a gray hatch. In order for the new dates to be accepted in the plan, you
+    must click on the Show confirmation button and then in the top pop-up menu, the Confirm button
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/11.png" alt="Image">
+
+  <p>
+    If additional items are needed for the production of the final product, they can be added to the desired part of the
+    plan. To do this, in the lower menu, click the add items button, select the desired category, select the required
+    item and the required quantity. The quantity is indicated for one assembly set into which you insert this position
+    and will be calculated automatically, taking into account the number of assembly sets in the plan.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/12.png" alt="Image">
+
+  <h3>Manufacturing shedule confirmation</h3>
+
+  <p>
+    After the end of planning, there is an option to send the plan for planning confirmation. To do this, click the
+    Show conmirmation button in the bottom menu, and select the send to confirmation option from the pop-up menu at the
+    top. After that, the plan is sent for confirmation. At this point, editing tasks will be disabled. If the schedule
+    of the plan is confirmed, editing the end date of receiving the product will be prohibited. Inside the plan, the
+    rest of the dates will be editable. If the dates put down by the machine go beyond the date of receipt of the final
+    product, the plan will automatically go back to planning confirmation.If, after confirming the scheduling, you want
+    to change the end date for receiving the product, you must request permission to edit this date. The request will go
+    for confirmation and if permission is received, then the date can be edited and sent for confirmation again.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/13.png" alt="Image">
+
+  <h3>Creation of orders to own manufacturing</h3>
+
+  <p>
+    For assemblies and production items, the order is created from the production plan. An order can only be created for
+    technologies whose production is not blocked by child technologies. For example, it is not possible to order an
+    assembly if its child positions are not ready. If a position has several technologies, then it is impossible to send
+    the next one to production if the previous one is not ready yet. In order to check if it is possible to create an
+    order for the production of a certain technology, click on the task for this technology and check the flag for the
+    locked field. If the flag is cleared, then an order for this technology can be created.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/14.png" alt="Image">
+
+  <p>
+    To create a new order for your production, in the lower menu, click the order creating button, select the required
+    technology in the filter that you want to add to the order. Only tasks available for order will be selected.
+    Select the necessary ones with the checkmarks to the left of the positions and click the create order button.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/15.png" alt="Image">
+
+  <p>
+    In the modal window that appears, select your production.<br>
+    If necessary, add the material needed to produce this task if it was not added directly to the product structure or
+    plan. To do this, check the material required box, select the required nomenclature and quantity.<br>
+    If a special TE is required for production, you will be asked to include it in the order.
+    After that, click the create order button. An order to own production will be created in the orders to own
+    production menu.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/16.png" alt="Image">
+
+  <p>
+    To work with an order to your own production, go to the Manufacturing/orders to own production menu. This menu
+    contains a list of active orders to your production, indicating the date of creation, for which product this order
+    was created and the status of the order. Select the desired order and click the Selected order/own production order
+    button.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/17.png" alt="Image">
+
+  <p>
+    The order form opens, showing the items ordered, the required materials, TEs, and machines if configured.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/18.png" alt="Image">
+
+  <p>
+    The list of materials consists of child items from the plan hierarchy, added materials during the creation of the
+    order, or we can add the material directly to an already created order. To do this, select the ordered item for
+    which you want to add material, click the add material button, find the required item in the list and specify the
+    quantity.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/19.png" alt="Image">
+
+  <h3>Production requests preparation</h3>
+
+  <p>
+    Simultaneously with the creation of an order for your production, a request appears in the Warehouse / production
+    request menu for the materials necessary for the production of ordered items and Technological equipment, if it has
+    been configured.
+    It is necessary to prepare a list of necessary materials, bring them to production and press the complete
+    button.<br>
+    After that, the materials will be written off from the warehouse and will be listed as given to production.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/20.png" alt="Image">
+
+  <h3>Sending ready orders to QC</h3>
+
+  <p>
+    The list of materials indicates the required quantity and the status of the request for this material. Red cross —
+    the material has not yet been prepared by the warehouse, green tick — the material has been delivered by the
+    warehouse.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/21.png" alt="Image">
+
+  <p>
+    After the items are produced, they must be submitted to QC. To do this, check the ready positions and click the Move
+    to QC button. After that, they will have the status of IN QC. After passing QC, the status will be changed to QC
+    passed. After passing the QC of all positions, the general status of the order in its production will be set to ON
+    STOCK and the order will disappear from the list of orders.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/22.png" alt="Image">
+
+  <p>
+    If during the passage of QC flaws are identified that can be corrected, the positions can be sent back for revision.
+    In this case, in the order they will be displayed as not sent to QC.
+  </p>
+
+  <h3>Creating of orders to outsourcing</h3>
+
+  <p>
+    To create a new order in Outsourcing, in the bottom menu, click the order creating button, select the required
+    technology in the filter that you want to add to the order. Only tasks available for order will be selected.<br>
+    Select the necessary ones with the checkmarks to the left of the positions and click the create order button.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/23.png" alt="Image">
+
+  <p>
+    In the modal window that appears, select the Outsource production checkbox.
+    Creating an order in Outsourcing has the same options as ordering to own manufacturing (see step <b>Creation of
+    orders to own manufacturing</b>)
+  </p>
+
+  <h3>Delivery request for outsourcers preparation</h3>
+
+  <p>
+    Simultaneously with the creation of an order in Outsourcing, a request for the materials necessary for the
+    production of ordered items and Technological equipment, if it has been configured, appears in the
+    Warehouse/Delivery menu.
+    Warehouse prepares materials, sends to QC for quantity check, qc checks quantity, sends back to warehouse if
+    everything is ok, warehouse packs and sends to QC for packing check, QC checks packing, sends back to warehouse.
+    When everything is checked, click complete, the material is written off, the status is sent.
+  </p>
+
+  <h3>Procurement process of outsourcing chains for manufacturing plans</h3>
+
+  <p>
+    After creating an outsourcing order through the plan, an outsourcing chain is automatically created in the
+    Outsourcing/Outsoursing chains menu. It is necessary to carry out the purchasing process and send the received items
+    to qc.
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/24.png" alt="Image">
+
+  <h3>QC process of delivered items in QC module</h3>
+
+  <p>
+    After delivering the items purchased for production lists, the QC manager should go to the QC/invoises/Production
+    Lists Procurement or Outsourcing Invoices menu, open the invoice using the Items button, check the quantity and
+    quality and click the Complete button
+  </p>
+
+  <img src="assets/images/business-map/manufacturing-process/25.png" alt="Image">
+
+  <img src="assets/images/business-map/manufacturing-process/26.png" alt="Image">
+</div>

@@ -20,16 +20,15 @@ import {
   ManufacturingTasksEditComponent
 } from '../../manufacturing/modals/manufacturing-tasks-edit/manufacturing-tasks-edit.component';
 import {
-  ManufacturingAddItemsComponent, NewItem
+  ManufacturingAddItemsComponent
 } from '../../manufacturing/modals/manufacturing-add-items/manufacturing-add-items.component';
-import { Tasks} from '@shared/models/task';
 import {PlanningStatus} from '../../manufacturing/enums/planning-status.enum';
-import {
-  ManufacturingSliceTasksComponent
-} from '../../manufacturing/components/manufacturing-slice-tasks/manufacturing-slice-tasks.component';
 import {
   ManufacturingSplitPlanComponent
 } from '../../manufacturing/modals/manufacturing-split-plan/manufacturing-split-plan.component';
+import {OrderType} from '@shared/components/order-page/order-page.component';
+import {Order} from '../../procurement/models/order';
+import {AddTasksToChainComponent} from '../../manufacturing/modals/add-tasks-to-chain/add-tasks-to-chain.component';
 
 @Injectable({
   providedIn: 'root'
@@ -70,14 +69,20 @@ export class TaskService {
     );
   }
 
-  approvePlan(data: {planning_status: PlanningStatus, family_id: number}) {
+  approvePlan(data: { planning_status: PlanningStatus, family_id: number }) {
     return this.httpClient.post(this.API_URL + this.url + 'planning_confirmation/', data).pipe(
       map(response => response)
     );
   }
 
-  approveDeclineEditDatesPlan(data: {planning_status?: PlanningStatus, family_id: number}) {
+  approveDeclineEditDatesPlan(data: { planning_status?: PlanningStatus, family_id: number }) {
     return this.httpClient.post(this.API_URL + this.url + 'confirmation_request_to_edit_date/', data).pipe(
+      map(response => response)
+    );
+  }
+
+  outsourceAddToExistingOrder(data) {
+    return this.httpClient.post(this.API_URL + this.url + 'outsource_add_to_existing_order/', data).pipe(
       map(response => response)
     );
   }
@@ -124,7 +129,34 @@ export class TaskService {
   }
 
   delete(set: TaskSet): Observable<TaskSet> {
-    return forkJoin(...set.tasks.map(task => this.httpClient.delete<Task>(this.API_URL + this.url + task.id + '/'))).pipe(
+    const ids = set.tasks.map(t => t.id);
+
+    // return from(ids).pipe(
+    //   concatMap(id => this.httpClient.delete<Task>(this.API_URL + this.url + id + '/').pipe(
+    //     retry(),
+    //   )),
+    //   toArray(),
+    //   map(() => set),
+    //   tap(() => this.delete$.next(set)),
+    // );
+
+    // const sendRequest = (id: number) => {
+    //   const url = this.API_URL + this.url + id + '/';
+    //   return this.httpClient.delete(url);
+    // }
+
+    return this.httpClient.post(this.API_URL + this.url + 'bulk_delete/', ids).pipe(
+      // concatMap(() => {
+      //  ids.splice(0, 1);
+      //   return from(ids).pipe(
+      //     concatMap(id => sendRequest(id).pipe(
+      //       retryWhen(errors => errors.pipe(
+      //         delay(1000),
+      //         catchError(error => of(null))
+      //       ))
+      //     ))
+      //   );
+      // }),
       map(() => set),
       tap(() => this.delete$.next(set)),
     );
@@ -156,7 +188,7 @@ export class TaskService {
     return this.dialog
       .open<ManufacturingTaskEditComponent>(ManufacturingTaskEditComponent, {
         width: '80rem',
-        data: {task, tasks, rootTask },
+        data: {task, tasks, rootTask},
         disableClose: false,
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
@@ -169,7 +201,7 @@ export class TaskService {
     return this.dialog
       .open<ManufacturingTasksEditComponent>(ManufacturingTasksEditComponent, {
         width: '80rem',
-        data: { tasks },
+        data: {tasks},
         disableClose: false,
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
@@ -201,7 +233,9 @@ export class TaskService {
       concatMap(items => from(items)),
       concatMap(item => this.httpClient.post(this.API_URL + this.url + item.taskId + '/add_position/', item.data)),
       toArray(),
-      concatMap((tasks) => tasks.length > 0 ? this.httpClient.get<{ data: Task[] }>(this.API_URL + this.url + '?for_root_id__in=' + rootId) : []),
+      concatMap((tasks) => tasks.length > 0 ? this.httpClient.get<{
+        data: Task[]
+      }>(this.API_URL + this.url + '?for_root_id__in=' + rootId) : []),
       map(response => response.data),
     );
   }
@@ -210,7 +244,7 @@ export class TaskService {
     return this.dialog
       .open<ManufacturingAddItemsComponent>(ManufacturingAddItemsComponent, {
         width: '30rem',
-        data: { parentTasks },
+        data: {parentTasks},
         disableClose: false,
         autoFocus: false,
       })
@@ -228,11 +262,11 @@ export class TaskService {
     return this.dialog
       .open<ManufacturingSplitPlanComponent>(ManufacturingSplitPlanComponent, {
         width: '30rem',
-        data: { task },
+        data: {task},
         disableClose: false,
         autoFocus: false,
       })
-      .afterClosed()
+      .afterClosed();
   }
 
   splitTasks(send: any, id: number): Observable<any> {
@@ -241,5 +275,22 @@ export class TaskService {
 
   deletePlan(id: number): Observable<Task> {
     return this.httpClient.delete<Task>(this.API_URL + this.url + id + '/');
+  }
+
+  openAddTasksToChainModal(tasks: Task[], orderType: OrderType, productsCount: number): Observable<Order> {
+    return this.dialog
+      .open<AddTasksToChainComponent>(AddTasksToChainComponent, {
+        width: '50rem',
+        height: 'auto',
+        data: {tasks, orderType, productsCount},
+        autoFocus: false,
+        panelClass: 'modal-picker',
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  deletePlans(ids: number[]): Observable<any> {
+    return this.httpClient.post(this.API_URL + this.url + 'bulk_delete/', ids);
   }
 }

@@ -26,6 +26,10 @@ import {IS_SCANNING_ENABLED} from '@shared/interceptors/error-interceptor';
 import {
   PhysicalInventoryProductsChangesComponent
 } from '../modals/physical-inventory-products-changes/physical-inventory-products-changes.component';
+import {ScanResultWasFoundComponent} from '../modals/scan-result-was-found/scan-result-was-found.component';
+import {
+  PhysicalInventoryScanResultModalComponent
+} from '../modals/physical-inventory-scan-result-modal/physical-inventory-scan-result-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -199,5 +203,18 @@ export class PhysicalInventoryService {
   getChangedPhysicalInventoryProductsHaveBeenChanged(id: number) {
     const query = '?physical_inventory_id=' + id;
     return this.httpClient.get(this.API_URL + 'physical_inventory_products/' + 'get_physical_inventory_products_to_notify_about/' + query);
+  }
+
+  scanResultModal(product: Product = null): Observable<{ action: 'setValue' | 'scanNext' }> {
+    return this.dialog
+      .open<PhysicalInventoryScanResultModalComponent>(PhysicalInventoryScanResultModalComponent, {
+        width: '40rem',
+        data: {product},
+        height: 'auto',
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
   }
 }

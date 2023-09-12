@@ -210,132 +210,137 @@ h4 {
 }
 
 //.events-reports {
-  ::ng-deep {
-    table, tbody, tr, td, .event-item {
-      height: 100%;
-    }
+::ng-deep {
+  table, tbody, tr, td, .event-item {
+    height: 100%;
+  }
 
-    .event-item-col {
-      .report-event {
-        border-bottom: 1px solid #c3cbd3;
-
-        &:last-child {
-          border-bottom: none;
-        }
-      }
-    }
-
-    .event-item {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .event-type-name {
-      white-space: nowrap;
-    }
-
-    .small-comment, .info-line {
-      min-height: 1.25rem;
-    }
-
-    .info-line {
-      margin-top: 1rem;
-    }
-
+  .event-item-col {
     .report-event {
-      min-height: 1.975rem;
-      padding: .2rem .2rem;
+      border-bottom: 1px solid #c3cbd3;
 
-      &:nth-child(2n) {
-        background-color: #e1e1e1;
+      &:last-child {
+        border-bottom: none;
       }
     }
+  }
 
-    .report-event-group {
-      min-height: 1.875rem;
+  .event-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
-      .row-0 {
+  .event-type-name {
+    white-space: nowrap;
+  }
+
+  .small-comment, .info-line {
+    min-height: 1.25rem;
+  }
+
+  .info-line {
+    margin-top: 1rem;
+  }
+
+  .report-event {
+    min-height: 1.975rem;
+    padding: .2rem .2rem;
+
+    &:nth-child(2n) {
+      background-color: #e1e1e1;
+    }
+  }
+
+  .report-event-group {
+    min-height: 1.875rem;
+
+    .row-0 {
+      &:not(.is-selected) {
         background-color: $first-group !important;
+      }
 
-        .report-event {
-          &:nth-child(2n) {
+      .report-event {
+        &:nth-child(2n) {
+          &:not(.is-selected) {
             background-color: $first-group !important;
           }
         }
       }
+    }
 
-      .row-1 {
-        background-color: $second-group !important;
+    .row-1 {
+      background-color: $second-group !important;
 
-        .report-event {
-          &:nth-child(2n) {
-            background-color: $second-group !important;
-          }
-        }
-      }
-
-      .row-2 {
-        background-color: $third-group !important;
-
-        .report-event {
-          &:nth-child(2n) {
-            background-color: $third-group !important;
-          }
-        }
-      }
-
-      .row-3 {
-        background-color: $fifth-group !important;
-
-        .report-event {
-          &:nth-child(2n) {
-            background-color: $fifth-group !important;
-          }
-        }
-      }
-
-      .row-4 {
-        background-color: $sixth-group !important;
-
-        .report-event {
-          &:nth-child(2n) {
-            background-color: $sixth-group !important;
-          }
+      .report-event {
+        &:nth-child(2n) {
+          background-color: $second-group !important;
         }
       }
     }
 
-    .empty-cell {
-      min-height: 1.25rem;
-    }
+    .row-2 {
+      background-color: $third-group !important;
 
-    .hide {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .unhide {
-      z-index: 1;
-      position: relative;
-    }
-
-    .no-padding {
-      padding: 0 !important;
-    }
-
-    .event-type-name {
-      > a {
-        padding: 0 0.5rem;
+      .report-event {
+        &:nth-child(2n) {
+          background-color: $third-group !important;
+        }
       }
     }
 
-    p-radiobutton {
-      label {
-        margin-bottom: 0 !important;
+    .row-3 {
+      background-color: $fifth-group !important;
+
+      .report-event {
+        &:nth-child(2n) {
+          background-color: $fifth-group !important;
+        }
+      }
+    }
+
+    .row-4 {
+      background-color: $sixth-group !important;
+
+      .report-event {
+        &:nth-child(2n) {
+          background-color: $sixth-group !important;
+        }
       }
     }
   }
+
+  .empty-cell {
+    min-height: 1.25rem;
+  }
+
+  .hide {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .unhide {
+    z-index: 1;
+    position: relative;
+  }
+
+  .no-padding {
+    padding: 0 !important;
+  }
+
+  .event-type-name {
+    > a {
+      padding: 0 0.5rem;
+    }
+  }
+
+  p-radiobutton {
+    label {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
 //}
 
 //.events-reports-page {
@@ -360,6 +365,8 @@ tr {
 
 .impression-negative {
   background-color: #fab5bb !important;
+
+
 }
 
 .impression-neutral-text {
@@ -376,49 +383,72 @@ tr {
   color: #fab5bb !important;
   text-shadow: 1px 1px 0 #00000052;
 }
-//.events-reports-page {
-  :host ::ng-deep {
-    .events-reports-page {
-      .p-datatable .p-datatable-thead > tr > th {
-        &::before {
-          content: "";
-          background-color: #e9ecef;
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          z-index: -1;
-          left: 0;
-          top: 0;
-        }
-      }
 
-      .p-datatable .p-datatable-thead {
-        position: sticky;
+
+.is-selected {
+  background-color: #EFF6FF !important;
+}
+
+//.events-reports-page {
+:host ::ng-deep {
+  .events-reports-page {
+    .p-datatable .p-datatable-thead > tr > th {
+      &::before {
+        content: "";
+        background-color: #e9ecef;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        left: 0;
         top: 0;
-        z-index: 100;
       }
+    }
+
+    .p-datatable .p-datatable-thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+
+
+    }
+
+    &.menu-opened {
+      .p-datatable .p-datatable-thead {
+        top: 5rem;
+      }
+    }
+
+    .stiky-edit {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: white;
+      padding: 1rem;
+    }
   }
 
-    ::ng-deep {
-      .events-reports-page {
-        .p-datatable-wrapper {
-          overflow: unset !important;
+  ::ng-deep {
+    .events-reports-page {
+      .p-datatable-wrapper {
+        overflow: unset !important;
+      }
+
+      :host ::ng-deep .p-datatable .p-datatable-thead {
+        position: relative;
+
+        &::after {
+          content: '';
+          background-color: #002e72;
         }
 
-        :host ::ng-deep .p-datatable .p-datatable-thead {
-          position: relative;
-
-          &::after {
-            content: '';
-            background-color: #002e72;
-          }
-
-          &::before {
-            content: '';
-            background-color: #002e72;
-          }
+        &::before {
+          content: '';
+          background-color: #002e72;
         }
       }
     }
   }
+}
+
 //}

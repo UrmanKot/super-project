@@ -19,31 +19,47 @@
         [paginator]="orderProducts.length > 0"
         [rows]="10"
         [value]="orderProducts"
+        [(selection)]="selectedOrderProduct"
       >
         <ng-template pTemplate="caption">
-          <div class="mt-1"></div>
+          <div class="d-flex">
+            <p class="subtitle" *ngIf="!selectedOrderProduct">Choose the Order Item to edit</p>
+            <button
+              pButton
+              class="ml-auto"
+              type="button"
+              icon="pi pi-plus"
+              label="Write off"
+              (click)="onWriteOff()"
+              [disabled]="!selectedOrderProduct"
+            ></button>
+          </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th class="text-center" style="width: 5%">#</th>
-            <th style="width: 35%">Name</th>
+            <th style="width: 15%">Code</th>
+            <th style="width: 20%">Name</th>
             <th class="text-center" style="width: 20%">Quantity</th>
-            <th class="text-center" style="width: 20%">Passed</th>
-            <th class="text-center" style="width: 20%">Not Passed</th>
+            <th class="text-center" style="width: 20%">Write Off Quantity</th>
+            <th class="text-center" style="width: 10%">Passed</th>
+            <th class="text-center" style="width: 10%">Not Passed</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr>
+          <tr [pSelectableRow]="product">
             <td class="text-center" style="width: 5%">{{i + 1}}</td>
-            <td style="width: 35%">{{product.nomenclature.name}}</td>
+            <td style="width: 15%">{{product.nomenclature.code}}</td>
+            <td style="width: 20%">{{product.nomenclature.name}}</td>
             <td class="text-center" style="width: 20%">{{product.quantity}}</td>
-            <td class="text-center" style="width: 20%">{{product.passed_quantity}}</td>
-            <td class="text-center" style="width: 20%">{{product.not_passed_quantity}}</td>
+            <td class="text-center" style="width: 20%">{{product.quantity_to_write_off ?? 0}}</td>
+            <td class="text-center" style="width: 10%">{{product.passed_quantity}}</td>
+            <td class="text-center" style="width: 10%">{{product.not_passed_quantity}}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td class="text-center p-4" [attr.colspan]="5">
+            <td class="text-center p-4" [attr.colspan]="6">
               <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
               <span *ngIf="!isLoading">No Records Found</span>
             </td>

@@ -38,6 +38,7 @@ export class MoveQcWithProtocolComponent implements OnInit {
   form: FormGroup = this.fb.group({
     serial_number: [null, Validators.required],
     invoice_product: [null],
+    invoice_product_id: [null],
     order_product: [null],
     protocol: [null],
     paragraphs: this.fb.array([]),
@@ -57,7 +58,8 @@ export class MoveQcWithProtocolComponent implements OnInit {
       product: InvoiceProduct | OrderProduct,
       currentCount: number,
       count: number,
-      type: 'invoice' | 'order'
+      type: 'invoice' | 'order',
+      foundSerialId: number,
     }
   ) {
   }
@@ -80,8 +82,13 @@ export class MoveQcWithProtocolComponent implements OnInit {
     this.serialNumbers.sort((a, b) => a.id - b.id);
     this.currentCount = JSON.parse(JSON.stringify(this.data.currentCount));
 
-    const serialObject = this.serialNumbers[this.data.currentCount - 1];
+    if (this.data.foundSerialId) {
+      const serialNumberIndex = this.serialNumbers.findIndex(serial => +serial.id === this.data.foundSerialId);
+      [this.serialNumbers[0], this.serialNumbers[serialNumberIndex]] = [this.serialNumbers[serialNumberIndex], this.serialNumbers[0]];
+    }
 
+    const serialObject = this.serialNumbers[this.data.currentCount - 1];
+    console.log('serialObject', serialObject);
     if (serialObject && serialObject?.type_with_number) {
       this.form.get('serial').patchValue(serialObject?.type_with_number);
     } else {
@@ -92,6 +99,9 @@ export class MoveQcWithProtocolComponent implements OnInit {
       this.form.get('serial_number').patchValue(serialObject.id);
     }
 
+    if (serialObject.invoice_product_id) {
+      this.form.get('invoice_product_id').patchValue(serialObject.invoice_product_id);
+    }
     this.getFiles();
     this.getProtocol();
   }
@@ -121,6 +131,10 @@ export class MoveQcWithProtocolComponent implements OnInit {
 
   saveSerialInfo() {
     const serialObject = this.serialNumbers[this.data.currentCount - 1];
+
+    if (serialObject.invoice_product_id) {
+      this.form.get('invoice_product_id').patchValue(serialObject.invoice_product_id);
+    }
 
     if (serialObject && serialObject?.type_with_number) {
       this.form.get('serial').patchValue(serialObject?.type_with_number);
@@ -259,21 +273,6 @@ export class MoveQcWithProtocolComponent implements OnInit {
         } else {
           this.hasComplete = false;
           this.data.currentCount++;
-          // const serialObject = this.serialNumbers[this.data.currentCount - 1];
-          //
-          // if (serialObject.type_with_number) {
-          //   this.form.get('serial_number').patchValue(serialObject.type_with_number);
-          // } else {
-          //   this.form.get('serial_number').patchValue(serialObject.id);
-          // }
-          //
-          // this.form.get('serial').patchValue(serialObject?.id);
-          //
-          // (this.form.get('paragraphs') as FormArray).controls.forEach(p => {
-          //   p.get('comment').patchValue('');
-          //   p.get('is_passed').patchValue(null);
-          // });
-
           this.saveSerialInfo();
         }
       });

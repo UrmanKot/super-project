@@ -1,0 +1,422 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Payments Checker</h1>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-replay"
+        label="Upload Again"
+        (click)="uploadAgain()"
+        *ngIf="isFilesLoading"
+      >
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card" *ngIf="!isFilesLoading">
+    <div class="form-upload">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="searchForm">
+            <div class="row">
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Creation From</label>
+                  <p-calendar
+                    formControlName="invoice_date_after"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Creation To</label>
+                  <p-calendar
+                    formControlName="invoice_date_before"
+                    [showButtonBar]="true"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                  >
+                  </p-calendar>
+                </div>
+              </div>
+            </div>
+          </form>
+
+
+          <label class="drop-area" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+            <div class="drop-area-placeholder"><span>Select files</span> or drag and drop it here</div>
+            <input
+              accept="text/xml"
+              #addFileInput
+              type="file"
+              multiple="multiple"
+              hidden
+              (change)="setFiles(addFileInput.files)"
+            >
+          </label>
+
+          <div *ngIf="!isLoadForm">
+            <div class="upload-header" *ngIf="files.length > 0">
+              <h4>Added Files:</h4>
+              <button pButton type="button" icon="pi pi-angle-double-right" label="Generate"
+                      (click)="generate()"></button>
+            </div>
+            <div class="files-list">
+              <div class="file" *ngFor="let file of files; let idx = index">
+                {{idx + 1}}. {{file.name}}
+
+                <button
+                  pButton
+                  class="p-button-danger"
+                  placement="bottom"
+                  ngbTooltip="delete"
+                  (click)="removeFile(file)"
+                >
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="loading" *ngIf="isLoadForm">
+            <h5>In The Process of Forming</h5>
+            <i class="pi pi-spin pi-spinner"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table" *ngIf="isFilesLoading">
+    <div class="table-head">
+      <h3>Entries ({{occurrences.length}})</h3>
+      <!--      <button class="btn btn-primary" *ngIf="selectedOccurrence" (click)="splitIntoParts()">Disband</button>-->
+
+      <button pButton type="button" icon="pi pi-tags" label="Disband" [disabled]="!selectedOccurrence"
+              (click)="splitIntoParts()"></button>
+    </div>
+
+    <div class="page__card">
+      <p-table #dt [value]="occurrences" scrollHeight="calc(100vh - 335px)" class="table"
+               selectionMode="single" [scrollable]="occurrences.length > 0" [(selection)]="selectedOccurrence">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 5%">#</th>
+            <th class="text-center" style="width: 12%" pSortableColumn="payment_date">
+              Payment Date
+              <p-sortIcon field="payment_date">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 15%" pSortableColumn="payment_amount">
+              Payment Amount
+              <p-sortIcon field="payment_amount">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 15%" pSortableColumn="xml_company_name">
+              Payment Supplier
+              <p-sortIcon field="xml_company_name">
+              </p-sortIcon>
+            </th>
+            <th class="text-center bord" style="width: 10%" pSortableColumn="order_id">
+              Order ID
+              <p-sortIcon field="order_id">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 10%" pSortableColumn="invoice_id">
+              Invoice ID
+              <p-sortIcon field="invoice_id">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 10%" pSortableColumn="invoice_invoice_date">
+              Invoice Date
+              <p-sortIcon field="invoice_invoice_date">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 15%" pSortableColumn="invoice_total_price">
+              Invoice Total Price
+              <p-sortIcon field="invoice_total_price">
+              </p-sortIcon>
+            </th>
+            <th class="text-center bord" style="width: 15%" pSortableColumn="invoice_supplier_name">
+              Invoice Supplier
+              <p-sortIcon field="invoice_supplier_name">
+              </p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 8%">Is it correct</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-occurrence let-i="rowIndex">
+          <tr [pSelectableRow]="occurrence" [class.full]="occurrence.full_entry || occurrence.completed"
+              [class.no-full]="!occurrence.full_entry">
+            <td class="text-center" style="width: 5%">{{i + 1}}</td>
+            <td class="text-center" style="width: 12%">{{occurrence.payment_date | date:'dd/MM/yyyy'}}</td>
+            <td class="text-center" style="width: 15%">{{occurrence.payment_amount | moneyFormat}} €</td>
+            <td class="text-center" style="width: 15%">{{occurrence.xml_company_name}}</td>
+            <td class="text-center bord" style="width: 10%">{{occurrence.order_id}}</td>
+            <td class="text-center" style="width: 10%">{{occurrence.invoice_id}}</td>
+            <td class="text-center" style="width: 10%">{{occurrence.invoice_invoice_date | date:'dd/MM/yyyy'}}</td>
+            <td class="text-center" style="width: 15%">{{occurrence.invoice_total_price | moneyFormat}} €</td>
+            <td class="text-center bord" style="width: 15%">{{occurrence.invoice_supplier_name}}</td>
+            <td class="text-center" style="width: 8%">
+              <input class="correct" type="checkbox" [(ngModel)]="occurrence.completed" (ngModelChange)="update()">
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr *ngIf="occurrences.length === 0">
+            <td class="text-center p-3" [attr.colspan]="10">
+              <span>No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="tables mt-5">
+      <div class="tables__inner">
+        <div class="table-no">
+          <div class="table-header">
+            <h3>Payments with no matches found ({{payments.length}})</h3>
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-window-maximize"
+                label="Grouping"
+                *ngIf="!isGroupedPayments"
+                (click)="groupingPayments()"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-window-minimize"
+                label="Ungrouping"
+                *ngIf="isGroupedPayments"
+                (click)="unGroupingPayments()"
+              ></button>
+
+              <button
+                pButton
+                class="ml-2 p-button-danger"
+                type="button"
+                icon="pi pi-times"
+                label="Exclude"
+                [disabled]="!selectedPayment"
+                (click)="excludePayment()"
+              ></button>
+            </div>
+          </div>
+
+          <div class="page__card">
+            <p-table #dtp dataKey="id" [value]="isGroupedPayments ? groupedPayments : payments"
+                     scrollHeight="calc(100vh - 335px)" class="table"
+                     selectionMode="single" [scrollable]="payments.length > 0" [(selection)]="selectedPayment">
+
+              <ng-template pTemplate="header">
+                <tr [class.disabled]="isGroupedPayments" #trPayment>
+                  <th class="text-center" style="width: 9%">#</th>
+                  <th class="text-center"
+                      style="width: 16%"
+                      pSortableColumn="id"
+                  >
+                    Payment ID
+                    <p-sortIcon field="id" *ngIf="!isGroupedPayments">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="date">
+                    Payment Date
+                    <p-sortIcon field="date" *ngIf="!isGroupedPayments">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="amount">
+                    Payment Amount
+                    <p-sortIcon field="amount" *ngIf="!isGroupedPayments">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="company_name">
+                    Payment Supplier
+                    <p-sortIcon field="company_name" *ngIf="!isGroupedPayments">
+                    </p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-payment let-i="rowIndex">
+                <tr [pSelectableRow]="payment"
+                    [class.is-first]="payment.isFirst"
+                    [class.is-grouped]="payment.isGrouped"
+                >
+                  <td class="text-center" style="width: 9%">{{i + 1}}</td>
+                  <td class="text-center" style="width: 16%">{{payment.id}}</td>
+                  <td class="text-center" style="width: 25%">{{payment.date | date:'dd/MM/yyyy'}}</td>
+                  <td class="text-center" style="width: 25%">{{payment.amount | moneyFormat}} €</td>
+                  <td class="text-center" style="width: 25%">{{payment.company_name}}</td>
+                </tr>
+                <tr class="weight" *ngIf="payment.isLast" [class.is-grouped]="payment.isGrouped"
+                    [class.is-last]="payment.isLast">
+                  <td style="width: 9%"></td>
+                  <td style="width: 16%"></td>
+                  <td style="width: 25%" class="text-center">Total amount:</td>
+                  <td style="width: 25%" class="text-center">{{payment.totalAmount | moneyFormat}} €</td>
+                  <td style="width: 25%"></td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" let-columns>
+                <tr *ngIf="payments.length === 0">
+                  <td class="text-center p-3" [attr.colspan]="5">
+                    <span>No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+        <button class="btn btn-primary confirm" *ngIf="selectedInvoice && selectedPayment" (click)="join()">Confirm
+        </button>
+        <div class="table-no">
+          <div class="table-header">
+            <h3>Invoices with no matches found ({{invoices.length}})</h3>
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-window-maximize"
+                label="Grouping"
+                *ngIf="!isGroupedInvoices"
+                (click)="groupingInvoices()"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-window-minimize"
+                label="Ungrouping"
+                *ngIf="isGroupedInvoices"
+                (click)="unGroupingInvoices()"
+              ></button>
+            </div>
+          </div>
+
+          <div class="page__card">
+            <p-table dataKey="id" #dts [value]="isGroupedInvoices ? groupedInvoices : invoices"
+                     scrollHeight="calc(100vh - 335px)" class="table"
+                     selectionMode="single" [scrollable]="invoices.length > 0" [(selection)]="selectedInvoice">
+
+              <ng-template pTemplate="header">
+                <tr #trInvoices [class.disabled]="isGroupedInvoices">
+                  <th class="text-center" style="width: 9%">#</th>
+                  <th class="text-center" style="width: 16%" pSortableColumn="id">
+                    Invoice ID
+                    <p-sortIcon field="id" *ngIf="!isGroupedInvoices">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="invoice_date">
+                    Invoice Date
+                    <p-sortIcon field="invoice_date" *ngIf="!isGroupedInvoices">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="rounded_converted_total_price">
+                    Invoice Total Price
+                    <p-sortIcon field="total_price" *ngIf="!isGroupedInvoices">
+                    </p-sortIcon>
+                  </th>
+                  <th class="text-center" style="width: 25%" pSortableColumn="supplier">
+                    Invoice Supplier
+                    <p-sortIcon field="supplier" *ngIf="!isGroupedInvoices">
+                    </p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+                <tr
+                  [pSelectableRow]="invoice"
+                  [class.is-first]="invoice.isFirst"
+                  [class.is-grouped]="invoice.isGrouped"
+                >
+                  <td class="text-center" style="width: 9%">{{i + 1}}</td>
+                  <td class="text-center" style="width: 16%">{{invoice.id}}</td>
+                  <td class="text-center" style="width: 25%">{{invoice.invoice_date | date:'dd/MM/yyyy'}}</td>
+                  <td class="text-center" style="width: 25%">{{invoice.rounded_converted_total_price | moneyFormat}}
+                    €
+                  </td>
+                  <td class="text-center" style="width: 25%">{{invoice.supplier}}</td>
+                </tr>
+                <tr class="weight" *ngIf="invoice.isLast" [class.is-grouped]="invoice.isGrouped"
+                    [class.is-last]="invoice.isLast">
+                  <td style="width: 9%"></td>
+                  <td style="width: 16%"></td>
+                  <td style="width: 25%" class="text-center">Total amount:</td>
+                  <td style="width: 25%" class="text-center">{{invoice.totalAmount | moneyFormat}} €</td>
+                  <td style="width: 25%"></td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" let-columns>
+                <tr *ngIf="invoices.length === 0">
+                  <td class="text-center p-3" [attr.colspan]="5">
+                    <span>No Records Found</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exclude-payments mt-5">
+      <div class="table-header">
+        <h3>Excluded Payments</h3>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-reply"
+          label="Restore"
+          [disabled]="!selectedExcludePayment"
+          (click)="restorePayment()"
+        ></button>
+      </div>
+
+      <div class="page__card">
+        <p-table dataKey="id" #dt [value]="excludePayments" scrollHeight="calc(100vh - 335px)" class="table"
+                 selectionMode="single" [scrollable]="excludePayments.length > 0"
+                 [(selection)]="selectedExcludePayment">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center" style="width: 9%">#</th>
+              <th style="width: 91%" pSortableColumn="name">
+                Name
+                <p-sortIcon field="name">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-excludePayment let-i="rowIndex">
+            <tr [pSelectableRow]="excludePayment">
+              <td class="text-center" style="width: 9%">{{i + 1}}</td>
+              <td style="width: 91%">{{excludePayment.name}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr *ngIf="excludePayments.length === 0">
+              <td class="text-center p-3" [attr.colspan]="2">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

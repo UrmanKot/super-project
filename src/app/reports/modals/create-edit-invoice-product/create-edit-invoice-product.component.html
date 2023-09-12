@@ -1,0 +1,124 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    {{data.type}} Invoice Item
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="price"> Price* </label>
+          <input pInputText formControlName="supplier_unit_price" type="number" id="price"
+                 required="required">
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="totalQuantity"> Quantity* </label>
+          <input formControlName="totalQuantity" min="1" pInputText type="number" id="totalQuantity"
+                 required="required">
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="discount"> Discount* </label>
+          <input formControlName="discount" pInputText type="number" step="1" id="discount"
+                 required="required">
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="discount" class="d-block"> Fixed Discount </label>
+          <p-checkbox formControlName="fixed_discount" [binary]="true" inputId="binary"></p-checkbox>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="ddv"> DDV* </label>
+          <input formControlName="ddv" pInputText type="number" step="1" id="ddv">
+        </div>
+      </div>
+    </div>
+
+    <h3>Nomenclature Accounting Config</h3>
+
+    <div class="form-group">
+      <label>Country Of Origin</label>
+      <pek-country-picker
+        (selectCountry)="changeCountry($event)"
+        [currentCountryIds]="this.form.get('country_of_origin_default').value"
+      ></pek-country-picker>
+    </div>
+
+    <div class="form-group">
+      <label for="tariff_code">Tariff Code</label>
+      <input
+        type="number"
+        min="0"
+        pInputText
+        id="tariff_code"
+        formControlName="tariff_code"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="weight">Weight (kg)</label>
+      <input
+        pInputText
+        type="number"
+        min="0"
+        step="0.000001"
+        id="weight"
+        formControlName="weight"
+      />
+    </div>
+    <div class="form-group">
+      <label for="weight">Width (cm)</label>
+      <input
+        pInputText
+        type="number"
+        min="0"
+        step="0.000001"
+        id="width"
+        formControlName="width"
+      />
+    </div>
+    <div class="form-group">
+      <label for="weight">Length (cm)</label>
+      <input
+        pInputText
+        type="number"
+        min="0"
+        step="0.000001"
+        id="length"
+        formControlName="length"
+      />
+    </div>
+    <div class="form-group">
+      <label for="weight">Height (cm)</label>
+      <input
+        pInputText
+        type="number"
+        min="0"
+        step="0.000001"
+        id="height"
+        formControlName="height"
+      />
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="data.type"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

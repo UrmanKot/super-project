@@ -16,6 +16,7 @@ export class Correspondent {
   letter_registration_number?: string;
   category?: CorrespondentsCategory;
   files: CorrespondentFiles[];
+  categoryPath?: string;
 }
 
 export class Correspondents {

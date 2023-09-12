@@ -1,0 +1,82 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Auxiliary Invoices Accounting Number</h1>
+    </div>
+  </div>
+
+  <div class="page__content">
+    <div class="page__card">
+      <div class="page__table">
+        <p-treeTable
+          #dt
+          [value]="categoriesTree"
+          selectionMode="single"
+          [(selection)]="selectedNode"
+          [scrollable]="true"
+          scrollHeight="calc(100vh - 19.2rem)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand All"
+                class="ml-auto mr-2"
+                (click)="onExpandAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse All"
+                (click)="onCollapseAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="ml-2"
+                icon="pi pi-pencil"
+                label="Edit Accounting Number"
+                (click)="onEditAccountingNumber()"
+                [disabled]="!selectedNode"
+              ></button>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="padding-left: 48px; width: 35%">Name</th>
+              <th class="priority-2" style="width: 35%">Comment</th>
+              <th class="priority-2 text-center" style="width: 30%">Accounting Number</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+              <td style="width: 35%">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{rowData.name}}
+              </td>
+              <td style="width: 35%">
+                {{rowData.comment}}
+              </td>
+              <td style="width: 30%" class="text-center">
+                {{rowData.accounting_number}}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="3">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </div>
+    </div>
+  </div>
+</div>

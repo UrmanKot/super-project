@@ -3,7 +3,7 @@ import {InvoiceProduct} from '../../../../../procurement/models/invoice-product'
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {InvoiceProductService} from '../../../../../procurement/services/invoice-product.service';
-import {map, switchMap, take} from 'rxjs/operators';
+import {filter, map, switchMap, take, tap} from 'rxjs/operators';
 import {OrderProduct} from '../../../../../procurement/models/order-product';
 import {OrderProductService} from '../../../../../procurement/services/order-product.service';
 import {OrderTechnicalEquipment} from '../../../../models/order-technical-equipment';
@@ -23,6 +23,7 @@ export class WarehouseIsolatorOrdersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
 
   orderId: number;
+  selectedOrderProduct: OrderProduct;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -43,10 +44,13 @@ export class WarehouseIsolatorOrdersComponent implements OnInit, OnDestroy {
   }
 
   loadIsolatedProducts() {
+    this.isLoading = true;
+    this.orderProducts = [];
     this.orderProductService.get(
       [
         {name: 'not_passed_quantity__gt', value: '0'},
-        {name: 'order', value: this.orderId}
+        {name: 'order', value: this.orderId},
+        {name: 'exclude_fully_sent_to_write_off', value: true},
       ]
     ).pipe(takeUntil(this.destroy$)).subscribe(orderProducts => {
       this.orderProducts = orderProducts;
@@ -67,5 +71,12 @@ export class WarehouseIsolatorOrdersComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  onWriteOff() {
+    this.orderProductService.writeOffOrderProductDialog(this.selectedOrderProduct).pipe(
+      filter(response => !!response),
+      tap(() => this.loadIsolatedProducts())
+    ).subscribe()
   }
 }

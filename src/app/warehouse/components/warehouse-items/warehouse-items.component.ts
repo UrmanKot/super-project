@@ -8,10 +8,11 @@ import {WarehouseProductService} from '../../services/warehouse-product.service'
 import {QuerySearch} from '@shared/models/other';
 import {Paginator} from 'primeng/paginator';
 import {debounceTime, map, tap} from 'rxjs/operators';
-import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
+import {ENomenclatureApproval, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {environment} from '@env/environment';
 import {QrCodeService} from '../../../qr-code/qr-code.service';
 import {Technology} from '../../../product-structure/models/technology';
+import {AdapterService} from "@shared/services/adapter.service";
 
 @Component({
   selector: 'pek-warehouse-items',
@@ -51,30 +52,35 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     order_by_warehouse: [null],
     order_by_locator: [null],
     order_by_quantity: [null],
-    exclude_zero: [null],
+    exclude_zero: true,
     exclude_empty: [null],
+    has_technical_equipment: [null],
     technologies: [null],
-    page: [1],
   });
 
+  currentPage = 1;
+
   query: QuerySearch[] = [
-    {name: 'page', value: this.searchForm.get('page').value},
+    {name: 'page', value: this.currentPage},
     {name: 'paginated', value: true},
     {name: 'at_area', value: false}
   ];
 
-  queryKey = 'name:null/code:null/description:null/type:null/acceptedByInvoices:null/warehouse:null/locator:null/category:null';
+  queryKey = this.adapterService.generateQueryKey(this.searchForm);
 
   private destroy$ = new Subject();
 
   link = environment.link_url + 'dash/';
   isGenerating = false;
 
+  protected readonly ENomenclatureApproval = ENomenclatureApproval;
+  protected readonly ENomenclatureType = ENomenclatureType;
   constructor(
     private readonly fb: FormBuilder,
     private readonly productCategoriesService: CategoriesService,
     private readonly warehouseProductService: WarehouseProductService,
     private readonly qrCodeService: QrCodeService,
+    private readonly adapterService: AdapterService,
   ) {
   }
 
@@ -181,11 +187,11 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     this.destroy$.next(true);
     this.selectedProduct = null;
 
-    const newQueryKey = `name:${this.searchForm.get('name').value}/code:${this.searchForm.get('code').value}/description:${this.searchForm.get('description').value}/type:${this.searchForm.get('type').value}/acceptedByInvoices:${this.searchForm.get('acceptedByInvoices').value}/warehouse:${this.searchForm.get('warehouse').value}/locator:${this.searchForm.get('locator').value}/category:${this.searchForm.get('category').value}`;
+    const newQueryKey = this.adapterService.generateQueryKey(this.searchForm);
 
     if (newQueryKey !== this.queryKey) {
       this.queryKey = newQueryKey;
-      this.searchForm.get('page').patchValue(1);
+      this.currentPage = 1;
       this.isStartOnePage = true;
     }
 
@@ -194,7 +200,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.isShowAll) {
       this.query = [
         {name: 'paginated', value: 'true'},
-        {name: 'page', value: this.searchForm.get('page').value},
+        {name: 'page', value: this.currentPage},
       ];
     }
 
@@ -206,7 +212,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     });
 
     if (this.searchForm.get('code').value) this.query.push(
-      {name: 'code', 
+      {name: 'code',
       value: this.searchForm.get('code').value.replace(/^\s+/gm, '')
     });
 
@@ -252,6 +258,13 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
       value: this.searchForm.get('exclude_empty').value
     });
 
+    if (this.searchForm.get('has_technical_equipment').value !== null) {
+      this.query.push({
+        name: 'has_technical_equipment',
+        value: this.searchForm.get('has_technical_equipment').value
+      });
+    }
+
     if (this.searchForm.get('technologies').value !== null) this.query.push({
       name: 'current_technologies',
       value: this.searchForm.get('technologies').value
@@ -268,7 +281,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.isShowAll) {
       this.getProductsForPagination();
     } else {
-      this.searchForm.get('page').patchValue(1);
+      this.currentPage = 1;
       this.getProducts();
     }
   }
@@ -290,7 +303,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
 
   paginate(evt: any) {
     if (!this.isStartOnePage) {
-      this.searchForm.get('page').patchValue(evt.page + 1);
+      this.currentPage = evt.page + 1;
       this.searchProducts();
     }
   }
@@ -398,6 +411,12 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  showReservationInfo() {
+    if (this.selectedProduct) {
+      this.warehouseProductService.openReservationInfoModal(this.selectedProduct.extra_info).subscribe();
+    }
+  }
+
   prepareSortingField(): string {
     let sorting = '';
     if (this.searchForm.get('order_by_code').value !== null) {
@@ -447,7 +466,7 @@ export class WarehouseItemsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   showIsReserved(items: any[]) {
-    if (items) return items.some(i => i.reserved_by_opened_production_lists_quantity > 0)
+    if (items) return items.some(i => i.reserved_by_opened_production_lists_quantity > 0 || i.reserved_by_tool_requests_quantity > 0)
   }
 
   sorting(value: boolean, field: string) {

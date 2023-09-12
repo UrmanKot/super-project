@@ -1,0 +1,598 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Cost Report</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <h2 class="mb-4">Additional Expenses</h2>
+
+  <div class="page__card mb-4">
+    <div class="row pt-3">
+      <div *ngIf="loading" class="d-flex justify-content-center">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+      </div>
+
+      <div class="col-6" *ngFor="let item of additionalExpenses">
+        <span>{{item.accountingservice}} : {{item.value | moneyFormat}} € </span>
+      </div>
+
+      <div class="additional-none pl-3" *ngIf="additionalExpenses.length === 0 && !loading">
+        <span>Additional Expenses None</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-page-header mb-4">
+    <h2>Cost Report</h2>
+
+    <div class="d-flex">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-down"
+        label="Expand All"
+        class="mr-2"
+        (click)="expandCollapse()"
+        [disabled]="loading"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="mr-2"
+        icon="pi pi-angle-up"
+        label="Collapse All"
+        (click)="expandCollapse(false)"
+        [disabled]="loading"
+      ></button>
+<!--      <button-->
+<!--        pButton-->
+<!--        type="button"-->
+<!--        [icon]="hide ? 'pi pi-eye' : 'pi pi-eye-slash'"-->
+<!--        [label]="hide ? 'Show All' : 'Hide Zeros'"-->
+<!--        (click)="onToggleHide()"-->
+<!--        [disabled]="loading"-->
+<!--      ></button>-->
+    </div>
+  </div>
+
+  <div class="page__card cost-report-table">
+    <p-treeTable #tt [value]="treeProducts" selectionMode="single" [(selection)]="selectedNode"
+                 [resizableColumns]="true">
+      <ng-template pTemplate="caption">
+
+        <div class="d-flex">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-plus"
+            label="Additional Expenses"
+            class="ml-auto"
+            (click)="services()"
+            [disabled]="!selectedNode || selectedNode?.parent"
+          ></button>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 16%" class="th-code">Code</th>
+          <th style="width: 11%">Name</th>
+          <th style="width: 3%" class="text-center">UOM</th>
+          <th style="width: 10%" class="text-center">Serial Numbers</th>
+          <th style="width: 6%" class="text-center">Protocol</th>
+          <th style="width: 6%" class="text-center">Quantity</th>
+          <th style="width: 3%" class="text-center">Order</th>
+          <th style="width: 5%" class="text-center">Invoice</th>
+          <th style="width: 9%">Supplier</th>
+          <th style="width: 7%" class="text-center">Technology</th>
+          <th style="width: 5%" class="text-center">Date</th>
+          <th style="width: 5%" class="text-center">Unit Price</th>
+          <th style="width: 5%" class="text-center">Total Price</th>
+          <th style="width: 5%" class="text-center">Unit Cost</th>
+          <th style="width: 5%" class="text-center">Total Cost</th>
+          <th style="width: 5%" class="text-center">Price SUM</th>
+          <th style="width: 5%" class="text-center">Cost SUM</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-i="rowIndex" let-rowNode let-rowData="rowData" let-columns="columns">
+        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [class.hide]="isHidden(rowData) && hide"
+            [class.close]="rowData.close">
+          <td [ngStyle]="{'padding-left': rowNode.level*10+'px'}">
+            <div class="toggle-row">
+              <p-treeTableToggler [rowNode]="rowNode"
+                                  [class.hide-toggle]="hide && !hideToggle(rowNode.node)"></p-treeTableToggler>
+              <span class="drag-cursor">
+            {{rowData.nomenclature.code}}
+          </span>
+            </div>
+          </td>
+          <td>
+            {{rowData.nomenclature.name}} <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
+          </td>
+          <td class="text-center">
+            {{rowData.nomenclature?.category ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+          </td>
+          <td class="text-center word-break serials">
+            <!--          <div *ngIf="rowData.serial_numbers">-->
+            <!--            <div *ngFor="let serial of rowData.serial_numbers">-->
+            <!--              {{serial.type_with_number ? serial.type_with_number : serial.id}}-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData.serial_number">-->
+            <!--          <ul>-->
+            <!--            <li *ngIf="rowData.serial_numbers.length > 1">-->
+            <!--              <div>-->
+            <!--                {{1}}. {{rowData.serial_numbers[0].type_with_number ?rowData.serial_numbers[0].type_with_number : rowData.serial_numbers[0].id}}-->
+            <!--              </div>-->
+            <!--              <div>...</div>-->
+            <!--            </li>-->
+            <!--            <li *ngIf="rowData.serial_numbers.length === 1">-->
+            <!--              {{1}}.{{rowData.serial_numbers[0].type_with_number ? rowData.serial_numbers[0].type_with_number : rowData.serial_numbers[0].id}}-->
+            <!--            </li>-->
+            <!--          </ul>-->
+
+            <!--          <ul class="hidden-ul" *ngIf="rowData.serial_numbers.length > 1">-->
+            <!--            <li *ngFor="let serial of rowData.serial_numbers; let idx = index">-->
+            <!--              {{idx + 1}}. {{serial.type_with_number ? serial.type_with_number : serial.id}}-->
+            <!--            </li>-->
+            <!--          </ul>-->
+
+            <!--          </div>-->
+
+            <div *ngFor="let product of rowData.products">
+              <div>
+              <span *ngIf="product.serial_number">
+                  {{product.serial_number.type_with_number ? product.serial_number.type_with_number : product.serial_number.id}}
+              </span>
+              </div>
+            </div>
+          </td>
+          <td class="text-center word-break">
+            <!--          <a (click)="showProtocol(rowData, rowData.warehouse_product_qc_protocol)"-->
+            <!--             *ngIf="rowData.warehouse_product_qc_protocol">{{rowData.warehouse_product_qc_protocol.protocol.name}}</a>-->
+
+            <!--          <div *ngFor="let product of rowData.products">-->
+            <!--            <div *ngIf="product.warehouse_product_qc_protocol">-->
+            <!--              <a (click)="showProtocol(product, product.warehouse_product_qc_protocol)">-->
+            <!--                {{product.warehouse_product_qc_protocol.protocol.name}}-->
+            <!--              </a>-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+              <span *ngIf="product.warehouse_product_qc_protocol">
+<!--                <a class="link-hov" (click)="showProtocol(product, product.warehouse_product_qc_protocol)">-->
+                  {{product.warehouse_product_qc_protocol.protocol.name}}
+<!--                </a>-->
+              </span>
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+            <span *ngIf="rowData.warehouse_product_qc_protocol">
+<!--              <a class="link-hov" (click)="showProtocol(rowData, rowData.warehouse_product_qc_protocol)">-->
+                  {{rowData.warehouse_product_qc_protocol.protocol.name}}
+<!--                </a>-->
+            </span>
+            </div>
+          </td>
+          <td class="text-center">
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product.quantity}}
+              </div>
+            </div>
+
+            <div *ngIf="!rowData.products">
+              {{rowData.quantity}}
+            </div>
+          </td>
+          <td class="text-center">
+            <!--          <ng-container *ngIf="!rowData?.builders">-->
+            <!--            <div *ngIf="rowData?.items">-->
+            <!--              <div *ngFor="let item of rowData.items">-->
+            <!--                <ng-container [ngSwitch]="item?.order?.accounting_type">-->
+            <!--                  <a *ngSwitchCase="3" [routerLink]="'/dash/production/orders/order/' + item?.order?.id"-->
+            <!--                     target="_blank">{{item?.order?.id}}</a>-->
+            <!--                  <a *ngSwitchCase="2" [routerLink]="'/dash/outsource/outsource-chain/products/' + item?.order?.id"-->
+            <!--                     target="_blank">{{item?.order?.id}}</a>-->
+            <!--                  <a *ngSwitchCase="1" [routerLink]="'/dash/procurement/orders/products/' + item?.order?.id"-->
+            <!--                     target="_blank">{{item?.order?.id}}</a>-->
+            <!--                </ng-container>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div *ngIf="!rowData?.items">-->
+            <!--              <ng-container [ngSwitch]="rowData?.order?.accounting_type">-->
+            <!--                <a *ngSwitchCase="3" [routerLink]="'/dash/production/orders/order/' + rowData?.order?.id"-->
+            <!--                   target="_blank">{{rowData?.order?.id}}</a>-->
+            <!--                <a *ngSwitchCase="2" [routerLink]="'/dash/outsource/outsource-chain/products/' + rowData?.order?.id"-->
+            <!--                   target="_blank">{{rowData?.order?.id}}</a>-->
+            <!--                <a *ngSwitchCase="1" [routerLink]="'/dash/procurement/orders/products/' + rowData?.order?.id"-->
+            <!--                   target="_blank">{{rowData?.order?.id}}</a>-->
+            <!--              </ng-container>-->
+            <!--            </div>-->
+            <!--          </ng-container>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                <ng-container [ngSwitch]="product?.order?.accounting_type">
+                  <a *ngSwitchCase="3" [routerLink]="'/manufacturing/orders/order/' + product?.order?.id"
+                     target="_blank">{{product?.order?.id}}</a>
+                  <a *ngSwitchCase="2" [routerLink]="'/outsourcing/chains/order/' + product?.order?.id"
+                     target="_blank">{{product?.order?.id}}</a>
+                  <a *ngSwitchCase="1" [routerLink]="'/procurement/chains/order/' + product?.order?.id"
+                     target="_blank">{{product?.order?.id}}</a>
+                </ng-container>
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+              <ng-container [ngSwitch]="rowData?.order?.accounting_type">
+                <a *ngSwitchCase="3" [routerLink]="'/manufacturing/orders/order/' + rowData?.order?.id"
+                   target="_blank">{{rowData?.order?.id}}</a>
+                <a *ngSwitchCase="2" [routerLink]="'/outsourcing/chains/order/' + rowData?.order?.id"
+                   target="_blank">{{rowData?.order?.id}}</a>
+                <a *ngSwitchCase="1" [routerLink]="'/procurement/chains/order/' + rowData?.order?.id"
+                   target="_blank">{{rowData?.order?.id}}</a>
+              </ng-container>
+            </div>
+
+            <!--          <div *ngIf="rowData?.builders">-->
+            <!--            <div *ngFor="let item of rowData.builders">-->
+            <!--              <ng-container [ngSwitch]="item?.order?.accounting_type">-->
+            <!--                <a *ngSwitchCase="3" [routerLink]="'/dash/production/orders/order/' + item?.order?.id"-->
+            <!--                   target="_blank">{{item?.order?.id}}</a>-->
+            <!--                <a *ngSwitchCase="2" [routerLink]="'/dash/outsource/outsource-chain/products/' + item?.order?.id"-->
+            <!--                   target="_blank">{{item?.order?.id}}</a>-->
+            <!--                <a *ngSwitchCase="1" [routerLink]="'/dash/procurement/orders/products/' + item?.order?.id"-->
+            <!--                   target="_blank">{{item?.order?.id}}</a>-->
+            <!--              </ng-container>-->
+            <!--            </div>-->
+            <!--          </div>-->
+          </td>
+          <td class="text-center">
+            <!--          <ng-container *ngIf="!rowData?.builders">-->
+            <!--            <div *ngIf="rowData?.items">-->
+            <!--              <div *ngFor="let item of rowData.items">-->
+            <!--                <a [routerLink]="['/dash/accounting/invoices/products/', item?.invoice?.id]" target="_blank">-->
+            <!--                  {{item?.invoice?.self_serial_number}}-->
+            <!--                </a>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div *ngIf="!rowData?.items">-->
+            <!--              <a [routerLink]="['/dash/accounting/invoices/products/', rowData?.invoice?.id]" target="_blank">-->
+            <!--                {{rowData?.invoice?.self_serial_number}}-->
+            <!--              </a>-->
+            <!--            </div>-->
+            <!--          </ng-container>-->
+
+            <!--          <div *ngIf="showInvoice(rowData.invoice)">-->
+            <!--            <a [routerLink]="['/dash/accounting/invoices/products/', rowData?.invoice]" target="_blank">-->
+            <!--              {{rowData?.invoice}}-->
+            <!--            </a>-->
+            <!--          </div>-->
+
+            <!--          <div *ngIf="rowData?.builders">-->
+            <!--            <div *ngFor="let item of rowData.builders">-->
+            <!--              {{item?.invoice?.self_serial_number}}-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                <a [routerLink]="'/reports/invoices/invoice/' + product.invoice?.id">{{product.invoice?.self_serial_number}}</a>
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+              <a [routerLink]="'/reports/invoices/invoice/' + rowData.invoice?.id">{{rowData.invoice?.self_serial_number}}</a>
+            </div>
+          </td>
+          <td>
+            <!--          <ng-container *ngIf="!rowData?.builders">-->
+            <!--            <div *ngIf="rowData?.items">-->
+            <!--              <div *ngFor="let item of rowData.items">-->
+            <!--                {{item?.supplier}}-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div *ngIf="!rowData?.items">-->
+            <!--              {{rowData?.supplier}}-->
+            <!--            </div>-->
+            <!--          </ng-container>-->
+
+            <!--          <div *ngIf="rowData?.builders">-->
+            <!--            <div *ngFor="let item of rowData.builders">-->
+            <!--              {{item?.supplier}}-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product.supplier ? product.supplier : 'None'}}
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+              {{rowData.supplier ? rowData.supplier : 'None'}}
+            </div>
+          </td>
+
+          <td class="text-center">
+            <!--          <ng-container *ngIf="!rowData?.builders">-->
+            <!--            <div *ngIf="rowData?.items">-->
+            <!--              <div *ngFor="let item of rowData.items">-->
+            <!--                {{item?.technology}}-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div *ngIf="!rowData?.items">-->
+            <!--              {{rowData?.technology}}-->
+            <!--            </div>-->
+            <!--          </ng-container>-->
+
+            <!--          <div *ngIf="rowData?.builders">-->
+            <!--            <div *ngFor="let item of rowData.builders">-->
+            <!--              {{item?.technology}}-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product.technology ? product.technology : 'None'}}
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+              {{rowData.technology ? rowData.technology : 'None'}}
+            </div>
+          </td>
+
+          <td class="text-center">
+            <!--          <ng-container *ngIf="!rowData?.builders">-->
+            <!--            <div *ngIf="rowData?.items">-->
+            <!--              <div *ngFor="let item of rowData.items">-->
+            <!--                {{item?.document_creation_date | date:'dd/MM/yyyy'}}-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div *ngIf="!rowData?.items">-->
+            <!--              {{rowData?.document_creation_date | date:'dd/MM/yyyy'}}-->
+            <!--            </div>-->
+            <!--          </ng-container>-->
+            <!--          <div *ngIf="rowData?.builders">-->
+            <!--            <div *ngFor="let item of rowData.builders">-->
+            <!--              {{item?.document_creation_date | date:'dd/MM/yyyy'}}-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product?.document_creation_date | date:'dd/MM/yyyy'}}
+              </div>
+            </div>
+            <div *ngIf="!rowData.products">
+              {{rowData?.document_creation_date | date:'dd/MM/yyyy'}}
+            </div>
+          </td>
+          <td class="text-center">
+            <!--          <div *ngIf="rowData.assembly_info">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.assembly_info">-->
+            <!--                {{product.supplier_unit_price | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData.written_off_warehouse_products">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.written_off_warehouse_products">-->
+            <!--                {{product.unit_price | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData?.items">-->
+            <!--            <div *ngFor="let item of rowData.items">-->
+            <!--              <div *ngIf="rowData?.unit_price">-->
+            <!--                {{item.unit_price | moneyFormat}} €-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="!rowData?.items">-->
+            <!--            <div *ngIf="rowData?.unit_price">-->
+            <!--              {{rowData.unit_price | moneyFormat}} €-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <!--          <div *ngIf="rowData.products">-->
+            <!--            {{rowData.unit_price}}-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product?.unit_price | moneyFormat}} €
+              </div>
+            </div>
+
+            <div *ngIf="!rowData.products && rowData?.unit_price">
+              {{rowData.unit_price | moneyFormat}} €
+            </div>
+
+            <div *ngIf="rowData.nomenclature.type === '1' && rowData?.final_supplier_unit_price">
+              {{rowData?.final_supplier_unit_price | moneyFormat}} €
+            </div>
+          </td>
+          <td class="text-center">
+            <!--          <div *ngIf="rowData.assembly_info">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.assembly_info">-->
+            <!--                {{product.supplier_total_price | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData.written_off_warehouse_products">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.written_off_warehouse_products">-->
+            <!--                {{product.total_price | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData?.items">-->
+            <!--            <div *ngFor="let item of rowData.items">-->
+            <!--              <div *ngIf="rowData?.total_price">-->
+            <!--                {{item.total_price | moneyFormat}} €-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="!rowData?.items">-->
+            <!--            <div *ngIf="rowData?.total_price">-->
+            <!--              {{rowData.total_price | moneyFormat}} €-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <!--          <div *ngIf="rowData.nomenclature.type === '1' && rowData?.final_supplier_total_price">-->
+            <!--            {{rowData?.final_supplier_total_price | moneyFormat}} €-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product?.total_price | moneyFormat}} €
+              </div>
+            </div>
+
+            <div *ngIf="!rowData.products && rowData?.total_price">
+              {{rowData.total_price | moneyFormat}} €
+            </div>
+
+            <div *ngIf="rowData.nomenclature.type === '1' && rowData?.final_supplier_total_price">
+              {{rowData?.final_supplier_total_price | moneyFormat}} €
+            </div>
+          </td>
+          <td class="text-center">
+            <!--          <div *ngIf="rowData.assembly_info">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.assembly_info">-->
+            <!--                {{product.supplier_unit_cost | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="rowData.written_off_warehouse_products">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.written_off_warehouse_products">-->
+            <!--                {{product.unit_cost | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+
+            <!--          <div *ngIf="rowData?.items">-->
+            <!--            <div *ngFor="let item of rowData.items">-->
+            <!--              <div *ngIf="rowData?.unit_cost">-->
+            <!--                {{item.unit_cost | moneyFormat}} €-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="!rowData?.items">-->
+            <!--            <div *ngIf="rowData?.unit_cost">-->
+            <!--              {{rowData.unit_cost | moneyFormat}} €-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product?.unit_cost | moneyFormat}} €
+              </div>
+            </div>
+
+            <div *ngIf="!rowData.products && rowData?.unit_cost">
+              {{rowData.unit_cost | moneyFormat}} €
+            </div>
+          </td>
+          <td class="text-center">
+            <!--          <div *ngIf="rowData.assembly_info">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.assembly_info">-->
+            <!--                {{product.supplier_total_cost | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+
+            <!--          <div *ngIf="rowData.written_off_warehouse_products">-->
+            <!--            <ul class="info-list">-->
+            <!--              <li *ngFor="let product of rowData.written_off_warehouse_products">-->
+            <!--                {{product.total_cost | moneyFormat}} €-->
+            <!--              </li>-->
+            <!--            </ul>-->
+            <!--          </div>-->
+            <!--                  <div *ngIf="rowData.written_off_warehouse_products.length > 0">-->
+            <!--                    <ul class="info-list">-->
+            <!--                      <li *ngFor="let product of rowData.written_off_warehouse_products">-->
+            <!--                        {{product.total_cost | moneyFormat}} €-->
+            <!--                      </li>-->
+            <!--                    </ul>-->
+            <!--                  </div>-->
+            <!--          <div *ngIf="rowData?.items">-->
+            <!--            <div *ngFor="let item of rowData.items">-->
+            <!--              <div *ngIf="rowData?.total_cost">-->
+            <!--                {{item.total_cost | moneyFormat}} €-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div *ngIf="!rowData?.items">-->
+            <!--            <div *ngIf="rowData?.total_cost">-->
+            <!--              {{rowData.total_cost | moneyFormat}} €-->
+            <!--            </div>-->
+            <!--          </div>-->
+
+            <div *ngIf="rowData.products">
+              <div *ngFor="let product of rowData.products">
+                {{product?.total_cost | moneyFormat}} €
+              </div>
+            </div>
+
+            <div *ngIf="!rowData.products && rowData?.total_cost">
+              {{rowData.total_cost | moneyFormat}} €
+            </div>
+          </td>
+
+          <td class="text-center">
+            <!--                  <span *ngIf="rowData.hasChildren">-->
+            <!--                    {{rowData.sumTotal | moneyFormat}} €-->
+            <!--                  </span>-->
+
+            <!--          <ng-container *ngIf="rowData.order_product_total_price">-->
+            <!--            {{rowData.order_product_total_price | moneyFormat}} €-->
+            <!--          </ng-container>-->
+
+            <!--          <ng-container *ngIf="rowData.order_product_price">-->
+            <!--            {{rowData.order_product_price | moneyFormat}} €-->
+            <!--          </ng-container>-->
+            <ng-container *ngIf="rowData.total_price_calculated >= 0">
+              {{rowData.total_price_calculated | moneyFormat}} €
+            </ng-container>
+
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="rowData.order_product_total_price">
+            <span *ngIf="rowData.order_product_total_price ">
+               {{rowData.order_product_total_price | moneyFormat}} €
+            </span>
+            </ng-container>
+            <ng-container *ngIf="rowData?.total_cost_calculated >= 0 && !rowData.order_product_total_price">
+              <!--            <span-->
+              <!--              *ngIf="rowData.order_product_price">{{rowData.total_cost_calculated + rowData?.final_supplier_total_price  | moneyFormat}}-->
+              <!--              €</span>-->
+
+              <span
+                *ngIf="rowData.total_cost_calculated">{{rowData.total_cost_calculated  | moneyFormat}}
+                €</span>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="18">
+            <i *ngIf="loading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!loading">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="modal-header">
+    <h2 class="modal-header__title">
+      Reservation Info
+    </h2>
+  </div>
+  
+  <!--<mat-dialog-content>-->
+  
+  <div class="reservation-info">
+    <p-table
+      [rows]="10"
+      rowExpandMode="single"
+      dataKey="id"
+      selectionMode="single"
+      [value]="products"
+      [paginator]="products.length > 10"
+      scrollHeight="calc(100vh - 20rem)"
+      [scrollable]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 10%" class="index-header text-center">#</th>
+          <th style="width: 15%" class="text-center">ID</th>
+          <th style="width: 15%" class="text-center">Code</th>
+          <th style="width: 20%" class="text-center">Name</th>
+          <th style="width: 40%" class="text-center">Reserved Quantity</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-info let-i="rowIndex">
+        <tr [pRowToggler]="info">
+          <td style="width: 10%" class="text-center">
+            <h3 class="td-title">#</h3>
+            {{i + 1}}
+          </td>
+          <td style="width: 15%" class="text-center">
+            <h3 class="td-title">ID</h3>
+            <div *ngIf="info?.id">{{info.id}}</div>
+            <div *ngIf="!info?.id">None</div>
+          </td>
+          <td style="width: 15%" class="text-center">
+            <h3 class="td-title">Code</h3>
+            <a *ngIf="info?.code" (click)="goToProductionList(info.id)">{{info.code}}</a>
+            <div *ngIf="!info?.code">None</div>
+          </td>
+          <td style="width: 20%" class="text-center">
+            <h3 class="td-title">Name</h3>
+            <div *ngIf="info?.name">{{info.name}}</div>
+            <div *ngIf="!info?.name">None</div>
+          </td>
+          <td style="width: 40%" class="text-center">
+            <h3 class="td-title">Reserved Quantity</h3>
+            <div *ngIf="info?.reserved_quantity">{{info.reserved_quantity}}</div>
+            <div *ngIf="!info?.reserved_quantity">None</div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-3" [attr.colspan]="5">
+            <span>No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <!--</mat-dialog-content>-->
+  </div>
+  
+  <mat-dialog-actions class="justify-content-between">
+    <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  </mat-dialog-actions>
+  

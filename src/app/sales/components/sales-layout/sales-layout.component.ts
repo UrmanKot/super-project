@@ -13,8 +13,7 @@ export class SalesLayoutComponent implements OnInit {
     {label: 'Sales Chains', commands: ['sales-procurement-chains']},
     {
       label: 'Prices',
-      commands: [`${environment.link_url}dash/sales/sales-configs/nomenclature-price`],
-      isExternal: true
+      commands: ['nomenclature-price'],
     },
   ];
 

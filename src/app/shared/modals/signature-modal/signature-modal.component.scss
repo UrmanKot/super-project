@@ -1,0 +1,11 @@
+::ng-deep {
+  mat-dialog-content {
+    signature-pad {
+      background: none !important;
+      justify-content: flex-start !important;
+      canvas {
+        border: 1px dashed rgba(0, 0, 0, 0.18);
+      }
+    }
+  }
+}

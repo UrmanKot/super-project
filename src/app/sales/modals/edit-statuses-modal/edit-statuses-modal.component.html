@@ -1,6 +1,6 @@
 <div class="modal-header-container d-flex justify-content-between">
   <h2 class="modal-heading" mat-dialog-title>
-    <span>Edit Statuses </span>
+    <span>Edit Chain Status</span>
   </h2>
 </div>
 
@@ -9,19 +9,20 @@
     <div class="row">
       <div class="col-6">
         <div class="form-group">
-          <label>Status</label>
+          <label>Status*</label>
           <p-dropdown
             formControlName="status"
             placeholder="Choose Status"
             [options]="statuses"
             optionLabel="name"
             optionValue="id"
+            *ngIf="!isLoading; else spinner"
           ></p-dropdown>
         </div>
       </div>
       <div class="col-6">
         <div class="form-group">
-          <label>Date</label>
+          <label>Date*</label>
           <p-calendar
             placeholder="Choose Date"
             [showButtonBar]="true"
@@ -62,3 +63,8 @@
   ></button>
 </mat-dialog-actions>
 
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

@@ -9,6 +9,7 @@ import {MenuItem} from 'primeng/api';
 import {ModalService} from '@shared/services/modal.service';
 import {environment} from '@env/environment';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Country} from "@shared/models/country";
 
 @Component({
   selector: 'pek-sales-procurement-chains',
@@ -165,6 +166,13 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
       });
     }
 
+    if (this.searchForm.get('country_ids').value) {
+      this.query.push({
+        name: 'country_ids',
+        value: this.searchForm.get('country_ids').value,
+      });
+    }
+
     if (!this.isShowAll) {
       this.getSalesChainsForPagination();
     } else {
@@ -250,13 +258,13 @@ export class SalesChainsComponent implements OnInit, OnDestroy {
     })
   }
 
-  onGoToCompany(salesChain: SalesChain) {
-    window.open(`${this.link}crm/businnes-partners/company-page/` + salesChain.company_id, '_blank');
-  }
-
   onGoToChainPage(salesChain: SalesChain) {
     // Add product is missing in new version
-    window.open(`${this.link}sales/sales-chains/chain-page/` + salesChain.id, '_blank');
-    // this.router.navigate(['chain-page', salesChain.id], {relativeTo: this.route})
+    window.open(`/sales/sales-procurement-chains/chain-page/${salesChain.id}`, '_blank')
+  }
+
+  onSelectCountries(countries: Country[]) {
+    this.searchForm.get('country_ids').patchValue(countries?.map(c => c.id).join(',') ?? null)
+    this.searchChains();
   }
 }

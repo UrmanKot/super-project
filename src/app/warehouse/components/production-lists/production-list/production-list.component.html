@@ -1,490 +1,820 @@
-<div class="page">
-  <div class="page__header">
-    <div class="page__title">
-      <div class="header-wrapper">
-        <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
-        <h1>
-          Production List
-          <ng-container *ngIf="list">
-            ({{list.id}}) {{list.nomenclature.code}} ({{list.nomenclature.name}})
-          </ng-container>
-          <ng-container *ngIf="!list">...</ng-container>
-        </h1>
-      </div>
-
-      <div class="colors">
-        <div class="colors__color">
-          <div class="colors__color-block colors__color-block_deficit"></div>
-          <p>Deficit Accepted</p>
+<div class="production-list">
+  <div class="page">
+    <div class="page__header">
+      <div class="page__title">
+        <div class="header-wrapper">
+          <pek-module-icon [module]="'warehouse'" [isActive]="true"></pek-module-icon>
+          <h1>
+            Production List
+            <ng-container *ngIf="list">
+              ({{list.id}}) {{list.nomenclature.code}} ({{list.nomenclature.name}})
+            </ng-container>
+            <ng-container *ngIf="!list">...</ng-container>
+          </h1>
         </div>
-        <div class="colors__color">
-          <div class="colors__color-block colors__color-block_free-products"></div>
-          <p>Free Warehouse Products</p>
+
+        <div class="colors">
+          <div class="colors__color">
+            <div class="colors__color-block colors__color-block_deficit"></div>
+            <p>Deficit Accepted</p>
+          </div>
+          <div class="colors__color">
+            <div class="colors__color-block colors__color-block_free-products"></div>
+            <p>Free Warehouse Products</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="page__tools">
-      <button
-        [loading]="albumService.loading$ | async"
-        pButton
-        *ngIf="isAlbumPrint"
-        class="p-button-success mr-2"
-        type="button"
-        icon="pi pi-print"
-        label="Print Album"
-        (click)="printAlbum()"
-        [disabled]="selectedNodeTree?.length === 0"
-      >
-      </button>
-      <button
-        pButton
-        [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
-        class="mr-2"
-        type="button"
-        [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
-        (click)="togglePrintAlbumMode()"
-        [disabled]="isLoading"
-      >
-      </button>
+      <div class="page__tools">
+        <button
+          [loading]="albumService.loading$ | async"
+          pButton
+          *ngIf="isAlbumPrint"
+          class="p-button-success mr-2"
+          type="button"
+          icon="pi pi-print"
+          label="Print Album"
+          (click)="printAlbum()"
+          [disabled]="selectedNodeTree?.length === 0"
+        >
+        </button>
+        <button
+          pButton
+          [icon]="isAlbumPrint ? 'pi pi-times' : 'pi pi-images'"
+          class="mr-2 album-print"
+          type="button"
+          [label]="(isAlbumPrint ? 'Close' : 'Open') + ' Album Print'"
+          (click)="togglePrintAlbumMode()"
+          [disabled]="isLoading"
+        >
+        </button>
 
-      <p-menubar
-        class="production-list-bar ml-auto mr-2"
-        [model]="menuItems"
-      ></p-menubar>
-      <!--      <button-->
-      <!--        class="mr-2"-->
-      <!--        pButton-->
-      <!--        type="button"-->
-      <!--        icon="pi pi-print"-->
-      <!--        label="Print"-->
-      <!--        (click)="printPage()"-->
-      <!--      ></button>-->
-      <!--      <button-->
-      <!--        (click)="setQuantities()"-->
-      <!--        class="mr-2"-->
-      <!--        pButton-->
-      <!--        type="button"-->
-      <!--        icon="pi pi-angle-double-right"-->
-      <!--        label="Set Actual Quantities"-->
-      <!--        [disabled]="(selectedNodeTree && !selectedNodeTree.data.list_url) || list?.completed"-->
-      <!--      ></button>-->
-      <!--      <button-->
-      <!--        class="mr-2"-->
-      <!--        pButton-->
-      <!--        type="button"-->
-      <!--        label="Make Requests"-->
-      <!--        (click)="makeDeficit()"-->
-      <!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
-      <!--      ></button>-->
+        <button
+          pButton
+          *ngIf="isQrGenerateMode"
+          class="p-button-success mr-2"
+          type="button"
+          icon="pi pi-print"
+          label="Generate QR Codes"
+          (click)="generateQRCodes()"
+          [disabled]="selectedNodeTree?.length === 0"
+        >
+        </button>
+        <button
+          pButton
+          [icon]="isQrGenerateMode ? 'pi pi-times' : 'pi pi-images'"
+          class="mr-2 generate-qr"
+          type="button"
+          [label]="(isQrGenerateMode ? 'Close' : 'Open') + ' Generate QR Codes'"
+          (click)="toggleGenerateQRMode()"
+          [disabled]="isLoading"
+        >
+        </button>
 
-      <!--      <button-->
-      <!--        class="mr-2"-->
-      <!--        pButton-->
-      <!--        type="button"-->
-      <!--        label="Make request for all"-->
-      <!--        (click)="makeRequestsForAll()"-->
-      <!--        *ngIf="list && !list?.completed && !list?.is_deficit_requested && isSetAllActualQuantities"-->
-      <!--      ></button>-->
-      <button
-        class="mr-2"
-        pButton
-        type="button"
-        icon="pi pi-table"
-        label="Hierarchy"
-        [disabled]="mode === 'hierarchy'"
-        (click)="selectMode('hierarchy')"
-      ></button>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-list"
-        label="List"
-        [disabled]="mode === 'list'"
-        (click)="selectMode('list')"
-      ></button>
+        <p-menubar
+          class="production-list-bar ml-auto mr-2"
+          [model]="menuItems"
+        ></p-menubar>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="page__content" [class.locators]="!isAlbumPrint">
-  <div class="page__card">
-    <ng-container *ngIf="mode === 'list'">
-      <p-table
-        #dt
-        [scrollable]="true"
-        scrollHeight="calc(100vh - 21.5rem)"
-        [value]="products"
-        selectionMode="single"
-        [(selection)]="selectedNode"
-        (selectionChange)="onSelectTreeNode()"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex table-caption">
-            <p-menubar
-              [class.disabled]="!selectedNode"
-              class="production-list-bar ml-auto"
-              [model]="selectedNodeMenuItems"
-            ></p-menubar>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 3%" class="text-center">#</th>
-            <th style="width: 16%">
-              <button class="back" (click)="_location.back()">
-                <i class="pi pi-arrow-left"></i>
-              </button>
-              Code
-            </th>
-            <th style="width: 8%">Name</th>
-            <th style="width: 8%">Technology</th>
-            <th style="width: 8%" class="text-center">Total Req Qty</th>
-            <th style="width: 10%" class="text-center">Req Qty Per One</th>
-            <th style="width: 8%" class="text-center">Free Wh Qty</th>
-            <th style="width: 7%" class="text-center">Reserved Qty</th>
-            <th style="width: 7%" class="text-center">Actual Qty</th>
-            <th style="width: 5%" class="text-center">UOM</th>
-            <th style="width: 10%" class="text-center">Locator</th>
-            <th style="width: 10%" class="d-print-none text-center">Status</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr
-            [pSelectableRow]="product"
-            [class.deficit]="(product.descendants_has_deficit_accepted || product.is_deficit_accepted) && product.total_required_quantity > product.actual_quantity"
-            [class.free-products]="(product.has_free_warehouse_products || product.descendants_has_free_warehouse_products) && product.total_required_quantity > product.actual_quantity"
-          >
-            <td style="width: 3%" class="index-header text-center">
-              <h3 class="td-title">#</h3>
-              {{i + 1}}
-            </td>
-            <td style="width: 16%" class="code-column">
-              <h3 class="td-title">Code</h3>
-              <a
-                *ngIf="product.list_url"
-                class="list-parent"
-                [routerLink]="['/warehouse/production-lists/', product.list]"
-                [class.disabled]="product.list_url && (product.status == 1 || product.status == 3)"
-              >
-                {{product.nomenclature?.code}}
-              </a>
-              <span
-                *ngIf="!product.list_url">
-                {{product.nomenclature?.code}}
-              </span>
-            </td>
-            <td style="width: 16%" class="serial-number-cont">
-              <h3 class="td-title">Name</h3>
-              <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
-              ({{product.id}})
-              {{product.nomenclature?.name}}
-
-              <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
-                   class="serial-numbers">
-                <div *ngFor="let serialNumber of product.reserved_serial_numbers">
-                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.type_with_number.id}}
-                  (R)
-                </div>
-                <div *ngFor="let serialNumber of product.future_serial_numbers">
-                  {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
-                </div>
-              </div>
-            </td>
-            <td>
-              {{product.technology?.id}}
-            </td>
-            <td style="width: 8%" class="text-center">
-              <h3 class="td-title">Total Req Qty</h3>
-              {{product.total_required_quantity}}
-            </td>
-            <td style="width: 10%" class="text-center">
-              <h3 class="td-title">Req Qty Per One</h3>
-              {{product.required_quantity_per_one}}
-            </td>
-            <td style="width: 8%" class="text-center">
-              <h3 class="td-title">Free Wh Qty</h3>
-              {{product.warehouse_quantity}}
-            </td>
-            <td style="width: 7%" class="text-center">
-              <h3 class="td-title">Reserved Qty</h3>
-              {{product.reserved_quantity}}
-            </td>
-            <td style="width: 7%" class="text-center">
-              <h3 class="td-title">Actual Qty</h3>
-              {{product.actual_quantity}}
-            </td>
-            <td style="width: 5%" class="text-center">
-              <h3 class="td-title">UOM</h3>
-              {{product.nomenclature.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
-            </td>
-            <td style="width: 10%" class="text-center">
-              <h3 class="td-title">Locator</h3>
-              {{product.available_on_locator}}
-            </td>
-            <td
-              style="width: 10%"
-              class="d-print-none text-center">
-              <h3 class="td-title">Status</h3>
-              <span
-                class="badge"
-                [ngClass]="{
-                'badge_secondary': product.status == 0,
-                'badge_success': product.status == 1,
-                'badge_danger': product.status == 2,
-                'badge_reserved': product.status == 3}"
-              >
-                {{statuses[product.status]}}
-              </span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr class="tr-spinner">
-            <td class="text-center p-4" [attr.colspan]="11">
-              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoading">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </ng-container>
-
-    <ng-container *ngIf="mode === 'hierarchy'">
-      <p-treeTable
-        class="categories-tree"
-        [dataKey]="isAlbumPrint ? 'id' : 'uid'"
-        [value]="tree"
-        [selectionMode]="isAlbumPrint ? 'checkbox' : 'single'"
-        [(selection)]="selectedNodeTree"
-        scrollHeight="calc(100vh - 19.125rem)"
-        dataKey="uid"
-        [scrollable]="true"
-        (selectionChange)="onSelectTreeNode()"
-      >
-        <ng-template pTemplate="caption">
-          <div class="d-flex table-caption">
-            <p-menubar
-              [class.disabled]="!selectedNodeTree || this.isAlbumPrint"
-              class="production-list-bar ml-auto mr-2"
-              [model]="selectedNodeTreeMenuItems"
-            ></p-menubar>
-            <button
-              [disabled]="isLoadingTree"
-              class="mr-2 p-button-icon"
-              pButton
-              type="button"
-              icon="pi pi-camera"
-              label="Scan QR Codes"
-              (click)="onStartScanning()"
-            >
-            </button>
-            <button
-              class="mr-2"
-              pButton
-              type="button"
-              label="Expand All"
-              icon="pi pi-angle-down"
-              (click)="expandAll()"
-            ></button>
-            <button
-              pButton
-              type="button"
-              label="Collapse All"
-              icon="pi pi-angle-up"
-              (click)="collapseAll()"
-            ></button>
-            <p *ngIf="this.foundRowsIds.length > 0" class="d-flex align-items-center mr-2">
-              Found {{foundRowsIds.length}} products
-            </p>
-            <button
-              pButton
-              *ngIf="this.foundRowsIds.length > 1"
-              type="button"
-              label="Go to previous"
-              icon="pi pi-backward"
-              class="p-button-secondary mr-2"
-              (click)="goToPrev()"
-            ></button>
-            <button
-              *ngIf="this.foundRowsIds.length > 1"
-              pButton
-              type="button"
-              label="Go to next"
-              icon="pi pi-forward"
-              class="p-button-secondary mr-2"
-              (click)="goToNext()"
-            ></button>
-            <button
-              *ngIf="this.foundRowsIds.length > 0"
-              pButton
-              type="button"
-              icon="pi pi-times-circle"
-              class="p-button-danger"
-              (click)="clearQrResults()"
-            ></button>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 16%">
-              <div class="row-checkbox">
-                <div class="toggle" *ngIf="isAlbumPrint">
-                  <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
-                </div>
+  <div class="page__content" [class.locators]="!isAlbumPrint">
+    <div class="page__card">
+      <ng-container *ngIf="mode === 'list'">
+        <p-table
+          #dt
+          [scrollable]="true"
+          scrollHeight="calc(100vh - 21.5rem)"
+          [value]="products"
+          selectionMode="single"
+          [(selection)]="selectedNode"
+          (selectionChange)="onSelectTreeNode()"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex table-caption">
+              <p class="subtitle capitalize text-danger" *ngIf="list.needs_procurement_requests">
+                Procurement requests should be sent
+              </p>
+              <p-menubar
+                [class.disabled]="!selectedNode"
+                class="production-list-bar ml-auto"
+                [model]="selectedNodeMenuItems"
+              ></p-menubar>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 3%" class="text-center">#</th>
+              <th style="width: 16%">
                 <button class="back" (click)="_location.back()">
                   <i class="pi pi-arrow-left"></i>
                 </button>
                 Code
-              </div>
-            </th>
-            <th style="width: 14%">Name</th>
-            <th style="width: 6%" class="text-center">Technologies</th>
-            <th style="width: 6%" class="text-center">Current Technology</th>
-            <th style="width: 6%" class="text-center">Total Req Qty</th>
-            <th style="width: 8%" class="text-center">Req Qty Per One</th>
-            <th style="width: 8%" class="text-center">Free Wh Qty</th>
-            <th style="width: 7%" class="text-center">Reserved Qty</th>
-            <th style="width: 7%" class="text-center">Actual Qty</th>
-            <th style="width: 5%" class="text-center">UOM</th>
-            <th style="width: 9%" class="text-center">Locator</th>
-            <th style="width: 8%" class="d-print-none text-center">Status</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-          <tr
-            [ttRow]="rowNode"
-            [ttSelectableRow]="rowNode"
-            [ttSelectableRowDisabled]="isAlbumPrint"
-            [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
-            [class.is-found-row]="isFoundRow(rowData.id)"
-            [class.selected-for-change]="rowData.id === currentDisplayRowId"
-            [id]="'row-' + rowData.id"
-            [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
-          >
-            <td style="width: 16%">
-              <h3 class="td-title">Code</h3>
-              <div class="toggle-row">
-                <div class="toggle">
-                  <p-treeTableCheckbox *ngIf="isAlbumPrint" [value]="rowNode"></p-treeTableCheckbox>
-                </div>
-                <p-treeTableToggler
-                  [rowNode]="rowNode"
-                  [class.disabled-toggler]="rowData.status === 'Completed' || rowData.status === 'Reserved' || rowData.blockedExpand"></p-treeTableToggler>
+              </th>
+              <th style="width: 8%">Name</th>
+              <th style="width: 8%">Technology</th>
+              <th style="width: 8%" class="text-center">Total Req Qty</th>
+              <th style="width: 10%" class="text-center">Req Qty Per One</th>
+              <th style="width: 8%" class="text-center">Free Wh Qty</th>
+              <th style="width: 7%" class="text-center">Reserved Qty</th>
+              <th style="width: 7%" class="text-center">Actual Qty</th>
+              <th style="width: 5%" class="text-center">UOM</th>
+              <th style="width: 10%" class="text-center">Locator</th>
+              <th style="width: 10%" class="d-print-none text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr
+              [pSelectableRow]="product"
+              [class.deficit]="(product.descendants_has_deficit_accepted || product.is_deficit_accepted) && product.total_required_quantity > product.actual_quantity"
+              [class.free-products]="(product.has_free_warehouse_products || product.descendants_has_free_warehouse_products) && product.total_required_quantity > product.actual_quantity"
+            >
+              <td style="width: 3%" class="index-header text-center">
+                <h3 class="td-title">#</h3>
+                {{i + 1}}
+              </td>
+              <td style="width: 16%" class="code-column">
+                <h3 class="td-title">Code</h3>
                 <a
-                  [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
-                  *ngIf="rowData.nomenclature.type === '1'"
+                  *ngIf="product.list_url"
                   class="list-parent"
-                  [routerLink]="['/warehouse/production-lists/', rowData.list]"
+                  [routerLink]="['/warehouse/production-lists/', product.list]"
+                  [class.disabled]="product.list_url && (product.status == 1 || product.status == 3)"
                 >
-                  {{rowData.nomenclature.code}}
+                  {{product.nomenclature?.code}}
                 </a>
-                <span *ngIf="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.code}}</span>
-              </div>
-            </td>
-            <td style="width: 14%" class="serial-number-cont">
-              <h3 class="td-title">Name</h3>
-              <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
-              <!--              ({{rowData.id}}) -->
-              {{rowData.nomenclature.name}}
-
-              <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
-                   class="serial-numbers">
-                <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
-                  {{serialNumber.type_with_number}} (R)
-                </div>
-                <div *ngFor="let serialNumber of rowData.future_serial_numbers">
-                  {{serialNumber.type_with_number}} (F)
-                </div>
-              </div>
-            </td>
-            <td style="width: 6%" class="text-center">
-              <span *ngFor="let technology of rowData?.technologies; let idx = index">
-                {{technology?.name}}<ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
+                <span
+                  *ngIf="!product.list_url">
+                {{product.nomenclature?.code}}
               </span>
-            </td>
-            <td style="width: 6%" class="text-center">
-              <h3 class="td-title">Current Technology</h3>
-              <ng-container *ngIf="rowData.blockedExpand">
-                {{rowData.currentTechnology?.name}}
-              </ng-container>
-            </td>
-            <td style="width: 6%" class="text-center">
-              <h3 class="td-title">Total Req Qty</h3>
-              {{rowData.total_required_quantity}}
-            </td>
-            <td style="width: 8%" class="text-center">
-              <h3 class="td-title">Req Qty Per One</h3>
-              {{rowData.required_quantity_per_one}}
-            </td>
-            <td style="width: 8%" class="text-center">
-              <h3 class="td-title">Free Wh Qty</h3>
-              <ng-container
-                *ngIf="(rowData.currentTechnology && rowData.blockedExpand) || rowData.technologies?.length === 0 || showSerialWarehouseQuantity(rowData)">
-                {{rowData.warehouse_quantity}}
-              </ng-container>
-              <ng-container *ngIf="rowData.technologies?.length > 0 && !rowData.blockedExpand">
-                <ng-container *ngFor="let quantity of rowData.warehouseQuantities; let idx = index">
-                  {{quantity}}<ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
+              </td>
+              <td style="width: 16%" class="serial-number-cont">
+                <h3 class="td-title">Name</h3>
+                <b *ngIf="product.nomenclature.bulk_or_serial === '1'">(S)</b>
+                ({{product.id}})
+                {{product.nomenclature?.name}}
+
+                <div *ngIf="product.reserved_serial_numbers.length > 0 || product.future_serial_numbers.length > 0"
+                     class="serial-numbers">
+                  <div *ngFor="let serialNumber of product.reserved_serial_numbers">
+                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.type_with_number.id}}
+                    (R)
+                  </div>
+                  <div *ngFor="let serialNumber of product.future_serial_numbers">
+                    {{serialNumber.type_with_number ? serialNumber.type_with_number : serialNumber.id}} (F)
+                  </div>
+                </div>
+              </td>
+              <td>
+                {{product.technology?.id}}
+              </td>
+              <td style="width: 8%" class="text-center">
+                <h3 class="td-title">Total Req Qty</h3>
+                {{product.total_required_quantity}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Req Qty Per One</h3>
+                {{product.required_quantity_per_one}}
+              </td>
+              <td style="width: 8%" class="text-center">
+                <h3 class="td-title">Free Wh Qty</h3>
+                {{product.warehouse_quantity}}
+              </td>
+              <td style="width: 7%" class="text-center">
+                <h3 class="td-title">Reserved Qty</h3>
+                {{product.reserved_quantity}}
+              </td>
+              <td style="width: 7%" class="text-center">
+                <h3 class="td-title">Actual Qty</h3>
+                {{product.actual_quantity}}
+              </td>
+              <td style="width: 5%" class="text-center">
+                <h3 class="td-title">UOM</h3>
+                {{product.nomenclature.category?.unit_of_measure?.symbol ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Locator</h3>
+                {{product.available_on_locator}}
+              </td>
+              <td
+                style="width: 10%"
+                class="d-print-none text-center">
+                <h3 class="td-title">Status</h3>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                'badge_secondary': product.status == 0,
+                'badge_success': product.status == 1,
+                'badge_danger': product.status == 2,
+                'badge_reserved': product.status == 3}"
+                >
+                {{statuses[product.status]}}
+              </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr class="tr-spinner">
+              <td class="text-center p-4" [attr.colspan]="15">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+
+      <ng-container *ngIf="mode === 'hierarchy'">
+        <!--  Desktop Version    -->
+        <p-treeTable
+          class="desktop-version"
+          [dataKey]="isAlbumPrint && !isQrGenerateMode ? 'id' : 'uid'"
+          [value]="tree"
+          [selectionMode]="isAlbumPrint || isQrGenerateMode ? 'checkbox' : 'single'"
+          [(selection)]="selectedNodeTree"
+          scrollHeight="calc(100vh - 22.125rem)"
+          dataKey="uid"
+          [scrollable]="isTableScrollable"
+          (selectionChange)="onSelectTreeNode()"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex table-caption">
+              <p class="subtitle capitalize text-danger" *ngIf="list?.needs_procurement_requests">
+                Procurement requests should be sent
+              </p>
+              <p-menubar
+                [class.disabled]="!selectedNodeTree || this.isAlbumPrint"
+                class="production-list-bar ml-auto mr-2"
+                [model]="selectedNodeTreeMenuItems"
+              ></p-menubar>
+              <button
+                class="mr-2 p-button-icon"
+                pButton
+                type="button"
+                icon="pi pi-camera"
+                label="Scan QR Codes"
+                (click)="onStartScanning()"
+              >
+              </button>
+
+              <button
+                pButton
+                [disabled]="!selectedNodeTree || selectedNodeTree && selectedNodeTree?.data?.nomenclature?.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand"
+                class="mr-2"
+                (click)="expandCollapse(selectedNodeTree)"
+              ></button>
+              <button
+                pButton
+                [disabled]="!selectedNodeTree || selectedNodeTree && selectedNodeTree?.data?.nomenclature?.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse"
+                class="mr-2"
+                (click)="expandCollapse(selectedNodeTree, false)"
+              ></button>
+
+              <button
+                class="mr-2"
+                pButton
+                type="button"
+                label="Expand All"
+                icon="pi pi-angle-down"
+                (click)="expandAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Collapse All"
+                icon="pi pi-angle-up"
+                (click)="collapseAll()"
+              ></button>
+              <p *ngIf="this.foundRowsIds.length > 0" class="d-flex align-items-center mr-2 ml-2 desktop-version">
+                Found {{foundRowsIds.length}} products
+              </p>
+
+              <button
+                [disabled]="blockStepBtns"
+                pButton
+                *ngIf="this.foundRowsIds.length > 1"
+                type="button"
+                label="Go to previous"
+                icon="pi pi-backward"
+                class="p-button-secondary mr-2 desktop-version"
+                (click)="goToPrev()"
+              ></button>
+              <button
+                [disabled]="blockStepBtns"
+                *ngIf="this.foundRowsIds.length > 1"
+                pButton
+                type="button"
+                label="Go to next"
+                icon="pi pi-forward"
+                class="p-button-secondary mr-2 desktop-version"
+                (click)="goToNext()"
+              ></button>
+
+              <button
+                [disabled]="blockStepBtns"
+                pButton
+                *ngIf="this.foundRowsIds.length >= 1"
+                type="button"
+                label="Go to previous Continues"
+                icon="pi pi-backward"
+                class="p-button-secondary mr-2 ml-4 desktop-version"
+                (click)="goToPrevContinues()"
+              ></button>
+              <button
+                [disabled]="blockStepBtns"
+                *ngIf="this.foundRowsIds.length >= 1"
+                pButton
+                type="button"
+                label="Go to next Continues"
+                icon="pi pi-forward"
+                class="p-button-secondary mr-2 desktop-version"
+                (click)="goToNextContinues()"
+              ></button>
+
+
+              <button
+                *ngIf="this.foundRowsIds.length > 0"
+                pButton
+                type="button"
+                icon="pi pi-times-circle desktop-version"
+                class="p-button-danger"
+                (click)="clearQrResults()"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 16%">
+                <div class="row-checkbox">
+                  <div class="toggle" *ngIf="isAlbumPrint">
+                    <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
+                  </div>
+                  <button class="back" (click)="_location.back()">
+                    <i class="pi pi-arrow-left"></i>
+                  </button>
+                  Code
+                </div>
+              </th>
+              <th style="width: 14%">Name</th>
+              <th style="width: 6%" class="text-center">Technologies</th>
+              <th style="width: 6%" class="text-center">Current Technology</th>
+              <th style="width: 6%" class="text-center">Total Req Qty</th>
+              <th style="width: 8%" class="text-center">Req Qty Per One</th>
+              <th style="width: 8%" class="text-center">Free Wh Qty</th>
+              <th style="width: 7%" class="text-center">Reserved Qty</th>
+              <th style="width: 7%" class="text-center">Actual Qty</th>
+              <th style="width: 5%" class="text-center">UOM</th>
+              <th style="width: 9%" class="text-center">Locator</th>
+              <th style="width: 8%" class="d-print-none text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+              [ttSelectableRowDisabled]="isAlbumPrint"
+              [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
+              [class.is-found-row]="isFoundRow(rowData.id)"
+              [class.selected-for-change]="rowData.id === currentDisplayRowId"
+              [id]="'row' + expandFakeCount + '-' + rowData.id"
+              [attr.data-status]="rowData.status"
+              [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
+            >
+              <td style="width: 16%">
+                <h3 class="td-title">
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                    class="is-hidden-placeholder"></p-treeTableToggler>
+                  Code
+                </h3>
+                <div class="toggle-row">
+                  <div class="toggle">
+                    <p-treeTableCheckbox *ngIf="isAlbumPrint" [value]="rowNode"></p-treeTableCheckbox>
+                    <p-treeTableCheckbox *ngIf="isQrGenerateMode" [value]="rowNode"
+                                         (click)="multiChoiceByRow(rowNode)"></p-treeTableCheckbox>
+                  </div>
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                    [class.disabled-toggler]="rowData.status === 'Completed' || rowData.status === 'Reserved' || rowData.blockedExpand"></p-treeTableToggler>
+                  <a
+                    [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
+                    *ngIf="rowData.nomenclature.type === '1'"
+                    class="list-parent"
+                    [routerLink]="['/warehouse/production-lists/', rowData.list]"
+                  >
+                    {{rowData.nomenclature.code}}
+                  </a>
+                  <span *ngIf="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.code}}</span>
+                </div>
+              </td>
+              <td style="width: 14%" class="serial-number-cont">
+                <h3 class="td-title">Name</h3>
+                <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
+                <!--              ({{rowData.id}}) -->
+                {{rowData.nomenclature.name}}
+
+                <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
+                     class="serial-numbers">
+                  <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
+                    {{serialNumber.type_with_number}} (R)
+                  </div>
+                  <div *ngFor="let serialNumber of rowData.future_serial_numbers">
+                    {{serialNumber.type_with_number}} (F)
+                  </div>
+                </div>
+              </td>
+              <td style="width: 6%" class="text-center">
+                <h3 class="td-title">Technologies</h3>
+                <span *ngFor="let technology of rowData?.technologies; let idx = index">
+                {{technology?.name}}
+                  <ng-container *ngIf="idx !== rowData?.technologies.length - 1">,</ng-container>
+              </span>
+              </td>
+              <td style="width: 6%" class="text-center">
+                <h3 class="td-title">Current Technology</h3>
+<!--                <ng-container *ngIf="rowData.blockedExpand">-->
+                  {{rowData.currentTechnology ? rowData.currentTechnology?.name : ''}}
+<!--                </ng-container>-->
+              </td>
+              <td style="width: 6%" class="text-center">
+                <h3 class="td-title">Total Req Qty</h3>
+                {{rowData.total_required_quantity}}
+              </td>
+              <td style="width: 8%" class="text-center">
+                <h3 class="td-title">Req Qty Per One</h3>
+                {{rowData.required_quantity_per_one}}
+              </td>
+              <td style="width: 8%" class="text-center">
+                <h3 class="td-title">Free Wh Qty</h3>
+                <ng-container
+                  *ngIf="(rowData.currentTechnology && rowData.blockedExpand) || rowData.technologies?.length === 0 || showSerialWarehouseQuantity(rowData)">
+                  {{rowData.warehouse_quantity}}
                 </ng-container>
-              </ng-container>
-            </td>
-            <td style="width: 7%" class="text-center">
-              <h3 class="td-title">Reserved Qty</h3>
-              {{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}
-            </td>
-            <td style="width: 7%" class="text-center">
-              <h3 class="td-title">Actual Qty</h3>
-              {{rowData.actual_quantity}}
-            </td>
-            <td style="width: 5%" class="text-center">
-              <h3 class="td-title">UOM</h3>
-              {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
-            </td>
-            <td style="width: 9%" class="text-center word-break">
-              <h3 class="td-title">Locator</h3>
-              {{rowData.available_on_locator}}
-            </td>
-            <td style="width: 8%" class="d-print-none text-center">
-              <h3 class="td-title">Status</h3>
-              <span
-                class="badge"
-                [ngClass]="{
+                <ng-container *ngIf="rowData.technologies?.length > 0 && !rowData.blockedExpand">
+                  <ng-container *ngFor="let quantity of rowData.warehouseQuantities; let idx = index">
+                    {{quantity}}
+                    <ng-container *ngIf="idx !== rowData?.warehouseQuantities.length - 1">,</ng-container>
+                  </ng-container>
+                </ng-container>
+              </td>
+              <td style="width: 7%" class="text-center">
+                <h3 class="td-title">Reserved Qty</h3>
+                {{rowData.reserved_quantity ? rowData.reserved_quantity : 0}}
+              </td>
+              <td style="width: 7%" class="text-center">
+                <h3 class="td-title">Actual Qty</h3>
+                {{rowData.actual_quantity}}
+              </td>
+              <td style="width: 5%" class="text-center">
+                <h3 class="td-title">UOM</h3>
+                {{rowData.nomenclature.category?.unit_of_measure?.symbol ? rowData.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+              </td>
+              <td style="width: 9%" class="text-center word-break">
+                <h3 class="td-title">Locator</h3>
+                {{rowData.available_on_locator}}
+              </td>
+              <td style="width: 8%" class="d-print-none text-center">
+                <h3 class="td-title">Status</h3>
+                <span
+                  class="badge"
+                  [ngClass]="{
                 'badge_secondary': rowData.status === 'Not processed',
                 'badge_success': rowData.status === 'Completed',
                 'badge_danger': rowData.status === 'Deficit',
                 'badge_reserved': rowData.status === 'Reserved'
                 }"
-              >
+                >
                 {{statuses[rowData.status]}}
               </span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage" let-columns>
-          <tr class="tr-spinner">
-            <td class="text-center p-5" [attr.colspan]="10">
-              <i *ngIf="isLoadingTree" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
-              <span *ngIf="!isLoadingTree">No Records Found</span>
-            </td>
-          </tr>
-        </ng-template>
-      </p-treeTable>
-    </ng-container>
-  </div>
-</div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr class="tr-spinner">
+              <td class="text-center p-5" [attr.colspan]="15">
+                <i *ngIf="isLoadingTree" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingTree">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
 
-<div class="print-list-product" *ngIf="isShowPrint">
-  <div class="print-list-product__list">
-    <ng-template ngFor [ngForOf]="productsForPrint" let-product let-index=index let-last=last>
-      <div class="print-list-product__item" [class.break]="isShowPrintSeparated" *ngIf="product.children.length > 0">
-        <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
+        <!--  Mobile Version    -->
+        <p-treeTable
+          #table
+          class="categories-tree mobile-version"
+          [dataKey]="isAlbumPrint && !isQrGenerateMode ? 'id' : 'uid'"
+          [value]="tree"
+          [selectionMode]="isAlbumPrint || isQrGenerateMode ? 'checkbox' : 'single'"
+          [(selection)]="selectedNodeTree"
+          [scrollable]="false"
+          dataKey="uid"
+          (selectionChange)="onSelectTreeNode()"
+        >
+
+          <!--    frozenWidth="200px"    -->
+          <!--        [scrollable]="isTableScrollable"-->
+          <ng-template pTemplate="caption">
+            <div class="d-flex table-caption">
+              <p class="subtitle capitalize text-danger" *ngIf="list?.needs_procurement_requests">
+                Procurement requests should be sent
+              </p>
+              <p-menubar
+                [class.disabled]="!selectedNodeTree || this.isAlbumPrint"
+                class="production-list-bar ml-auto mr-2"
+                [model]="selectedNodeTreeMenuItems"
+              ></p-menubar>
+              <button
+                class="mr-2 p-button-icon"
+                pButton
+                type="button"
+                icon="pi pi-camera"
+                label="Scan QR Codes"
+                (click)="onStartScanning()"
+              >
+              </button>
+              <button
+                pButton
+                [disabled]="!selectedNodeTree || selectedNodeTree && selectedNodeTree?.data?.nomenclature?.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand"
+                class="mr-2"
+                (click)="expandCollapse(selectedNodeTree)"
+              ></button>
+              <button
+                pButton
+                [disabled]="!selectedNodeTree || selectedNodeTree && selectedNodeTree?.data?.nomenclature?.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse"
+                class="mr-2"
+                (click)="expandCollapse(selectedNodeTree, false)"
+              ></button>
+              <button
+                class="mr-2"
+                pButton
+                type="button"
+                label="Expand All"
+                icon="pi pi-angle-down"
+                (click)="expandAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Collapse All"
+                icon="pi pi-angle-up"
+                (click)="collapseAll()"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 16%">
+                <div class="row-checkbox">
+                  <div class="toggle" *ngIf="isAlbumPrint">
+                    <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
+                  </div>
+                  <button class="back" (click)="_location.back()">
+                    <i class="pi pi-arrow-left"></i>
+                  </button>
+                  Code
+                </div>
+              </th>
+              <th style="width: 14%">Name</th>
+              <th style="width: 6%" class="text-center">Total Req Qty</th>
+              <th style="width: 9%" class="text-center">Locator</th>
+              <th style="width: 6%" class="text-center">Current Technology</th>
+              <th style="width: 7%" class="text-center">Actual Qty</th>
+              <th style="width: 8%" class="d-print-none text-center">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              #row
+              [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+              [ttSelectableRowDisabled]="isAlbumPrint || (isSticky(rowNode, row) && isStuck(rowNode, row))"
+              [class.deficit]="(rowData.descendants_has_deficit_accepted || rowData.is_deficit_accepted) && rowData.total_required_quantity > rowData.actual_quantity"
+              [class.selected-for-change]="rowData.id === currentDisplayRowId"
+              [id]="'row' + expandFakeCount + '-' + rowData.id"
+              [ngClass]="'level_' + rowNode.level"
+              [class.has-level]="rowNode.level >= 0"
+              [attr.data-status]="rowData.status"
+              [style.top.px]="(rowNode.level + 1) * 50"
+              [class.free-products]="(rowData.has_free_warehouse_products || rowData.descendants_has_free_warehouse_products) && rowData.total_required_quantity > rowData.actual_quantity"
+              [class.is-sticky]="isSticky(rowNode, row)"
+              [class.is-stuck]="isStuck(rowNode, row)"
+            >
+              <!-- FIRST ROW -->
+              <td class="sticky-name-code">
+                <p-treeTableToggler
+                  [rowNode]="rowNode"
+                ></p-treeTableToggler>
+                <span>
+                {{rowData.nomenclature.code}}
+                  {{rowData.nomenclature.name}}
+              </span>
+              </td>
+              <td style="width: 16%" class="stick-placeholder sticky-name">
+                <h3 class="td-title">
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                  ></p-treeTableToggler>
+                  Code
+                </h3>
+                <div class="toggle-row">
+                  <div class="toggle">
+                    <p-treeTableCheckbox *ngIf="isAlbumPrint" [value]="rowNode"></p-treeTableCheckbox>
+                    <p-treeTableCheckbox *ngIf="isQrGenerateMode" [value]="rowNode"
+                                         (click)="multiChoiceByRow(rowNode)"></p-treeTableCheckbox>
+                  </div>
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                    class="is-hidden-placeholder"
+                    [class.disabled-toggler]="rowData.status === 'Completed' || rowData.status === 'Reserved' || rowData.blockedExpand"></p-treeTableToggler>
+                  <a
+                    [class.disabled]="(rowData.list_url && (rowData.status === 'Completed' || rowData.status === 'Reserved')) || rowData.blockedExpand"
+                    *ngIf="rowData.nomenclature.type === '1'"
+                    class="list-parent"
+                    [routerLink]="['/warehouse/production-lists/', rowData.list]"
+                  >
+                    {{rowData.nomenclature.code}}
+                  </a>
+                  <span *ngIf="rowData.nomenclature.type !== '1'">{{rowData.nomenclature.code}}</span>
+                </div>
+              </td>
+              <td style="width: 14%" class="serial-number-cont sticky-code">
+                <h3 class="td-title">Name</h3>
+                <b *ngIf="rowData.nomenclature.bulk_or_serial === '1'">(S)</b>
+                <!--              ({{rowData.id}}) -->
+                {{rowData.nomenclature.name}}
+
+                <div *ngIf="rowData.reserved_serial_numbers?.length > 0 || rowData.future_serial_numbers?.length > 0"
+                     class="serial-numbers">
+                  <div *ngFor="let serialNumber of rowData.reserved_serial_numbers">
+                    {{serialNumber.type_with_number}} (R)
+                  </div>
+                  <div *ngFor="let serialNumber of rowData.future_serial_numbers">
+                    {{serialNumber.type_with_number}} (F)
+                  </div>
+                </div>
+              </td>
+              <td style="width: 6%" class="text-center sticky-placeholder">
+                <h3 class="td-title">Total Req Qty</h3>
+                <span>
+                {{rowData.total_required_quantity}}
+              </span>
+              </td>
+              <td style="width: 9%" class="text-center word-break sticky-placeholder">
+                <h3 class="td-title">Locator</h3>
+                <span>
+                {{rowData.available_on_locator}}
+              </span>
+              </td>
+
+              <!-- SECOND ROW -->
+              <td style="width: 6%" class="text-center">
+                <h3 class="td-title">
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                    class="is-hidden-placeholder"></p-treeTableToggler>
+                  Technology
+                </h3>
+                <ng-container *ngIf="rowData.blockedExpand">
+                  <p-treeTableToggler
+                    [rowNode]="rowNode"
+                    class="is-hidden-placeholder"></p-treeTableToggler>
+                  {{rowData.currentTechnology ? rowData.currentTechnology?.name : ''}}
+                </ng-container>
+              </td>
+              <td style="width: 7%" class="text-center">
+                <h3 class="td-title">Actual Qty</h3>
+                {{rowData.actual_quantity}}
+              </td>
+              <td style="width: 8%" class="d-print-none text-center">
+                <h3 class="td-title">Status</h3>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                'badge_secondary': rowData.status === 'Not processed',
+                'badge_success': rowData.status === 'Completed',
+                'badge_danger': rowData.status === 'Deficit',
+                'badge_reserved': rowData.status === 'Reserved'
+                }"
+                >
+                {{statuses[rowData.status]}}
+              </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr class="tr-spinner">
+              <td class="text-center p-5" [attr.colspan]="14">
+                <i *ngIf="isLoadingTree" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingTree">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </ng-container>
+    </div>
+
+    <div class="mobile-version  mobile-scan">
+      <div class="d-flex">
+        <p *ngIf="this.foundRowsIds.length > 0" class="d-flex align-items-center mr-2 ml-2">
+          Found {{foundRowsIds.length}} products
+        </p>
+
+        <button
+          [disabled]="blockStepBtns"
+          pButton
+          *ngIf="this.foundRowsIds.length > 1"
+          type="button"
+          icon="pi pi-angle-double-up"
+          class="p-button-secondary mr-2 p-button-rounded"
+          (click)="goToPrev()"
+        ></button>
+        <button
+          [disabled]="blockStepBtns"
+          *ngIf="this.foundRowsIds.length > 1"
+          pButton
+          type="button"
+          icon="pi pi-angle-double-down"
+          class="p-button-secondary mr-2 p-button-rounded"
+          (click)="goToNext()"
+        ></button>
+
+        <button
+          [disabled]="blockStepBtns"
+          pButton
+          *ngIf="this.foundRowsIds.length >= 1"
+          type="button"
+          icon="pi pi-angle-up"
+          class="p-button-secondary mr-2 ml-4 p-button-rounded"
+          (click)="goToPrevContinues()"
+        ></button>
+        <button
+          [disabled]="blockStepBtns"
+          *ngIf="this.foundRowsIds.length >= 1"
+          pButton
+          type="button"
+          icon="pi pi-angle-down"
+          class="p-button-secondary mr-2 p-button-rounded"
+          (click)="goToNextContinues()"
+        ></button>
+
+
+        <button
+          *ngIf="this.foundRowsIds.length > 0"
+          pButton
+          type="button"
+          icon="pi pi-times-circle"
+          class="p-button-danger p-button-rounded mr-2"
+          (click)="clearQrResults()"
+        ></button>
+
+        <button
+          class="mr-2 p-button-icon p-button-rounded"
+          pButton
+          type="button"
+          icon="pi pi-camera"
+          (click)="onStartScanning()"
+        >
+        </button>
+
+        <button
+          class="mr-2 p-button-icon p-button-rounded"
+          [disabled]="!selectedNode && !selectedNodeTree"
+          pButton
+          type="button"
+          icon="pi pi-images"
+          (click)="onShowImage()"
+        >
+        </button>
       </div>
-    </ng-template>
+    </div>
   </div>
-</div>
 
-<pek-qr-code-scanner
-  *ngIf="isScanned"
-  (scanned)="onScanned($event)"
-  (cancel)="onCancelScanned()"
-></pek-qr-code-scanner>
+  <div class="print-list-product" *ngIf="isShowPrint">
+    <div class="print-list-product__list">
+      <ng-template ngFor [ngForOf]="productsForPrint" let-product let-index=index let-last=last>
+        <div class="print-list-product__item" [class.break]="isShowPrintSeparated" *ngIf="product.children.length > 0">
+          <app-list-product-print-item [product]="product" [last]="last"></app-list-product-print-item>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <pek-qr-code-scanner
+    *ngIf="isScanned"
+    (scanned)="onScanned($event)"
+    (cancel)="onCancelScanned()"
+  ></pek-qr-code-scanner>
+</div>

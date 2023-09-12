@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {Observable, of} from 'rxjs';
-import {SalesStatus} from '../models/sales-chain';
+import {SalesChainStatus, SalesStatus} from '../models/sales-chain';
 import {map} from 'rxjs/operators';
 import {ModalActionType} from '@shared/models/modal-action';
 import {MatDialog} from '@angular/material/dialog';
@@ -14,7 +14,7 @@ import {CreateEditSalesStatusComponent} from '../modals/create-edit-sales-status
 })
 export class SalesStatusService {
 
-  statuses: SalesStatus[];
+  statuses: SalesChainStatus[];
 
   API_URL = environment.base_url + environment.sales_url;
   readonly url = 'status/';
@@ -25,7 +25,7 @@ export class SalesStatusService {
   ) {
   }
 
-  get(query?: QuerySearch[]): Observable<SalesStatus[]> {
+  get(query?: QuerySearch[]): Observable<SalesChainStatus[]> {
     if (this.statuses) {
       return of(this.statuses);
     }
@@ -41,7 +41,7 @@ export class SalesStatusService {
       });
     }
 
-    return this.httpClient.get<{ data: SalesStatus[] }>(this.API_URL + this.url + queryParams).pipe(
+    return this.httpClient.get<{ data: SalesChainStatus[] }>(this.API_URL + this.url + queryParams).pipe(
       map(response => {
         const statuses = response.data;
         this.statuses = statuses;
@@ -49,19 +49,19 @@ export class SalesStatusService {
       }));
   }
 
-  create(status: Partial<SalesStatus>): Observable<SalesStatus> {
-    return this.httpClient.post<{ data: SalesStatus }>(this.API_URL + this.url, status).pipe(
+  create(status: Partial<SalesChainStatus>): Observable<SalesChainStatus> {
+    return this.httpClient.post<{ data: SalesChainStatus }>(this.API_URL + this.url, status).pipe(
       map(response => response.data)
     );
   }
 
-  update(status: Partial<SalesStatus>): Observable<SalesStatus> {
-    return this.httpClient.put<{ data: SalesStatus }>(this.API_URL + this.url + status.id + '/', status).pipe(
+  update(status: Partial<SalesChainStatus>): Observable<SalesChainStatus> {
+    return this.httpClient.put<{ data: SalesChainStatus }>(this.API_URL + this.url + status.id + '/', status).pipe(
       map(response => response.data)
     );
   }
 
-  delete(status: SalesStatus): Observable<any> {
+  delete(status: SalesChainStatus): Observable<any> {
     return this.httpClient.delete(this.API_URL + this.url + status.id + '/');
   }
 
@@ -71,7 +71,7 @@ export class SalesStatusService {
     });
   }
 
-  createEditSalesStatusModal(type: ModalActionType, status?: SalesStatus): Observable<SalesStatus> {
+  createEditSalesStatusModal(type: ModalActionType, status?: SalesChainStatus): Observable<SalesChainStatus> {
     return this.dialog
       .open<CreateEditSalesStatusComponent>(CreateEditSalesStatusComponent, {
         width: '35rem',

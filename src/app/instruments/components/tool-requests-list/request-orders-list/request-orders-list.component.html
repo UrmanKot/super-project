@@ -70,7 +70,8 @@
             <th style="width: 5%" class="index-header">#</th>
             <th style="width: 35%">Code</th>
             <th style="width: 30%">Name</th>
-            <th style="width: 30%">Requested Quantity</th>
+            <th style="width: 15%">Requested Quantity</th>
+            <th style="width: 15%">Available Quantity</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-request let-i="rowIndex">
@@ -78,7 +79,8 @@
             <td style="width: 5%">{{ i + 1 }}</td>
             <td style="width: 35%">{{request.nomenclature.code}}</td>
             <td style="width: 30%">{{request.nomenclature.name}}</td>
-            <td style="width: 30%">{{request.required_quantity}}</td>
+            <td style="width: 15%">{{request.required_quantity}}</td>
+            <td style="width: 15%">{{request.nomenclature.free_quantity}}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage" let-columns>

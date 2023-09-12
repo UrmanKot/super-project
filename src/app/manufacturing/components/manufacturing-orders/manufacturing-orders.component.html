@@ -118,7 +118,7 @@
               <div>{{order.created | date: 'dd/MM/yyyy HH:mm'}}</div>
             </td>
             <td style="width: 10%" class="text-center">
-              {{order.id}}
+              {{order.id}} <b *ngIf="order.contains_rma_invoices">(RMA)</b>
             </td>
             <td style="width: 20%">
               <div>{{order.comment}}</div>

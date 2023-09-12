@@ -91,4 +91,54 @@ export class AdapterService {
 
     return minutes;
   }
+
+  dateToExcelStringDate(date, addDay?: boolean) {
+    if (date) {
+      date = new Date(date);
+
+      if (addDay) {
+        date = new Date(date.setDate(date.getDate() + 1));
+      }
+
+      return date.toISOString().substr(0, 10).split('-').reverse().join('/');
+    } else {
+      return '';
+    }
+  }
+
+  convertToMoneyFormat(num) {
+    return parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').split('.').join(',');
+  }
+
+  treeAdapter(data, parentId, expanded = true, parentObject: boolean = false) {
+    let dd = [];
+    data.forEach(element => {
+      if (element.id == parentId) {
+        element.parent = null;
+      }
+      let ins = {data: element};
+      dd.push(ins);
+
+    });
+    let root = [];
+    const idMapping = dd.reduce((acc, el, i) => {
+      acc[el.data.id] = i;
+      return acc;
+    }, {});
+    dd.forEach(el => {
+      if (el.data.parent === null) {
+        el.expanded = expanded;
+        root.push(el);
+        return;
+      }
+      // Use our mapping to locate the parent element in our data array
+      const parentEl = dd[idMapping[parentObject ? el.data.parent?.id : el.data.parent]];
+      // Add our current el to its parent's `children` array
+      parentEl.children = [...(parentEl.children || []), el];
+      if (parentEl.children.length == 0) {
+        delete parentEl.children;
+      }
+    });
+    return root;
+  }
 }

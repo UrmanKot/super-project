@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Enter Start Number
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="start_number">Start Number*</label>
+      <input type="number" id="start_number" pInputText formControlName="start_number">
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Generate'"
+    [disabled]="form.invalid"
+    (click)="onGenerate()"
+  ></button>
+</mat-dialog-actions>

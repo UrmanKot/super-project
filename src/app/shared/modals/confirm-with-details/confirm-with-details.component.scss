@@ -1,0 +1,46 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__text {
+    font-weight: 600;
+    font-size: 1.875rem;
+  }
+
+  i {
+    font-size: 6rem;
+    margin-bottom: 2rem;
+  }
+
+  .pi-trash {
+    color: var(--theme-color-danger);
+  }
+
+  &__icon {
+    &_danger {
+      i {
+        color: var(--theme-color-danger);
+      }
+    }
+  }
+}
+
+mat-dialog-actions {
+  margin-top: auto;
+}
+
+button {
+  width: 6.25rem;
+}
+
+.w-100 {
+  width: 100%;
+}

@@ -143,6 +143,7 @@ p-table {
   }
 
   .hour-line {
+    position: relative;;
     width: 2px;
     height: 15px;
     //background: rgb(184, 184, 184);
@@ -152,6 +153,16 @@ p-table {
     &.middle {
       height: 20px;
     }
+  }
+}
+
+.hour-line-week {
+  background: transparent !important;
+}
+
+.week-header {
+  .day-name {
+    font-size: 0.75rem;
   }
 }
 
@@ -525,4 +536,63 @@ mwlResizable {
 .technologies-picker,
 .statuses-picker {
   width: 15rem;
+}
+
+.vacation-day-sat,
+.vacation-day-sun {
+  position: relative;
+  width: 0 !important;
+}
+
+.vacation-day-sat {
+  &::before {
+    content: '';
+    background: #f1716d;
+    height: calc(100vh - 137px);
+    width: 1px;
+    position: absolute;
+    top: -5px;
+    left: -2px;
+  }
+}
+
+.vacation-day-sun {
+  &::after,
+  &::before {
+    content: '';
+    background: #f1716d;
+    height: calc(100vh - 137px);
+    width: 1px;
+    position: absolute;
+    top: -5px;
+  }
+
+  &::before {
+    left: 0;
+  }
+
+  &::after {
+    right: -42px;
+  }
+}
+
+.display-picker {
+  display: flex;
+  align-items: center;
+
+  p-dropdown {
+    width: 8rem;
+  }
+}
+
+.vac-bord {
+  background: #f1716d;
+  height: calc(100vh - 137px);
+  width: 1px;
+  position: absolute;
+  top: -5px;
+
+  &_left {
+    left: -2px;
+  }
 }

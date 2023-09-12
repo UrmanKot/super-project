@@ -38,6 +38,7 @@ export class MoveQcWithSerialComponent implements OnInit {
       product: InvoiceProduct | OrderProduct,
       currentCount: number,
       count: number,
+      foundSerialId: number,
       type: 'invoice' | 'order'
     }
   ) { }
@@ -55,6 +56,11 @@ export class MoveQcWithSerialComponent implements OnInit {
     this.defaultSerialNumbers = JSON.parse(JSON.stringify(this.serialNumbers));
     this.serialNumbers.sort((a, b) => a.id - b.id);
     this.currentCount = JSON.parse(JSON.stringify(this.data.currentCount));
+
+    if (this.data.foundSerialId) {
+      const serialNumberIndex = this.serialNumbers.findIndex(serial => +serial.id === this.data.foundSerialId);
+      [this.serialNumbers[0], this.serialNumbers[serialNumberIndex]] = [this.serialNumbers[serialNumberIndex], this.serialNumbers[0]];
+    }
 
     const serialObject = this.serialNumbers[this.data.currentCount - 1];
 
@@ -77,10 +83,17 @@ export class MoveQcWithSerialComponent implements OnInit {
     if (this.data.type === 'invoice') {
       this.form.get('invoice_product_id').patchValue(this.data.product.id);
     }
+
+    if (serialObject.invoice_product_id) {
+      this.form.get('invoice_product_id').patchValue(serialObject.invoice_product_id);
+    }
   }
 
   saveSerialInfo() {
     const serialObject = this.serialNumbers[this.data.currentCount - 1];
+    if (serialObject.invoice_product_id) {
+      this.form.get('invoice_product_id').patchValue(serialObject.invoice_product_id);
+    }
 
     if (serialObject && serialObject?.type_with_number) {
       this.form.get('serial').patchValue(serialObject?.type_with_number);

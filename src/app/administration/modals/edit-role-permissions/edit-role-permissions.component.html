@@ -1,0 +1,102 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    <span *ngIf="isSelectModulesMode">Select the modules to be accessed</span>
+    <span *ngIf="!isSelectModulesMode">Edit Permissions of the Role "{{role.name}}"</span>
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <div *ngIf="isSelectModulesMode">
+    <p-table [value]="modulesPermission" [(selection)]="selectedModulesPermission"
+             dataKey="id" responsiveLayout="scroll" scrollHeight="calc(400px)" [scrollable]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 6%">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th style="width: 44%">Name</th>
+          <th style="width: 50%">Description</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-module let-i="rowIndex">
+        <tr>
+          <td style="width: 6%">
+            <p-tableCheckbox [value]="module"></p-tableCheckbox>
+          </td>
+          <td style="width: 44%">{{module.name}}</td>
+          <td style="width: 50%">{{module.description}}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td style="width: 100%;" class="text-center p-3" [attr.colspan]="3">
+            <i *ngIf="isLoadingModulesPermissions" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoadingModulesPermissions">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div *ngIf="!isSelectModulesMode">
+    <ng-template [ngIf]="isQCModulePermissionSelected">
+      <div class="sub-modules-view">
+        <div *ngFor="let module of subModules" class="field-checkbox sub-modules">
+          <p-checkbox name="subModules" [value]="module.id" [(ngModel)]="selectedModules"></p-checkbox>
+          <label [pTooltip]="module.description">{{module.name}}</label>
+        </div>
+      </div>
+    </ng-template>
+
+    <p-table [value]="permissions" [(selection)]="selectedPermissions" dataKey="id" responsiveLayout="scroll"
+             scrollHeight="calc(400px)" [scrollable]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 6%">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th style="width: 94%">Name</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-permission let-i="rowIndex">
+        <tr>
+          <td style="width: 6%">
+            <p-tableCheckbox [value]="permission"></p-tableCheckbox>
+          </td>
+          <td style="width: 94%">{{permission.name}}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center p-4" [attr.colspan]="6">
+            <i *ngIf="isLoadingPermissions" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+            <span *ngIf="!isLoadingPermissions">No Records Found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+
+  <button
+    pButton
+    *ngIf="isSelectModulesMode"
+    (click)="goToSelectionPermissions()"
+    [disabled]="selectedModulesPermission.length === 0"
+    label="Further"
+    [loading]="isLoadingPermissions"
+  ></button>
+
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    *ngIf="!isSelectModulesMode"
+    (click)="saveRolePermission()"
+    label="Save"
+    [loading]="isSaving"
+  ></button>
+</mat-dialog-actions>

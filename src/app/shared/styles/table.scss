@@ -87,6 +87,9 @@
         font-size: var(--theme-font-size-s);
       }
     }
+    @media (min-width: $tablet-width) and (max-width: $desktop-width) {
+      min-width: 16.375rem;
+    }
   }
 
   .p-menuitem {
@@ -469,7 +472,7 @@
   }
 
   .p-datatable-wrapper {
-    max-height: 100vh !important;
+    //max-height: 100vh !important;
   }
 
   .p-treetable {
@@ -486,7 +489,7 @@
     }
 
     .p-treetable-wrapper {
-      max-height: 100vh !important;
+      //max-height: 100vh !important;
     }
 
     .p-treetable-tbody {
@@ -508,7 +511,15 @@
           display: block !important;
 
           p-treetabletoggler {
-            display: none;
+            //display: none;
+            button.p-treetable-toggler {
+              width: 1rem;
+              height: 1rem;
+            }
+
+            &.is-hidden-placeholder {
+              opacity: 0;
+            }
           }
         }
       }
@@ -646,6 +657,17 @@
     .mr-3,
     .ml-3, {
       margin: 0 !important;
+    }
+  }
+}
+
+.header-buttons {
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button, a {
+      width: calc(50% - 0.25rem);
     }
   }
 }

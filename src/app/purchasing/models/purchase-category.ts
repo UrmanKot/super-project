@@ -1,3 +1,5 @@
+import {AccountingCategory} from "../../reports/models/accounting-category";
+
 export class PurchaseCategory {
   readonly id: number;
   name: string;
@@ -5,7 +7,7 @@ export class PurchaseCategory {
   is_material: boolean;
   parent: number;
   accounting_number?: string;
-  // accounting_category: AccountingCategory | number;
+  accounting_category: AccountingCategory | number;
 }
 
 export class PurchasingCategories {

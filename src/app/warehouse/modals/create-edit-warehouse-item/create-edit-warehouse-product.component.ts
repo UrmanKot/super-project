@@ -5,6 +5,7 @@ import {NomenclatureService} from '@shared/services/nomenclature.service';
 import {ENomenclatureType, Nomenclature, NomenclatureImage} from '@shared/models/nomenclature';
 import {Product} from '../../../product-structure/models/product';
 import {finalize, forkJoin, of} from 'rxjs';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'pek-create-edit-warehouse-product',
@@ -36,6 +37,7 @@ export class CreateEditWarehouseProductComponent implements OnInit {
   formValue: Partial<Product & Nomenclature>;
 
   constructor(
+    private messageService: MessageService,
     @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, nomenclatureId: number },
     private readonly nomenclatureService: NomenclatureService,
     private dialogRef: MatDialogRef<CreateEditWarehouseProductComponent>,
@@ -135,6 +137,8 @@ export class CreateEditWarehouseProductComponent implements OnInit {
         code: this.formValue.code,
         description: this.formValue.description,
         type: this.formValue.type,
+        min_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.min_quantity : 0,
+        max_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.max_quantity : 0,
       };
 
       if (this.formValue.type === ENomenclatureType.PURCHASED) {
@@ -153,6 +157,21 @@ export class CreateEditWarehouseProductComponent implements OnInit {
 
         const send = [];
 
+        let createUpdateTechnicalEquipments;
+        const technicalEquipments = this.formValue.technical_equipments;
+        createUpdateTechnicalEquipments = {
+          updated_created_technical_equipment: technicalEquipments.map(equipment => {
+
+            return {
+              id: equipment.id,
+              nomenclature_in_use: equipment.nomenclature_in_use.id,
+              quantity: equipment.quantity,
+              technology: equipment?.technology?.id,
+            };
+          }),
+          deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,
+        };
+
         if (this.newProduct.nomenclature.images.length > 0) {
           this.newProduct.nomenclature.images.forEach(file => {
             send.push({
@@ -161,11 +180,26 @@ export class CreateEditWarehouseProductComponent implements OnInit {
             });
           });
 
-          this.nomenclatureService.uploadImagesSeveral(send).pipe(
+
+
+          forkJoin({
+            images: this.nomenclatureService.uploadImagesSeveral(send),
+            technicalEquipment: nomenclature.type !== ENomenclatureType.PURCHASED ?
+              this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(nomenclature.id, createUpdateTechnicalEquipments) :
+              of(true)
+          }).pipe(
             finalize(() => this.isSaving = false)
           ).subscribe(() => this.dialogRef.close(true));
+
         } else {
-          this.dialogRef.close(true);
+          console.log('else');
+          forkJoin({
+            technicalEquipment: nomenclature.type !== ENomenclatureType.PURCHASED ?
+              this.nomenclatureService.bulkCreateUpdateTechnicalEquipments(nomenclature.id, createUpdateTechnicalEquipments) :
+              of(true)
+          }).pipe(
+            finalize(() => this.isSaving = false)
+          ).subscribe(() => this.dialogRef.close(true));
         }
       });
     }
@@ -181,6 +215,8 @@ export class CreateEditWarehouseProductComponent implements OnInit {
         code: this.formValue.code,
         description: this.formValue.description,
         type: this.formValue.type,
+        min_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.min_quantity : 0,
+        max_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.max_quantity : 0,
       };
       let createUpdateTechnicalEquipments;
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
@@ -193,10 +229,12 @@ export class CreateEditWarehouseProductComponent implements OnInit {
         const technicalEquipments = this.formValue.technical_equipments;
         createUpdateTechnicalEquipments = {
           updated_created_technical_equipment: technicalEquipments.map(equipment => {
+
             return {
               id: equipment.id,
               nomenclature_in_use: equipment.nomenclature_in_use.id,
-              quantity: equipment.quantity
+              quantity: equipment.quantity,
+              technology: equipment?.technology?.id,
             };
           }),
           deleted_technical_equipment_ids: this.formValue.deleted_technical_equipments_ids,

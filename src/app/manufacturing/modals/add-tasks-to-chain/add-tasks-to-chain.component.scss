@@ -1,0 +1,19 @@
+.paginator-wrapper {
+  border-bottom: none;
+}
+
+.modal-header {
+  &__tools {
+    .form-group {
+      padding: 0;
+      flex-direction: row;
+    }
+
+    label {
+      cursor: pointer;
+      position: relative;
+      top: 1px;
+      margin-bottom: 0;
+    }
+  }
+}

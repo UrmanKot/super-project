@@ -28,6 +28,8 @@ export class RegionsComponent implements OnInit, OnDestroy {
   expanseMapRegion = {};
   expanseMapSubRegion = {};
 
+  isLoading = true;
+
   private destroy$ = new Subject();
 
   menuItemsCountry: MenuItem[] = [{
@@ -102,7 +104,9 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   loadInfo() {
+    this.isLoading = true;
     this.selected = null;
+    this.tree = [];
     forkJoin({
       regions: this.regionService.get(),
       countries: this.countryService.get(),
@@ -115,6 +119,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
       this.subRegions = subRegion;
 
       this.createTree();
+      this.isLoading = false;
     });
   }
 

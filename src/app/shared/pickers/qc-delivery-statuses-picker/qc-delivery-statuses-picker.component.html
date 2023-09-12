@@ -1,0 +1,17 @@
+<div class="qc-delivery-status-picker">
+    <p-multiSelect
+        *ngIf="!isLoading; else spinner"
+        [(ngModel)]="selectedStatuses"
+        [options]="qcDeliveryStatuses"
+        optionLabel="name"
+        placeholder="Qc Delivery Statuses"
+        (ngModelChange)="onChoiceQcDeliveryStatuses($event)"
+        [showClear]="true"
+    ></p-multiSelect>
+
+    <ng-template #spinner>
+      <div class="spinner-input">
+        <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+      </div>
+    </ng-template>
+</div>

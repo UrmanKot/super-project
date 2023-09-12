@@ -291,10 +291,22 @@
           <ng-template pTemplate="caption">
             <div class="d-flex">
               <p class="subtitle" *ngIf="!selectedCompanyActivity">Choose the Event to edit</p>
-              <p-menubar
-                class="ml-auto"
-                [model]="eventMenuItems"
-                [class.disabled]="!selectedCompanyActivity"></p-menubar>
+              <div class="d-flex ml-auto">
+                <p-checkbox
+                  class="checkbox-big mr-3 event-statuses"
+                  name="group1"
+                  label="Enable Status Of Result"
+                  [binary]="true"
+                  inputId="enableColors"
+                  [(ngModel)]="enableColors"
+                >
+                </p-checkbox>
+                <p-menubar
+                  class="ml-auto"
+                  [model]="eventMenuItems"
+                  [class.disabled]="!selectedCompanyActivity"></p-menubar>
+              </div>
+
               <button
                 pButton type="button"
                 icon="pi pi-plus"
@@ -337,7 +349,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-activity let-i="rowIndex">
             <tr
-              [pSelectableRow]="activity">
+              [pSelectableRow]="activity"
+              [class.impression-neutral]="enableColors && activity.is_done && activity.impression === Impression.NEUTRAL"
+              [class.impression-positive]="enableColors && activity.is_done && activity.impression === Impression.POSITIVE"
+              [class.impression-negative]="enableColors && activity.is_done && activity.impression === Impression.NEGATIVE">
               <td style="width: 5%" class="text-center">{{ i + 1 }}</td>
               <td style="width: 15%">{{ activity.event.event_type.name }}</td>
 
@@ -437,6 +452,15 @@
                 icon="pi pi-eye"
                 class="ml-auto"
                 label="View Invoice"
+                [disabled]="isLoadingInvoice || !selectedInvoice"
+              >
+              </button>
+              <button
+                (click)="goToOrder()"
+                pButton type="button"
+                icon="pi pi-eye"
+                class="ml-2"
+                label="Go To Order"
                 [disabled]="isLoadingInvoice || !selectedInvoice"
               >
               </button>

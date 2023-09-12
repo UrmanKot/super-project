@@ -1,0 +1,242 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        Distribute Item: {{ nomenclature.code }} {{ nomenclature.name }}
+      </h2>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <div class="d-flex">
+      <p class="subtitle">With reservation</p>
+      <button
+        class="icon pi"
+        [class.pi-angle-double-up]="!isHideReserved"
+        [class.pi-angle-double-down]="isHideReserved"
+        (click)="toggleReservedVisibility()"
+        [pTooltip]="isHideReserved ? 'Expand' : 'Collapse'"
+        tooltipPosition="left"
+      ></button>
+    </div>
+
+    <div class="table-pagination-preloader">
+
+      <p-table
+        #dt
+        selectionMode="single"
+        rowExpandMode="single"
+        [scrollHeight]="tableScrollHeight"
+        [scrollable]="true"
+        dataKey="id"
+        [rows]="10"
+        [value]="reservations"
+        [hidden]="tableReservedHidden"
+      >
+        <ng-template pTemplate="header">
+          <tr style="position: sticky">
+            <th style="width: 3%" class="text-center">PL id</th>
+            <th style="width: 10%" class="text-center">PL code</th>
+            <th style="width: 10%" class="text-center">PL name</th>
+            <th style="width: 10%" class="text-center">PL locator</th>
+
+            <th style="width: 3%" class="text-center">Assembly id</th>
+            <th style="width: 10%" class="text-center">Assembly code</th>
+            <th style="width: 10%" class="text-center">Assembly name</th>
+
+            <th style="width: 3%" class="text-center">Item code</th>
+            <th style="width: 10%" class="text-center">Item name</th>
+            <th style="width: 10%" class="text-center">Technology</th>
+
+
+            <th style="width: 3%" class="text-center">Required qty</th>
+            <th style="width: 3%" class="text-center">
+              Allocate
+            </th>
+            <th style="width: 35%" class="text-center">
+              Qr Codes
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lp let-i="rowIndex">
+          <tr>
+
+            <td style="width: 3%" class="text-center">{{ lp.root_production_list.id }}</td>
+            <td style="width: 10%"
+                class="text-center">{{ lp.root_production_list.nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">
+              <a [routerLink]="'/warehouse/production-lists/' + lp.root_production_list.id" target="_blank">
+                {{ lp.root_production_list.nomenclature.name }}
+              </a>
+            </td>
+            <td style="width: 3%" class="text-center">{{lp.root_production_list?.locator.name}}</td>
+            <td style="width: 3%" class="text-center">{{ lp.list.id }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.list.nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.list.nomenclature.name }}</td>
+
+            <td style="width: 3%" class="text-center">{{ nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">{{ nomenclature.name }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.technology }}</td>
+
+            <td style="width: 3%" class="text-center">{{ lp.required_quantity - lp.actual_quantity }}</td>
+            <td
+              style="width: 3%"
+              class="text-center">
+              <p-checkbox
+                [(ngModel)]="lp.isSelected"
+                [binary]="true"
+                (onChange)="selectReservedItem(lp.required_quantity - lp.actual_quantity, lp, lp.lps)"
+              >
+              </p-checkbox>
+            </td>
+            <td style="width: 35%" class="text-center">
+              <button pButton type="button" size="s" class="p-button-success" (click)="generateQrCode(lp)">Generate QR-code</button>
+            </td>
+          </tr>
+
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="11">
+              <i *ngIf="isLoadingReserved" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoadingReserved">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+    <div class="d-flex">
+      <p class="subtitle">Without reservation:</p>
+      <button
+        class="icon pi"
+        [class.pi-angle-double-up]="!isHideRequired"
+        [class.pi-angle-double-down]="isHideRequired"
+        (click)="toggleRequiredVisibility()"
+        [pTooltip]="isHideRequired ? 'Expand' : 'Collapse'"
+        tooltipPosition="left"
+      ></button>
+
+    </div>
+
+    <div class="table-pagination-preloader">
+
+      <p-table
+        #dt
+        selectionMode="single"
+        rowExpandMode="single"
+        [scrollHeight]="tableScrollHeight"
+        [scrollable]="true"
+        dataKey="id"
+        [rows]="10"
+        [value]="listProducts"
+        [hidden]="tableRequiredHidden"
+      >
+        <ng-template pTemplate="header">
+          <tr style="position: sticky">
+            <th style="width: 3%" class="text-center">PL id</th>
+            <th style="width: 10%" class="text-center">PL code</th>
+            <th style="width: 10%" class="text-center">PL name</th>
+            <th style="width: 10%" class="text-center">PL locator</th>
+
+            <th style="width: 3%" class="text-center">Assembly id</th>
+            <th style="width: 10%" class="text-center">Assembly code</th>
+            <th style="width: 10%" class="text-center">Assembly name</th>
+
+            <th style="width: 3%" class="text-center">Item code</th>
+            <th style="width: 10%" class="text-center">Item name</th>
+            <th style="width: 10%" class="text-center">Technology</th>
+
+
+            <th style="width: 3%" class="text-center">Required qty</th>
+            <th style="width: 3%" class="text-center">
+              Allocate
+            </th>
+            <th style="width: 35%" class="text-center">
+              Qr Codes
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lp let-i="rowIndex">
+          <tr>
+
+            <td style="width: 3%" class="text-center">{{ lp.root_production_list.id }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.root_production_list.nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">
+              <a [routerLink]="'/warehouse/production-lists/' + lp.root_production_list.id" target="_blank">
+                {{ lp.root_production_list.nomenclature.name }}
+              </a>
+            </td>
+            <td style="width: 3%" class="text-center">{{lp.root_production_list?.locator.name}}</td>
+            <td style="width: 3%" class="text-center">{{ lp.list.id }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.list.nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">{{ lp.list.nomenclature.name }}</td>
+
+            <td style="width: 3%" class="text-center">{{ nomenclature.code }}</td>
+            <td style="width: 10%" class="text-center">{{ nomenclature.name }}</td>
+            <td style="width: 10%" class="text-center">{{lp.technology}}</td>
+
+            <td style="width: 3%" class="text-center">{{ lp.required_quantity - lp.actual_quantity }}</td>
+            <td
+              style="width: 3%"
+              class="text-center">
+              <p-checkbox
+                [(ngModel)]="lp.isSelected"
+                [binary]="true"
+                (onChange)="selectItem(lp.required_quantity - lp.actual_quantity, lp, lp.lps)"
+              >
+              </p-checkbox>
+            </td>
+            <td style="width: 35%" class="text-center">
+              <button pButton type="button" size="s" class="p-button-success" (click)="generateQrCode(lp)">Generate QR-code</button>
+            </td>
+          </tr>
+
+
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="11">
+              <i *ngIf="isLoadingRequired" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoadingRequired">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </div>
+
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Locator*</label>
+        <pek-group-locator-picker
+          (selectLocatorFull)="onSelectLocator($event)"
+        ></pek-group-locator-picker>
+      </div>
+    </form>
+
+    <mat-dialog-actions class="justify-content-between">
+      <span>Qty to WH Locator: {{ totalAvailableQty - totalSelectedQty }}</span>
+      <button
+        pButton
+        type="button"
+        label="Execute"
+        class="p-button-success"
+        [disabled]="!submitVisible()"
+        [loading]="isSaving"
+        (click)="onSubmit()"
+      >
+      </button>
+      <button
+        pButton type="button"
+        label="Cancel"
+        [mat-dialog-close]="false"
+        class="p-button-danger"
+      >
+      </button>
+    </mat-dialog-actions>
+  </div>
+</div>

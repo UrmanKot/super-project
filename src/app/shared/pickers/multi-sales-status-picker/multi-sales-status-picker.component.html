@@ -1,7 +1,7 @@
 <div class="multi-sales-status-picker">
   <p-multiSelect
     *ngIf="!isLoading; else spinner"
-    [options]="companies"
+    [options]="statuses"
     [(ngModel)]="selectedStatuses"
     optionLabel="name"
     placeholder="Select Sales Statuses"

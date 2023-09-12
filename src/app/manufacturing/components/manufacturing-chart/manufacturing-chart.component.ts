@@ -15,10 +15,16 @@ import {PlanningStatus} from '../../enums/planning-status.enum';
 import {CalendarService} from '../../services/calendar.service';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {QuerySearch} from '@shared/models/other';
+import {ExpandCollapseHeaderService} from '../../../layout/components/header/services/expand-collapse-header.service';
 
 class Status {
   label: string;
   value: string;
+}
+
+class Week {
+  start: Date;
+  end: Date;
 }
 
 type ID = number;
@@ -33,6 +39,12 @@ class DateInfo {
   x: number;
 }
 
+class WeekInfo {
+  start: Date;
+  end: Date;
+  days: DateInfo[];
+}
+
 export class UITask extends TaskSet {
   production: ListProductProduction;
   left?: number;
@@ -41,15 +53,27 @@ export class UITask extends TaskSet {
   unconfirmedBiggerWidth?: number;
   unconfirmedSmallerWidth?: number;
   days?: DateInfo[];
-  created_order?: {
-    id: number;
-    accounting_type: number;
-  };
+  created_order?: TaskOrder
+  created_orders?: TaskOrder[];
+  rma_reception_date?: any;
+  is_in_rma_process?: any;
+}
+
+export class TaskOrder {
+  id: number;
+  accounting_type: number;
 }
 
 class ProductionType {
   value: string;
   name: string;
+}
+
+type Display = 'days' | 'weeks';
+
+class DisplayOption {
+  label: string;
+  option: Display;
 }
 
 @UntilDestroy()
@@ -61,6 +85,8 @@ class ProductionType {
 export class ManufacturingChartComponent implements OnInit {
   PlanningStatus = PlanningStatus;
   planScale = 100;
+
+  nomenclaturesTypes = {'0': 3, '1': 1, '2': 2};
 
   selectedStatuses: string[] = [];
   selectedFilterTechnologies: string[] = [];
@@ -80,6 +106,13 @@ export class ManufacturingChartComponent implements OnInit {
     {value: 'Ordered', label: 'Ordered'},
     {value: 'On stock', label: 'On stock'},
     {value: 'Reserved', label: 'Reserved'},
+  ];
+
+  selectedDisplay: Display = 'days';
+
+  displayOptions: DisplayOption[] = [
+    {option: 'days', label: 'Days'},
+    {option: 'weeks', label: 'Weeks'}
   ];
 
   @Input() isPlan = false;
@@ -115,6 +148,9 @@ export class ManufacturingChartComponent implements OnInit {
   vacationCoords = 24;
   weekdayCoords = 288;
 
+  weekWeekDayCoords = 41.125;
+  weekScaleHourDay = 1.717;
+
   allTechnologies: Technology[] = [];
   technologies: Technology[] = [];
   technologiesPlanning: Technology[] = [];
@@ -140,6 +176,7 @@ export class ManufacturingChartComponent implements OnInit {
 
   /** Соответствие началу даты (00 часов) информации о ней. */
   dates = new Map<number, DateInfo>();
+  weekDates = new Map<number, WeekInfo>();
   /** Для поиска информации о дате по координате */
   datesByCoords: DateInfo[] = [];
 
@@ -195,6 +232,8 @@ export class ManufacturingChartComponent implements OnInit {
   isLoading = true;
   isShowConfirmationMenu = false;
 
+  private selectedListProductsGroupUIds: Set<number> = new Set<number>();
+
   constructor(
     private tasksService: TaskService,
     private technologiesService: TechnologyService,
@@ -204,6 +243,7 @@ export class ManufacturingChartComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private calendar: CalendarService,
+    public expandCollapseHeaderService: ExpandCollapseHeaderService
   ) {
     this.hours = Array(7).fill(0).map((x, i) => i);
   }
@@ -236,6 +276,15 @@ export class ManufacturingChartComponent implements OnInit {
       filter(event => event.key === 'Escape'),
       filter(() => this.mode !== 'planning'),
     ).subscribe(event => this.mode = 'planning');
+
+    requestAnimationFrame(() => {
+      this.expandCollapseHeaderService.setIsCollapseSingleDisabled(true);
+    });
+
+    this.expandCollapseHeaderService.expandCollapseAll.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.isExpanded = res;
+      this.expandCollapseAll(false);
+    });
   }
 
   updateTechnologies() {
@@ -289,6 +338,7 @@ export class ManufacturingChartComponent implements OnInit {
         tasks = tasks.map(task => {
           return {
             ...task,
+            status: task.refunded_orders.length > 0 && !task.is_refunded ? 'Deficit' : task.status,
             production_type: task.list_product.nomenclature.type === '0' ? '2' : task.production_type,
             start_date: new Date(task.start_date),
             end_date: new Date(task.end_date),
@@ -336,7 +386,11 @@ export class ManufacturingChartComponent implements OnInit {
           });
 
           this.chartRootTasks.forEach(root => root.label = `(${root.list_product.id}) ${root.list_product.nomenclature.name}`);
-          this.chartRootTasks.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+          this.chartRootTasks.sort((a, b) =>
+            new Date(b.created).getTime() - new Date(a.created).getTime() ||
+            this.nomenclaturesTypes[a.list_product.nomenclature.type] - this.nomenclaturesTypes[b.list_product.nomenclature.type] ||
+            a.list_product.nomenclature.id - b.list_product.nomenclature.id
+          );
           this.isRoot = false;
         }
 
@@ -346,7 +400,7 @@ export class ManufacturingChartComponent implements OnInit {
         this.paint();
 
         this.isLoading = false;
-
+        this.clearSelectedListProductsGroupUIds();
         return tasks;
       }),
       untilDestroyed(this)
@@ -385,11 +439,11 @@ export class ManufacturingChartComponent implements OnInit {
         });
 
         parentTasks.filter(t => t.uiGroupId === task.uiGroupId).forEach(t => {
-          task.groupId += `${t.technology}/${t.status}/${t.list_product.nomenclature.id}/${t.list_product.level}`;
-          const ff = this.tasks.filter(p => p.list_product.parent === task.uiParent);
-          ff.forEach(p => {
-            task.groupId += `${p.technology}/${p.status}/${p.list_product.nomenclature.id}/${p.list_product.level}`;
-          });
+          task.groupId += `${t.technology}/${t.status}/${t.list_product.nomenclature.id}/${t.list_product.level}/${t.created_orders.map(o => o.id).join(',')}`;
+          // const ff = this.tasks.filter(p => p.list_product.parent === task.uiParent);
+          // ff.forEach(p => {
+          //   task.groupId += `${p.technology}/${p.status}/${p.list_product.nomenclature.id}/${p.list_product.level}`;
+          // });
         });
       }
     });
@@ -414,43 +468,179 @@ export class ManufacturingChartComponent implements OnInit {
     let x = 0;
 
     this.dates.clear();
+    this.weekDates.clear();
 
-    let date = addDays(min, 0);
-    do {
-      const dateInfo = {
-        date: new Date(date),
-        isVac: this.calendar.isVac(date),
-        x,
-      };
+    if (this.selectedDisplay === 'days') {
 
-      dateInfo.date.setHours(0, 0, 0, 0);
+      let date = addDays(min, 0);
+      do {
+        const dateInfo = {
+          date: new Date(date),
+          isVac: this.calendar.isVac(date),
+          x,
+        };
 
-      this.dates.set(dateInfo.date.getTime(), dateInfo);
+        dateInfo.date.setHours(0, 0, 0, 0);
 
-      date = addDays(date, 1);
-      x += dateInfo.isVac ? this.vacationCoords : this.weekdayCoords;
+        this.dates.set(dateInfo.date.getTime(), dateInfo);
 
-    } while (date <= max);
+        date = addDays(date, 1);
+        x += dateInfo.isVac ? this.vacationCoords : this.weekdayCoords;
+
+      } while (date <= max);
+    } else {
+      const weeks = this.getWeeksBetween(min, max);
+
+      weeks.forEach(week => {
+        let i = 0;
+        const days: DateInfo[] = [];
+
+        while (i < 7) {
+          const date = new Date(week.start.getTime() + 86400000 * i);
+
+          const day: DateInfo = {
+            date: new Date(date),
+            isVac: this.calendar.isVac(date),
+            x,
+          };
+
+          days.push(day);
+
+          x += this.weekWeekDayCoords;
+          i++;
+        }
+
+        const weekInfo: WeekInfo = {
+          start: week.start,
+          end: week.end,
+          days,
+        };
+
+        this.weekDates.set(week.start.getTime(), weekInfo);
+      });
+    }
 
     this.innerContentWidth = 516;
 
     // высчитываем длину контейнера
-    this.dates.forEach(day => {
-      if (!day.isVac) {
-        this.innerContentWidth += this.weekdayCoords;
-      } else {
-        this.innerContentWidth += this.vacationCoords;
+
+    if (this.selectedDisplay === 'days') {
+      this.dates.forEach(day => {
+        if (!day.isVac) {
+          this.innerContentWidth += this.weekdayCoords;
+        } else {
+          this.innerContentWidth += this.vacationCoords;
+        }
+      });
+
+      this.datesByCoords = Array.from(this.dates.values()).reverse();
+    } else {
+      this.innerContentWidth += Array.from(this.weekDates.values())
+        .map(d => d.days)
+        .flat()
+        .reduce((sum, day) => sum += this.weekWeekDayCoords, 0);
+
+      this.datesByCoords = Array.from(this.weekDates.values()).map(p => p.days).flat().reverse();
+    }
+
+  }
+
+  getWeeksBetween(startDate: Date, endDate: Date) {
+    const weeks: Week[] = [];
+    let currentDate = new Date(startDate.setHours(0, 0, 0, 0) - 86400000 * (startDate.getDay() - 1));
+    currentDate.setHours(0, 0, 0, 0);
+
+    while (currentDate.getTime() <= endDate.getTime()) {
+      let weekEndDate = new Date(currentDate);
+      weekEndDate.setDate(currentDate.getDate() + 6);
+
+      if (weekEndDate > endDate) {
+        weekEndDate = endDate;
       }
+
+      weeks.push({
+        start: new Date(currentDate),
+        end: weekEndDate,
+      });
+
+      currentDate.setDate(currentDate.getDate() + 7);
+    }
+
+    const lastWeek = {...weeks[weeks.length - 1]};
+    weeks[weeks.length - 1].end = new Date(lastWeek.end.setHours(0, 0, 0, 0) + 86400000 * (7 - lastWeek.end.getDay()));
+
+    return weeks;
+  };
+
+  testWeek() {
+    const min = new Date(Math.min(...this.tasks.filter(t => t.start_date).map(t => t.start_date.getTime())));
+    let max = new Date(Math.max(...this.tasks.filter(t => t.end_date).map(t => t.end_date.getTime())));
+    const maxUnconfirmed = new Date(Math.max(...this.tasks.filter(t => t.unconfirmed_end_date).map(t => t.unconfirmed_end_date.getTime())));
+    if (maxUnconfirmed && maxUnconfirmed > max) {
+      max = maxUnconfirmed;
+    }
+
+    const weeks = this.getWeeksBetween(min, max);
+
+    let x = 0;
+
+    weeks.forEach(week => {
+      let i = 0;
+      const days: DateInfo[] = [];
+
+      while (i < 7) {
+        const date = new Date(week.start.getTime() + 86400000 * i);
+
+        const day: DateInfo = {
+          date: new Date(date),
+          isVac: this.calendar.isVac(date),
+          x,
+        };
+
+        days.push(day);
+
+        x += this.weekWeekDayCoords;
+        i++;
+      }
+
+      const weekInfo: WeekInfo = {
+        start: week.start,
+        end: week.end,
+        days,
+      };
+
+      this.weekDates.set(week.start.getTime(), weekInfo);
     });
 
-    this.datesByCoords = Array.from(this.dates.values()).reverse();
+    this.datesByCoords = Array.from(this.weekDates.values()).map(p => p.days).flat().reverse();
+
+    this.updateProductions();
   }
+
+  updateProductions() {
+    this.productions.forEach(production => {
+      production.tasks.forEach(task => {
+        task.left = this.getX(task.start_date);
+        task.width = this.getX(task.end_date) - task.left;
+        this.getTaskDays(task);
+        this.updateTimeline();
+        this.updateMargins(production);
+      });
+    });
+  }
+
 
   getX(date: Date): number {
     const dateInfo = this.getDateInfo(date);
 
+    let hoursShift: number;
+
     const dateShift = dateInfo?.x;
-    const hoursShift = date.getHours() * (dateInfo?.isVac ? this.scaleHourVacationDay : this.scaleHourWeekdayDay);
+    if (this.selectedDisplay === 'days') {
+      hoursShift = date.getHours() * (dateInfo?.isVac ? this.scaleHourVacationDay : this.scaleHourWeekdayDay);
+    } else {
+      hoursShift = date.getHours() * this.weekScaleHourDay;
+    }
 
     return dateShift + hoursShift;
   }
@@ -459,7 +649,15 @@ export class ManufacturingChartComponent implements OnInit {
     const dateInfo = this.getDateInfo(x);
 
     const delta = x - dateInfo.x;
-    const hourScale = dateInfo.isVac ? this.scaleHourVacationDay : this.scaleHourWeekdayDay;
+
+    let hourScale: number;
+    if (this.selectedDisplay === 'days') {
+      hourScale = dateInfo.isVac ? this.scaleHourVacationDay : this.scaleHourWeekdayDay;
+    } else {
+      hourScale = this.weekScaleHourDay;
+    }
+
+
     const result = new Date(dateInfo.date);
 
     result.setHours(delta / hourScale);
@@ -467,20 +665,43 @@ export class ManufacturingChartComponent implements OnInit {
   }
 
   getDateInfo(x: number | Date): DateInfo {
-    let info: DateInfo;
 
-    if (x instanceof Date) {
-      const dateStart = new Date(x);
-      dateStart.setHours(0, 0, 0, 0);
-      info = this.dates?.get(dateStart.getTime());
+    if (this.selectedDisplay === 'days') {
+
+      let info: DateInfo;
+
+      if (x instanceof Date) {
+        const dateStart = new Date(x);
+        dateStart.setHours(0, 0, 0, 0);
+        info = this.dates?.get(dateStart.getTime());
+      } else {
+        info = this.datesByCoords.find(i => i.x <= x);
+      }
+
+      // if (!info) {
+      //   throw new Error(`Координата "${x}" выходит за пределы графика`);
+      // }
+      return info;
     } else {
-      info = this.datesByCoords.find(i => i.x <= x);
-    }
+      let info: DateInfo;
 
-    // if (!info) {
-    //   throw new Error(`Координата "${x}" выходит за пределы графика`);
-    // }
-    return info;
+      if (x instanceof Date) {
+        const dateStart = new Date(x);
+        dateStart.setHours(0, 0, 0, 0);
+        // info = this.dates?.get(dateStart.getTime());
+
+        for (let week of this.weekDates.values()) {
+          if (!info) {
+            info = week.days.find(d => d.date.getTime() === dateStart.getTime());
+          }
+        }
+
+      } else {
+        info = this.datesByCoords.find(i => i.x <= x);
+      }
+
+      return info;
+    }
   }
 
   getTaskDays(task: UITask) {
@@ -763,10 +984,12 @@ export class ManufacturingChartComponent implements OnInit {
               const findTask = this.tasks.find(t => t.id === ta.id);
 
               if (findTask) {
-                // @ts-ignore
                 const newFindTask = nTasks.find(task => task.id === ta.id);
-                // @ts-ignore
                 findTask.created_order = newFindTask.created_order;
+                findTask.created_orders = newFindTask.created_orders;
+                findTask.status = newFindTask.refunded_orders.length > 0 && !newFindTask.is_refunded ? 'Deficit' : newFindTask.status;
+                findTask.start_date = new Date(newFindTask.start_date);
+                findTask.end_date = new Date(newFindTask.end_date);
               }
             });
 
@@ -776,12 +999,17 @@ export class ManufacturingChartComponent implements OnInit {
                   const findTask = tasks.find(t => t.id === task.id);
 
                   if (findTask) {
-                    // @ts-ignore
                     const newFindTask = nTasks.find(t => task.id === t.id);
-                    // @ts-ignore
                     findTask.created_order = newFindTask.created_order;
-                    // @ts-ignore
+                    findTask.created_orders = newFindTask.created_orders;
+                    findTask.start_date = new Date(newFindTask.start_date);
+                    findTask.end_date = new Date(newFindTask.end_date);
+                    findTask.status = newFindTask.refunded_orders.length > 0 && !newFindTask.is_refunded ? 'Deficit' : newFindTask.status;
                     uiTask.created_order = newFindTask.created_order;
+                    uiTask.created_orders = newFindTask.created_orders;
+                    uiTask.status = newFindTask.refunded_orders.length > 0 && !newFindTask.is_refunded ? 'Deficit' : newFindTask.status;
+                    uiTask.start_date = new Date(newFindTask.start_date);
+                    uiTask.end_date = new Date(newFindTask.end_date);
                   }
                 });
               });
@@ -959,7 +1187,15 @@ export class ManufacturingChartComponent implements OnInit {
 
   toggle() {
     this.isExpanded = !this.isExpanded;
-    const prods = this.isPlan ? this.productions.filter(p => p.isActive && p.isVisible) : this.productions.filter(p => p.isActive);
+    this.expandCollapseAll();
+  }
+
+  expandCollapseAll(considerActive: boolean = true) {
+    let prods = [];
+    if (considerActive) {
+      prods = this.isPlan ? this.productions.filter(p => p.isActive && p.isVisible && !p.isBlocked) : this.productions.filter(p => p.isActive && !p.isBlocked);
+    }
+    console.log('prods', prods);
     if (this.isPlan) {
       const toggleProductions = (productions: ListProductProduction[]) => productions.forEach(production => {
         this.toggleProduction(production, this.isExpanded)
@@ -967,9 +1203,9 @@ export class ManufacturingChartComponent implements OnInit {
             toggleProductions(production.children);
           });
       });
-      toggleProductions(prods.length > 0 ? prods : this.productions.filter(p => p.isVisible));
+      toggleProductions(prods.length > 0 ? prods : this.productions.filter(p => p.isVisible && !p.isBlocked));
     } else {
-      const toggleProductions = (productions: ListProductProduction[]) => productions.forEach(production => {
+      const toggleProductions = (productions: ListProductProduction[]) => productions.filter(p => !p.isBlocked).forEach(production => {
         this.toggleProduction(production, this.isExpanded)
           .subscribe(() => toggleProductions(production.children));
       });
@@ -993,6 +1229,26 @@ export class ManufacturingChartComponent implements OnInit {
         subscriber.complete();
       }
     });
+  }
+
+  expandCollapseSelected(productions: ListProductProduction[], isExpanded?: boolean) {
+    if (this.isPlan) {
+      const toggleProductions = (productions: ListProductProduction[]) => productions.forEach(production => {
+        this.toggleProduction(production, isExpanded)
+          .subscribe(() => {
+            toggleProductions(production.children);
+          });
+      });
+      toggleProductions(productions.filter(p => p.isVisible && !p.isBlocked));
+    } else {
+      const toggleProductions = (productions: ListProductProduction[]) => productions.filter(p => !p.isBlocked).forEach(production => {
+        this.toggleProduction(production, isExpanded)
+          .subscribe(() => {
+            toggleProductions(production.children);
+          });
+      });
+      toggleProductions(productions);
+    }
   }
 
   toggleProduction2(production: ListProductProduction, isExpanded?: boolean): Observable<boolean> {
@@ -1183,7 +1439,7 @@ export class ManufacturingChartComponent implements OnInit {
       }
       const tech = task.technology ? task.technology : this.type(task.list_product.nomenclature.type);
 
-      const taskKey = `${productionKey}:${tech}:${task.technologyUid}`;
+      const taskKey = `${productionKey}:${tech}`;
       if (!this.uiTaskMap.has(taskKey)) {
         const newUiTask = new UITask(task);
         this.uiTaskMap.set(taskKey, newUiTask);
@@ -1214,11 +1470,47 @@ export class ManufacturingChartComponent implements OnInit {
         }
       }
     });
+
+    const rewireProductions = (production: ListProductProduction) => {
+      production.isRootProductionCompleted = true;
+      production.isExpanded = true;
+
+      if (production.children.length) {
+        production.children.forEach(p => rewireProductions(p));
+      }
+    };
+
+    this.rootProductions.forEach(production => {
+      if (production.task.status === 'On stock') {
+        rewireProductions(production);
+      }
+    });
+
+    this.sortProductions(this.rootProductions);
+  }
+
+  sortProductions(productions: ListProductProduction[]) {
+    productions.sort((a, b) =>
+      // new Date(b.tasks[0].created).getTime() - new Date(a.tasks[0].created).getTime() ||
+      this.nomenclaturesTypes[a.task.list_product.nomenclature.type] - this.nomenclaturesTypes[b.task.list_product.nomenclature.type] ||
+      a.task.list_product.nomenclature.id - b.task.list_product.nomenclature.id
+    );
+
+    productions.forEach(production => {
+      if (production.children.length > 0) {
+        this.sortProductions(production.children);
+      }
+    });
   }
 
   update() {
-    this.rootProductions = this.rootProductions.sort((a, b) =>
-      new Date(b.tasks[0].created).getTime() - new Date(a.tasks[0].created).getTime());
+    // this.rootProductions = this.rootProductions.sort((a, b) =>
+    //   new Date(b.tasks[0].created).getTime() - new Date(a.tasks[0].created).getTime() ||
+    //   this.nomenclaturesTypes[a.task.list_product.nomenclature.type] - this.nomenclaturesTypes[b.task.list_product.nomenclature.type] ||
+    //   a.task.list_product.nomenclature.id - b.task.list_product.nomenclature.id
+    // );
+
+    this.sortProductions(this.rootProductions);
 
     this.productionMap.forEach((production) => {
       this.updateMargins(production);
@@ -1272,7 +1564,7 @@ export class ManufacturingChartComponent implements OnInit {
     return false;
   }
 
-  togglePlanScale(operation: 'plus' | 'minus') {
+  togglePlanScale(operation?: 'plus' | 'minus') {
     if (operation === 'minus') {
       this.planScale -= 25;
     }
@@ -1296,6 +1588,8 @@ export class ManufacturingChartComponent implements OnInit {
         this.marginTimeLeft = 34;
         this.scaleHourVacationDay = 1;
         this.scaleHourWeekdayDay = 12;
+        this.weekWeekDayCoords = 41.125;
+        this.weekScaleHourDay = 1.717;
         break;
       }
       case 75: {
@@ -1304,6 +1598,8 @@ export class ManufacturingChartComponent implements OnInit {
         this.marginTimeLeft = 25;
         this.scaleHourVacationDay = 1;
         this.scaleHourWeekdayDay = 9;
+        this.weekWeekDayCoords = 30.84375;
+        this.weekScaleHourDay = 1.2825;
         break;
       }
       case 50: {
@@ -1312,32 +1608,28 @@ export class ManufacturingChartComponent implements OnInit {
         this.marginTimeLeft = 16;
         this.scaleHourVacationDay = 1;
         this.scaleHourWeekdayDay = 6;
+        this.weekWeekDayCoords = 21.0625;
+        this.weekScaleHourDay = 0.855;
         break;
       }
       case 25: {
         this.vacationCoords = 6;
         this.weekdayCoords = 72;
         this.marginTimeLeft = 7.125;
-        this.scaleHourVacationDay = 1;
+        this.scaleHourVacationDay = 0.5;
         this.scaleHourWeekdayDay = 3;
+        this.weekWeekDayCoords = 10.28125;
+        this.weekScaleHourDay = 0.4275;
+        break;
       }
     }
 
-    this.productions.forEach(production => {
-      production.tasks.forEach(task => {
-        task.left = this.getX(task.start_date);
-        task.width = this.getX(task.end_date) - task.left;
-        this.getTaskDays(task);
-        this.updateTimeline();
-        this.updateMargins(production);
-      });
-    });
+    this.updateProductions();
   }
-
 
   confirmDateChanges(setRootUnconfirmed: boolean = false) {
 
-    this.modalService.confirm('danger').pipe(take(1)).subscribe(confirm => {
+    this.modalService.confirm('success').pipe(take(1)).subscribe(confirm => {
       if (confirm) {
         this.tasksService.confirmEndDates(+this.rootId, {is_unconfirmed_root_date: setRootUnconfirmed}).subscribe(res => {
           window.location.reload();
@@ -1364,5 +1656,41 @@ export class ManufacturingChartComponent implements OnInit {
 
   toggleShowConfirmation() {
     this.isShowConfirmationMenu = !this.isShowConfirmationMenu;
+  }
+
+  getDays(days: DateInfo[]) {
+    return days.filter((d, i) => i !== 0);
+  }
+
+  get dayWidth() {
+    return (this.weekdayCoords - 10) / 7;
+  }
+
+  onSelectDisplay() {
+    switch (this.selectedDisplay) {
+      case 'weeks':
+        this.testWeek();
+        break;
+      case 'days':
+        this.togglePlanScale();
+    }
+  }
+
+  public toggleSelectedListProducts(id: number) {
+    if (this.selectedListProductsGroupUIds.has(id)) {
+      this.selectedListProductsGroupUIds.delete(id);
+    } else {
+      this.selectedListProductsGroupUIds.add(id);
+    }
+    requestAnimationFrame(() => {
+      this.expandCollapseHeaderService.setIsCollapseSingleDisabled(this.selectedListProductsGroupUIds.size === 0);
+    });
+  }
+
+  clearSelectedListProductsGroupUIds() {
+    this.selectedListProductsGroupUIds.clear();
+    requestAnimationFrame(() => {
+      this.expandCollapseHeaderService.setIsCollapseSingleDisabled(this.selectedListProductsGroupUIds.size === 0);
+    });
   }
 }

@@ -89,10 +89,23 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-product let-i="rowIndex">
-            <tr [pSelectableRow]="product">
+            <tr [pSelectableRow]="product"
+                [pSelectableRowDisabled]="
+                    (product.type === ENomenclatureType.PURCHASED &&
+                 (product.approved && product.approved === ENomenclatureApproval.DECLINED ||
+                   product.nomenclature?.approved === ENomenclatureApproval.DECLINED) ||
+                    (product.approved && product.approved === ENomenclatureApproval.NEW ||
+                   product.nomenclature?.approved === ENomenclatureApproval.NEW))">
               <td style="width: 5%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
               <td style="width: 17%">{{product.nomenclature ? product.nomenclature?.code : product.code}}</td>
-              <td style="width: 18%">{{product.nomenclature ? product.nomenclature?.name : product.name}}</td>
+              <td style="width: 18%">
+                {{product.nomenclature ? product.nomenclature?.name : product.name}}
+                <b *ngIf="product.type === ENomenclatureType.PURCHASED && ((product.approved && product.approved === ENomenclatureApproval.DECLINED) ||
+                     (product.nomenclature?.approved === ENomenclatureApproval.DECLINED))" class="text-danger">(Declined)</b>
+                <b *ngIf="product.type === ENomenclatureType.PURCHASED && (product.approved && product.approved === ENomenclatureApproval.NEW ||
+                     product.nomenclature?.approved === ENomenclatureApproval.NEW)" class="text-warning">(Not
+                  Confirmed)</b>
+              </td>
               <td style="width: 10%" class="text-center">
                 <span *ngIf="product?.total_locator_quantity">{{product.total_locator_quantity}}</span>
               </td>

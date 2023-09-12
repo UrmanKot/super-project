@@ -40,6 +40,18 @@ export class OrderTechnicalEquipmentsService {
     }));
   }
 
+  cancel(entity: OrderTechnicalEquipment) {
+    return this.httpClient.post<{ data: OrderTechnicalEquipment }>(this.API_URL + this.url + entity.id + '/cancel/', entity).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
+  to_initial_state(entity: OrderTechnicalEquipment) {
+    return this.httpClient.post<{ data: OrderTechnicalEquipment }>(this.API_URL + this.url + entity.id + '/to_initial_state/', entity).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
   acceptSeveral(send: any[]): Observable<any> {
     return this.httpClient.post(this.API_URL + 'technical_equipment_to_warehouse/', send).pipe(
       map(response => response)

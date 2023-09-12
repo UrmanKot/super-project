@@ -26,7 +26,7 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
   startDate = null;
   filesIdsToDelete: number[] = [];
   files: File[] = [];
-  isCreatedForOutgoing = false;
+  isCreatedNow = false;
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +34,11 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<CreateEditCorrespondentComponent>,
     private adapterService: AdapterService,
     private modalService: ModalService,
-    @Inject(MAT_DIALOG_DATA) public data: { type: ModalActionType, correspondentType: CorrespondentTypes, correspondent: Partial<Correspondent> }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      type: ModalActionType,
+      correspondentType: CorrespondentTypes,
+      correspondent: Partial<Correspondent>
+    }
   ) {
 
     this.type = this.data.correspondentType;
@@ -50,9 +54,7 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
       this.form.addControl('external_date', new FormControl(null, [Validators.required]));
     }
 
-    if (this.type === this.types.OUTGOING) {
-      this.form.addControl('letter_registration_number', new FormControl(''));
-    }
+    this.form.addControl('letter_registration_number', new FormControl(''));
 
     if (this.data.type === 'edit') {
       this.correspondentFiles = [...this.data.correspondent.files];
@@ -72,28 +74,28 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (this.type === this.types.OUTGOING) {
-        this.form.get('letter_registration_number').patchValue(this.data.correspondent.letter_registration_number);
-      }
+      this.form.get('letter_registration_number').patchValue(this.data.correspondent.letter_registration_number);
     } else {
       this.form.get('date_received').setValue(new Date());
 
       if (this.type === this.types.OUTGOING) {
-        this.createEmpty();
+        this.createEmptyOutgoing();
+      }
+
+      if (this.type === this.types.INCOMING) {
+        this.createEmptyIncoming();
       }
     }
 
-    if (this.type === this.types.OUTGOING) {
-      this.form.get('letter_registration_number').disable();
-    }
+    this.form.get('letter_registration_number').disable();
   }
 
   ngOnDestroy(): void {
-        if (this.isCreatedForOutgoing) {
-          this.correspondentService.delete(this.type, this.form.value).subscribe(() => {
-          });
-        }
+    if (this.isCreatedNow) {
+      this.correspondentService.delete(this.type, this.form.value).subscribe(() => {
+      });
     }
+  }
 
   ngOnInit(): void {
   }
@@ -143,7 +145,9 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
   }
 
   trim(field: string) {
-    this.form.get(field).patchValue(this.form.get(field).value.trim());
+    if (this.form.get(field).value) {
+      this.form.get(field).patchValue(this.form.get(field).value.trim());
+    }
   }
 
   attachFiles(correspondentId: number): void {
@@ -156,20 +160,39 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
     });
   }
 
-  createEmpty(): void {
+  createEmptyOutgoing(): void {
     this.form.get('date_received').enable();
-    this.form.get('date_received').setValue( this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
+    this.form.get('date_received').setValue(this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
     this.form.get('letter_registration_number').enable();
     if (this.form.get('external_id')) {
       this.trim('external_id');
     }
-    this.form.get('');
+
     this.correspondentService.create(this.type, this.form.value).subscribe(res => {
       this.correspondentService.getById(this.type, res.data.id).subscribe(response => {
-        this.isCreatedForOutgoing = true;
+        this.isCreatedNow = true;
         this.form.addControl('id', new FormControl(null));
         this.form.get('id').patchValue(response.id);
-        this.form.get('date_received').setValue( new Date(response.date_received));
+        this.form.get('date_received').setValue(new Date(response.date_received));
+        this.form.get('letter_registration_number').patchValue(response.letter_registration_number);
+        this.form.get('date_received').disable();
+        this.form.get('letter_registration_number').disable();
+      });
+    });
+  }
+
+  createEmptyIncoming(): void {
+    this.form.get('date_received').enable();
+    this.form.get('date_received').setValue(this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
+    this.form.get('letter_registration_number').enable();
+    this.form.get('external_id').setValue('');
+
+    this.correspondentService.create(this.type, this.form.value).subscribe(res => {
+      this.correspondentService.getById(this.type, res.data.id).subscribe(response => {
+        this.isCreatedNow = true;
+        this.form.addControl('id', new FormControl(null));
+        this.form.get('id').patchValue(response.id);
+        this.form.get('date_received').setValue(new Date(response.date_received));
         this.form.get('letter_registration_number').patchValue(response.letter_registration_number);
         this.form.get('date_received').disable();
         this.form.get('letter_registration_number').disable();
@@ -182,10 +205,10 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
       this.trim('external_id');
     }
     this.correspondentService.create(this.type, this.form.value).subscribe(res => {
-      this.deleteFiles();
-      this.attachFiles(res.data.id);
-      this.dialogRef.close(res);
-    },
+        this.deleteFiles();
+        this.attachFiles(res.data.id);
+        this.dialogRef.close(res);
+      },
       error => {
         this.form.get('date_received').setValue(new Date(this.form.get('date_received').value));
         this.form.get('external_date').setValue(new Date(this.form.get('external_date').value));
@@ -198,11 +221,11 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
       this.trim('external_id');
     }
     this.correspondentService.update(this.type, this.form.value).subscribe(res => {
-      this.isCreatedForOutgoing = false;
-      this.deleteFiles();
-      this.attachFiles(res.data.id);
-      this.dialogRef.close(res);
-    },
+        this.isCreatedNow = false;
+        this.deleteFiles();
+        this.attachFiles(res.data.id);
+        this.dialogRef.close(res);
+      },
       error => {
         this.form.get('date_received').setValue(new Date(this.form.get('date_received').value));
         this.form.get('external_date').setValue(new Date(this.form.get('external_date').value));
@@ -215,19 +238,13 @@ export class CreateEditCorrespondentComponent implements OnInit, OnDestroy {
       this.form.get('date_received').enable();
       if (this.type === this.types.INCOMING) {
         const externalDate = this.form.get('external_date').value;
-        this.form.get('external_date').setValue( this.adapterService.dateAdapter(new Date(externalDate)))
+        this.form.get('external_date').setValue(this.adapterService.dateAdapter(new Date(externalDate)));
       }
-      this.form.get('date_received').setValue( this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
+      this.form.get('date_received').setValue(this.adapterService.dateAdapter(new Date(this.form.get('date_received').value)));
       if (this.type === this.types.OUTGOING) {
         this.form.get('letter_registration_number').enable();
       }
-      if (this.data.type === 'edit' || this.type === this.types.OUTGOING) {
-        this.change();
-      } else {
-        if (this.type === this.types.INCOMING) {
-          this.add();
-        }
-      }
+      this.change();
     }
   }
 

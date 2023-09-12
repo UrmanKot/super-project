@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NavigationLink} from '../../navigation-route';
-import {NavigationStart, Router} from '@angular/router';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
 
 @Component({
@@ -12,10 +12,12 @@ export class HeaderComponent implements OnInit {
   @Input() module: string;
   @Input() routes: NavigationLink[];
   @Input() settingsRoutes: NavigationLink[];
+  @Output() clickRoute: EventEmitter<NavigationLink> = new EventEmitter<NavigationLink>();
 
   isShowMobileNav = false;
   isShowSettings: boolean;
   isShowSwitcher: boolean;
+  isShowAdditionalButtons: boolean;
 
   settingRouters = [
     '/warehouse/measure',
@@ -51,6 +53,9 @@ export class HeaderComponent implements OnInit {
     '/correspondents/outgoing-categories',
     '/correspondents/incoming-categories',
     '/outsourcing/statuses',
+    '/reports/currencies',
+    '/reports/additional-expenses',
+    '/reports/filters',
   ];
 
   settingModules = [
@@ -67,6 +72,12 @@ export class HeaderComponent implements OnInit {
     '/business-trips/',
     '/correspondents/',
     '/manufacturing',
+    '/reports',
+  ];
+
+  additionalBtnRouters = [
+    '/manufacturing/plans/all',
+    '/manufacturing/plans/plan/',
   ];
 
   constructor(
@@ -88,10 +99,12 @@ export class HeaderComponent implements OnInit {
     const routerLink = this.router.url;
     this.isShowSettings = this.settingRouters.some(route => routerLink.includes(route));
     this.isShowSwitcher = this.settingModules.some(module => routerLink.includes(module));
+    this.isShowAdditionalButtons = this.additionalBtnRouters.some(route => routerLink.includes(route));
   }
 
   toggleVisibleSettingMenu() {
     this.isShowSettings = !this.isShowSettings;
+    this.checkUrl();
   }
 
   openMobileMenu() {
@@ -107,5 +120,24 @@ export class HeaderComponent implements OnInit {
 
   onOpenBusinessGuide() {
     this.modalService.showBusinessGuide();
+  }
+
+  toggleChanged() {
+    this.checkUrl();
+  }
+
+  checkUrl() {
+    // Check current url and if we are on settings url, go to module default page
+    const currentRouterLink = this.router.url;
+    const onSettingsPage = this.settingRouters.some(route => currentRouterLink.includes(route));
+    if (onSettingsPage && !this.isShowSettings) {
+      const module = currentRouterLink.split('/')[1];
+      this.router.navigate([`/${module}`]);
+    }
+  }
+
+  onClickRoute(route: NavigationLink) {
+    console.log(route)
+   this.clickRoute.emit(route);
   }
 }

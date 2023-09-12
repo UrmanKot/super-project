@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Warehouse} from '../../models/warehouse';
+import {Currency} from '../../models/warehouse';
 import {WarehouseService} from '../../services/warehouse.service';
 import {Subject, takeUntil} from 'rxjs';
 import {MenuItem} from 'primeng/api';
@@ -24,18 +24,18 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
-        command: () => this.onEditTechnology()
+        command: () => this.onEditWarehouse()
       },
       {
         label: 'Remove',
         icon: 'pi pi-trash',
-        command: () => this.onRemoveTechnology()
+        command: () => this.onRemoveWarehouse()
       }
     ]
   }];
 
-  warehouses: Warehouse[] = [];
-  selectedWarehouse: Warehouse;
+  warehouses: Currency[] = [];
+  selectedWarehouse: Currency;
   isLoading = true;
 
   private destroy$ = new Subject();
@@ -73,7 +73,7 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
     this.router.navigate([this.selectedWarehouse.id, 'locators'], {relativeTo: this.route});
   }
 
-  onEditTechnology() {
+  onEditWarehouse() {
     this.warehouseService.createEditWarehouseModal('edit', this.selectedWarehouse).subscribe(warehouse => {
       if (warehouse) {
         const index = this.warehouses.findIndex(t => t.id === this.selectedWarehouse.id);
@@ -83,7 +83,7 @@ export class WarehouseWarehousesComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRemoveTechnology() {
+  onRemoveWarehouse() {
     this.modalService.confirm('danger').subscribe(confirm => {
       if (confirm) {
         this.warehouseService.delete(this.selectedWarehouse).subscribe(() => {

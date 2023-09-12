@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {NavigationLink} from '../../../layout/navigation-route';
+import {ExpandCollapseHeaderService} from '../../../layout/components/header/services/expand-collapse-header.service';
 
 @Component({
   selector: 'pek-manufacturing-layout',
@@ -21,9 +22,18 @@ export class ManufacturingLayoutComponent implements OnInit {
     {label: 'Order Statuses', commands: ['order-statuses']},
   ];
 
-  constructor() { }
+  constructor(
+    public expandCollapseHeaderService: ExpandCollapseHeaderService
+  ) { }
 
   ngOnInit(): void {
   }
 
+  expandCollapse(isExpand: boolean = true) {
+    this.expandCollapseHeaderService.setExpandCollapseSingle(isExpand);
+  }
+
+  expandCollapseAll(isExpand: boolean = true) {
+    this.expandCollapseHeaderService.setExpandCollapseAll(isExpand);
+  }
 }

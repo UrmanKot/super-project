@@ -22,6 +22,15 @@
         class="mr-2 p-button-icon"
         pButton
         type="button"
+        icon="pi pi-camera"
+        label="Scan QR Codes"
+        (click)="onStartScanning()"
+      >
+      </button>
+      <button
+        class="mr-2 p-button-icon"
+        pButton
+        type="button"
         icon="pi pi-qrcode"
         label="Generate QR Codes"
         [loading]="isGenerating"
@@ -74,7 +83,7 @@
         scrollHeight="calc(100vh - 19rem)"
         [scrollable]="true"
         [paginator]="!isLoadingProducts"
-        dataKey="id"
+        dataKey="idx"
         [rows]="10"
         [value]="invoiceProducts"
         [(selection)]="selectedInvoiceProducts"
@@ -114,20 +123,20 @@
               class="p-button-icon"
               icon="pi pi-angle-double-right"
               label="Quality Control"
-              [disabled]="isLoadingProducts || selectedInvoiceProducts.length === 0 || selectedInvoiceProducts.length > 1"
+              [disabled]="isLoadingProducts || selectedInvoiceProducts.length === 0 || selectedInvoiceProducts.length > 1 || selectedInvoiceProducts[0].isNonRma"
               (click)="onQualityControl()"
             >
             </button>
           </div>
         </ng-template>
         <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr [pSelectableRow]="product">
+          <tr [pSelectableRow]="product" [pSelectableRowDisabled]="product.isNonRma">
             <td style="width: 3%">
               <p-tableCheckbox [value]="product"></p-tableCheckbox>
             </td>
             <td style="width: 5%" class="text-center">{{i + 1}}</td>
             <td style="width: 15%">
-              {{product.nomenclature.code}}
+              {{product.nomenclature.code}} <b *ngIf="product.rma_status">(RMA)</b>
             </td>
             <td style="width: 17%">
               {{product.nomenclature.name}}
@@ -136,10 +145,13 @@
               {{product.current_technology?.name}}
             </td>
             <td style="width: 5%" class="text-center">
-              {{product.nomenclature.category ? product.nomenclature?.category?.unit_of_measure?.symbol : 'Pcs'}}
+              {{product.nomenclature.category ? product.nomenclature.category?.unit_of_measure?.symbol : 'Pcs'}}
             </td>
             <td style="width: 10%" class="text-center">
               {{product.totalQuantity}}
+              <b *ngIf="(product.isNonRma || !product.rma_comment) && product.totalQuantityAllocated > 0"  pTooltip="Allocated products count">
+                A ({{product.totalQuantityAllocated}})
+              </b>
             </td>
             <td style="width: 10%" class="text-center">
               {{product.totalQuantityPassed}}
@@ -286,3 +298,10 @@
 <ng-template #orderLink>
   <a class="order-link" (click)="goToOrder()">{{invoice?.order?.id}}</a>
 </ng-template>
+
+
+<pek-qr-code-scanner
+  *ngIf="isScanning"
+  (scanned)="onScanned($event)"
+  (cancel)="onCancelScanned()"
+></pek-qr-code-scanner>

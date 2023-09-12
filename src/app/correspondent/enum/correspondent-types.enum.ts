@@ -1,4 +1,4 @@
 export enum CorrespondentTypes {
-  INCOMING,
-  OUTGOING
+  INCOMING = '0',
+  OUTGOING = '1'
 }

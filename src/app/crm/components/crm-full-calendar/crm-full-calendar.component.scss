@@ -52,6 +52,7 @@
 
     .fc-day {
       font-weight: 400;
+      height: 20%;
 
       a {
         font-weight: 400;
@@ -103,5 +104,54 @@
         }
       }
     }
+
+    .fc.fc-theme-standard .fc-view-harness th {
+      z-index: 1;
+    }
   }
 }
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5em;
+
+  button {
+    outline: none !important;
+    font-size: 0.75rem;
+    height: 2.125rem;
+    box-shadow: none;
+    &.left-group-btn {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &.right-group-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &.middle-group-btn {
+      border-radius: 0;
+    }
+
+    &.active {
+      background-color: var(--theme-color-primary-hover) !important;
+      color: #fff !important;
+      border-color: var(--theme-color-primary-hover) !important;
+    }
+  }
+
+  .calendar-icon-button {
+    height: 2.125rem;
+    width: 2.5rem;
+
+  }
+
+  .toolbar-title {
+    font-size: 1.75em;
+  }
+}
+
+

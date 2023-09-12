@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Distribute Invoice Price
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="distributionForm">
+    <div class="form-group">
+      <label for="totalPrice">Amount*</label>
+      <input type="number" id="totalPrice" pInputText formControlName="distribution_price">
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Distribute'"
+    [disabled]="distributionForm.invalid"
+    (click)="onSave()"
+    [loading]="isSaving"
+  ></button>
+</mat-dialog-actions>

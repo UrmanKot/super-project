@@ -9,7 +9,8 @@
     <ul class="album__list">
       <li
         *ngFor="let item of album; let idx = index"
-        class="album__item pagebreak"
+        class="album__item"
+        [class.pagebreak]="(idx + 1) % 6 === 0"
       >
         <img
           *ngIf="item.image; else imagePlug"

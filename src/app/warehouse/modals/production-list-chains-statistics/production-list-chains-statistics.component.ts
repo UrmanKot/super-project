@@ -126,7 +126,7 @@ export class ProductionListChainsStatisticsComponent implements OnInit {
         link = '/outsourcing/chains/order/' + order.id;
         break;
       case 3:
-        link = `${this.link}production/orders/order/` + order.id;
+        link = `/manufacturing/orders/order/` + order.id;
         break;
     }
 

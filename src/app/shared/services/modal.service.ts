@@ -14,6 +14,9 @@ import {ListProductsComponent} from '@shared/modals/refactoring/list-products/li
 import {AddFileToOrderComponent} from '@shared/modals/add-file-to-order/add-file-to-order.component';
 import {ChoiceDateComponent} from '@shared/modals/choice-date/choice-date.component';
 import {ChoicePeriodDateComponent} from '@shared/modals/choice-period-date/choice-period-date.component';
+import {ConfirmWithDetailsComponent} from '@shared/modals/confirm-with-details/confirm-with-details.component';
+import {ScanNextComponent} from '@shared/modals/scan-next/scan-next.component';
+import {SignatureModalComponent} from '@shared/modals/signature-modal/signature-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +34,41 @@ export class ModalService {
         width: '25rem',
         height: '22.5rem',
         data: {type, btnConfirmText},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  confirmWithDetails( itemsToDelete: string[], type: ConfirmType = 'default', btnConfirmText: string = ''): Observable<boolean> {
+    return this.dialog
+      .open<ConfirmWithDetailsComponent>(ConfirmWithDetailsComponent, {
+        width: '30rem',
+        height: 'auto',
+        data: {type, btnConfirmText, itemsToDelete},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  signDocument(headerTitle: string = ''): Observable<{ result: { fullName: string, signature: File } }> {
+    return this.dialog
+      .open<SignatureModalComponent>(SignatureModalComponent, {
+        width: '25rem',
+        height: 'auto',
+        data: {headerTitle},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  scanNext(): Observable<boolean> {
+    return this.dialog
+      .open<ScanNextComponent>(ScanNextComponent, {
+        width: '25rem',
+        height: 'auto',
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

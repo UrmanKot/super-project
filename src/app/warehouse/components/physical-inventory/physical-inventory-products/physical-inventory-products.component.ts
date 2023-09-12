@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PhysicalInventoryService} from '../../../services/physical-inventory.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
@@ -83,12 +83,15 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
   // foundInventoryProductId
   findItemId: number;
+  itemId: number;
 
   newQuantity$ = new Subject<InventoryProduct>();
 
   private destroy$ = new Subject();
   isScanned: boolean = false;
+  askForScan: boolean;
   preparedProducts: Product[] = [];
+  isTableScrollable: boolean = true;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -98,6 +101,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     private readonly qrCodeService: QrCodeService,
     private readonly router: Router,
   ) {
+    this.onResize();
   }
 
   ngAfterViewInit() {
@@ -249,7 +253,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
       const preparedProducts = [];
       inventoryLists.results.forEach(product => {
-        preparedProducts.push(...product.products)
+        preparedProducts.push(...product.products);
       });
       this.preparedProducts = [...preparedProducts];
       inventoryLists.results.forEach(list => {
@@ -259,7 +263,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
         list.products[0].root_id = list.id;
         newInventoryProducts.push(list.products[0]);
       });
-
+      let found_row_id = this.searchForm.get('found_row_id').value;
       if (this.searchForm.get('found_row_id').value) {
         this.ignoringPagination = true;
         this.searchForm.get('found_row_id').patchValue(null);
@@ -296,6 +300,37 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
       this.isStartOnePage = false;
       this.isLoadingInventoryList = false;
+
+      setTimeout(() => {
+        if (found_row_id) {
+          let findEl = this.inventoryProducts.find(p => p.root_id === found_row_id);
+          const scannedSerialNumber = findEl.products.find(el => el.id === this.itemId);
+          if (scannedSerialNumber) {
+            findEl = scannedSerialNumber;
+          }
+          this.itemId = null;
+          if (findEl) {
+            const element = document.getElementById('product_row' + findEl.id);
+            element.scrollIntoView({behavior: 'smooth', block: 'center'});
+            setTimeout(() => {
+              this.physicalInventoryService.scanResultModal(findEl).subscribe(action => {
+                if (action) {
+                  if (action.action === 'scanNext') {
+                    this.onStartScanning();
+                  }
+                  if (action.action === 'setValue') {
+                    const focusableElement = document.getElementById(`enterQuantityInput-${findEl.id}`);
+                    if (focusableElement) {
+                      focusableElement.click();
+                      this.askForScan = true;
+                    }
+                  }
+                }
+              });
+            }, 200);
+          }
+        }
+      }, 1000);
     });
   }
 
@@ -307,7 +342,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
     ).subscribe(inventoryLists => {
       const preparedProducts = [];
       inventoryLists.forEach(product => {
-        preparedProducts.push(...product.products)
+        preparedProducts.push(...product.products);
       });
       this.preparedProducts = [...preparedProducts];
       inventoryLists.forEach(list => {
@@ -366,7 +401,9 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   onComplete() {
     this.modalService.confirm('success').subscribe(confirm => {
       if (confirm) {
-        this.physicalInventoryService.getChangedPhysicalInventoryProductsHaveBeenChanged(+this.inventoryId).subscribe((res: { data: InventoryProduct[] }) => {
+        this.physicalInventoryService.getChangedPhysicalInventoryProductsHaveBeenChanged(+this.inventoryId).subscribe((res: {
+          data: InventoryProduct[]
+        }) => {
           if (res.data.length > 0) {
             this.physicalInventoryService.changesInInventory(res.data).subscribe(res => {
               if (res) {
@@ -391,7 +428,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   }
 
   onRemovePhysicalInventory() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    this.modalService.confirm('danger', 'Confirm').subscribe(confirm => {
       if (confirm) {
         this.isCancelation = true;
         this.physicalInventoryService.removePhysicalInventory(+this.inventoryId).pipe(
@@ -449,7 +486,10 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       } else {
         send.by_nomenclatures_list.push({
           nomenclature_id: p.nomenclature.id,
-          serial_number_ids: [],
+          serial_number_ids:
+            p.nomenclature.bulk_or_serial === '1' && p.serial_number ?
+              [p.serial_number.id]
+              : [],
           order_product_ids: [],
           invoice_product_ids: [],
         });
@@ -462,6 +502,7 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
   onStartScanning() {
     this.isScanned = true;
     this.findItemId = null;
+    this.itemId = null;
     this.scanningEnd = false;
   }
 
@@ -476,9 +517,13 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
           this.scanningEnd = true;
           this.isScanned = false;
 
-          setTimeout(() => {
-            alert('Not Found');
-          }, 1000);
+          this.physicalInventoryService.scanResultModal().subscribe(action => {
+            if (action) {
+              if (action.action === 'scanNext') {
+                this.onStartScanning();
+              }
+            }
+          });
         }
       }
     });
@@ -490,22 +535,54 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
 
     if (listId) {
       this.findItemId = listId;
-      const findEl = this.inventoryProducts.find(p => p.root_id === this.findItemId);
+      this.itemId = itemId;
+      let findEl = this.inventoryProducts.find(p => p.root_id === this.findItemId);
 
       if (findEl) {
         if (findEl.nomenclature.bulk_or_serial === '1') {
-          findEl.is_scanned = true;
-          findEl.is_scanned_root = true;
+          const scannedSerialNumber = findEl.products.find(el => el.id === itemId);
+          if (scannedSerialNumber) {
+            scannedSerialNumber.is_scanned = true;
+            if (findEl.products.every(el => !el.is_scanned)) {
+              findEl.is_scanned = true;
+              findEl.is_scanned_root = true;
+            }
+          }
+          findEl = scannedSerialNumber;
         } else {
           findEl.is_scanned = true;
           findEl.is_scanned_root = true;
         }
         const element = document.getElementById('product_row' + findEl.id);
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.scrollIntoView({behavior: 'smooth', block: 'center'});
+        setTimeout(() => {
+          this.physicalInventoryService.scanResultModal(findEl).subscribe(action => {
+            if (action) {
+              if (action.action === 'scanNext') {
+                this.onStartScanning();
+              }
+              if (action.action === 'setValue') {
+                const focusableElement = document.getElementById(`enterQuantityInput-${findEl.id}`);
+                if (focusableElement) {
+                  focusableElement.click();
+                  this.askForScan = true;
+                }
+              }
+            }
+          });
+        }, 1000);
       } else {
         this.searchForm.get('found_row_id').patchValue(listId);
         this.searchProducts();
       }
+    } else {
+      this.physicalInventoryService.scanResultModal().subscribe(action => {
+        if (action) {
+          if (action.action === 'scanNext') {
+            this.onStartScanning();
+          }
+        }
+      });
     }
 
     this.scanningEnd = true;
@@ -625,5 +702,22 @@ export class PhysicalInventoryProductsComponent implements OnInit, OnDestroy {
       this.searchForm.get('category').patchValue(null);
     }
     this.searchProducts();
+  }
+
+  focusOut() {
+    if (this.askForScan) {
+      this.modalService.scanNext().subscribe(confirm => {
+        if (confirm) {
+          this.onStartScanning();
+        } else {
+          this.askForScan = false;
+        }
+      });
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.isTableScrollable = document.body.getBoundingClientRect().width > 1280;
   }
 }

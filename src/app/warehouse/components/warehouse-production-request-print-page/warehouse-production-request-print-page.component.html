@@ -1,12 +1,12 @@
-<div class="warehouse-production-request-print-page" *ngIf="rootList && !orderedProducts">
+<div class="warehouse-production-request-print-page" *ngIf="!orderedProducts">
   <div class="warehouse-production-request-print-page__header">
     <div>
       <h2>Code</h2>
-      <p>{{rootList.nomenclature.code}}</p>
+      <p>{{rootList?.nomenclature.code}}</p>
     </div>
     <div>
       <h2>Name</h2>
-      <p>{{rootList.nomenclature.name}}</p>
+      <p>{{rootList?.nomenclature?.name}}</p>
     </div>
     <div>
       <h2>Order ID</h2>
@@ -18,23 +18,27 @@
     </div>
     <div>
       <h2>Production List Creation Date</h2>
-      <p>{{rootList.list.created | date: 'dd.MM.y' }}</p>
+      <p>{{rootList?.list?.created | date: 'dd.MM.y' }}</p>
     </div>
     <div>
       <h2>Request Creation Date</h2>
       <p>
         <ng-container *ngIf="currentReqDate">
-          {{currentReqDate | date: 'dd.MM.y' }}
+          {{currentReqDate | date:'dd/MM/yyyy HH:mm' }}
         </ng-container>
       </p>
     </div>
-    <div class="col-2">
+    <div>
       <h2>Technologies</h2>
       <p>
         <span *ngFor="let tech of technologies; let last=last">
           {{tech}} {{last ? '' : ','}}
         </span>
       </p>
+    </div>
+    <div>
+      <h2>Production List ID</h2>
+      <p>{{rootList?.list?.id }}</p>
     </div>
   </div>
   <div class="warehouse-production-request-print-page__table">
@@ -115,6 +119,52 @@
       </div>
     </div>
   </div>
+
+  <div *ngIf="technicalEquipments.length > 0">
+    <div class="warehouse-production-request-print-page__header">
+      <div>
+        <h2 style="white-space: nowrap">Technical Equipments</h2>
+      </div>
+    </div>
+  </div>
+
+  <div  *ngIf="technicalEquipments.length > 0" class="warehouse-production-request-print-page__table">
+    <div
+      *ngFor="let technicalEquipment of technicalEquipments"
+      class="warehouse-production-request-print-page__row"
+    >
+      <div class="warehouse-production-request-print-page__box">
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Code</h3>
+          <div>
+            {{getNomenclature(technicalEquipment.nomenclature).code}}</div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Name</h3>
+          {{getNomenclature(technicalEquipment.nomenclature).name}}
+        </div>
+
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Locators</h3>
+          <div *ngIf="technicalEquipment.locators.length > 0">
+            <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+              {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+            </div>
+          </div>
+          <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+                </span>
+          </div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Required Quantity</h3>
+          {{technicalEquipment.max_initial_quantity}}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="warehouse-production-request-print-page__bottom">
     <div class="warehouse-production-request-print-page__column">
       <div class="warehouse-production-request-print-page__left">
@@ -148,15 +198,15 @@
 </div>
 
 <!--  Grouped By OrderProduct -->
-<div class="warehouse-production-request-print-page" *ngIf="rootList && orderedProducts">
+<div class="warehouse-production-request-print-page" *ngIf="orderedProducts">
   <div class="warehouse-production-request-print-page__header">
     <div>
       <h2>Code</h2>
-      <p>{{rootList.nomenclature.code}}</p>
+      <p>{{rootList?.nomenclature?.code}}</p>
     </div>
     <div>
       <h2>Name</h2>
-      <p>{{rootList.nomenclature.name}}</p>
+      <p>{{rootList?.nomenclature?.name}}</p>
     </div>
     <div>
       <h2>Order ID</h2>
@@ -168,7 +218,7 @@
     </div>
     <div>
       <h2>Production List Creation Date</h2>
-      <p>{{rootList.list.created | date: 'dd.MM.y' }}</p>
+      <p>{{rootList?.list?.created | date: 'dd.MM.y' }}</p>
     </div>
     <div>
       <h2>Request Creation Date</h2>
@@ -178,7 +228,7 @@
         </ng-container>
       </p>
     </div>
-    <div class="col-2">
+    <div>
       <h2>Technologies</h2>
       <p>
         <span *ngFor="let tech of technologies; let last=last">
@@ -186,9 +236,15 @@
         </span>
       </p>
     </div>
+    <div>
+      <h2>Production List ID</h2>
+      <p>{{rootList?.list?.id }}</p>
+    </div>
   </div>
-  <div *ngFor="let orderProduct of orderedProducts; let lastGroup=last" class="order-product-page" [class.not-last-group]="!lastGroup">
-        <h3 >{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}} Quantity:  {{orderProduct.quantity}}</h3>
+  <div *ngFor="let orderProduct of orderedProducts; let lastGroup=last" class="order-product-page"
+       [class.not-last-group]="!lastGroup">
+    <h3>{{orderProduct.nomenclature.code}} {{orderProduct.nomenclature.name}} {{orderProduct.current_technology?.name}}
+      Quantity:  {{orderProduct.quantity}} {{orderProduct.listId ? '(' + orderProduct.listId + ')' : null}}</h3>
     <div class="warehouse-production-request-print-page__table">
       <div
         *ngFor="let request of orderProduct.children; let index=index"
@@ -267,6 +323,52 @@
       </div>
     </div>
   </div>
+
+  <div *ngIf="technicalEquipments.length > 0">
+    <div class="warehouse-production-request-print-page__header">
+      <div>
+        <h2 style="white-space: nowrap">Technical Equipments</h2>
+      </div>
+    </div>
+  </div>
+
+  <div  *ngIf="technicalEquipments.length > 0" class="warehouse-production-request-print-page__table">
+    <div
+      *ngFor="let technicalEquipment of technicalEquipments"
+      class="warehouse-production-request-print-page__row"
+    >
+      <div class="warehouse-production-request-print-page__box">
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Code</h3>
+          <div>
+            {{getNomenclature(technicalEquipment.nomenclature).code}}</div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Name</h3>
+          {{getNomenclature(technicalEquipment.nomenclature).name}}
+        </div>
+
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Locators</h3>
+          <div *ngIf="technicalEquipment.locators.length > 0">
+            <div *ngFor="let locator of technicalEquipment.locators; let last=last">
+              {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+            </div>
+          </div>
+          <div *ngIf="technicalEquipment.locators.length < 1">
+                <span *ngFor="let locator of technicalEquipment.available_locators; let last=last">
+                  {{getLocator(locator).name}}<span *ngIf="!last">, </span>
+                </span>
+          </div>
+        </div>
+        <div class="warehouse-production-request-print-page__col">
+          <h3>Required Quantity</h3>
+          {{technicalEquipment.max_initial_quantity}}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="warehouse-production-request-print-page__bottom">
     <div class="warehouse-production-request-print-page__column">
       <div class="warehouse-production-request-print-page__left">

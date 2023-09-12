@@ -24,6 +24,8 @@ export class Product {
   locator?: Locator;
   level?: number;
   tree_id?: number;
+  nomenclature_id?: number;
+  current_nomenclature_id?: number;
 }
 
 export class ProductFile {

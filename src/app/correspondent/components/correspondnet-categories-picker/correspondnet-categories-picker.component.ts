@@ -4,6 +4,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {CorrespondentsCategoriesService} from '../../services/correspondents-category.service';
 import {CorrespondentsCategory} from '../../models/correspondents-category';
 import {CorrespondentTypes} from '../../enum/correspondent-types.enum';
+import {AuthService} from '../../../auth/auth.service';
 
 @Component({
   selector: 'pek-correspondnet-categories-picker',
@@ -28,6 +29,7 @@ export class CorrespondnetCategoriesPickerComponent implements OnInit, OnDestroy
   private destroy$ = new Subject();
 
   constructor(
+    public readonly auth: AuthService,
     private readonly categoryService: CorrespondentsCategoriesService
   ) { }
 
@@ -66,13 +68,14 @@ export class CorrespondnetCategoriesPickerComponent implements OnInit, OnDestroy
   createTree() {
     const getChildren = (nodes: TreeNode<CorrespondentsCategory>[]) => {
       nodes.forEach(node => {
-        const children = this.categories.filter(c => c.parent === node.data.id);
+        const children = this.categories.filter(c => c.parent?.id === node.data.id);
 
         if (children.length > 0) {
           node.children = children.map(category => {
             return {
               label: category.name,
               data: category,
+              selectable: this.hasAccessToCategory(category.id),
               children: []
             };
           });
@@ -86,6 +89,7 @@ export class CorrespondnetCategoriesPickerComponent implements OnInit, OnDestroy
       return {
         label: category.name,
         data: <CorrespondentsCategory>category,
+        selectable: this.hasAccessToCategory(category.id),
         children: [],
       };
     });
@@ -93,6 +97,11 @@ export class CorrespondnetCategoriesPickerComponent implements OnInit, OnDestroy
     getChildren(tree);
 
     this.categoriesTree = [...tree];
+  }
+
+  hasAccessToCategory(categoryId: number) {
+    const categoryPermissions = this.auth.user.correspondent_category_permissions.map(cat => cat.id);
+    return this.auth.user.is_superuser || categoryPermissions.some(catId => catId === categoryId);
   }
 
   onChoiceCategory() {

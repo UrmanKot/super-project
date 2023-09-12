@@ -35,6 +35,8 @@ import { ManufacturingPickerProductComponent } from './modals/manufacturing-pick
 import { ManufacturingAllPlansComponent } from './components/manufacturing-all-plans/manufacturing-all-plans.component';
 import { ManufacturingSplitPlanComponent } from './modals/manufacturing-split-plan/manufacturing-split-plan.component';
 import { ManufacturingProductionCalendarComponent } from './components/manufacturing-production-calendar/manufacturing-production-calendar.component';
+import { ManufacturingOrderProductsInfoPrintComponent } from './components/manufacturing-order-page/manufacturing-order-products-info-print/manufacturing-order-products-info-print.component';
+import {AddTasksToChainComponent} from './modals/add-tasks-to-chain/add-tasks-to-chain.component';
 
 
 @NgModule({
@@ -48,6 +50,7 @@ import { ManufacturingProductionCalendarComponent } from './components/manufactu
     CreateEditPositionComponent,
     ManufacturingMachinesComponent,
     CreateEditMachineComponent,
+    AddTasksToChainComponent,
     ManufacturingOrderStatusesComponent,
     ManufacturingOrdersComponent,
     ManufacturingOrderPageComponent,
@@ -66,6 +69,7 @@ import { ManufacturingProductionCalendarComponent } from './components/manufactu
     ManufacturingAllPlansComponent,
     ManufacturingSplitPlanComponent,
     ManufacturingProductionCalendarComponent,
+    ManufacturingOrderProductsInfoPrintComponent,
   ],
   imports: [
     SharedModule,

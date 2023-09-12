@@ -9,6 +9,7 @@ import {CountryService} from '@shared/services/country.service';
 })
 export class MultiCountriesPickerComponent implements OnInit {
   @Input() currentCountriesIds: number[] = [];
+  @Input() currentCountries: Country[] = [];
   @Input() showClear: boolean = true;
   @Output() selectCountries: EventEmitter<Country[]> = new EventEmitter<Country[]>();
 
@@ -32,7 +33,7 @@ export class MultiCountriesPickerComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if ('currentTechnologiesIds' in changes) {
+    if ('currentTechnologiesIds' in changes || 'currentCountries' in changes) {
       this.selectedCountries = [];
       this.findCountries();
     }
@@ -47,7 +48,7 @@ export class MultiCountriesPickerComponent implements OnInit {
   }
 
   findCountries() {
-    if (this.currentCountriesIds.length > 0) {
+    if (this.currentCountriesIds?.length > 0) {
       this.currentCountriesIds.forEach(id => {
         const findTechnology = this.countries.find(t => t.id === id);
 
@@ -55,6 +56,10 @@ export class MultiCountriesPickerComponent implements OnInit {
           this.selectedCountries.push(findTechnology);
         }
       });
+    }
+
+    if (this.currentCountries?.length > 0) {
+      this.selectedCountries.push(...this.currentCountries);
     }
   }
 

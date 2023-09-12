@@ -173,8 +173,8 @@
         <p-table
           #dt
           selectionMode="multiple"
-          scrollHeight="calc(100vh - 30.25rem)"
-          [scrollable]="true"
+          [scrollHeight]="isTableScrollable ? 'calc(100vh - 30.25rem)' : '100%'"
+          [scrollable]="isTableScrollable"
           dataKey="id"
           groupRowsBy="nomenclature.id"
           rowGroupMode="rowspan"
@@ -302,9 +302,12 @@
               <td pEditableColumn class="text-center" style="width: 11%">
                 <h3 class="td-title">Entered Quantity</h3>
                 <p-cellEditor
+                  (focusout)="focusOut()"
+                  [id]="'enterQuantityInput-' + inventoryProduct.id"
                   *ngIf="inventoryProduct.nomenclature.bulk_or_serial !== '1' && currentInventory && currentInventory.status === '0'">
                   <ng-template pTemplate="input">
                     <input
+                      autofocus
                       pInputText
                       style="width: 100%; text-align: center"
                       type="number"
@@ -421,6 +424,18 @@
           Return pagination
         </p-button>
       </div>
+    </div>
+  </div>
+  <div class="mobile-version  mobile-scan">
+    <div class="d-flex">
+      <button
+        class="mr-2 p-button-icon p-button-rounded"
+        pButton
+        type="button"
+        icon="pi pi-camera"
+        (click)="onStartScanning()"
+      >
+      </button>
     </div>
   </div>
 </div>

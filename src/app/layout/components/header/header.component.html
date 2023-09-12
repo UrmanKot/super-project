@@ -11,22 +11,48 @@
       <li
         *ngFor="let route of routes"
         class="layout-navigation__item"
+        [class.layout-navigation__parent]="route.children"
       >
-        <a
-          *ngIf="!route.isExternal"
-          [routerLink]="route.commands"
-          routerLinkActive="active"
-        >
-          {{route.label}}
-        </a>
-        <a
-          *ngIf="route.isExternal"
-          [href]="route.commands[0]"
-          target="_self"
-          routerLinkActive="active"
-        >
-          {{route.label}}
-        </a>
+        <ng-container *ngIf="!route.isClicked">
+          <a
+            *ngIf="!route.isExternal"
+            [routerLink]="route.commands"
+            routerLinkActive="active"
+          >
+            {{route.label}}
+            <i class="pi pi-angle-down ml-2" *ngIf="route.children"></i>
+          </a>
+          <a
+            *ngIf="route.isExternal"
+            [href]="route.commands[0]"
+            target="_self"
+            routerLinkActive="active"
+          >
+            {{route.label}}
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="route.isClicked">
+          <a
+            (click)="onClickRoute(route)"
+          >
+            {{route.label}}
+          </a>
+        </ng-container>
+
+        <ul class="layout-navigation__children">
+          <li
+            *ngFor="let childrenRoute of route.children"
+            class="layout-navigation__item-children"
+          >
+            <a
+              [routerLink]="childrenRoute.commands"
+              routerLinkActive="active"
+            >
+              {{childrenRoute.label}}
+            </a>
+          </li>
+        </ul>
       </li>
 
       <li
@@ -57,8 +83,13 @@
     <span (click)="toggleVisibleSettingMenu()">
       {{isShowSettings ? 'Hide' : 'Show'}} settings menu
     </span>
-      <p-inputSwitch title="Show Settings Menu" [(ngModel)]="isShowSettings"></p-inputSwitch>
+      <p-inputSwitch title="Show Settings Menu" [(ngModel)]="isShowSettings"
+                     (onChange)="toggleChanged()"></p-inputSwitch>
     </div>
+    <ng-template [ngIf]="isShowAdditionalButtons">
+      <ng-content select="[additionalButtons]"></ng-content>
+    </ng-template>
+
     <button
       (click)="onOpenBusinessGuide()"
       class="guide-button"

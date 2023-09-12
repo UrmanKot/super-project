@@ -1,3 +1,11 @@
+.layout-header {
+  z-index: 4;
+}
+
+a {
+  cursor: pointer;
+}
+
 .guide-button {
   cursor: pointer;
   background: rgba(59, 130, 246, 0.04);
@@ -30,6 +38,50 @@
 }
 
 .layout-navigation {
+  &__parent {
+    position: relative;
+
+    &:hover {
+      .layout-navigation__children {
+        display: block;
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: -1.25rem;
+      background: #fff;
+      height: 1.25rem;
+      bottom: 0;
+      width: 24.5rem;
+    }
+
+    a {
+      display: flex;
+      width: 100%;
+      align-items: center;
+
+      i {
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
+  &__children {
+    position: absolute;
+    background: #fff;
+    width: 22rem;
+    box-shadow: 0 0.125rem 1rem rgba(0, 0, 0, 0.08);
+    display: none;
+
+    a {
+      padding: 1rem 1.25rem;
+    }
+  }
+
+
   &__list {
     display: flex;
   }

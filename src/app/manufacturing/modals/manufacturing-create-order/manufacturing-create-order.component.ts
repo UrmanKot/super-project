@@ -180,6 +180,37 @@ export class ManufacturingCreateOrderComponent implements OnInit {
     return tasks;
   }
 
+  generateTasksForOutsourceChain(): Task[] {
+    const tasks = [];
+
+    this.orders.forEach(order => {
+      /** Array<{
+       *   nomenclature	integer; title: Nomenclature
+       *   required_quantity integer; title: Required quantity
+       *  }>
+       */
+      order.task.tasks.forEach(t => {
+        const result = {
+          task: t.id,
+          list_product: t.list_product,
+          materials: order.materials
+            .filter(materialRequest => materialRequest.warehouseProduct)
+            .map(materialRequest => ({
+              nomenclature: (materialRequest.warehouseProduct.nomenclature as Nomenclature).id,
+              required_quantity: materialRequest.quantity,
+            })),
+          use_technical_equipment: null
+        };
+        if (order.task.needs_technical_equipment) {
+          result.use_technical_equipment = order.task.use_technical_equipment;
+        }
+        tasks.push(result);
+      });
+    });
+
+    return tasks;
+  }
+
   disable() {
     let disable = false;
 
@@ -194,5 +225,15 @@ export class ManufacturingCreateOrderComponent implements OnInit {
     })
 
     return disable
+  }
+
+  onAddTasksToChain() {
+    const tasks = this.generateTasksForOutsourceChain();
+    this.taskService.openAddTasksToChainModal(tasks, 'outsourcing', this.orders.length).subscribe(res => {
+      if (res) {
+        this.data.tasks.forEach(task => task.status = 'Ordered');
+        this.dialogRef.close(true);
+      }
+    });
   }
 }

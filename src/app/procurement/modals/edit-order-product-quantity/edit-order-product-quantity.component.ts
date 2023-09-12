@@ -17,7 +17,7 @@ export class EditOrderProductQuantityComponent implements OnInit {
   form: FormGroup = this.fb.group({
     id: [null, Validators.required],
     totalQuantity: [null, [Validators.required, Validators.min(0)]],
-    request_date: [null, Validators.required],
+    request_date: [null],
   });
   initialQuantity: number;
   proformaInvoiceQuantity: number;
@@ -52,54 +52,15 @@ export class EditOrderProductQuantityComponent implements OnInit {
     } else {
       quantity = this.form.get('totalQuantity').value - this.initialQuantity;
     }
-    let productsToUpdateCalls: Observable<OrderProduct>[] = [];
 
-    this.orderProduct.equal_order_products.sort((a, b) => new Date(b.request_date).getTime() - new Date(a.request_date).getTime()).forEach(product => {
-      if (quantity > 0) {
-        let dataToSend = {
-          id: product.id,
-          quantity: 0,
-          order: product.order,
-          reception_date: this.form.get('request_date').value
-        };
-        if (isSubtract) {
-          const canSubtractInvoice = product.quantity - product.invoice_quantity;
-          const canSubtractProformaInvoice = product.quantity - product.proforma_invoice_quantity;
-          let canSubtractQuantity;
-          if (canSubtractProformaInvoice > canSubtractInvoice) {
-            canSubtractQuantity = canSubtractProformaInvoice;
-          } else {
-            canSubtractQuantity = canSubtractInvoice;
-          }
-          if (canSubtractQuantity >= quantity) {
-            product.quantity -= quantity;
-            quantity = 0;
-            dataToSend.quantity = product.quantity;
-          } else {
-            quantity -= canSubtractQuantity;
-            product.quantity = 0;
-            dataToSend.quantity = product.quantity;
-          }
-        } else {
-          product.quantity += quantity;
-          quantity = 0;
-          dataToSend.quantity = product.quantity;
-        }
-        if (dataToSend.quantity === 0) {
-          dataToSend.order = null;
-          dataToSend.quantity = product.initial_quantity;
-        }
-        productsToUpdateCalls.push(
-          this.orderProductService.updatePartly(dataToSend as OrderProduct)
-        );
-      }
-    });
-
-    forkJoin([...productsToUpdateCalls]).pipe(
-      finalize(() => this.isSaving = false)
-    ).subscribe(orderProduct => {
-      orderProduct[0].totalQuantity = this.form.get('totalQuantity').value
-      this.dialogRef.close(orderProduct[0]);
+    this.orderProductService.bulkUpdateQuantity({
+      order_product_ids: this.orderProduct.equal_order_products.map(prod => prod.id),
+      quantity_to_distribute: quantity,
+      is_subtracted_from_free_quantity: isSubtract
+    }).subscribe(() => {
+      this.isSaving = false;
+      this.orderProduct.totalQuantity = this.form.get('totalQuantity').value;
+      this.dialogRef.close(this.orderProduct);
     });
   }
 }

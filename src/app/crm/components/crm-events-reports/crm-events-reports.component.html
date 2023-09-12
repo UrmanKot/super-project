@@ -23,16 +23,18 @@
       ></button>
       <form [formGroup]="searchForm" class="pb-2">
         <div class="row mt-4">
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Company</label>
-              <pek-company-picker (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+              <pek-company-picker [currentCompanyId]="searchForm.get('id').value"
+                                  (selectCompany)="onSelectCompany($event)"></pek-company-picker>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Event Types</label>
               <pek-crm-multi-event-types-picker
+                [currentEventTypes]="searchForm.get('categories_ids').value"
                 (selectEventTypes)="onSelectEventTypes($event)"></pek-crm-multi-event-types-picker>
             </div>
           </div>
@@ -40,45 +42,25 @@
             <div class="form-group">
               <label>Sales Chain Statuses</label>
               <pek-multi-sales-status-picker
-                (selectStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
+                [currentSelectedStatuses]="searchForm.get('chain_status_ids').value"
+                (selectNumericStatuses)="onSelectStatuses($event)"></pek-multi-sales-status-picker>
             </div>
           </div>
           <div class="col-2">
             <div class="event-row-filters">
               <div class="form-group mr-3">
                 <label>Employees</label>
-                <pek-crm-employee-picker (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
+                <pek-crm-employee-picker
+                  [currentEmployeeIds]="searchForm.get('employees_ids').value"
+                  (selectEmployees)="onSelectEmployees($event)"></pek-crm-employee-picker>
               </div>
-              <!--              <div class="form-group mr-3">-->
-              <!--                <label>Hide Status Events</label>-->
-              <!--                <p-checkbox-->
-              <!--                  class="checkbox-big"-->
-              <!--                  name="group1"-->
-              <!--                  [binary]="true"-->
-              <!--                  inputId="auto-events"-->
-              <!--                  (onChange)="search()"-->
-              <!--                  formControlName="autoEvents"-->
-              <!--                >-->
-              <!--                </p-checkbox>-->
-              <!--              </div>-->
-              <!--              <div class="form-group">-->
-              <!--                <label>Group Linked Events</label>-->
-              <!--                <p-checkbox-->
-              <!--                  class="checkbox-big"-->
-              <!--                  name="group2"-->
-              <!--                  [binary]="true"-->
-              <!--                  inputId="group-linked-events"-->
-              <!--                  formControlName="groupView"-->
-              <!--                >-->
-              <!--                </p-checkbox>-->
-              <!--              </div>-->
             </div>
           </div>
-          <div class="col-1">
+          <div class="col-3 d-flex">
             <div class="form-group">
-              <label>Hide Status Events</label>
+              <label class="capitalize">Hide sales chain status</label>
               <p-checkbox
-                class="checkbox-big"
+                class="mt-1"
                 name="group1"
                 [binary]="true"
                 inputId="auto-events"
@@ -87,12 +69,10 @@
               >
               </p-checkbox>
             </div>
-          </div>
-          <div class="col-1">
-            <div class="form-group">
+            <div class="form-group ml-3">
               <label>Group Linked Events</label>
               <p-checkbox
-                class="checkbox-big"
+                class="mt-1"
                 name="group2"
                 [binary]="true"
                 inputId="group-linked-events"
@@ -100,22 +80,37 @@
               >
               </p-checkbox>
             </div>
+
+            <div class="form-group ml-3">
+              <label>Enable Status Of Result</label>
+              <p-checkbox
+                class="mt-1"
+                name="group1"
+                [binary]="true"
+                inputId="enableColors"
+                formControlName="enableColors"
+              >
+              </p-checkbox>
+            </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Company Category</label>
               <pek-multi-company-category-picker
+                [currentCompanyCategoriesIds]="searchForm.get('company_category_ids').value"
                 (selectCompanyCategoriesIds)="onSelectCompanyCategory($event)"></pek-multi-company-category-picker>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <div class="form-group">
               <label>Country</label>
-              <pek-multi-countries-picker [showClear]="true"
-                                          (selectCountries)="onSelectCountry($event)"></pek-multi-countries-picker>
+              <pek-multi-countries-picker
+                [currentCountries]="searchForm.get('countries').value"
+                [showClear]="true"
+                (selectCountries)="onSelectCountry($event)"></pek-multi-countries-picker>
             </div>
           </div>
           <div class="col-2">
@@ -137,18 +132,34 @@
               ></pek-crm-multi-region-tree-picker>
             </div>
           </div>
-          <div class="col-1">
+          <div class="col-2">
             <div class="form-group">
-              <label>Enable Status Of Result</label>
+              <label class="capitalize">Filtered by companies of event </label>
               <p-checkbox
-                class="checkbox-big"
+                #checkbox
+                class="mt-1"
                 name="group1"
                 [binary]="true"
                 inputId="enableColors"
-                formControlName="enableColors"
+                [ngModel]="isFilteredByEvent"
+                (onChange)="searchEvent(checkbox)"
+                [ngModelOptions]="{standalone: true}"
               >
               </p-checkbox>
             </div>
+          </div>
+          <div class="col-1">
+<!--            <div class="form-group">-->
+<!--              <label>Enable Status Of Result</label>-->
+<!--              <p-checkbox-->
+<!--                class="mt-1"-->
+<!--                name="group1"-->
+<!--                [binary]="true"-->
+<!--                inputId="enableColors"-->
+<!--                formControlName="enableColors"-->
+<!--              >-->
+<!--              </p-checkbox>-->
+<!--            </div>-->
           </div>
         </div>
         <div class="row">
@@ -284,7 +295,7 @@
             <div class="form-group" *ngIf="isLastEventStartFilterOpen && isLastEventEndFilterOpen">
               <label>Intersections Last Events Dates</label>
               <p-checkbox
-                class="checkbox-big"
+                class="mt-1"
                 name="group1"
                 [binary]="true"
                 inputId="auto-events"
@@ -303,7 +314,7 @@
             <div class="form-group" *ngIf="isFeatureEventStartFilterOpen && isFeatureEventEndFilterOpen">
               <label>Intersections Last Feature Dates</label>
               <p-checkbox
-                class="checkbox-big"
+                class="mt-1"
                 name="group1"
                 [binary]="true"
                 inputId="auto-events"
@@ -314,14 +325,25 @@
             </div>
           </div>
         </div>
+
       </form>
     </div>
-    <div class="page__table events-reports-page" *ngIf="!searchForm.get('groupView').value else groupedView">
+    <div class="page__table events-reports-page" [class.menu-opened]="selectedEventCompany" *ngIf="!searchForm.get('groupView').value else groupedView">
+      <div class="row stiky-edit" *ngIf="selectedEventCompany">
+        <div class="col-10"></div>
+        <div class="col-2">
+          <div class="action-buttons">
+            <p-menubar [model]="eventCompanyMenuItems"
+                       class="ml-auto"
+                       [class.disabled]="!selectedEventCompany"></p-menubar>
+          </div>
+        </div>
+      </div>
       <div class="table-pagination-preloader">
-          <!--
-          [scrollable]="true"
-          scrollHeight="100vh"
-          -->
+        <!--
+        [scrollable]="true"
+        scrollHeight="100vh"
+        -->
         <p-table
           #dt
           class="table-full-loading events-reports"
@@ -432,7 +454,7 @@
                             </i>
                           </h4>
                           <h4>Address: <i>{{ report.address }}</i></h4>
-                          <h4>Email: <i>{{ report.email }}</i></h4>
+                          <h4>Email: 22 <i>{{ report.email }}</i></h4>
                           <h4>Phone Number: <i>{{ report.phone_number }}</i></h4>
                           <h4>Website: <i><a [href]="report.website" target="_blank">{{ report.website }}</a></i></h4>
                           <h4>Tax Number: <i>{{ report.tax_number }}</i></h4>
@@ -484,7 +506,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <a [routerLink]="'/crm/events/' + event?.id"
                          target="_blank">{{ event?.event_name }}</a>
                     </div>
@@ -501,7 +525,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -517,7 +543,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -533,7 +561,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <div class="small-comment hovered-info">
                               <span>
                                 {{getSmallComment(event?.event_comment)}}
@@ -560,7 +590,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                             <span [ngSwitch]="event?.is_done">
                               <ng-container *ngSwitchCase="true">Done</ng-container>
                               <ng-container *ngSwitchCase="false">Not Done</ng-container>
@@ -579,7 +611,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <a [routerLink]="'/crm/events/' + event?.id"
                          target="_blank"
                          [pTooltip]="event ? event.description : 'No Description'"
@@ -600,7 +634,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -615,7 +651,9 @@
                          [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
                           && event.impression === Impression.POSITIVE"
                          [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -632,14 +670,14 @@
             </tr>
           </ng-template>
         </p-table>
-        <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+        <div class="pagination-preloader pagination-preloader_bord" style="margin-top: 5rem;" *ngIf="isLoading">
           <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
         </div>
       </div>
       <div
         class="paginator-wrapper"
         *ngIf="!isShowAll"
-        [class.hidden]="eventsReports.length === 0"
+        [class.hidden]="eventsReports?.length === 0"
       >
         <p-paginator
           #paginator
@@ -673,7 +711,17 @@
 
 
 <ng-template #groupedView>
-  <div class="page__table events-reports-page">
+  <div class="page__table events-reports-page" [class.menu-opened]="selectedEventCompany">
+    <div class="row stiky-edit" *ngIf="selectedEventCompany">
+      <div class="col-10"></div>
+      <div class="col-2">
+        <div class="action-buttons">
+          <p-menubar [model]="eventCompanyMenuItems"
+                     class="ml-auto"
+                     [class.disabled]="!selectedEventCompany"></p-menubar>
+        </div>
+      </div>
+    </div>
     <div class="table-pagination-preloader">
       <p-table
         #dt
@@ -838,12 +886,14 @@
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event hide"
-                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.NEUTRAL"
-                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-positive]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.POSITIVE"
-                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                         [class.impression-negative]="searchForm.get('enableColors').value && event?.is_done
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
                          target="_blank"
                          [pTooltip]="event ? event.description : 'No Description'"
@@ -863,12 +913,14 @@
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event"
-                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.NEUTRAL"
-                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-positive]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.POSITIVE"
-                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                         [class.impression-negative]="searchForm.get('enableColors').value && event?.is_done
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -884,12 +936,14 @@
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event"
-                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.NEUTRAL"
-                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-positive]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.POSITIVE"
-                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                         [class.impression-negative]="searchForm.get('enableColors').value && event?.is_done
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                     </div>
                   </div>
@@ -905,12 +959,14 @@
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event hovered-info"
-                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.NEUTRAL"
-                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-positive]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.POSITIVE"
-                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
+                         [class.impression-negative]="searchForm.get('enableColors').value && event?.is_done
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <div class="small-comment">
                         <span>
                           {{getSmallComment(event?.event_comment)}}
@@ -939,13 +995,15 @@
 
                     </div>
                     <div *ngFor="let event of eventGroup.events" class="report-event"
-                         [class.impression-neutral]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-neutral]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.NEUTRAL"
-                         [class.impression-positive]="searchForm.get('enableColors').value && event.is_done
+                         [class.impression-positive]="searchForm.get('enableColors').value && event?.is_done
                           && event.impression === Impression.POSITIVE"
-                         [class.impression-negative]="searchForm.get('enableColors').value && event.is_done
-                          && event.impression === Impression.NEGATIVE">
-                            <span [ngSwitch]="event?.is_done">
+                         [class.impression-negative]="searchForm.get('enableColors').value && event?.is_done
+                          && event.impression === Impression.NEGATIVE"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id">
+                            <span [ngSwitch]="event?.is_done"
+                                  (click)="selectedReport(event, report)">
                               <ng-container *ngSwitchCase="true">Done</ng-container>
                               <ng-container *ngSwitchCase="false">Not Done</ng-container>
                             </span>
@@ -968,7 +1026,9 @@
                       <!--                            </a>-->
                       <!--                          </b>-->
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event hide">
+                    <div *ngFor="let event of eventGroup.events" class="report-event hide"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                       <a *ngIf="event" class="pl-2" [routerLink]="'/crm/events/' + event.id"
                          target="_blank"
                          [pTooltip]="event ? event.description : 'No Description'"
@@ -987,7 +1047,9 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id"
+                         (click)="selectedReport(event, report)">
                         <span *ngIf="event">
                             {{ event?.start | date: "dd/MM/yyyy, HH:mm" }}
                         </span>
@@ -1004,7 +1066,9 @@
                     <div class="report-event">
 
                     </div>
-                    <div *ngFor="let event of eventGroup.events" class="report-event">
+                    <div *ngFor="let event of eventGroup.events" class="report-event"
+                         (click)="selectedReport(event, report)"
+                         [class.is-selected]="selectedEventCompany && event?.event_id === selectedEventCompany.id">
                         <span *ngIf="event">
                           {{ event?.end | date: "dd/MM/yyyy, HH:mm" }}
                         </span>
@@ -1024,7 +1088,7 @@
           </tr>
         </ng-template>
       </p-table>
-      <div class="pagination-preloader pagination-preloader_bord" *ngIf="isLoading">
+      <div class="pagination-preloader pagination-preloader_bord" style="margin-top: 5rem;" *ngIf="isLoading">
         <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
       </div>
     </div>

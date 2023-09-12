@@ -4,6 +4,8 @@ export class ToolOrder {
   readonly id: number;
   area_locator: AreaLocator;
   created: string;
+  has_reserved_items?: boolean;
+
 }
 
 export class ToolOrderPaginated {

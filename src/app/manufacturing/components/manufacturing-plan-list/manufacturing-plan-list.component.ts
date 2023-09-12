@@ -15,6 +15,7 @@ import {cloneDeep} from 'lodash-es';
 import {ProductStructureCategoryService} from '../../../product-structure/services/product-structure-category.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalService} from '@shared/services/modal.service';
+import {Table} from 'primeng/table';
 
 @UntilDestroy()
 @Component({
@@ -24,6 +25,7 @@ import {ModalService} from '@shared/services/modal.service';
 })
 export class ManufacturingPlanListComponent implements OnInit {
   @ViewChild('paginator') paginator: Paginator;
+  @ViewChild('dt') dt: Table;
 
   searchForm: FormGroup = this.fb.group({
     list_product__nomenclature__name: [null],
@@ -31,6 +33,8 @@ export class ManufacturingPlanListComponent implements OnInit {
     statuses: [null],
     type_with_number: [''],
   });
+
+  first = 0;
 
   statuses = [
     {id: 0, name: 'Not processed', value: '0'},
@@ -193,13 +197,16 @@ export class ManufacturingPlanListComponent implements OnInit {
     tasks.forEach(task => {
       if (!newTasks.find(t => t.family_id === task.family_id && t.list_product.nomenclature.id === task.list_product.nomenclature.id
         && t.technology === task.technology)) {
+
+        const filteredTasks = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id
+          === task.list_product.nomenclature.id && t.technology === task.technology);
+
         const count = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id === task.list_product.nomenclature.id
           && t.technology === task.technology).length;
         task.required_quantity = task.required_quantity * count;
         task.serials = [];
-
-        const filteredTasks = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id
-          === task.list_product.nomenclature.id && t.technology === task.technology);
+        // @ts-ignore
+        task.production_list_id = filteredTasks.at(-1).production_list_id;
 
         filteredTasks.forEach(t => {
           if (task.serial_numbers.length > 0) {
@@ -213,6 +220,8 @@ export class ManufacturingPlanListComponent implements OnInit {
           }
         });
 
+        task.ids = tasks.filter(t => t.family_id === task.family_id && t.list_product.nomenclature.id === task.list_product.nomenclature.id
+          && t.technology === task.technology).map(t => t.id)
         newTasks.push(task);
       }
     });
@@ -227,6 +236,7 @@ export class ManufacturingPlanListComponent implements OnInit {
 
   paginateToFistPage() {
     if (this.isStartFirstPage) {
+      this.first = 0;
       this.paginator?.changePage(0);
     }
 
@@ -597,7 +607,7 @@ export class ManufacturingPlanListComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       this.isDeleting = true;
-      this.taskService.deletePlan(this.selectedTasks[0].id).pipe(
+      this.taskService.deletePlans(this.selectedTasks[0].ids).pipe(
         finalize(() => this.isDeleting = false)
       ).subscribe(() => {
         const taskIndex = this.tasks.findIndex(t => t.id === this.selectedTasks[0].id);
@@ -616,7 +626,7 @@ export class ManufacturingPlanListComponent implements OnInit {
       filter(confirm => confirm)
     ).subscribe(() => {
       this.isDeleting = true;
-      this.taskService.deletePlan(this.selectedTasksNodes[0].data.task.id).pipe(
+      this.taskService.deletePlans(this.selectedTasksNodes[0].data.task.ids).pipe(
         finalize(() => this.isDeleting = false)
       ).subscribe(() => {
         const taskIndex = this.tasks.findIndex(t => t.id === this.selectedTasksNodes[0].data.task.id);
@@ -635,5 +645,32 @@ export class ManufacturingPlanListComponent implements OnInit {
     );
 
     window.open(url, '_blank');
+  }
+
+  disabled() {
+    return this.selectedTasksNodes.some(n => !n.data?.task)
+  }
+
+  expandCollapse(nodes: TreeNode[], isToExpand) {
+    const temp = cloneDeep(this.ownProductionCategorizedList);
+    temp.forEach(n => {
+      nodes.forEach(node => {
+        this.makeRow(n, node, isToExpand)
+      })
+    })
+    this.ownProductionCategorizedList = temp;
+
+  }
+
+  makeRow(node: TreeNode, dat, isExpanded) {
+    if (node.data?.id === dat.data?.id) {
+      this.expandCollapseRecursive(node, isExpanded);
+    } else {
+      if (node.children) {
+        node.children.forEach(element => {
+          this.makeRow(element, dat, isExpanded);
+        });
+      }
+    }
   }
 }

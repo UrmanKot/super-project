@@ -45,7 +45,7 @@ export class MultiCompanyCategoryPickerComponent implements OnInit, OnChanges {
   }
 
   findCompanyCategories() {
-    if (this.currentCompanyCategoriesIds.length > 0) {
+    if (this.currentCompanyCategoriesIds?.length > 0) {
       this.currentCompanyCategoriesIds.forEach(id => {
         const findCompany = this.companies.find(t => t.id === id);
 

@@ -11,8 +11,10 @@ export class Payment {
   invoices?: Invoice[];
   invoice_total_price: number;
   payment_amount: string;
+  payment_method?: string;
   is_paid?: boolean;
-  status?: string;
+  paid_by_card?: boolean;
+  status?: PaymentStatus | string;
   filter_status?;
   amount: number;
   invoice: {
@@ -23,10 +25,19 @@ export class Payment {
       purchase_category: any
     }
   };
+  unique_root_plans?: {planName: string, count: number}[]
 }
 
 export class PaymentFile {
   readonly id: number;
   file: string;
   payment_id: number;
+}
+
+
+export enum PaymentStatus {
+  'DECLINED' = 'DECLINED',
+  'PAID' = 'PAID',
+  'CONFIRMED' = 'CONFIRMED',
+  'WAITING' = 'WAITING'
 }

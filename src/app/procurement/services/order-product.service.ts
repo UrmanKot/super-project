@@ -3,8 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {OrderProduct, OrderProducts} from '../models/order-product';
-import {forkJoin, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {
   EditOrderProductQuantityComponent
@@ -23,6 +23,14 @@ import {
 } from '../../outsourcing/modals/add-material-to-order/add-material-to-order.component';
 import {OrderTechnicalEquipment} from '../../warehouse/models/order-technical-equipment';
 import {ListProduct} from '../../warehouse/models/list-product';
+import {InvoiceProduct} from '../models/invoice-product';
+import {
+  IsolatorWriteOffInvoiceProductComponent
+} from '../../warehouse/modals/isolator-write-off-invoice-product/isolator-write-off-invoice-product.component';
+import {Order} from '../models/order';
+import {
+  IsolatorWriteOffOrderProductComponent
+} from '../../warehouse/modals/isolator-write-off-order-product/isolator-write-off-order-product.component';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +70,23 @@ export class OrderProductService {
     );
   }
 
+  getOrderProducts(id: number): Observable<OrderProduct[]> {
+    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + 'orders/' + id + '/order_products/').pipe(
+      map(response => response.data)
+    );
+  }
+
+  bulkUpdateQuantity(data:
+                       {
+                         order_product_ids: number[],
+                         quantity_to_distribute: number,
+                         is_subtracted_from_free_quantity: boolean
+                       }): Observable<string> {
+    return this.httpClient.post<{ data: string }>(this.API_URL + this.url + 'bulk_change_quantity/', data).pipe(
+      map(response => response.data)
+    );
+  }
+
 
   getFiltered(query?: QuerySearch[]): Observable<OrderProduct[]> {
     let queryParams = '';
@@ -76,7 +101,9 @@ export class OrderProductService {
       });
     }
 
-    return this.httpClient.get<{ data: OrderProduct[] }>(this.API_URL + this.url + 'minimal_order_products/' + queryParams).pipe(map(response => {
+    return this.httpClient.get<{
+      data: OrderProduct[]
+    }>(this.API_URL + this.url + 'minimal_order_products/' + queryParams).pipe(map(response => {
       return response.data;
     }));
   }
@@ -133,7 +160,7 @@ export class OrderProductService {
     }
     return this.httpClient.get<{
       data: OrderProducts
-    }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    }>(this.API_URL + this.url + 'get_other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -155,7 +182,7 @@ export class OrderProductService {
     }
     return this.httpClient.get<{
       data: OrderProduct[]
-    }>(this.API_URL + this.url + 'other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
+    }>(this.API_URL + this.url + 'get_other_grouped_by_nomenclature_request_id/' + queryParams).pipe(
       map(response => response.data)
     );
   }
@@ -192,7 +219,7 @@ export class OrderProductService {
     return forkJoin(...send.map(send => this.httpClient.patch<OrderProduct>(this.API_URL + this.url + send.id + '/', send)));
   }
 
-  updatePartly(orderProduct: OrderProduct): Observable<OrderProduct> {
+  updatePartly(orderProduct: Partial<OrderProduct>): Observable<OrderProduct> {
     return this.httpClient.patch<{
       data: OrderProduct
     }>(this.API_URL + this.url + orderProduct.id + '/', orderProduct).pipe(
@@ -288,5 +315,32 @@ export class OrderProductService {
         enterAnimationDuration: '250ms'
       })
       .afterClosed();
+  }
+
+  writeOffOrderProductDialog(orderProduct: OrderProduct): Observable<OrderProduct> {
+    return this.dialog
+      .open<IsolatorWriteOffOrderProductComponent>(IsolatorWriteOffOrderProductComponent, {
+        width: '30rem',
+        height: 'auto',
+        data: {orderProduct},
+        panelClass: 'modal-overflow-visible',
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  severalWriteOff(ids: number[]) {
+    return forkJoin(...ids.map(id => this.httpClient.post<any>(this.API_URL + this.url + `${id}/write_off/`, null).pipe(
+      catchError(() => of(null)),
+    )));
+  }
+
+  severalDeleteMaterial(ids: number[]): Observable<any> {
+    // return this.httpClient.delete<OrderProduct>(environment.base_url + `production/production_requests/${id}/`);
+
+    return forkJoin(...ids.map(id => this.httpClient.delete<any>(environment.base_url + `production/production_requests/${id}/`).pipe(
+      catchError(() => of(null)),
+    )));
   }
 }

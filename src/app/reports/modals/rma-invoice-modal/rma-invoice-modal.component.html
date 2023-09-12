@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Select RMA Action
+  </h2>
+</div>
+
+<mat-dialog-content>
+
+  <div class="rma-action-buttons mt-1">
+    <button
+      pButton
+      type="button"
+      label="Refund"
+      icon="pi pi-reply"
+      [disabled]="type === 'refund'"
+      (click)="type = 'refund'"
+    >
+    </button>
+
+    <button
+      pButton
+      type="button"
+      icon="pi pi-replay"
+      label="Redelivery"
+      [disabled]="type === 'redelivery'"
+      (click)="type = 'redelivery'"
+    >
+    </button>
+  </div>
+
+  <div class="mt-4 rma" *ngIf="type">
+    <h2>Selected Action: <span>{{type}}</span></h2>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [label]="'Select Action'"
+    [disabled]="!type"
+    [loading]="isSaving"
+    (click)="onSelect()"
+  ></button>
+</mat-dialog-actions>

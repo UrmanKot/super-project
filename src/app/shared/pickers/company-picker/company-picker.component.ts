@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
 import {Company} from '../../../crm/models/company';
 import {CompanyService} from '../../../crm/services/company.service';
+import {QuerySearch} from "@shared/models/other";
 
 @Component({
   selector: 'pek-company-picker',
@@ -15,6 +15,7 @@ export class CompanyPickerComponent implements OnInit, OnChanges {
   @Input() currentCompanyId: any;
   @Input() currentCompany: Partial<Company>;
   @Input() isDisabled: boolean = false
+  @Input() query: QuerySearch[] = [];
   isLoading = true;
   companies: Partial<Company>[] = [];
   selectedCompanyId: number;
@@ -24,7 +25,7 @@ export class CompanyPickerComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.companyService.getShorts().pipe(
+    this.companyService.getShorts(this.query).pipe(
     ).subscribe(companies => {
       this.companies = companies;
 

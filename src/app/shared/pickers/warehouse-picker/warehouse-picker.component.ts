@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {WarehouseService} from '../../../warehouse/services/warehouse.service';
-import {Warehouse} from '../../../warehouse/models/warehouse';
+import {Currency} from '../../../warehouse/models/warehouse';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
@@ -17,7 +17,7 @@ export class WarehousePickerComponent implements OnInit, OnChanges, OnDestroy {
   selectWarehouseId: number;
 
   isLoading = true;
-  warehouses: Warehouse[] = [];
+  warehouses: Currency[] = [];
 
   private destroy$ = new Subject();
 
@@ -42,7 +42,7 @@ export class WarehousePickerComponent implements OnInit, OnChanges, OnDestroy {
 
   filterWarehouses() {
     if (this.acceptedWarehouseIds.length > 0) {
-      let newWarehouses: Warehouse[] = [];
+      let newWarehouses: Currency[] = [];
 
       this.acceptedWarehouseIds.forEach(id => {
         newWarehouses = [...newWarehouses, ...this.warehouses.filter(w => w.id === id)];

@@ -8,6 +8,7 @@ import {finalize} from 'rxjs';
 import {OrderProductService} from '../../../procurement/services/order-product.service';
 import {Locator} from '../../models/locator';
 import {QcListModalService} from '../../services/qc-list-modal.service';
+import {AllocationService} from '../../services/allocation.service';
 
 @Component({
   selector: 'pek-qc-accept-to-warehouse',
@@ -29,7 +30,12 @@ export class QcAcceptToWarehouseComponent implements OnInit {
     private readonly orderProductService: OrderProductService,
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<QcAcceptToWarehouseComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { items: InvoiceProduct[] | OrderProduct[], id: number, type: 'invoice' | 'order' },
+    private readonly allocationService: AllocationService,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      items: InvoiceProduct[] | OrderProduct[],
+      id: number,
+      type: 'invoice' | 'order'
+    },
     private qcListModalService: QcListModalService
   ) {
   }
@@ -49,6 +55,13 @@ export class QcAcceptToWarehouseComponent implements OnInit {
     }
   }
 
+  onDistributeToPL() {
+    this.dialogRef.close();
+    this.allocationService.openAllocateItemModal('edit', this.data.id, this.items[0])
+      .subscribe(response => {
+    })
+  }
+
   acceptOrderProducts() {
     this.isSaving = true;
     let send = [];
@@ -56,7 +69,7 @@ export class QcAcceptToWarehouseComponent implements OnInit {
       item.orderProducts.forEach(product => {
         send.push({
           order_product_id: product.id,
-          quantity: product.quantity - product.accepted_quantity,
+          quantity: product.quantity - product.not_passed_quantity,
           locator: this.form.get('locator').value
         });
       });
@@ -74,11 +87,12 @@ export class QcAcceptToWarehouseComponent implements OnInit {
       item.invoiceProducts.forEach(product => {
         send.push({
           invoice_product_id: product.id,
-          quantity: product.quantity - product.accepted_quantity,
+          quantity: (product.quantity - product.not_passed_quantity) - product.accepted_quantity,
           locator: this.form.get('locator').value
         });
       });
     });
+
     this.invoiceProductService.acceptSeveral(send).pipe(
       finalize(() => this.isSaving = false)
     ).subscribe(() => this.dialogRef.close(true));

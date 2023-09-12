@@ -30,6 +30,8 @@ export class ListProductProduction {
   /** Порядковый номер */
   index: number;
 
+  isRootProductionCompleted = false;
+
   parent: ListProductProduction;
   children: ListProductProduction[] = [];
 
@@ -37,6 +39,8 @@ export class ListProductProduction {
 
   /** Группируем дочерние элементы, чтобы у них был общий цветной прямоугольник */
   groups: ListProductProductionGroup[] = [];
+
+  reservedFromOtherTaskQuantity?: number;
 
   constructor(config?: Partial<ListProductProduction>) {
     if (config) {
@@ -61,7 +65,7 @@ export class ListProductProduction {
     return this.tasks
       .map(p => p.tasks)
       .flat()
-      .some(t => t.status === 'On stock');
+      .some(t => t.status === 'On stock') && !this.isRootProductionCompleted && this.tasks.some(t => !t.created_orders.length);
   }
 
   getEnd() {

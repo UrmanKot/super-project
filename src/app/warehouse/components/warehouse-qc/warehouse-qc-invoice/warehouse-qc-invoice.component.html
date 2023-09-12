@@ -21,7 +21,7 @@
         [rows]="10"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
+          <div class="d-flex header-buttons">
             <p class="subtitle" *ngIf="selectedInvoiceProducts.length === 0">Choose the Invoice Products to Accept Warehouse</p>
 
             <button
@@ -61,12 +61,30 @@
             <td style="width: 3%">
               <p-tableCheckbox [value]="invoice"></p-tableCheckbox>
             </td>
-            <td style="width: 5%;" class="text-center">{{i + 1}}</td>
-            <td style="width: 17%;">{{invoice.nomenclature.code}}</td>
-            <td style="width: 20%;">{{invoice.nomenclature.name}}</td>
-            <td style="width: 20%;" class="text-center">{{invoice.current_technology}}</td>
-            <td style="width: 20%;" class="text-center">{{invoice.totalQuantity}}</td>
-            <td style="width: 15%;" class="text-center">{{invoice.totalQuantityPassed}}</td>
+            <td style="width: 5%;" class="text-center">
+              <h3 class="td-title">#</h3>
+              {{i + 1}}
+            </td>
+            <td style="width: 17%;">
+              <h3 class="td-title">Code</h3>
+              {{invoice.nomenclature.code}}
+            </td>
+            <td style="width: 20%;">
+              <h3 class="td-title">Name</h3>
+              {{invoice.nomenclature.name}}
+            </td>
+            <td style="width: 20%;" class="text-center">
+              <h3 class="td-title">Technology</h3>
+              {{invoice.current_technology}}
+            </td>
+            <td style="width: 20%;" class="text-center">
+              <h3 class="td-title">Quantity</h3>
+              {{invoice.totalQuantity}}
+            </td>
+            <td style="width: 15%;" class="text-center">
+              <h3 class="td-title">Passed</h3>
+              {{invoice.totalQuantityPassed}}
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -114,7 +132,7 @@
         [rows]="10"
       >
         <ng-template pTemplate="caption">
-          <div class="d-flex">
+          <div class="d-flex header-buttons">
             <p class="subtitle" *ngIf="selectedOrderTechnicalEquipment.length === 0">Choose the Technical equipment to Accept Warehouse</p>
 
             <button
@@ -153,11 +171,26 @@
             <td style="width: 3%">
               <p-tableCheckbox [value]="orderTechnicalEquipments"></p-tableCheckbox>
             </td>
-            <td style="width: 5%;" class="text-center">{{i + 1}}</td>
-            <td style="width: 17%;">{{orderTechnicalEquipments.nomenclature.code}}</td>
-            <td style="width: 20%;">{{orderTechnicalEquipments.nomenclature.name}}</td>
-            <td style="width: 20%;" class="text-center">{{orderTechnicalEquipments.quantity}}</td>
-            <td style="width: 15%;" class="text-center">{{orderTechnicalEquipments.passed_quantity}}</td>
+            <td style="width: 5%;" class="text-center">
+              <h3 class="td-title">#</h3>
+              {{i + 1}}
+            </td>
+            <td style="width: 17%;">
+              <h3 class="td-title">Code</h3>
+              {{orderTechnicalEquipments.nomenclature.code}}
+            </td>
+            <td style="width: 20%;">
+              <h3 class="td-title">Name</h3>
+              {{orderTechnicalEquipments.nomenclature.name}}
+            </td>
+            <td style="width: 20%;" class="text-center">
+              <h3 class="td-title">Quantity</h3>
+              {{orderTechnicalEquipments.quantity}}
+            </td>
+            <td style="width: 15%;" class="text-center">
+              <h3 class="td-title">Passed</h3>
+              {{orderTechnicalEquipments.passed_quantity}}
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

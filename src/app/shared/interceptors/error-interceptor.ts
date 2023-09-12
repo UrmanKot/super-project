@@ -48,6 +48,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       if (failedMessages.length) {
         this.messageService.add({
           severity: 'error',
+          life: 15_000,
           summary: `Failed operations: ${failedMessages.length}`,
           detail: this.getNotificationText(failedMessages),
         });

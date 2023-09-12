@@ -57,6 +57,12 @@ import { CrmPositionsComponent } from './components/crm-positions/crm-positions.
 import { CreateUpdateCrmPositionsComponent } from './modals/create-update-crm-positions/create-update-crm-positions.component';
 import {BusinessTripsModule} from '../business-trips/business-trips.module';
 import { EventCompanySetStateComponent } from './modals/event-company-set-state/event-company-set-state.component';
+import { SelectEventForListComponent } from './modals/select-event-for-list/select-event-for-list.component';
+import { CreateUpdateCrmDepartmentComponent } from './modals/create-update-crm-department/create-update-crm-department.component';
+import { CrmDepartmentPickerComponent } from './pickers/crm-department-picker/crm-department-picker.component';
+import {
+  EditCompanyAccountingNumberComponent
+} from "./modals/edit-company-accounting-number/edit-company-accounting-number.component";
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -109,6 +115,10 @@ FullCalendarModule.registerPlugins([
     CrmPositionsComponent,
     CreateUpdateCrmPositionsComponent,
     EventCompanySetStateComponent,
+    CreateUpdateCrmDepartmentComponent,
+    CrmDepartmentPickerComponent,
+    SelectEventForListComponent,
+    EditCompanyAccountingNumberComponent,
   ],
   imports: [
     CommonModule,

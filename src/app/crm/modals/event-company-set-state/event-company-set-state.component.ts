@@ -38,7 +38,7 @@ export class EventCompanySetStateComponent implements OnInit {
     if(this.form.valid) {
       this.data.eventCompany.impression = this.form.get('impression').value;
       this.eventCompanyService.update(this.data.eventCompany.id, {is_done: true, impression: this.form.get('impression').value})
-        .subscribe(() => this.dialogRef.close((this.data.eventCompany)));
+        .subscribe(() => this.dialogRef.close(({ eventCompany: this.data.eventCompany})));
     }
   }
 }

@@ -98,7 +98,7 @@
                         <button
                           pButton
                           *ngIf="hasChildDeliveryDateChanges"
-                          class="p-button-danger ml-3 mr-3"
+                          class="p-button-success ml-3 mr-3"
                           (click)="confirmDateChanges(true)"
                         >
                           Confirm
@@ -106,7 +106,7 @@
                         <button
                           pButton
                           *ngIf="hasRootDeliveryDateChanges && !hasChildDeliveryDateChanges"
-                          class="p-button-danger ml-3 mr-3"
+                          class="p-button-success ml-3 mr-3"
                           (click)="confirmDateChanges(false)">
                           Confirm
                         </button>
@@ -166,7 +166,7 @@
               </div>
               <div class="right-panel-wrapper">
                 <div class="d-flex days-header">
-                  <div class="d-flex">
+                  <div class="d-flex" *ngIf="selectedDisplay === 'days'">
                     <div class="day-header" [class.ml-3]="idx === 0" [class.day-header_week]="dateInfo.value.isVac"
                          [style.width]="(dateInfo.value.isVac ? vacationCoords : weekdayCoords) + 'px'"
                          *ngFor="let dateInfo of (dates | keyvalue); let idx = index">
@@ -183,6 +183,48 @@
                           [ngClass]="{'middle': time == 3}"
                           tooltipPosition="bottom"
                           pTooltip="{{(time + 1) * 3 + ':' + '00'}}">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex" *ngIf="selectedDisplay === 'weeks'" [class.week-header]="planScale === 50">
+                    <div
+                      class="day-header"
+                      [class.ml-3]="idx === 0"
+                      [style.width]="weekdayCoords + 'px'"
+                      *ngFor="let dateInfo of (weekDates | keyvalue); let idx = index"
+                    >
+                      <div
+                        class="day-name"
+                        [class.day-name_small]="planScale === 25"
+                      >
+                        <span *ngIf="planScale !== 25">{{dateInfo.value?.start | date}} - {{dateInfo.value?.end | date}}</span>
+                        <span *ngIf="planScale === 25">{{dateInfo.value?.start | date}}</span>
+                        <!--                        <span-->
+                        <!--                          class="text-center"-->
+                        <!--                          *ngIf="dateInfo.value.isVac"-->
+                        <!--                          style="color: '#f1716d'; display: block"-->
+                        <!--                        >-->
+                        <!--                          {{dateInfo.value.date | date:'d'}}-->
+                        <!--                        </span>-->
+                      </div>
+                      <div class="d-flex hour-container">
+                        <div
+                          *ngFor="let day of getDays(dateInfo.value?.days); let dayIdx = index"
+                          class="hour-line"
+                          [class.hour-line-week]="dayIdx === 4 || dayIdx === 5"
+                          [style.marginLeft]="dayWidth + 'px'"
+                          tooltipPosition="bottom"
+                          pTooltip="{{day.date | date: 'MMMM d'}}">
+                          <div
+                            class="vac-bord vac-bord_left"
+                            *ngIf="dayIdx === 4"
+                          ></div>
+                          <div
+                            class="vac-bord vac-bord_right"
+                            *ngIf="dayIdx === 4 || dayIdx === 5"
+                            [style.right]="'-' + (dayWidth - 2) + 'px'"
+                          ></div>
                         </div>
                       </div>
                     </div>
@@ -373,6 +415,13 @@
                 [disabled]="planScale === 25"
               ></button>
 
+              <!--              <button-->
+              <!--                pButton-->
+              <!--                type="button"-->
+              <!--                label="test"-->
+              <!--                (click)="testWeek()"-->
+              <!--              ></button>-->
+
               <div class="plan-scale">{{planScale}}%</div>
               <!--              <button class="class ml-2 btn btn-primary" (click)="togglePlanScale('plus')"-->
               <!--                      [disabled]="planScale === 100">-->
@@ -431,6 +480,19 @@
                 (ngModelChange)="filterTasksForStatus()"
                 [showClear]="true"
               ></p-multiSelect>
+            </div>
+
+            <div class="display-picker ml-3">
+              <p class="mr-2">Displaying: </p>
+
+              <p-dropdown
+                [options]="displayOptions"
+                [(ngModel)]="selectedDisplay"
+                (ngModelChange)="onSelectDisplay()"
+                optionLabel="label"
+                optionValue="option"
+                placeholder="Displaying"
+              ></p-dropdown>
             </div>
           </div>
           <!--                    <div class="ml-3 statuses-pick">-->

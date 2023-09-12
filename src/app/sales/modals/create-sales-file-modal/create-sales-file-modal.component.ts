@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {SalesChainService} from "../../services/sales-chain-service";
 import {SalesFile} from "../../models/sales-chain";
 import {SalesFileService} from "../../services/sales-file.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'pek-create-sales-file-modal',
@@ -33,10 +34,10 @@ export class CreateSalesFileModalComponent implements OnInit {
 
   onUploadFiles() {
     this.isPending = true
-    this.salesFileService.upload(this.uploadFiles).subscribe(res => {
-      this.dialogRef.close()
+    this.salesFileService.upload(this.uploadFiles).pipe(
+      finalize(() => this.isPending = false)
+    ).subscribe(res => {
+      this.dialogRef.close(true)
     })
   }
-
-
 }

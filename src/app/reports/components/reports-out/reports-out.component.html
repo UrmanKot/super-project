@@ -1,0 +1,411 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>
+        Out (Total Cost: <span *ngIf="!isLoading; else totalsLoading">{{supplierTotalCost | moneyFormat}}</span> €,
+        Total Price: <span *ngIf="!isLoading; else totalsLoading">{{supplierTotalPrice | moneyFormat}}</span> €)
+      </h1>
+
+      <ng-template #totalsLoading>...</ng-template>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-double-right"
+        label="Apply Filter"
+        (click)="onApplyFilter()"
+      ></button>
+
+      <button
+        class="p-button-danger ml-2"
+        pButton
+        type="button"
+        icon="pi pi-times"
+        label="Clear Filter"
+        (click)="clearFilters()"
+      ></button>
+
+      <button
+        class="p-button-icon ml-2"
+        pButton
+        type="button"
+        icon="pi pi-file-excel"
+        [loading]="isGenerate"
+        label="Generate Report"
+        [disabled]="!count"
+        (click)="exportToExcel()"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <form
+      [formGroup]="searchForm"
+      class="form mb-3"
+    >
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" pInputText formControlName="name" (ngModelChange)="name$.next($event)">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Code</label>
+            <input type="text" pInputText formControlName="code" (ngModelChange)="code$.next($event)">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Company</label>
+            <pek-company-picker
+              [currentCompanyId]="searchForm.get('supplier').value"
+              (selectCompany)="onSelectCompany($event)"
+            ></pek-company-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Company Category</label>
+            <pek-company-category-picker
+              [selectedCategoryId]="searchForm.get('supplier_category').value"
+              (selectCompanyCategory)="onSelectCategory($event)"></pek-company-category-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Warehouse Category</label>
+            <pek-multi-product-categories-picker
+              [currentCategoryIds]="searchForm.get('root_categories').value"
+              (choiceCategoryFolAllIds)="onSelectCategories($event)"
+            ></pek-multi-product-categories-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Finished Products</label>
+                <pek-input-three-values
+                  [filterValue]="columnFilterService.getFilterValue(searchForm.get('for_completed_lists').value)"
+                  (changeValue)="getPaidFinishedProducts($event)">
+                </pek-input-three-values>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>In Progress</label>
+                <pek-input-three-values
+                  [filterValue]="columnFilterService.getFilterValue(searchForm.get('for_lists_in_progress').value)"
+                  (changeValue)="getProgressValue($event)">
+                </pek-input-three-values>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Creation From</label>
+            <p-calendar
+              formControlName="system_creation_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Creation To</label>
+            <p-calendar
+              formControlName="system_creation_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Recieved From</label>
+            <p-calendar
+              formControlName="invoice_reception_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Recieved To</label>
+            <p-calendar
+              formControlName="invoice_reception_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Items Recieved From</label>
+            <p-calendar
+              formControlName="items_reception_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Items Recieved To</label>
+            <p-calendar
+              formControlName="items_reception_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label>Written Lists</label>
+            <ng-container *ngIf="!isLoadingLists; else listLoading">
+              <p-multiSelect
+                formControlName="written_off_for_lists"
+                [filter]="true"
+                [options]="lists"
+                placeholder="Choose Written List" optionLabel="fullName"
+                optionValue="id"
+                (ngModelChange)="search$.next()"
+              >
+              </p-multiSelect>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label>Purchase Category</label>
+            <pek-multi-purchase-category-picker
+              [withReportFilters]="true"
+              (choiceCategories)="onSelectPurchasedCategories($event)"
+            ></pek-multi-purchase-category-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Write-off Date From</label>
+            <p-calendar
+              formControlName="created_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Write-off Date To</label>
+            <p-calendar
+              formControlName="created_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="form-group">
+            <label>Product Structure Category</label>
+            <pek-multi-product-structure-categories-picker
+              (choiceCategories)="onSelectProductStructureCategories($event)"
+            >
+            </pek-multi-product-structure-categories-picker>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="form-group">
+            <label>Nomenclature Accounting Number</label>
+            <input pInputText (input)="changeAccountingNumber($event)">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Date From</label>
+            <p-calendar
+              formControlName="invoice_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Date To</label>
+            <p-calendar
+              formControlName="invoice_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="page__table report-table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="count > 0"
+        [rows]="10"
+        [value]="balanceProducts$ | async"
+      >
+        <ng-template pTemplate="caption">
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 3%">#</th>
+            <th style="width: 8%">Code</th>
+            <th style="width: 10%">Name</th>
+            <th class="text-center" style="width: 5%;">Quantity</th>
+            <th class="text-center" style="width: 4%;">UOM</th>
+            <th class="text-center" style="width: 4%;">Order</th>
+            <th class="text-center" style="width: 4%;">Out Order</th>
+            <th class="text-center" style="width: 6%;">Invoice</th>
+            <th class="text-center" style="width: 6%">Technology</th>
+            <th style="width: 7%">Supplier</th>
+            <th style="width: 7%" class="text-center">Purchase Category</th>
+            <th style="width: 8%">Written For List</th>
+            <th class="text-center" style="width: 6%;">Date</th>
+            <th class="text-center" style="width: 6%">Write-off Date</th>
+            <th class="text-center" style="width: 6%">Unit Price</th>
+            <th class="text-center" style="width: 6%">Total Price</th>
+            <th class="text-center" style="width: 6%">Unit Cost</th>
+            <th class="text-center" style="width: 6%">Total Cost</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td class="text-center" style="width: 3%">{{i + 1}}</td>
+            <td style="width: 8%">{{product.nomenclature.code}}</td>
+            <td style="width: 10%">{{product.nomenclature.name}}</td>
+            <td style="width: 5%;" class="text-center">{{product.quantity}}</td>
+            <td style="width: 4%;"
+                class="text-center">{{product.nomenclature.category ? product.nomenclature.category.unit_of_measure.symbol : 'Pcs'}}</td>
+            <td style="width: 4%;" class="text-center">
+              <a rel="noopener noreferrer" target="_blank"
+                 *ngIf="product.nomenclature.type === '0' && !product.physical_inventory"
+                 [routerLink]="['/procurement/chains/order/',product.order]">{{product.order}}</a>
+              <a rel="noopener noreferrer" target="_blank"
+                 *ngIf="product.nomenclature.type !== '0' && !product.physical_inventory"
+                 [routerLink]="['/outsourcing/chains/order/',product.order]">{{product.order}}</a>
+              <a rel="noopener noreferrer" target="_blank" *ngIf="product.physical_inventory"
+                 [routerLink]="['/warehouse/physical-inventory/',product.order]">{{product.physical_inventory.id}}</a>
+            </td>
+            <td style="width: 4%;" class="text-center">
+              <a rel="noopener noreferrer" target="_blank"
+                 *ngIf="product.nomenclature.type === '0' && !product.physical_inventory"
+                 [routerLink]="['/procurement/chains/order/',product.out_order_id]">{{product.out_order_id}}</a>
+              <a rel="noopener noreferrer" target="_blank"
+                 *ngIf="product.nomenclature.type !== '0' && !product.physical_inventory"
+                 [routerLink]="['/outsourcing/chains/order/',product.out_order_id]">{{product.out_order_id}}</a>
+            </td>
+            <td style="width: 6%;" class="text-center">
+              <a rel="noopener noreferrer" *ngIf="product.invoice && !product.physical_inventory" target="_blank"
+                 [routerLink]="['/reports/invoices/invoice/',product.invoice.id]">{{product.invoice.self_serial_number}}</a>
+              <span *ngIf="product.physical_inventory">None</span>
+            </td>
+            <td style="width: 6%;"
+                class="text-center">{{product.current_technology ? product.current_technology : 'None'}}</td>
+            <td style="width: 7%">{{product.supplier}}</td>
+            <td style="width: 7%;" class="text-center">
+              {{product.purchase_category ? product.purchase_category?.name : 'None'}}
+            </td>
+            <td style="width: 8%">{{product.written_off_for_list}}</td>
+            <td style="width: 6%;" class="text-center">{{product.document_creation_date|date:'dd/MM/yyyy'}}</td>
+            <td style="width: 6%;" class="text-center">{{product.created | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 6%;" class="text-center">{{product.supplier_unit_price | moneyFormat}} €</td>
+            <td style="width: 6%;" class="text-center">{{product.supplier_total_price| moneyFormat}} €</td>
+            <td style="width: 6%;" class="text-center">{{product.supplier_unit_cost | moneyFormat}} €</td>
+            <td style="width: 6%;" class="text-center">{{product.supplier_total_cost | moneyFormat}} €</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="18">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && count > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #listLoading>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

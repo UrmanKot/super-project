@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, take, tap} from 'rxjs/operators';
 import {environment} from '@env/environment';
 import {AuthState} from './auth-state.enum';
-import {User, UserPermissions} from '@shared/models/user';
+import {User, UserPermissions} from '../administration/models/user';
 
 export class AuthResponse {
   access: string;

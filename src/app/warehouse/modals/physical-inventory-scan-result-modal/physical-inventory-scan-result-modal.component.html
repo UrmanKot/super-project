@@ -1,0 +1,101 @@
+<div class="modal-header modal-header_vertical">
+  <div class="add-product__header-wrapper">
+    <div class="add-product__header">
+      <h2 class="modal-header__title">
+        <div *ngIf="data.product">
+          <p>Found</p>
+          <p class="mb-2">
+            {{data.product.nomenclature.code}} {{data.product.nomenclature.name}}
+            <span *ngIf="data.product.serial_number">
+              SN:
+              {{data.product.serial_number.type_with_number ?
+                data.product.serial_number.type_with_number :
+                data.product.serial_number.id}}
+            </span>
+          </p>
+          <ng-container *ngIf="data.product.locator else productWarehouse">
+            <p>
+              {{data.product.locator.warehouse.name}}
+            </p>
+          </ng-container>
+
+          <ng-template #productWarehouse>
+            <p>
+              {{data.product.product.locator.warehouse.name}}
+            </p>
+          </ng-template>
+
+
+          <p class="mb-4" *ngIf="data.product.locator; else productLocator">
+            {{data.product.locator.name}}
+
+            <span>
+                    R: {{data.product.locator.row}}
+              Col: {{data.product.locator.column}}
+              Sh: {{data.product.locator.shelf}}
+              Pl: {{data.product.locator.place}}
+                  </span>
+          </p>
+          <ng-template #productLocator>
+            <div class="mb-4" *ngIf="data.product.product.locator">
+              {{data.product.product.locator.name}}
+              <span>
+                    R: {{data.product.product.locator.row}}
+                Col: {{data.product.product.locator.column}}
+                Sh: {{data.product.product.locator.shelf}}
+                Pl: {{data.product.product.locator.place}}
+                  </span>
+            </div>
+          </ng-template>
+        </div>
+
+
+        <div *ngIf="!data.product">
+          <p>Not Found</p>
+        </div>
+      </h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-actions class="justify-content-between">
+  <div class="d-flex">
+    <button
+      pButton
+      type="button"
+      label="Close"
+      class="p-button-warning"
+      (click)="closeModal()"
+    ></button>
+    <button
+      *ngIf="data.product"
+      class="ml-2 p-button-icon p-button-info"
+      pButton
+      type="button"
+      icon="pi pi-qrcode"
+      label="Generate QR Codes"
+      [loading]="isGenerating"
+      (click)="onGenerateQrCodes()"
+    >
+    </button>
+  </div>
+
+  <div class="d-flex">
+    <button
+      pButton
+      type="button"
+      label="Scan Next"
+      class="p-button-success"
+      (click)="scanNext()"
+    ></button>
+
+    <button
+      *ngIf="data.product && !data.product.serial_number"
+      pButton
+      type="button"
+      label="Set Quantity"
+      class="p-button ml-2"
+      (click)="setValue()"
+    ></button>
+  </div>
+</mat-dialog-actions>

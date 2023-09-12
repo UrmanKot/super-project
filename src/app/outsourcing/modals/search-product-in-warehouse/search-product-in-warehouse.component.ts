@@ -3,7 +3,7 @@ import {WarehouseProductService} from '../../../warehouse/services/warehouse-pro
 import {Paginator} from 'primeng/paginator';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuerySearch} from '@shared/models/other';
-import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
+import {ENomenclatureApproval, ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {WarehouseProduct, WarehouseProducts} from '../../../warehouse/models/warehouse-product';
 import {BehaviorSubject, Observable, Subject, switchMap} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
@@ -63,6 +63,9 @@ export class SearchProductInWarehouseComponent implements OnInit {
     tap(() => this.isLoading = false),
     untilDestroyed(this)
   )
+
+  protected readonly ENomenclatureApproval = ENomenclatureApproval;
+  protected readonly ENomenclatureType = ENomenclatureType;
 
   constructor(
     private readonly warehouseProductService: WarehouseProductService,

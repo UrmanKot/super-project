@@ -10,6 +10,9 @@ import {
   CreateEditPurchasingCategoryComponent
 } from '../modals/create-edit-purchasing-category/create-edit-purchasing-category.component';
 import {MatDialog} from '@angular/material/dialog';
+import {
+  EditPurchasingCategoryAccountingNumberComponent
+} from "../modals/edit-purchasing-category-accounting-number/edit-purchasing-category-accounting-number.component";
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +71,18 @@ export class PurchasingCategoryService {
         width: '54rem',
         height: 'auto',
         data: {type, category},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  editAccountingNumberCategory(category?: PurchaseCategory): Observable<PurchaseCategory> {
+    return this.dialog
+      .open<EditPurchasingCategoryAccountingNumberComponent>(EditPurchasingCategoryAccountingNumberComponent, {
+        width: '30rem',
+        height: 'auto',
+        data: {category},
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

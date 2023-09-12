@@ -3,12 +3,13 @@ import {CDK_DRAG_CONFIG, CdkDragEnd} from '@angular/cdk/drag-drop';
 import {ManufacturingChartComponent, UITask} from '../manufacturing-chart/manufacturing-chart.component';
 import {ListProductProduction} from '../../models/list-product-production';
 import {PlanningStatus} from '../../enums/planning-status.enum';
-import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ENomenclatureBulk, ENomenclatureType} from '@shared/models/nomenclature';
 import {filter} from 'rxjs/operators';
 import {AdapterService} from '@shared/services/adapter.service';
 import {TaskService} from '@shared/services/task.service';
 import {ModalService} from '@shared/services/modal.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
+import {ExpandCollapseHeaderService} from '../../../layout/components/header/services/expand-collapse-header.service';
 
 @Component({
   selector: 'pek-manufacturing-list-product-production',
@@ -37,10 +38,26 @@ export class ManufacturingListProductProductionComponent implements OnInit {
     private adapterService: AdapterService,
     private elementRef: ElementRef<HTMLElement>,
     public chart: ManufacturingChartComponent,
+    public expandCollapseHeaderService: ExpandCollapseHeaderService
   ) {
   }
 
   ngOnInit(): void {
+    if (this.production.product.nomenclature.bulk_or_serial === ENomenclatureBulk.SERIAL) {
+
+      this.production.reservedFromOtherTaskQuantity = 0;
+      this.production.tasks.forEach(task => {
+        task.tasks.forEach(taskInner => {
+          taskInner.serial_numbers?.forEach(serialNumber => {
+            if (serialNumber.reserved_for_root_production_list_info) {
+              this.production.reservedFromOtherTaskQuantity++;
+            }
+          });
+        });
+      });
+      console.log('this.production.reservedFromOtherTaskQuantity', this.production.reservedFromOtherTaskQuantity);
+
+    }
     if (this.production.product.nomenclature.type === '1') {
       this.elementRef.nativeElement.style.background = this.production.color;
       this.elementRef.nativeElement.style.zIndex = String(99999 - this.production.index);
@@ -48,6 +65,12 @@ export class ManufacturingListProductProductionComponent implements OnInit {
 
     this.taskDeleteSub = this.tasksService.delete$.subscribe(() => {
       this.production.updateGroups();
+    });
+
+    this.expandCollapseHeaderService.expandCollapseSingle.subscribe(isExpand => {
+      if (this.production.hasChildren && this.production.isActive) {
+        this.chart.expandCollapseSelected([this.production], isExpand);
+      }
     });
   }
 
@@ -181,7 +204,10 @@ export class ManufacturingListProductProductionComponent implements OnInit {
   }
 
   toggleActiveProduction(production) {
-    if (production.hasChildren) production.isActive = !production.isActive;
+    if (production.hasChildren) {
+      production.isActive = !production.isActive;
+      this.chart.toggleSelectedListProducts(production.product.group_uid)
+    }
   }
 
   private highlightChildrenEnd() {

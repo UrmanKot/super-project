@@ -32,6 +32,33 @@
         <div class="row">
           <div class="col-3">
             <div class="form-group">
+              <label>Code</label>
+              <input pInputText
+                     formControlName="contains_nomenclature_code"
+                     (ngModelChange)="search$.next()"
+                     class="form-control">
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Name</label>
+              <input pInputText
+                     formControlName="contains_nomenclature_name"
+                     (ngModelChange)="search$.next()"
+                     class="form-control">
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label>Order ID</label>
+              <input pInputText
+                     formControlName="id"
+                     (ngModelChange)="search$.next()"
+                     class="form-control">
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
               <label>Nomenclature</label>
               <p-dropdown
                 [filter]="true"
@@ -122,7 +149,7 @@
                 (choiceCategories)="onSelectCategories($event)"></pek-multi-product-categories-picker>
             </div>
           </div>
-          <div class="col-3 d-flex">
+          <div class="col-2 d-flex">
             <div class="form-group form-group_checkbox">
               <label>Declined</label>
               <p-triStateCheckbox
@@ -131,6 +158,8 @@
               >
               </p-triStateCheckbox>
             </div>
+          </div>
+          <div class="col-4 d-flex">
             <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
           </div>
         </div>
@@ -173,13 +202,26 @@
               <th style="width: 15%;">Root Lists</th>
               <th class="text-center" style="width: 10%;">Status</th>
               <th class="text-center" style="width: 10%;">Completion</th>
+              <th class="text-center" style="width: 10%;">Expected Delivery Date</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-order let-i="rowIndex">
-            <tr [pSelectableRow]="order">
+            <tr [pSelectableRow]="order"
+            [class.is-overdue]="order.is_overdue"
+            >
               <td class="text-center" style="width: 3%;">{{i + 1}}</td>
               <td class="text-center" style="width: 10%;">{{order.created | date:'dd/MM/yyyy'}}</td>
-              <td class="text-center" style="width: 7%;">{{order.id}}</td>
+              <td class="text-center hovered-info" style="width: 7%;">
+                <a [routerLink]="'/procurement/chains/order/' + order.id">{{order.id}}</a>
+                <pek-hover-detailed-info-component
+                  [moveLeft]="+20"
+                  *ngIf="order.uniqueOrderProducts.length > 0"
+                >
+                  <div *ngFor="let orderProduct of order.uniqueOrderProducts">
+                    {{orderProduct.nomenclature.code}}&nbsp;&nbsp;&nbsp;{{orderProduct.nomenclature.name}}
+                  </div>
+                </pek-hover-detailed-info-component>
+                <b *ngIf="order.contains_rma_invoices">(RMA)</b></td>
               <td class="text-center" style="width: 15%;">{{order.supplier?.name}}</td>
               <td class="text-center" style="width: 15%;">{{order.supplier?.supplier_nomenclature}}</td>
               <td style="width: 15%;">
@@ -188,19 +230,54 @@
                 </div>
               </td>
               <td style="width: 15%;">
+                <div *ngIf="order.hasRequestedByMinimumValueProducts">Requested By Minimum Volume</div>
                 <div class="word-break"
-                     *ngFor="let item of getRootLists(order.root_production_list_products); let idx = index">
+                     *ngFor="let request of order.uniqueToolRequests; let idx = index; let last=last">
                   <a
                     target="_blank"
-                    [href]="productionPlanLinkBase + item.list.productionPlanId">
-                  >
-                    {{item.list.nomenclature.code}}
-                    ~{{item.list.nomenclature.name}}({{item.count}})
+                    [href]="'/instruments/tool-request/requests/' + request?.toolRequest?.tool_order.id"
+                    >
+                    {{request?.toolRequest?.tool_order?.area_locator?.name}}<span *ngIf="!last">,</span>
                   </a>
+                </div>
+
+                <div class="word-break"
+                     *ngFor="let item of order.display_production_list_products; let idx = index">
+                  <div *ngIf="item.count === 1">
+                    <a
+                      target="_blank"
+                      [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                      {{item.list.nomenclature.code}}
+                      ~{{item.list.nomenclature.name}}({{item.count}})
+                    </a>
+                  </div>
+                  <div class="hovered-info" *ngIf="item.count > 1">
+                    <a
+                      target="_blank"
+                      [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                      {{item.list.nomenclature.code}}
+                      ~{{item.list.nomenclature.name}}({{item.count}})
+                    </a>
+                    <pek-hover-detailed-info-component
+                      [moveLeft]="+20"
+                      *ngIf="order.uniqueOrderProducts.length > 0"
+                    >
+                      <div *ngFor="let plan of item.allLists">
+                        <a
+                          target="_blank"
+                          [routerLink]="'/manufacturing/plans/plan/' + plan.productionPlanId">
+                          {{plan.productionPlanId}} -
+                          {{item.list.nomenclature.code}}
+                          ~{{item.list.nomenclature.name}}
+                        </a>
+                      </div>
+                    </pek-hover-detailed-info-component>
+                  </div>
                 </div>
               </td>
               <td class="text-center" style="width: 10%;">{{order.status?.value}}</td>
               <td class="text-center" style="width: 10%;">{{order?.activeStatusDate | date: 'dd/MM/yyyy'}}</td>
+              <td class="text-center" style="width: 10%;">{{order?.expected_delivery_date | date: 'dd/MM/yyyy'}}</td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
@@ -237,7 +314,20 @@
 
 <ng-template #actionButtons>
   <div class="action-buttons">
-    <p-menubar class="ml-auto" [model]="menuItems" [class.disabled]="!selectedOrder"></p-menubar>
+    <div class="selected-order-root-lists ml-auto">
+      <button
+        pButton
+        type="button"
+        label="Go To Production Plans"
+        [disabled]="!selectedOrder || selectedOrder?.display_production_list_products.length === 0"
+        [class.disabled]="!selectedOrder"
+        (click)="isRootListShown = true"
+      ></button>
+      <div pekClickOutside (clickOutside)="isRootListShown = false" class="root-lists" *ngIf="isRootListShown && selectedOrder">
+        <ng-container *ngTemplateOutlet="productionLists"></ng-container>
+      </div>
+    </div>
+    <p-menubar class="ml-2" [model]="menuItems" [class.disabled]="!selectedOrder"></p-menubar>
     <button
       class="ml-2"
       pButton
@@ -248,3 +338,40 @@
     ></button>
   </div>
 </ng-template>
+
+<ng-template #productionLists>
+  <div class="word-break"
+       *ngFor="let item of selectedOrder?.display_production_list_products; let idx = index">
+    <div *ngIf="item.count === 1">
+      <a
+        target="_blank"
+        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+        {{item.list.nomenclature.code}}
+        ~{{item.list.nomenclature.name}}({{item.count}})
+      </a>
+    </div>
+    <div class="hovered-info" *ngIf="item.count > 1">
+      <a
+        target="_blank"
+        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+        {{item.list.nomenclature.code}}
+        ~{{item.list.nomenclature.name}}({{item.count}})
+      </a>
+      <pek-hover-detailed-info-component
+        [moveLeft]="+20"
+        *ngIf="selectedOrder?.uniqueOrderProducts.length > 0"
+      >
+        <div *ngFor="let plan of item.allLists">
+          <a
+            target="_blank"
+            [routerLink]="'/manufacturing/plans/plan/' + plan.productionPlanId">
+            {{plan.productionPlanId}} -
+            {{item.list.nomenclature.code}}
+            ~{{item.list.nomenclature.name}}
+          </a>
+        </div>
+      </pek-hover-detailed-info-component>
+    </div>
+  </div>
+</ng-template>
+

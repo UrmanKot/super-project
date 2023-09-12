@@ -1,6 +1,7 @@
 import {Category} from '../../product-structure/models/category';
 import {Technology} from '../../product-structure/models/technology';
 import {TechnicalEquipment} from '../../product-structure/models/technical-equipment';
+import {Country} from "@shared/models/country";
 
 export class Nomenclature {
   readonly id?: number;
@@ -24,10 +25,19 @@ export class Nomenclature {
   technical_equipments?: TechnicalEquipment[];
   deleted_technical_equipments_ids?: number[];
   qc_protocol?: number;
+  min_quantity?: number;
+  max_quantity?: number;
+  free_quantity?: number;
   bulk_or_serial?: '1' | '0';
   tasks?: Task[];
   root_category?: Category;
   price?: any
+  country_of_origin_default?: Country;
+  weight?: number;
+  width?: number;
+  length?: number;
+  height?: number;
+  tariff_code?: any;
 }
 
 export class NomenclatureImage {

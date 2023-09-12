@@ -23,6 +23,7 @@ export class WarehouseProduct {
   freeQuantity?: number;
   extra_info: WarehouseProductExtraInfo[];
   checkedForGeneration?: boolean;
+  has_technical_equipment?: boolean;
 
   used_by_order?: {order_id: number, accounting_type: number}[]
 }

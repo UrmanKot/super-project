@@ -27,7 +27,6 @@ export class InstrumentsAndToolsWriteOffReturnComponent implements OnInit {
       products: this.fb.array(fArray)
     });
 
-    console.log('this.form', this.form);
   }
 
   get products() {

@@ -1,0 +1,170 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>Correlation of Accounting Categories</h1>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+
+  <p-tabView class="custom-tabs" [(activeIndex)]="tabIndex">
+    <p-tabPanel
+      [header]="'Reports Accounting Types'"
+      [selected]="true"
+    >
+      <div class="page__table">
+        <p-table
+          #st
+          selectionMode="single"
+          scrollHeight="calc(100vh - 18.8rem)"
+          [scrollable]="true"
+          [paginator]="accountingTypes.length > 0"
+          [rows]="10"
+          [(selection)]="selectedAccountingType"
+          [value]="accountingTypes"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                class="ml-auto p-button-icon"
+                icon="pi pi-pencil"
+                label="Edit Accounting Category"
+                (click)="onEditAccountingTypeCategory()"
+                [loading]="isSavingTypeCategory"
+                [disabled]="!selectedAccountingType"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center" style="width: 5%">#</th>
+              <th style="width: 45%">Name</th>
+              <th style="width: 55%">Accounting Category</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-accountingCategory let-i="rowIndex">
+            <tr [pSelectableRow]="accountingCategory ">
+              <td style="width: 5%" class="text-center">{{i + 1}}</td>
+              <td style="width: 25%">{{accountingCategory.name}}</td>
+              <td style="width: 35%">{{accountingCategory.accounting_category?.name}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="5">
+                <i *ngIf="isLoadingAccountingTypes" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoadingAccountingTypes">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <p-button
+              type="button"
+              (click)="st.paginator=false"
+              styleClass="p-button-text"
+            >All
+            </p-button>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="!st.paginator && !isLoadingAccountingTypes && accountingTypes.length > 0"
+           class="paginator-return-pagination">
+        <p-button
+          type="button"
+          (click)="st.paginator=true"
+          styleClass="p-button-text"
+        >
+          Return pagination
+        </p-button>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel
+      [header]="'Procurement Categories'"
+    >
+      <div class="page__table">
+        <p-treeTable
+          #dt
+          [value]="categoriesTree"
+          selectionMode="single"
+          [(selection)]="selectedNode"
+          [scrollable]="true"
+          scrollHeight="calc(100vh - 22rem)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand All"
+                class="ml-auto mr-2"
+                (click)="onExpandAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse All"
+                (click)="onCollapseAll()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="ml-2 p-button-icon"
+                icon="pi pi-pencil"
+                label="Edit Accounting Category"
+                (click)="onEditAccountingCategory()"
+                [loading]="isSavingCategory"
+                [disabled]="!selectedNode"
+              ></button>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 30%; padding-left: 48px">Name</th>
+              <th style="width: 30%">Description</th>
+              <th style="width: 20%" class="text-center">Material</th>
+              <th style="width: 20%" class="text-center">Accounting Category</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr
+              [ttRow]="rowNode"
+              [ttSelectableRow]="rowNode"
+            >
+              <td style="width: 30%">
+                <div class="table-toggle">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span>{{rowData.name}}</span>
+                </div>
+              </td>
+              <td style="width: 30%">
+                {{rowData.description}}
+              </td>
+              <td style="width: 20%" class="text-center">
+                {{rowData.is_material ? 'Tangible' : 'Intangible'}}
+              </td>
+              <td style="width: 20%" class="text-center">
+                {{rowData.accounting_category?.name}}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center p-4" [attr.colspan]="5">
+                <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span *ngIf="!isLoading">No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+

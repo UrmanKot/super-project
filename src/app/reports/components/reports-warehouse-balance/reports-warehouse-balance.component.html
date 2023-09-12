@@ -1,0 +1,354 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__title">
+      <pek-module-icon [module]="'reports'" [isActive]="true"></pek-module-icon>
+      <h1>
+        Warehouse Balance (Total Cost: <span
+        *ngIf="!isLoading; else totalsLoading">{{supplierTotalCost | moneyFormat}}</span> €,
+        Total Price: <span *ngIf="!isLoading; else totalsLoading">{{supplierTotalPrice | moneyFormat}}</span> €)
+      </h1>
+
+      <ng-template #totalsLoading>...</ng-template>
+    </div>
+    <div class="page__tools">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-angle-double-right"
+        label="Apply Filter"
+        (click)="onApplyFilter()"
+      ></button>
+
+      <button
+        class="p-button-danger ml-2"
+        pButton
+        type="button"
+        icon="pi pi-times"
+        label="Clear Filter"
+        (click)="clearFilters()"
+      ></button>
+
+      <button
+        class="p-button-icon ml-2"
+        pButton
+        type="button"
+        icon="pi pi-file-excel"
+        [loading]="isGenerate"
+        label="Generate Report"
+        [disabled]="!count"
+        (click)="exportToExcel()"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<div class="page__content">
+  <div class="page__card">
+    <form
+      [formGroup]="searchForm"
+      class="form mb-3"
+    >
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" pInputText formControlName="name" (ngModelChange)="name$.next($event)">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Code</label>
+            <input type="text" pInputText formControlName="code" (ngModelChange)="code$.next($event)">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Company</label>
+            <pek-company-picker [currentCompanyId]="searchForm.get('supplier').value"
+                                (selectCompany)="onSelectCompany($event)"></pek-company-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Company Category</label>
+            <pek-company-category-picker
+              [selectedCategoryId]="searchForm.get('supplier_category').value"
+              (selectCompanyCategory)="onSelectCategory($event)"></pek-company-category-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Warehouse Category</label>
+            <pek-multi-product-categories-picker
+              [currentCategoryIds]="searchForm.get('categories').value"
+              (choiceCategoryFolAllIds)="onSelectCategories($event)"
+            ></pek-multi-product-categories-picker>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Paid</label>
+            <pek-input-three-values
+              [filterValue]="columnFilterService.getFilterValue(searchForm.get('is_paid').value)"
+              (changeValue)="getPaidStatus($event)">
+            </pek-input-three-values>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Creation From</label>
+            <p-calendar
+              formControlName="system_creation_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Creation To</label>
+            <p-calendar
+              formControlName="system_creation_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Recieved From</label>
+            <p-calendar
+              formControlName="invoice_reception_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Invoice Recieved To</label>
+            <p-calendar
+              formControlName="invoice_reception_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Items Recieved From</label>
+            <p-calendar
+              formControlName="items_reception_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label>Items Recieved To</label>
+            <p-calendar
+              formControlName="items_reception_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              [showClear]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Purchase Category</label>
+            <pek-multi-purchase-category-picker
+              [withReportFilters]="true"
+              (choiceCategories)="onSelectPurchasedCategories($event)"
+            ></pek-multi-purchase-category-picker>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Nomenclature Accounting Number</label>
+            <input pInputText (input)="changeAccountingNumber($event)">
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Invoice Date From</label>
+            <p-calendar
+              formControlName="invoice_date_after"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Invoice Date To</label>
+            <p-calendar
+              formControlName="invoice_date_before"
+              [showButtonBar]="true"
+              dateFormat="dd/mm/yy"
+              [readonlyInput]="true"
+              (ngModelChange)="search$.next()"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="page__table report-table">
+      <p-table
+        #dt
+        selectionMode="single"
+        scrollHeight="calc(100vh - 18.8rem)"
+        [scrollable]="true"
+        [paginator]="count > 0"
+        [rows]="10"
+        [value]="balanceProducts"
+      >
+        <ng-template pTemplate="caption">
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" style="width: 3%">#</th>
+            <th style="width: 10%">Code</th>
+            <th style="width: 10%">Name</th>
+            <th class="text-center" style="width: 6%">Total Quantity</th>
+            <th class="text-center" style="width: 4%">UOM</th>
+            <th class="text-center" style="width: 4%">Order</th>
+            <th class="text-center" style="width: 5%">Invoice</th>
+            <th class="text-center" style="width: 7%">Technology</th>
+            <th style="width: 9%">Supplier</th>
+            <th style="width: 8%" class="text-center">Purchase Category</th>
+            <th class="text-center" style="width: 5%">Date</th>
+            <th class="text-center" style="width: 5%">Quantity</th>
+            <th class="text-center" style="width: 6%">Unit Price</th>
+            <th class="text-center" style="width: 6%">Total Price</th>
+            <th class="text-center" style="width: 6%">Unit Cost</th>
+            <th class="text-center" style="width: 6%">Total Cost</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td class="text-center" style="width: 3%;">{{ i + 1}}</td>
+            <td style="width: 10%;">{{product.code}}</td>
+            <td style="width: 10%;">{{product.name}}</td>
+            <td class="text-center" style="width: 6%;">{{product.total_quantity}}</td>
+            <td class="text-center"
+                style="width: 4%;">{{product.category}}</td>
+            <td class="text-center" style="width: 4%;">
+              <a target="_blank"
+                 *ngIf="product.type === '0'"
+                 [routerLink]="['/procurement/chains/order/',product.order]"
+              >
+                {{product.order}}
+              </a>
+              <a
+                target="_blank"
+                *ngIf="product.type === '2'"
+                [routerLink]="['/outsourcing/chains/order/',product.order]"
+              >
+                {{product.order}}
+              </a>
+              <a
+                target="_blank" *ngIf="product.type === 'physical-inventory'"
+                [routerLink]="['/warehouse/physical-inventory/',product.order.id]"
+              >
+                {{product.order.id}}
+              </a>
+            </td>
+            <td class="text-center" style="width: 5%;">
+              <a
+                *ngIf="product.invoice"
+                target="_blank"
+                [routerLink]="['/reports/invoices/invoice/',product.invoice.id]"
+              >
+                {{product.invoice.self_serial_number}}
+              </a>
+
+              <span *ngIf="!product.invoice">None</span>
+            </td>
+            <td class="text-center" style="width: 7%;">
+              {{product.current_technology}}
+            </td>
+            <td style="width: 9%;">
+              {{product.supplier}}
+            </td>
+            <td style="width: 8%;" class="text-center">
+              {{product.purchase_category}}
+            </td>
+            <td class="text-center" style="width: 5%;">
+              {{product.document_creation_date | date:'dd/MM/yyyy'}}
+            </td>
+            <td class="text-center" style="width: 5%;">
+              {{product.quantity}}
+            </td>
+            <td class="text-center" style="width: 6%;">
+              {{product.supplier_unit_price | moneyFormat}} €
+            </td>
+            <td class="text-center" style="width: 6%;">
+              {{product.supplier_total_price | moneyFormat}} €
+            </td>
+            <td class="text-center" style="width: 6%;">
+              {{product.supplier_unit_cost | moneyFormat}} €
+            </td>
+            <td class="text-center" style="width: 6%;">
+              {{product.supplier_total_cost | moneyFormat}} €
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center p-4" [attr.colspan]="18">
+              <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+              <span *ngIf="!isLoading">No Records Found</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          <p-button
+            type="button"
+            (click)="dt.paginator=false"
+            styleClass="p-button-text"
+          >All
+          </p-button>
+        </ng-template>
+      </p-table>
+    </div>
+    <div *ngIf="!dt.paginator && !isLoading && count > 0" class="paginator-return-pagination">
+      <p-button
+        type="button"
+        (click)="dt.paginator=true"
+        styleClass="p-button-text"
+      >
+        Return pagination
+      </p-button>
+    </div>
+  </div>
+</div>

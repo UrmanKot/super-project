@@ -37,7 +37,7 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
         command: () => this.onDoneCompany()
       },
       {
-        label: 'Edit',
+        label: 'Edit comment',
         icon: 'pi pi-pencil',
         command: () => this.onEditTechnology()
       },
@@ -156,6 +156,12 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
   }
 
   onEventCompanySelectionChange() {
+    // update text for selected event company
+    if (this.selectedEventCompany?.is_done) {
+      this.eventCompanyMenuItems[0].items[2].label = 'Edit result';
+    } else {
+      this.eventCompanyMenuItems[0].items[2].label = 'Done';
+    }
     this.eventCompanyMenuItems[0].items[0].disabled = !!this.selectedEventCompany?.is_done;
   }
 
@@ -229,6 +235,15 @@ export class CrmEventCardComponent implements OnInit, OnDestroy {
       this.event).subscribe(event => {
       if (event) {
         this.getEvent();
+      }
+    });
+  }
+
+  onRemoveEvent() {
+    this.modalService.confirm('danger').subscribe(confirm => {
+      if (confirm) {
+        this.eventsListService.delete(this.event.id).subscribe(() => {
+        });
       }
     });
   }

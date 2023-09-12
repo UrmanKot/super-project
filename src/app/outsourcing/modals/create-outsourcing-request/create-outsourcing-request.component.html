@@ -82,8 +82,10 @@
         <tr
           [pSelectableRow]="product"
           [pRowToggler]="product"
-          [pSelectableRowDisabled]="product.approved === '0' && product.type === '0'"
-          [pRowTogglerDisabled]="product.approved === '0' && product.type === '0'"
+          [pSelectableRowDisabled]="(product.approved === ENomenclatureApproval.NEW ||
+           product.approved === ENomenclatureApproval.DECLINED) && product.type === ENomenclatureType.PURCHASED"
+          [pRowTogglerDisabled]="(product.approved === ENomenclatureApproval.NEW ||
+           product.approved === ENomenclatureApproval.DECLINED) && product.type === ENomenclatureType.PURCHASED"
         >
           <td style="width: 5%" class="text-center">{{(this.currentPage - 1) * 10 + i + 1}}</td>
           <td style="width: 25%">
@@ -98,6 +100,8 @@
                     NEW
                   </span>
             {{ product.name }}
+            <b *ngIf="product.approved && product.approved === ENomenclatureApproval.DECLINED && product.type === ENomenclatureType.PURCHASED" class="text-danger">(Declined)</b>
+            <b  *ngIf="product.approved && product.approved === ENomenclatureApproval.NEW && product.type === ENomenclatureType.PURCHASED" class="text-warning">(Not Confirmed)</b>
           </td>
           <td class="word-break" style="width: 30%">{{product.description}}</td>
           <td class="text-center" style="width: 15%">

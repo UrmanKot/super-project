@@ -2,7 +2,7 @@ import {Component, EventEmitter, forwardRef, Input, OnInit, Output} from '@angul
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {take} from 'rxjs/operators';
 import {Currency} from '@shared/models/currency';
-import {CurrenciesService} from '@shared/services/currencies.service';
+import {CurrenciesService} from '../../../reports/services/currencies.service';
 
 @Component({
   selector: 'pek-currency-picker',

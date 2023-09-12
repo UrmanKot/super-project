@@ -58,7 +58,7 @@
             </div>
 
             <div class="form-group" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
-              <label>Category</label>
+              <label>Category*</label>
               <pek-product-category-picker
                 (choiceCategory)="onSelectCategory($event)"
                 [currentCategoryId]="this.form.get('category').value"
@@ -83,6 +83,21 @@
             <label for="id">Id</label>
             <input type="text" id="id" pInputText formControlName="codeId">
           </div>
+          <div class="row" *ngIf="form.get('type').value === nomenclatureType.PURCHASED">
+            <div class="col-6">
+              <div class="form-group">
+                <label class="capitalize" for="minQuantity">Min volume</label>
+                <input type="text" id="minQuantity" pInputText formControlName="min_quantity">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group capitalize">
+                <label for="maxQuantity">Max volume</label>
+                <input type="text" id="maxQuantity" pInputText formControlName="max_quantity">
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
             <label for="description">Description</label>
             <textarea

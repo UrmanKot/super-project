@@ -22,6 +22,8 @@ import {ListProduct} from '../models/list-product';
 import {
   ProductionListSetActualQuantityDialogComponent
 } from '../modals/production-list-set-actual-quantity-dialog/production-list-set-actual-quantity-dialog.component';
+import {ScanNextComponent} from '../modals/scan-next/scan-next.component';
+import {Nomenclature} from '@shared/models/nomenclature';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +81,13 @@ export class ListService {
 
   makeDeficitOne(id: number): Observable<any> {
     return this.httpClient.post(this.API_URL + `list_products/${id}/deficit_request/`, null);
+  }
+
+  getProductListsParentIds(id: number, productList = null): Observable<any> {
+    return this.httpClient.get<{data: number[], productList}>(this.API_URL + `list_products/${id}/get_lists_ids_by_same_list_product/`)
+      .pipe(map(res => {
+        return {data: res.data, productList: productList};
+      }));
   }
 
   makeProductionList(entity: Partial<List>): Observable<any> {
@@ -157,6 +166,12 @@ export class ListService {
       .afterClosed();
   }
 
+  getForFilter(): Observable<List[]> {
+    return this.httpClient.get<{ data: List[] }>(this.API_URL + this.url + 'for_filter/?level=0').pipe(map(response => {
+      return response.data;
+    }));
+  }
+
   getScanned(listId, scanData: ScanResult): Observable<{ ids_found: number[] }> {
     return this.httpClient.post<{ data: { ids_found: number[] } }>(this.API_URL + this.url + listId + '/scan_list_product/', scanData, {
       context: new HttpContext().set(IS_SCANNING_ENABLED, true)
@@ -196,13 +211,30 @@ export class ListService {
       .afterClosed();
   }
 
-  setActualQuantityDialog(listProduct: ListProduct, parent: ListProduct, isOldList: boolean): Observable<ListProduct[]> {
+  setActualQuantityDialog(listProduct: ListProduct, parent: ListProduct, isOldList: boolean, products: ListProduct[],
+                          sendGenerateData, treeSimplifiedPath: Nomenclature[]): Observable<ListProduct[]> {
+    /*
+    * treeSimplifiedPath: Simply array of elements from parent in array form
+    * */
     return this.dialog
       .open<ProductionListSetActualQuantityDialogComponent>(ProductionListSetActualQuantityDialogComponent, {
         width: '50rem',
         height: 'auto',
         panelClass: 'modal-overflow-visible',
-        data: {listProduct, parent, isOldList},
+        data: {listProduct, parent, isOldList, products, sendGenerateData, treeSimplifiedPath},
+        autoFocus: false,
+        enterAnimationDuration: '250ms'
+      })
+      .afterClosed();
+  }
+
+  scanNextQr(productFound: boolean = true): Observable<boolean> {
+    return this.dialog
+      .open<ScanNextComponent>(ScanNextComponent, {
+        width: '50rem',
+        height: 'auto',
+        data: {productFound},
+        panelClass: 'modal-overflow-visible',
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })

@@ -38,6 +38,7 @@ export class EditProductComponent implements OnInit {
   }
 
   onChangeFormValue(data: { invalid: boolean, formValue: Partial<Product & Nomenclature> }) {
+    console.log('data', data);
     this.formValue = data.formValue;
     this.isFormInvalid = data.invalid;
   }
@@ -71,7 +72,9 @@ export class EditProductComponent implements OnInit {
         code: this.formValue.code,
         description: this.formValue.description,
         type: this.formValue.type,
-        bulk_or_serial: this.formValue.bulk_or_serial
+        bulk_or_serial: this.formValue.bulk_or_serial,
+        min_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.min_quantity : 0,
+        max_quantity: this.formValue.type === ENomenclatureType.PURCHASED ? this.formValue.max_quantity : 0,
       };
 
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
@@ -81,6 +84,8 @@ export class EditProductComponent implements OnInit {
         send.technologies = [...this.formValue.technologies];
         send.category = null;
       }
+
+      console.log('this.formValue.technologies', send.technologies);
 
       const sendUpdateQuantity: Partial<Product> = {
         id: this.product.id,

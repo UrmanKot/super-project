@@ -71,27 +71,45 @@ export class WarehouseQcInvoiceComponent implements OnInit, OnDestroy {
         const existing = this.invoiceProducts.find(el =>
           el.nomenclature.id === nomenclatureId &&
           el.current_technology?.id === technologyId);
+
         if (existing) {
-          existing.totalQuantity = existing.totalQuantity += product.quantity;
-          existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
+          if (product.rma_status) {
+            existing.totalQuantity = existing.totalQuantity += product.quantity - product.accepted_quantity;
+            existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity > 0 ? product.passed_quantity - product.accepted_quantity : 0;
+          } else {
+            existing.totalQuantity = existing.totalQuantity += product.quantity;
+            existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
+          }
+
           existing.totalQuantityNotPassed = existing.totalQuantityNotPassed += product.not_passed_quantity;
-          // existing.totalSerialNumbers.push(...product.serial_numbers);
+          existing.totalAcceptedQuantity = existing.totalAcceptedQuantity += product.accepted_quantity;
+
           existing.invoiceProducts.push(product);
         } else {
           product.invoiceProducts = [deepCopy(product)];
-          product.totalQuantity = product.quantity;
-          product.totalQuantityPassed = product.passed_quantity;
+          if (product.rma_status) {
+            product.totalQuantity = product.quantity - product.accepted_quantity;
+            product.totalQuantityPassed = product.passed_quantity > 0 ? product.passed_quantity - product.accepted_quantity : 0;
+          } else {
+            product.totalQuantity = product.quantity;
+            product.totalQuantityPassed = product.passed_quantity;
+          }
           product.totalQuantityNotPassed = product.not_passed_quantity;
+          product.totalAcceptedQuantity = product.accepted_quantity;
           // product.totalSerialNumbers = [...product.serial_numbers];
           this.invoiceProducts.push(product);
         }
       });
+
+      console.log('products', invoiceProducts);
 
       // this.invoiceProducts = invoiceProducts;
       this.isLoading = false;
       this.getInvoiceInfo();
     });
   }
+
+
 
   getInvoiceInfo() {
     this.invoiceService.getById(this.invoiceId).subscribe(invoice => {

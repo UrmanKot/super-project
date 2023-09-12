@@ -1,3 +1,24 @@
 <div class="full-calendar">
-  <full-calendar  [options]="calendarOptions"></full-calendar>
+  <header class="custom-toolbar">
+    <div>
+      <button pButton [disabled]="isLoading" type="button" class="calendar-icon-button left-group-btn p-button-icon" size="xs"
+              icon="pi pi-chevron-left" (click)="previousPeriod()" ></button>
+      <button pButton [disabled]="isLoading" type="button" class="calendar-icon-button right-group-btn p-button-icon" size="xs"
+              icon="pi pi-chevron-right" (click)="nextPeriod()"></button>
+      <button pButton [disabled]="isLoading" type="button" size="xs" label="TODAY" class="ml-3" (click)="todayPeriod()"></button>
+    </div>
+    <span class="toolbar-title">{{currentTitle}}</span>
+    <div>
+      <button pButton [disabled]="isLoading" type="button" size="xs" label="MONTH" class="left-group-btn"
+              (click)="changeView(FCViewMode.DAY_GRID_MONTH)" [class.active]="viewMode === FCViewMode.DAY_GRID_MONTH">
+      </button>
+      <button pButton [disabled]="isLoading" type="button" size="xs" label="WEEK" class="middle-group-btn"
+              (click)="changeView(FCViewMode.DAY_GRID_WEEK)" [class.active]="viewMode === FCViewMode.DAY_GRID_WEEK">
+      </button>
+      <button pButton [disabled]="isLoading" type="button" size="xs" label="LIST" class="right-group-btn"
+              (click)="changeView(FCViewMode.LIST_WEEK)"  [class.active]="viewMode === FCViewMode.LIST_WEEK">
+      </button>
+    </div>
+  </header>
+  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>

@@ -2,7 +2,6 @@ import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NomenclatureService} from '@shared/services/nomenclature.service';
-import {TreeNode} from 'primeng/api';
 import {Category} from '../../models/category';
 import {QuerySearch} from '@shared/models/other';
 import {Subject, takeUntil} from 'rxjs';
@@ -53,12 +52,14 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private nomenclatureService: NomenclatureService,
     private readonly dialogRef: MatDialogRef<AddTechnicalEquipmentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { nomenclatureId: number, technologies: Technology[] }
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      nomenclatureId: number, technologies: Technology[]
+    },
+  ) {
+  }
 
   ngOnInit(): void {
     this.technologies = this.data.technologies;
-    console.log('this.technologies', this.technologies);
     this.form.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(50)).subscribe(res => {
       this.searchNomenclature();
     });
@@ -69,7 +70,7 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
       id: this.selectedNomenclature.id,
       code: this.selectedNomenclature.code,
       name: this.selectedNomenclature.name,
-    }
+    };
     const send: any = {
       id: null,
       nomenclature_in_use: technicalEquipment,
@@ -91,12 +92,15 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     if (this.form.get('code').value) this.query.push({name: 'code', value: this.form.get('code').value});
     if (this.form.get('name').value) this.query.push({name: 'name', value: this.form.get('name').value});
     if (this.form.get('category').value) this.query.push({name: 'category', value: this.form.get('category').value});
-    if (this.form.get('root_categories').value) this.query.push({name: 'root_categories', value: this.form.get('root_categories').value});
+    if (this.form.get('root_categories').value) this.query.push({
+      name: 'root_categories',
+      value: this.form.get('root_categories').value
+    });
 
     if (!this.isShowAll) {
       this.getNomenclaturesForPagination();
     } else {
-      this.form.get('page').patchValue(1);
+      this.form.get('page').patchValue(1, {emitEvent: false, onlySelf: true});
       this.getNomenclatures();
     }
   }
@@ -107,18 +111,18 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
     ).subscribe(response => {
       response.results.forEach((product: any, idx) => {
 
-      this.nomenclatures = response.results;
-      this.countNomenclatures = response.count;
+        this.nomenclatures = response.results;
+        this.countNomenclatures = response.count;
 
-      if (this.isStartOnePage) {
-        this.paginator?.changePage(0);
-      }
+        if (this.isStartOnePage) {
+          this.paginator?.changePage(0);
+        }
 
-      this.isStartOnePage = false;
+        this.isStartOnePage = false;
 
-      this.isLoading = false;
+        this.isLoading = false;
+      });
     });
-  });
   }
 
   getNomenclatures() {
@@ -195,6 +199,5 @@ export class AddTechnicalEquipmentComponent implements OnInit, OnDestroy {
 
   technologySelected(technologyId: number) {
     this.sendForm.get('technology').setValue(technologyId);
-    console.log('technologySelected', technologyId);
   }
 }

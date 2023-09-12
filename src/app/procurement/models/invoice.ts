@@ -1,5 +1,7 @@
 import {Order} from './order';
 import {Company} from "../../crm/models/company";
+import {InvoiceProduct} from './invoice-product';
+import {Currency} from "@shared/models/currency";
 
 export class Invoice {
   readonly id: number;
@@ -15,7 +17,7 @@ export class Invoice {
   order?: Order;
   related_files: boolean;
   invoice?: Invoice;
-  // currency: Currency;
+  currency: Currency;
   invoice_date: Date;
   items_reception_date: Date;
   items_reception_date_to: Date;
@@ -25,6 +27,7 @@ export class Invoice {
   is_proforma: boolean;
   proformas: Invoice[] | null;
   total_price_converted: number;
+  have_payment_amount_created?: number;
   pure_total_price?: number;
   pure_total_price_converted?: number;
   label?;
@@ -38,6 +41,9 @@ export class Invoice {
   isPayment?: boolean;
   isCompleted?: boolean;
   purchase_category?: any;
+  rma_products_count?: number;
+  delivery_days?: number;
+  exchange_rate?: string;
 
   creationDateFrom?: Date;
   creationDateTo?: Date;
@@ -57,7 +63,7 @@ export class Invoice {
   system_creation_date_to: Date;
   related_status?;
   general_invoices?: any[];
-
+  qc_started_date?: any;
 }
 
 export class SerialNumber {
@@ -66,6 +72,20 @@ export class SerialNumber {
   is_passed: boolean;
   traversed?: boolean;
   warehouseproductqcprotocol_set?: any;
+  invoice_product_id?: number;
+  reserved_for_root_production_list_info?: {
+    id: number;
+    name: string;
+    code: string;
+    task_id: number;
+  }
+}
+
+export class Invoices {
+  prev: string;
+  next: string;
+  count: number;
+  results: Invoice[];
 }
 
 export class InvoiceFile {

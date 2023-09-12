@@ -84,6 +84,24 @@
               ></p-menubar>
               <button
                 pButton
+                [disabled]="!selectedProduct || selectedProduct && selectedProduct.data.nomenclature.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-down"
+                label="Expand"
+                class="mr-2"
+                (click)="expandCollapse(selectedProduct)"
+              ></button>
+              <button
+                pButton
+                [disabled]="!selectedProduct || selectedProduct && selectedProduct.data.nomenclature.type !== ENomenclatureType.ASSEMBLY"
+                type="button"
+                icon="pi pi-angle-up"
+                label="Collapse"
+                class="mr-2"
+                (click)="expandCollapse(selectedProduct, false)"
+              ></button>
+              <button
+                pButton
                 type="button"
                 icon="pi pi-angle-down"
                 label="Expand All"

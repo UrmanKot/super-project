@@ -9,6 +9,9 @@ import {
   CreateEditTechnologyComponent,
 } from '../modals/create-edit-technology/create-edit-technology.component';
 import {ModalActionType} from '@shared/models/modal-action';
+import {
+  EditTechnologyAccountingNumberComponent
+} from "../modals/edit-technology-accounting-number/edit-technology-accounting-number.component";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +42,12 @@ export class TechnologyService {
       }));
   }
 
+  getById(id): Observable<Technology> {
+    return this.httpClient.get<{ data: Technology }>(this.API_URL + this.url + `${id}/`).pipe(map(response => {
+      return response.data;
+    }));
+  }
+
   create(technology: Partial<Technology>): Observable<Technology> {
     return this.httpClient.post<{ data: Technology }>(this.API_URL + this.url, technology).pipe(
       map(response => response.data)
@@ -55,6 +64,12 @@ export class TechnologyService {
     return this.httpClient.delete(this.API_URL + this.url + `${technology.id}/`);
   };
 
+  editAccountingNumber(technology: Partial<Technology>): Observable<Technology> {
+    return this.httpClient.patch<{ data: Technology }>(this.API_URL + this.url + `${technology.id}/`, technology).pipe(
+      map(response => response.data)
+    );
+  }
+
   createEditTechnology(type: ModalActionType, technology?: Technology): Observable<Technology> {
     return this.dialog
       .open<CreateEditTechnologyComponent>(CreateEditTechnologyComponent, {
@@ -64,6 +79,18 @@ export class TechnologyService {
         autoFocus: false,
         enterAnimationDuration: '250ms'
       })
+      .afterClosed();
+  }
+
+  editTechnologyAccountingNumber(technology: Technology): Observable<Technology> {
+    return this.dialog.open<EditTechnologyAccountingNumberComponent>(EditTechnologyAccountingNumberComponent, {
+      width: '25rem',
+      height: 'auto',
+      panelClass: 'modal-overflow-visible',
+      data: {technology},
+      autoFocus: false,
+      enterAnimationDuration: '250ms'
+    })
       .afterClosed();
   }
 }

@@ -17,3 +17,37 @@
   }
   }
 }
+
+a {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.root_product {
+
+  a {
+    position: relative;
+    white-space: nowrap;
+    .root_list_products {
+      display: none;
+      min-width: 6.25rem;
+      height: auto;
+      z-index: 2;
+    }
+  }
+
+  &:hover {
+    a {
+      .root_list_products {
+        display: block;
+      }
+    }
+  }
+}
+
+.is-overdue {
+  background: var(--theme-color-danger) !important;
+}

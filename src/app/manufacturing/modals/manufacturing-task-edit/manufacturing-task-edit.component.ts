@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, Validators} from '@angular/forms';
-import {TTCDisplayType} from '@shared/models/task';
+import {Task, TTCDisplayType} from '@shared/models/task';
 import {UITask} from '../../components/manufacturing-chart/manufacturing-chart.component';
 import {Employee} from '@shared/models/employee';
 import {Company} from '../../../crm/models/company';
@@ -15,9 +15,8 @@ import {ModalService} from '@shared/services/modal.service';
 import {MachineService} from '../../services/machine.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {PlanningStatus} from '../../enums/planning-status.enum';
-import {Task} from '@shared/models/task';
-import {environment} from '@env/environment';
 import {finalize} from 'rxjs';
+import {QrCodeService} from '../../../qr-code/qr-code.service';
 
 @Component({
   selector: 'pek-manufacturing-task-edit',
@@ -71,6 +70,8 @@ export class ManufacturingTaskEditComponent implements OnInit {
   productionSerialNumbers: SerialNumber[] = [];
   ttcIn = 'hours';
 
+  isGenerating = false;
+
   get executors() {
     return this.form.get('employees') as FormArray;
   }
@@ -89,13 +90,24 @@ export class ManufacturingTaskEditComponent implements OnInit {
     private modalService: ModalService,
     private machinesService: MachineService,
     @Inject(MAT_DIALOG_DATA) public data: { task: any, tasks: UITask[], rootTask: Task },
-    private adapterService: AdapterService
+    private adapterService: AdapterService,
+    private readonly qrCodeService: QrCodeService,
   ) {
   }
 
   ngOnInit(): void {
+    console.log(this.data.task);
     this.task = this.data.task;
-    console.log(this.task);
+    if (this.task.is_in_rma_process && this.task.rma_reception_date) {
+      this.task.rma_reception_date = new Date(this.task.rma_reception_date)
+    }
+
+
+    if (this.task.created_orders.length === 1) {
+      this.task.created_order = this.task.created_orders[0];
+    } else {
+      this.task.created_order = this.task.created_orders.find(o => !this.task.refunded_orders.includes(o.id))
+    }
 
     this.prepareDetailedStatus();
 
@@ -116,7 +128,7 @@ export class ManufacturingTaskEditComponent implements OnInit {
           this.productionSerialNumbers.push(...innerTask.reserved_in_production_serial_numbers);
         }
 
-      //
+        //
       });
     });
     this.data.tasks.sort((a, b) => a.start_date.getTime() - b.start_date.getTime());
@@ -141,9 +153,17 @@ export class ManufacturingTaskEditComponent implements OnInit {
   prepareDetailedStatus() {
     if (this.task.status === 'Ordered') {
       if (this.task.is_in_qc_wh) {
-        this.status = 'In QC-WH';
+        this.status = 'Ordered In QC-WH';
       } else if (this.task.is_in_qc) {
-        this.status = 'In QC';
+        this.status = 'Ordered In QC';
+      } else {
+        this.status = this.task.status;
+      }
+    } else if (this.task.status === 'Rework') {
+      if (this.task.is_in_qc_wh) {
+        this.status = 'Rework In QC-WH';
+      } else if (this.task.is_in_qc) {
+        this.status = 'Rework In QC';
       } else {
         this.status = this.task.status;
       }
@@ -426,21 +446,19 @@ export class ManufacturingTaskEditComponent implements OnInit {
       }
     });
   }
+
   goToOrder() {
     let url: UrlTree | string = '';
-    if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
+    if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework' || this.task.status === 'Deficit') &&
       this.task.created_order.accounting_type === 3) {
       url = this.router.createUrlTree(['manufacturing', 'orders', 'order', this.task.created_order.id]);
-    } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
+    } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework' || this.task.status === 'Deficit') &&
       this.task.created_order.accounting_type === 2) {
-      url =  'outsourcing/chains/order/' + this.task.created_order.id;
-    } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework') &&
+      url = 'outsourcing/chains/order/' + this.task.created_order.id;
+    } else if ((this.task.status === 'Ordered' || this.task.status === 'On stock' || this.task.status === 'Rework' || this.task.status === 'Deficit') &&
       this.task.created_order.accounting_type === 1) {
       url = 'procurement/chains/order/' + this.task.created_order.id;
     }
-    // console.log(url);
-    // this.router.navigate([url])
-    //
     window.open(url.toString(), '_blank');
   }
 
@@ -500,4 +518,30 @@ export class ManufacturingTaskEditComponent implements OnInit {
     });
   }
 
+  onGenerateQrCodes() {
+    this.isGenerating = true;
+    const nomenclatureId = this.task?.production?.product.nomenclature.id;
+    const send = {
+      by_nomenclatures_list: [],
+    };
+
+    const serials: number[] = [];
+    if (this.reservedSerialNumbers) {
+      serials.push(...this.reservedSerialNumbers.map(serial => serial.id));
+    }
+    if (this.futureSerialNumbers) {
+      serials.push(...this.futureSerialNumbers.map(serial => serial.id));
+    }
+    if (this.productionSerialNumbers) {
+      serials.push(...this.productionSerialNumbers.map(serial => serial.id));
+    }
+
+    send.by_nomenclatures_list.push({
+      nomenclature_id: nomenclatureId,
+      serial_number_ids: serials ? serials : [],
+      order_product_ids: [],
+      invoice_product_ids: [],
+    });
+    this.qrCodeService.generateQrCodes(send).subscribe(() => this.isGenerating = false);
+  }
 }

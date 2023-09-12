@@ -1,90 +1,240 @@
-<div class="modal-header-container d-flex justify-content-between">
-  <h2 class="modal-heading" mat-dialog-title>
-    <span>Choice Product</span>
-  </h2>
+<div class="modal-header">
+    <h2 class="modal-header__title">
+        Choice Product
+    </h2>
 </div>
+
 <mat-dialog-content>
-  <form [formGroup]="form">
-    <div class="row">
-      <div class="col-4">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input formControlName="name" id="name" class="form-control" type="text" pInputText>
+    <form [formGroup]="form" class="mb-3">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input
+                            formControlName="name"
+                            id="name"
+                            class="form-control"
+                            type="text"
+                            pInputText
+                            (ngModelChange)="search()"
+                    >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="code">Code</label>
+                    <input
+                            formControlName="code"
+                            id='code' class="form-control"
+                            type="text"
+                            pInputText
+                            (ngModelChange)="search()"
+                    >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input
+                            formControlName="description"
+                            id="description"
+                            class="form-control"
+                            type="text"
+                            pInputText
+                            (ngModelChange)="search()"
+                    >
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="form-group">
-          <label for="code">Code</label>
-          <input formControlName="code" id='code' class="form-control" type="text" #searchBoxCode pInputText>
+    </form>
+
+    <ng-container *ngIf="!isLoading; else spinner">
+        <div class="pt-2 pb-2" *ngFor="let category of categories">
+            <ng-container
+                    [ngTemplateOutlet]="categoryRow"
+                    [ngTemplateOutletContext]="{category: category}">
+            </ng-container>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="form-group">
-          <label for="description">Description</label>
-          <input formControlName="description" id="description" class="form-control" type="text" #searchBoxDescription
-                 pInputText>
-        </div>
-      </div>
-    </div>
-  </form>
-
-<!--  <div class="pt-2 pb-2" *ngFor="let category of categoriesNew">-->
-<!--    <ng-container-->
-<!--      [ngTemplateOutlet]="categoryRow"-->
-<!--      [ngTemplateOutletContext]="{category: category}">-->
-<!--    </ng-container>-->
-<!--  </div>-->
-
-<!--  <ng-template #categoryRow let-category='category'>-->
-<!--    <div *ngIf="category.data.is_for_sales_chain">-->
-<!--      <button type="button" [ngStyle]="{'padding-left': 1 * category.data.level + 'rem'}"-->
-<!--              class="p-treetable-toggler p-link" (click)="openCategorisedProducts(category)">-->
-<!--        <i class="pi pi-fw" [class.pi-chevron-right]="!category.data.isExpanded"-->
-<!--           [class.pi-chevron-down]="category.data.isExpanded"></i>-->
-<!--      </button>-->
-<!--      {{category.data.name}}-->
-<!--      <ng-template [ngIf]="category.data.isExpanded">-->
-<!--        <ng-container-->
-<!--          [ngTemplateOutlet]="tableTemplate"-->
-<!--          [ngTemplateOutletContext]="{category: category}">-->
-<!--        </ng-container>-->
-<!--        <div class="pt-2 pb-2" *ngFor="let categoryInner of category.children">-->
-<!--          <ng-container-->
-<!--            [ngTemplateOutlet]="categoryRow"-->
-<!--            [ngTemplateOutletContext]="{category: categoryInner}">-->
-<!--          </ng-container>-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-
-<!--  <ng-template #tableTemplate let-category='category'>-->
-<!--    <p-table #dt rowExpandMode="single" class="table-full-loading adaptive-table adaptive-table_filters mt-2"-->
-<!--             dataKey="uid" [value]="category.data.products"-->
-<!--             [scrollable]="false"-->
-<!--             (selectionChange)="selectionChange()"-->
-<!--             [rows]="10" selectionMode="single" [(selection)]="selectedNode" (onRowSelect)="updateSerials()">-->
-<!--    </p-table>-->
-<!--  </ng-template>-->
+    </ng-container>
 
 </mat-dialog-content>
 
-<mat-dialog-actions class="justify-content-between">
-  <button
-    pButton
-    type="button"
-    label="Cancel"
-    [mat-dialog-close]="false"
-    class="p-button-danger"
-  >
+<ng-template #categoryRow let-category='category'>
+    <div *ngIf="!isLoading; else spinner">
+        <div [class.mb-2]="category.isExpanded" (click)="getProducts(category)" class="expand-button">
+            <button
+                    type="button"
+                    [ngStyle]="{'padding-left': 1 * category.level + 'rem'}"
+                    class="p-treetable-toggler p-link"
+            >
+                <i class="pi pi-fw" [class.pi-chevron-right]="!category.isExpanded"
+                   [class.pi-chevron-down]="category.isExpanded"></i>
+            </button>
+            {{category.name}}
+        </div>
 
-  </button>
-  <button
-    pButton
-    type="button"
-    class="p-button-success"
-    label="Save"
-    [loading]="isSaving"
-    [disabled]="form.invalid"
-  ></button>
+        <ng-template [ngIf]="category.isExpanded">
+            <ng-container
+                    [ngTemplateOutlet]="tableTemplate"
+                    [ngTemplateOutletContext]="{category: category}">
+            </ng-container>
+            <div class="pt-2 pb-2" *ngFor="let categoryInner of category.children">
+                <ng-container
+                        [ngTemplateOutlet]="categoryRow"
+                        [ngTemplateOutletContext]="{category: categoryInner}">
+                </ng-container>
+            </div>
+        </ng-template>
+
+    </div>
+</ng-template>
+<ng-template #tableTemplate let-category='category'>
+    <p-table
+        #dt
+        rowExpandMode="single"
+        class="table-full-loading adaptive-table adaptive-table_filters mt-2"
+        dataKey="id" [value]="products"
+        [scrollable]="false"
+        [rows]="10"
+        [(selection)]="selectedNode"
+        (selectionChange)="selectionChange()"
+        (onRowSelect)="updateSerials()"
+        selectionMode="single"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="index-header text-center" style="width: 5%">#</th>
+                <th style="width: 15%">
+                    Code
+                </th>
+                <th style="width: 15%">
+                    Name
+                </th>
+                <th style="width: 10%" class="text-center">
+
+                    Technology
+                </th>
+                <th style="width: 10%" class="text-center">
+                    Quantity
+                </th>
+                <th style="width: 15%" class="text-center">
+                    Reservation Quantity
+                </th>
+                <th style="width: 10%" class="text-center">
+                    Free Quantity
+                </th>
+                <th style="width: 5%" class="text-center">
+                    UOM
+                </th>
+                <th style="width: 15%" class="text-center">
+                    Category
+                </th>
+                <th style="width: 5%" class="text-center">
+                    Price
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr [pSelectableRow]="product"
+                [pRowToggler]="product"
+                [class.p-highlight]="selectedNode && product === selectedNode"
+            >
+                <td style="width: 5%" class="text-center">
+                    {{(this.currentPage - 1) * 10 + i + 1}}
+                </td>
+                <td style="width: 15%">
+                    {{product.nomenclature?.code}}
+                </td>
+                <td style="width: 15%">
+                    {{product.nomenclature.name}}
+                </td>
+                <td style="width: 10%">{{product.current_technology?.name}}</td>
+                <td style="width: 10%" class="text-center">{{product.total_locator_quantity}}</td>
+                <td style="width: 15%" class="text-center">{{product.reservationCount}}</td>
+                <td style="width: 10%" class="text-center">{{product.freeQuantity}}</td>
+                <td style="width: 5%"
+                    class="text-center">{{product.nomenclature.root_category?.unit_of_measure?.symbol ? product.nomenclature.root_category?.unit_of_measure?.symbol : 'Pcs' }}</td>
+                <td style="width: 15%" class="text-center">{{product.nomenclature.root_category?.name}}</td>
+                <td
+                        style="width: 5%">{{product.price ? (product.price | number:'1.2-2') : (product.nomenclature.price | number:'1.2-2')}}</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-product let-i="rowIndex">
+            <tr>
+                <!--        *ngIf="selectedNode && selectedNode.id === product.id"-->
+                <td colspan="12">
+                    <form [formGroup]="formProduct" class="d-flex justify-content-between">
+                        <div class="form-group" style="width: 49%">
+                            <div class="form-group" *ngIf="selectedNode?.nomenclature.bulk_or_serial === '0'">
+                                <label>Take From Warehouse</label>
+                                <input formControlName="quantity" min="0" class="form-control"
+                                       [max]="selectedNode.freeQuantity"
+                                       type="number">
+                            </div>
+                            <div class="form-group" *ngIf="isSerial && !isLoading">
+                                <label>Serial Numbers</label>
+                                <p-multiSelect formControlName="serial_product_ids" [options]="serials"
+                                               optionLabel="label" optionValue="id"></p-multiSelect>
+                            </div>
+                        </div>
+                        <div style="width: 49%">
+                            <div class="form-group" style="padding: 1rem 0;">
+                                <label>Send to Manufacturing</label>
+                                <input formControlName="productionLists" min="0" [max]="selectedNode?.freeQuantity"
+                                       class="form-control"
+                                       pInputText
+                                       type="number">
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td class="text-center p-4" [attr.colspan]="12">
+                    <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                    <span *ngIf="!isLoadingProducts">No Records Found</span>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-paginator
+        #paginator
+        *ngIf="countProducts > 0"
+        [rows]="10"
+        [totalRecords]="countProducts"
+        (onPageChange)="paginate($event)"
+    >
+    </p-paginator>
+
+</ng-template>
+<mat-dialog-actions class="justify-content-between">
+    <button
+            pButton
+            type="button"
+            label="Cancel"
+            [mat-dialog-close]="false"
+            class="p-button-danger"
+    >
+
+    </button>
+    <button
+            pButton
+            type="button"
+            class="p-button-success"
+            label="Save"
+            [loading]="isSaving"
+            [disabled]="form.invalid || !selectedNode"
+            (click)="onSave()"
+    ></button>
 </mat-dialog-actions>
+
+<ng-template #spinner>
+    <div class="d-flex mt-5 justify-content-center">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+    </div>
+</ng-template>

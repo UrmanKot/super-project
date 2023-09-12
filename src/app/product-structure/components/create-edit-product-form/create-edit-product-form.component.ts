@@ -49,6 +49,8 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
     technologies: [[]],
     technical_equipments: this.fb.array([]),
     deleted_technical_equipments_ids: [[]],
+    min_quantity: [0],
+    max_quantity: [0],
   });
 
   private destroy$ = new Subject();
@@ -66,6 +68,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
     this.form.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(data => {
+      console.log('this.form.valueChanges', data);
       this.formChange.next({invalid: this.form.invalid, formValue: data});
     });
 
@@ -91,6 +94,7 @@ export class CreateEditProductFormComponent implements OnInit, OnDestroy {
 
       if (this.product.nomenclature.type === ENomenclatureType.PURCHASED) {
         this.form.removeControl('code');
+        this.form.get('category').setValidators([Validators.required])
       }
 
       if (this.product.nomenclature.id) {

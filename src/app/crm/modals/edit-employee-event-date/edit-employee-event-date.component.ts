@@ -87,7 +87,6 @@ export class EditEmployeeEventDateComponent implements OnInit, OnDestroy {
       {name: 'employee_ids', value: this.form.get('employee_ids').value},
       {name: 'get_colliding_events_events', value: true},
     ];
-    console.log('this.form.get(\'start\').value', this.form.get('start').value);
     if (this.form.get('start').value) {
       this.query.push({
         name: 'from_datetime',

@@ -19,6 +19,9 @@ import { WarehouseToolRequestsComponent } from './components/warehouse-tool-requ
 import { WarehouseToolRequestComponent } from './components/warehouse-tool-request/warehouse-tool-request.component';
 import { WarehouseProductionRequestsComponent } from './components/warehouse-production-requests/warehouse-production-requests.component';
 import { WarehouseProductionRequestComponent } from './components/warehouse-production-request/warehouse-production-request.component';
+import { WarehouseDeliveryRequestsComponent } from './components/warehouse-delivery-requests/warehouse-delivery-requests.component';
+import { WarehouseDeliveryRequestComponent } from './components/warehouse-delivery-request/warehouse-delivery-request.component';
+import { WarehouseDeliveryChainComponent } from './components/warehouse-delivery-chain/warehouse-delivery-chain.component';
 import { CreatePhysicalInventoryComponent } from './modals/create-physical-inventory/create-physical-inventory.component';
 import { MovePhysicalInventoryProductComponent } from './modals/move-physical-inventory-product/move-physical-inventory-product.component';
 import { AddProductToPhysicalInventoryComponent } from './modals/add-product-to-physical-inventory/add-product-to-physical-inventory.component';
@@ -38,6 +41,7 @@ import {
 import { WarehouseQcComponent } from './components/warehouse-qc/warehouse-qc.component';
 import { WarehouseQcInvoiceComponent } from './components/warehouse-qc/warehouse-qc-invoice/warehouse-qc-invoice.component';
 import { QcAcceptToWarehouseComponent } from './modals/qc-accept-to-warehouse/qc-accept-to-warehouse.component';
+import { IsolatorAcceptToWarehouseComponent } from './modals/isolator-accept-to-warehouse/isolator-accept-to-warehouse.component';
 import { WarehouseQcOrderComponent } from './components/warehouse-qc/warehouse-qc-order/warehouse-qc-order.component';
 import {WarehouseIsolatorComponent} from './components/warehouse-isolator/warehouse-isolator.component';
 import {
@@ -47,19 +51,28 @@ import {
   WarehouseIsolatorOrdersComponent
 } from './components/warehouse-isolator/components/warehouse-isolator-orders/warehouse-isolator-orders.component';
 import { WarehouseProductionRequestPrintPageComponent } from './components/warehouse-production-request-print-page/warehouse-production-request-print-page.component';
+import { WarehouseDeliveryRequestPrintPageComponent } from './components/warehouse-delivery-request-print-page/warehouse-delivery-request-print-page.component';
 import {
   QcAcceptTechnicalEquipmentComponent
 } from './modals/qc-accept-technical-equipment/qc-accept-technical-equipment.component';
 import { NomenclatureSerialInfoComponent } from './modals/nomenclature-serial-info/nomenclature-serial-info.component';
+import { ReservationInfoComponent } from './modals/reservation-info/reservation-info.component';
 import {QrCodeModule} from '../qr-code/qr-code.module';
 import { PhysicalInventoryProductsChangesComponent } from './modals/physical-inventory-products-changes/physical-inventory-products-changes.component';
 import {RippleModule} from 'primeng/ripple';
-import { WarehouseShippingRequestsComponent } from './components/warehouse-shipping-requests/warehouse-shipping-requests.component';
-import { WarehouseShippingRequestComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request/warehouse-shipping-request.component';
-import { WarehouseShippingRequestPrintComponent } from './components/warehouse-shipping-requests/warehouse-shipping-request-print/warehouse-shipping-request-print.component';
+import { WarehouseDeliveryChainPrintComponent } from './components/warehouse-delivery-chain-print/warehouse-delivery-chain-print.component';
 import { ProductionListChainsStatisticsComponent } from './modals/production-list-chains-statistics/production-list-chains-statistics.component';
 import { WarehouseToolRequestPrintPageComponent } from './components/warehouse-tool-request-print-page/warehouse-tool-request-print-page.component';
 import { ProductionListSetActualQuantityDialogComponent } from './modals/production-list-set-actual-quantity-dialog/production-list-set-actual-quantity-dialog.component';
+import { IsolatorWriteOffInvoiceProductComponent } from './modals/isolator-write-off-invoice-product/isolator-write-off-invoice-product.component';
+import { IsolatorWriteOffOrderProductComponent } from './modals/isolator-write-off-order-product/isolator-write-off-order-product.component';
+import { ScanResultNoResultComponent } from './modals/scan-result-no-result/scan-result-no-result.component';
+import { ScanResultWasFoundComponent } from './modals/scan-result-was-found/scan-result-was-found.component';
+import { ScanNextComponent } from './modals/scan-next/scan-next.component';
+import { RmaCommentDialogComponent } from './modals/rma-comment-dialog/rma-comment-dialog.component';
+import { PhysicalInventoryScanResultModalComponent } from './modals/physical-inventory-scan-result-modal/physical-inventory-scan-result-modal.component';
+import { OrderProductionRequestsSignsListComponent } from './modals/order-production-requests-signs-list/order-production-requests-signs-list.component';
+import { AddIsolatorProductComponent } from './modals/add-isolator-product/add-isolator-product.component';
 
 
 @NgModule({
@@ -81,6 +94,9 @@ import { ProductionListSetActualQuantityDialogComponent } from './modals/product
     WarehouseToolRequestComponent,
     WarehouseProductionRequestsComponent,
     WarehouseProductionRequestComponent,
+    WarehouseDeliveryRequestsComponent,
+    WarehouseDeliveryRequestComponent,
+    WarehouseDeliveryChainComponent,
     CreatePhysicalInventoryComponent,
     MovePhysicalInventoryProductComponent,
     AddProductToPhysicalInventoryComponent,
@@ -97,17 +113,27 @@ import { ProductionListSetActualQuantityDialogComponent } from './modals/product
     WarehouseQcComponent,
     WarehouseQcInvoiceComponent,
     QcAcceptToWarehouseComponent,
+    IsolatorAcceptToWarehouseComponent,
     QcAcceptTechnicalEquipmentComponent,
     WarehouseQcOrderComponent,
     WarehouseProductionRequestPrintPageComponent,
+    WarehouseDeliveryRequestPrintPageComponent,
     NomenclatureSerialInfoComponent,
+    ReservationInfoComponent,
     PhysicalInventoryProductsChangesComponent,
-    WarehouseShippingRequestsComponent,
-    WarehouseShippingRequestComponent,
-    WarehouseShippingRequestPrintComponent,
+    WarehouseDeliveryChainPrintComponent,
     ProductionListChainsStatisticsComponent,
     WarehouseToolRequestPrintPageComponent,
     ProductionListSetActualQuantityDialogComponent,
+    IsolatorWriteOffInvoiceProductComponent,
+    IsolatorWriteOffOrderProductComponent,
+    ScanResultNoResultComponent,
+    ScanResultWasFoundComponent,
+    ScanNextComponent,
+    RmaCommentDialogComponent,
+    PhysicalInventoryScanResultModalComponent,
+    OrderProductionRequestsSignsListComponent,
+    AddIsolatorProductComponent,
   ],
   exports: [
     WarehouseCategoriesComponent

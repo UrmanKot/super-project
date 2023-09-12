@@ -33,15 +33,15 @@ export class NomenclatureSerialInfoComponent implements OnInit {
 
     switch (orderType) {
       case 3: {
-        url = this.router.createUrlTree(['dash', 'production', 'orders', 'order', orderId]);
+        url = this.router.createUrlTree(['manufacturing', 'orders', 'order', orderId]);
         break;
       }
       case 2: {
-        url = this.router.createUrlTree(['dash', 'outsource', 'outsource-chain', 'products', orderId]);
+        url = this.router.createUrlTree(['outsourcing', 'chains', 'order', orderId]);
         break;
       }
       case 1: {
-        url = this.router.createUrlTree(['dash', 'procurement', 'orders', 'products', orderId]);
+        url = this.router.createUrlTree(['procurement', 'chains', 'order', orderId]);
         break;
       }
     }
@@ -50,7 +50,7 @@ export class NomenclatureSerialInfoComponent implements OnInit {
   }
 
   goToInvoice(invoiceId: number) {
-    const url = this.router.createUrlTree(['dash', 'accounting', 'invoices', 'products', invoiceId]);
+    const url = this.router.createUrlTree(['reports', 'invoices', 'invoice', 'products', invoiceId]);
     window.open(url.toString(), '_blank');
   }
 

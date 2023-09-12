@@ -8,6 +8,16 @@
       <button
         pButton
         type="button"
+        icon="pi pi-trash"
+        label="Remove"
+        class="mr-2"
+        (click)="onRemoveEvent()"
+        [disabled]="isLoading"
+      >
+      </button>
+      <button
+        pButton
+        type="button"
         icon="pi pi-pencil"
         label="Edit"
         class="mr-2"
@@ -95,7 +105,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-company let-i="rowIndex">
           <tr [pSelectableRow]="company"
-              class="eto-test"
           [class.impression-neutral]="enableColors && company.is_done && company.impression === Impression.NEUTRAL"
           [class.impression-positive]="enableColors && company.is_done && company.impression === Impression.POSITIVE"
           [class.impression-negative]="enableColors && company.is_done && company.impression === Impression.NEGATIVE"

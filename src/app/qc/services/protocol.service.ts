@@ -6,7 +6,7 @@ import {environment} from '@env/environment';
 import {QuerySearch} from '@shared/models/other';
 import {ProductQcProtocol, QcProtocol, QcProtocols, QrProtocolParagraph} from '../models/protocol';
 import {ModalActionType} from '@shared/models/modal-action';
-import {Warehouse} from '../../warehouse/models/warehouse';
+import {Currency} from '../../warehouse/models/warehouse';
 import {
   CreateEditWarehouseComponent
 } from '../../warehouse/modals/create-edit-warehouse/create-edit-warehouse.component';

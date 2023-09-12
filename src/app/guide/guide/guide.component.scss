@@ -18,6 +18,25 @@
 
   &__qc {
     flex-direction: column;
+
+    .guide__button {
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .guide__button_arrow-right {
+      &::before {
+        content: "";
+        width: 20px;
+        height: 2px;
+        background: #495057;
+        position: absolute;
+        left: -15px;
+      }
+    }
   }
 
   &__qc-col {
@@ -115,6 +134,7 @@
               width: 10px;
               height: 2px;
               left: -22px;
+              top: 21px;
             }
 
             &:nth-child(2) {
@@ -320,8 +340,9 @@
   }
 
   &__box {
+    position: relative;
     display: flex;
-    margin-top: 80px;
+    //margin-top: 80px;
   }
 
   &__button {
@@ -536,6 +557,10 @@
     }
 
     &_arrow-bottom-left-big {
+
+      top: 100px;
+      left: -30px;
+
       span {
         display: block;
         position: absolute;
@@ -548,19 +573,19 @@
         }
 
         &:nth-child(1) {
-          height: 27px;
-          top: -30px;
+          height: 117px;
+          top: -130px;
         }
 
         &:nth-child(2) {
-          height: 192px;
+          height: 86px;
           top: 50px;
         }
 
         &:nth-child(3) {
-          width: 395px;
+          width: 365px;
           height: 2px;
-          top: 240px;
+          top: 135px;
           right: 44px;
 
           &::before {
@@ -1129,11 +1154,11 @@
         }
 
         &:nth-child(6) {
-          top: 8px;
+          top: 4px;
 
           span {
             &:nth-child(1) {
-              width: 27px;
+              width: 132px;
               height: 2px;
               right: -30px;
 
@@ -1153,17 +1178,17 @@
             }
 
             &:nth-child(2) {
-              width: 10px;
-              height: 2px;
+              width: 2px;
+              height: 16px;
               left: -13px;
-
+              top: 9px;
             }
 
             &:nth-child(3) {
               width: 2px;
-              height: 300px;
+              height: 224px;
               left: -13px;
-              bottom: 20px;
+              top: -275px;
             }
 
             &:nth-child(4) {
@@ -1183,6 +1208,52 @@
                 margin-right: 10px;
                 transform: rotate(-135deg);
                 right: 1px;
+                top: -3px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(7) {
+          span {
+            &:nth-child(1) {
+              width: 76px;
+              height: 2px;
+              right: -30px;
+              top: -37px;
+            }
+
+            &:nth-child(2) {
+              height: 27px;
+              width: 2px;
+              left: 44px;
+              top: -35px;
+            }
+
+            &:nth-child(3) {
+              height: 120px;
+              width: 2px;
+              left: 44px;
+              top: 55px;
+            }
+
+            &:nth-child(4) {
+              width: 76px;
+              height: 2px;
+              right: -30px;
+              top: 173px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(45deg);
+                right: -9px;
                 top: -3px;
               }
             }
@@ -1272,6 +1343,72 @@
 
         &:nth-child(6) {
           margin-top: 225px;
+        }
+      }
+    }
+
+    &_4 {
+      .guide__button {
+        &:nth-child(2) {
+          margin-top: 302px;
+
+          span {
+            background: #495057;
+            position: absolute;
+
+            &:nth-child(1) {
+              width: 75px;
+              height: 2px;
+              left: -30px;
+              top: -53px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-135deg);
+                bottom: -3px;
+                left: 1px;
+              }
+            }
+
+            &:nth-child(2) {
+              width: 2px;
+              height: 40px;
+              left: 43px;
+              top: -53px;
+            }
+
+            &:nth-child(3) {
+              width: 2px;
+              height: 25px;
+              left: 43px;
+              top: 50px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-225deg);
+                bottom: 1px;
+                left: -3px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(4) {
+          margin-top: 73px;
         }
       }
     }
@@ -1411,7 +1548,7 @@
         }
 
         &:nth-child(7) {
-          left: 101px;
+          left: 84px;
           top: 42px;
 
           span {
@@ -1438,16 +1575,16 @@
 
             &:nth-child(2) {
               width: 2px;
-              height: 21px;
+              height: 94px;
               left: 45px;
-              top: 38px;
+              top: 42px;
             }
 
             &:nth-child(3) {
-              width: 55px;
+              width: 158px;
               height: 2px;
-              left: -10px;
-              top: 57px;
+              left: -113px;
+              top: 134px;
 
               &::before {
                 content: '';
@@ -1464,6 +1601,50 @@
             }
           }
         }
+
+        &:nth-child(8) {
+          margin-top: -105px;
+
+          span {
+            &:nth-child(1) {
+              width: 30px;
+              height: 2px;
+            }
+
+            &:nth-child(2) {
+              width: 10px;
+              height: 2px;
+              left: -13px;
+            }
+
+            &:nth-child(3) {
+              width: 18px;
+              height: 2px;
+              left: -30px;
+              top: -6px;
+
+              &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(-135deg);
+                top: -3px;
+              }
+            }
+
+            &:nth-child(4) {
+              width: 2px;
+              height: 30px;
+              left: -13px;
+              top: -6px;
+            }
+          }
+        }
       }
     }
 
@@ -1471,6 +1652,41 @@
       padding-top: 69px;
 
       .guide__button {
+        &:nth-child(1) {
+          left: 116px;
+        }
+
+        &:nth-child(2) {
+          span {
+            &:nth-child(1) {
+              left: 45px;
+              top: -53px;
+              height: 45px;
+
+              &::before {
+                display: none;
+              }
+            }
+
+            &:nth-child(2) {
+              height: 2px;
+              left: 45px;
+              top: -53px;
+              width: 71px;
+
+              &::before {
+                transform: rotate(45deg);
+                right: -9px;
+                top: -3px;
+              }
+            }
+
+            &:nth-child(3) {
+              left: 45px;
+            }
+          }
+        }
+
         &:nth-child(8) {
           left: 19px;
           margin-bottom: 70px;
@@ -1483,11 +1699,415 @@
       }
     }
 
+    &_some-1 {
+      position: absolute;
+      left: 1106px;
+      top: -81px;
+
+      span {
+        display: block;
+        position: absolute;
+        background: #495057;
+      }
+
+      .guide__button {
+        &:nth-child(2) {
+          .bottom {
+            height: 27px;
+            bottom: -30px;
+          }
+        }
+
+        &:nth-child(3) {
+          margin-top: 84px;
+
+          span {
+            &:nth-child(1) {
+              width: 2px;
+              height: 28px;
+              top: -40px;
+              left: 44px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(-45deg);
+                top: 1px;
+                left: -3px;
+              }
+            }
+
+            &:nth-child(2) {
+              width: 2px;
+              height: 22px;
+              top: 55px;
+              left: 44px;
+            }
+
+            &:nth-child(3) {
+              width: 73px;
+              height: 2px;
+              top: 75px;
+              left: -27px;
+            }
+          }
+        }
+      }
+    }
+
+    &_some-2 {
+      margin: 0;
+      position: absolute;
+
+      left: 1430px;
+      top: -144px;
+
+      .guide__button {
+        span {
+          display: block;
+          position: absolute;
+          background: #495057;
+        }
+
+        &:nth-child(1) {
+          span {
+            &:nth-child(1) {
+              width: 183px;
+              height: 2px;
+              top: 21px;
+              left: -183px;
+            }
+
+            &:nth-child(2) {
+              width: 197px;
+              height: 2px;
+              top: 21px;
+              left: 87px;
+            }
+
+            &:nth-child(3) {
+              width: 2px;
+              height: 350px;
+              top: 21px;
+              left: 284px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(135deg);
+                left: -3px;
+                bottom: 7px;
+              }
+            }
+
+            &:nth-child(4) {
+              width: 2px;
+              height: 218px;
+              top: 21px;
+              left: -184px;
+            }
+
+            &:nth-child(5) {
+              width: 52px;
+              height: 2px;
+              top: 237px;
+              left: -234px;
+            }
+          }
+        }
+      }
+    }
+
+    &_some-3 {
+      position: absolute;
+      top: 890px;
+      left: 1260px;
+
+      .guide__button {
+        span {
+          display: block;
+          position: absolute;
+          background: #495057;
+
+          &:nth-child(1) {
+            width: 133px;
+            height: 2px;
+            top: -354px;
+            left: 379px;
+          }
+
+          &:nth-child(2) {
+            width: 2px;
+            height: 380px;
+            left: 510px;
+            top: -353px;
+          }
+
+          &:nth-child(3) {
+            width: 223px;
+            height: 2px;
+            top: 26px;
+            left: -227px;
+          }
+
+          &:nth-child(4) {
+            width: 313px;
+            height: 2px;
+            top: 26px;
+            left: 199px;
+          }
+
+          &:nth-child(5) {
+            width: 2px;
+            height: 163px;
+            left: -227px;
+            top: -136px;
+
+            &::before {
+              content: "";
+              display: block;
+              position: absolute;
+              width: 8px;
+              height: 8px;
+              border-top: 2px solid #495057;
+              border-right: 2px solid #495057;
+              margin-right: 6px;
+              transform: rotate(-45deg);
+              left: -3px;
+              top: 1px;
+            }
+          }
+        }
+
+
+        &::ng-deep {
+          .guide-button__inner {
+            width: 190px !important;
+          }
+        }
+      }
+    }
+
+    &_some-4 {
+      position: absolute;
+      top: 367px;
+      left: 1700px;
+
+      .guide__button {
+        &:nth-child(2) {
+
+          span {
+            display: block;
+            position: absolute;
+            background: #495057;
+
+            &:nth-child(1) {
+              width: 128px;
+              height: 2px;
+              top: 59px;
+              left: -81px;
+            }
+
+            &:nth-child(2) {
+              height: 13px;
+              width: 2px;
+              left: 45px;
+              top: 47px;
+            }
+
+            &:nth-child(3) {
+              height: 23px;
+              width: 2px;
+              left: 45px;
+              top: -30px;
+            }
+
+            &:nth-child(4) {
+              height: 16px;
+              width: 2px;
+              left: -81px;
+              top: 59px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(135deg);
+                left: -3px;
+                top: 7px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &_some-5 {
+      position: absolute;
+      top: 220px;
+      left: 1864px;
+
+      .guide__button {
+        span {
+          display: block;
+          position: absolute;
+          background: #495057;
+
+        }
+
+        &:nth-child(2) {
+          left: -98px;
+          top: -74px;
+
+          span {
+            &:nth-child(1) {
+              width: 15px;
+              left: -6px;
+              height: 2px;
+            }
+
+            &:nth-child(2) {
+              width: 15px;
+              left: 83px;
+              height: 2px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(45deg);
+                left: 6px;
+                top: -3px;
+              }
+            }
+          }
+        }
+
+        &:nth-child(3) {
+          left: -100px;
+          top: -95px;
+
+          span {
+            &:nth-child(1) {
+              height: 2px;
+              width: 24px;
+            }
+
+            &:nth-child(2) {
+              left: 112px;
+              top: -10px;
+              height: 34px;
+              width: 2px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(-45deg);
+                left: -3px;
+                top: 1px;
+              }
+            }
+
+            &:nth-child(3) {
+              height: 2px;
+              width: 260px;
+              left: -267px;
+            }
+
+            &:nth-child(4) {
+              left: -267px;
+              top: -11px;
+              height: 35px;
+              width: 2px;
+            }
+          }
+        }
+
+        &:nth-child(4) {
+          left: -230px;
+          top: -134px;
+
+          span {
+            &:nth-child(1) {
+              height: 2px;
+              width: 194px;
+            }
+
+            &:nth-child(2) {
+              left: 282px;
+              top: -46px;
+              height: 69px;
+              width: 2px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 6px;
+                transform: rotate(-45deg);
+                left: -3px;
+                top: 1px;
+              }
+            }
+
+            &:nth-child(3) {
+              height: 2px;
+              width: 163px;
+              left: -160px;
+            }
+
+            &:nth-child(4) {
+              left: -160px;
+              top: -47px;
+              height: 71px;
+              width: 2px;
+            }
+          }
+        }
+      }
+    }
+
     &_10 {
       padding-top: 144px;
       margin-right: 230px;
 
       .guide__button {
+        &:nth-child(1) {
+          opacity: 0;
+        }
+
         &:nth-child(5),
         &:nth-child(6),
         &:nth-child(7) {
@@ -1574,6 +2194,8 @@
         &:nth-child(3) {
           margin-top: 74px;
           margin-bottom: 113px;
+          position: relative;
+          top: -40px;
 
           span {
             display: block;
@@ -1582,9 +2204,37 @@
 
             &:nth-child(1) {
               height: 2px;
-              width: 27px;
+              width: 384px;
               top: 21px;
-              left: -30px;
+              right: -396px;
+            }
+
+            &:nth-child(1) {
+              height: 20px;
+              width: 2px;
+              top: 21px;
+              right: -396px;
+            }
+
+            &:nth-child(2) {
+              height: 2px;
+              width: 387px;
+              top: 21px;
+              right: -395px;
+            }
+
+            &:nth-child(3) {
+              height: 2px;
+              width: 277px;
+              top: 21px;
+              left: -286px;
+            }
+
+            &:nth-child(4) {
+              height: 87px;
+              width: 2px;
+              top: -64px;
+              left: -287px;
 
               &::before {
                 content: "";
@@ -1595,17 +2245,10 @@
                 border-top: 2px solid #495057;
                 border-right: 2px solid #495057;
                 margin-right: 10px;
-                transform: rotate(-135deg);
-                bottom: 0;
-                top: -2px;
+                transform: rotate(-45deg);
+                top: 2px;
+                left: -3px;
               }
-            }
-
-            &:nth-child(2) {
-              height: 2px;
-              width: 344px;
-              top: 21px;
-              right: -350px;
             }
           }
         }
@@ -2268,12 +2911,12 @@
               width: 2px;
               height: 54px;
               left: 44px;
-              top: -59px;
+              top: -67px;
             }
 
             &:nth-child(3) {
               left: -150px;
-              top: -59px;
+              top: -67px;
               width: 196px;
               height: 2px;
             }
@@ -2283,6 +2926,8 @@
     }
 
     &_reports {
+      margin-left: 50px;
+
       .guide__button {
         margin-top: 368px;
         margin-left: 80px;
@@ -2448,7 +3093,7 @@
   }
 
   &__panel {
-    width: 74.35%;
+    width: 100%;
     overflow: auto;
     padding: 6rem 0 0;
     height: 100%;
@@ -2457,6 +3102,7 @@
     overflow: -moz-scrollbars-none;
     -ms-overflow-style: none;
     cursor: grab;
+    transition: width 0.15s ease;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -2472,6 +3118,13 @@
   font-weight: 500;
   text-align: center;
   margin-top: -15px;
+
+  i {
+    position: absolute;
+    font-style: normal;
+    left: 8px;
+    top: 22px;
+  }
 
   span {
     margin-top: 3px;
@@ -2509,6 +3162,159 @@
     left: 21px;
   }
 }
+
+.guide {
+  .some-button-1 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          top: -10px;
+        }
+      }
+    }
+  }
+
+  .guide__buttons {
+    position: absolute;
+
+    &_1 {
+      top: 369px;
+      left: 1190px;
+
+      .guide__button {
+        span {
+          background: #495057;
+          position: absolute;
+        }
+
+        &:nth-child(2) {
+          span {
+            &:nth-child(1) {
+              width: 2px;
+              height: 30px;
+              left: 44px;
+              top: -30px;
+            }
+
+            &:nth-child(2) {
+              width: 2px;
+              height: 20px;
+              left: 44px;
+              top: 42px;
+            }
+
+
+            &:nth-child(3) {
+              width: 168px;
+              height: 2px;
+              left: -122px;
+              top: 61px;
+            }
+
+            &:nth-child(4) {
+              width: 2px;
+              height: 14px;
+              left: -122px;
+              top: 61px;
+
+              &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #495057;
+                border-right: 2px solid #495057;
+                margin-right: 10px;
+                transform: rotate(135deg);
+                bottom: 1px;
+                left: -3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .some-button-2 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          top: -10px;
+        }
+      }
+    }
+  }
+
+  .some-button-3 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          left: -10px;
+        }
+      }
+    }
+  }
+
+  .some-button-4 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          width: 125px !important;
+          margin-left: -35px !important;
+          left: 14px;
+          top: -1px;
+        }
+      }
+    }
+  }
+
+  .some-button-5 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          top: 10px;
+        }
+      }
+    }
+  }
+
+  .some-button-6 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          top: 7px;
+        }
+      }
+    }
+  }
+
+  .some-button-7 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          width: 125px !important;
+          margin-left: -35px !important;
+          left: 17px;
+          top: -1px;
+        }
+      }
+    }
+  }
+
+  .some-button-8 {
+    pek-guide-button {
+      &::ng-deep {
+        .guide-button__inner {
+          left: -55px;
+          top: -43px;
+        }
+      }
+    }
+  }
+}
+
 
 .small {
   &::ng-deep {

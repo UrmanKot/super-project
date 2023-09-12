@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {CompanyCategory} from '../../../crm/models/company-category';
 import {CompanyCategoryService} from '../../../crm/services/company-category.service';
@@ -8,8 +8,9 @@ import {CompanyCategoryService} from '../../../crm/services/company-category.ser
   templateUrl: './company-category-picker.component.html',
   styleUrls: ['./company-category-picker.component.scss']
 })
-export class CompanyCategoryPickerComponent implements OnInit {
+export class CompanyCategoryPickerComponent implements OnInit, OnChanges {
   @Output() selectCompanyCategory: EventEmitter<number> = new EventEmitter<number>();
+  @Input() selectedCategoryId: number;
   isLoading = true;
   categories: Partial<CompanyCategory>[] = [];
   selectedCompanyCategoryId: number;
@@ -18,7 +19,8 @@ export class CompanyCategoryPickerComponent implements OnInit {
 
   constructor(
     private readonly companyCategoryService: CompanyCategoryService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.companyCategoryService.get().pipe(
@@ -27,6 +29,12 @@ export class CompanyCategoryPickerComponent implements OnInit {
       this.categories = categories;
       this.isLoading = false;
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('selectedCategoryId' in changes) {
+      this.selectedCompanyCategoryId = this.selectedCategoryId
+    }
   }
 
   onSelectCompanyCategory() {

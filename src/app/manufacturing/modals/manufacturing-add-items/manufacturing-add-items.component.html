@@ -67,8 +67,13 @@
               <span *ngIf="material.warehouseProduct">Change material</span>
             </a>
             <span class="item-name" *ngIf="material.warehouseProduct">
-              {{material.warehouseProduct.nomenclature.name}} ({{material.warehouseProduct.nomenclature.code}})
-              Quantity: {{material.warehouseProduct.total_locator_quantity}}
+              <span *ngIf="material.warehouseProduct.nomenclature">
+                {{material.warehouseProduct.nomenclature?.name}} ({{material.warehouseProduct?.nomenclature.code}})
+              </span>
+              <span *ngIf="material.warehouseProduct.nomenclature_id">
+                {{material.warehouseProduct.name}} ({{material.warehouseProduct?.code}})
+              </span>
+              Quantity: {{material.warehouseProduct?.total_locator_quantity ? material.warehouseProduct?.total_locator_quantity : 0}}
             </span>
           </div>
           <div class="col-2">

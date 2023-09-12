@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Region} from '@shared/models/region';
 import {CountryService} from '@shared/services/country.service';
 import {RegionService} from '@shared/services/region.service';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'pek-create-edit-region',
@@ -16,7 +17,7 @@ export class CreateEditRegionComponent implements OnInit {
     name: ['', [Validators.required]],
     country: [null],
   });
-  isSaving: any;
+  isSaving = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -41,12 +42,17 @@ export class CreateEditRegionComponent implements OnInit {
   }
 
   onSave() {
+    this.isSaving = true;
     if (this.form.value.id) {
-      this.regionService.update(this.form.value).subscribe(() => {
+      this.regionService.update(this.form.value).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(() => {
         this.dialogRef.close(true);
       });
     } else {
-      this.regionService.create(this.form.value).subscribe(() => {
+      this.regionService.create(this.form.value).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(() => {
         this.dialogRef.close(true);
       });
     }

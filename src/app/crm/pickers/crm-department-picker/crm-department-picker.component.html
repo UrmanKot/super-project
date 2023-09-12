@@ -1,0 +1,22 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="showClear"
+  [(ngModel)]="department"
+  [options]="departments"
+  [disabled]="isLoading"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="title"
+  [placeholder]="placeholder">
+  <ng-template pTemplate="selectedItem">
+    <div *ngIf="department">
+      <div>{{selectedDepartment.title}}</div>
+    </div>
+  </ng-template>
+
+  <ng-template let-department pTemplate="item">
+    <div class="country-item">
+      <div>{{department.title}}</div>
+    </div>
+  </ng-template>
+</p-dropdown>

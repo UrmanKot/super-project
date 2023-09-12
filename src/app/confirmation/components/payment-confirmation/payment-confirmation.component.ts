@@ -330,7 +330,7 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
         if (serviceInvoicePaymentIds.length > 0 && paymentIds.length > 0) {
           forkJoin({
             serviceInvoicePaymentIds: this.serviceInvoicePaymentService.severalDecline(serviceInvoicePaymentIds),
-            paymentsIds: this.serviceInvoicePaymentService.severalDecline(paymentIds)
+            paymentsIds: this.paymentService.severalDecline(paymentIds)
           }).pipe(
             finalize(() => this.isPendingServiceInvoicePaymentsDecline = false)
           ).subscribe(() => {
@@ -377,15 +377,15 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   // TODO пофиксить
 
   onGoToPaymentInvoice(payment: Payment) {
-    window.open(`${this.link}accounting/invoices/products/` + payment.invoice.id);
+    window.open(`/reports/invoices/invoice/` + payment.invoice.id);
   }
 
   onGoToPaymentServiceInvoice(payment: Payment) {
-    window.open(`${this.link}accounting/invoices/service-invoice/` + payment.invoice.id);
+    window.open(`/reports/invoices/service-invoice/` + payment.invoice.id);
   }
 
   onGoToServicePaymentInvoice(servicePayment: ServiceInvoicePayment) {
-    window.open(`${this.link}accounting/invoices/service-invoice/` + servicePayment.serviceinvoice.id);
+    window.open(`/reports/invoices/service-invoice/` + servicePayment.serviceinvoice.id);
   }
 
   onGoToPaymentOrder(payment: Payment) {
@@ -422,8 +422,12 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.selectedPaymentsTotals.totalAmountPayments = 0;
 
     this.selectedPayments.forEach(node => {
-      this.selectedPaymentsTotals.totalPricePayments += node.data.invoice_total_price;
-      this.selectedPaymentsTotals.totalAmountPayments += parseFloat(node.data.payment_amount);
+      if (node.data?.invoice_total_price) {
+        this.selectedPaymentsTotals.totalPricePayments += node.data.invoice_total_price;
+      }
+      if (node.data?.payment_amount) {
+        this.selectedPaymentsTotals.totalAmountPayments += parseFloat(node.data.payment_amount);
+      }
     });
   }
 
@@ -431,9 +435,14 @@ export class PaymentConfirmationComponent implements OnInit, OnDestroy {
     this.selectedPaymentsTotals.totalPriceServiceInvoicePayments = 0;
     this.selectedPaymentsTotals.totalAmountServiceInvoicePayments = 0;
 
-    this.selectedServiceInvoicePayments.forEach(node => {
-      this.selectedPaymentsTotals.totalPriceServiceInvoicePayments += node.data.service_invoice_total_price ? node.data.service_invoice_total_price : node.data.invoice_total_price;
-      this.selectedPaymentsTotals.totalAmountServiceInvoicePayments += node.data.service_invoice_payment_amount ? parseFloat(node.data.service_invoice_payment_amount) : parseFloat(node.data.payment_amount);
+    this.selectedServiceInvoicePayments.filter(node => node.data).forEach(node => {
+
+      if (node.data.service_invoice_total_price || node.data.invoice_total_price) {
+        this.selectedPaymentsTotals.totalPriceServiceInvoicePayments += node.data.service_invoice_total_price ? node.data.service_invoice_total_price : node.data.invoice_total_price;
+      }
+      if (node.data.service_invoice_payment_amount || node.data.payment_amount) {
+        this.selectedPaymentsTotals.totalAmountServiceInvoicePayments += node.data.service_invoice_payment_amount ? parseFloat(node.data.service_invoice_payment_amount) : parseFloat(node.data.payment_amount);
+      }
     });
   }
 }

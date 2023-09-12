@@ -1,6 +1,9 @@
 .paste-image {
   min-width: 16rem;
-
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   img {
     width: 100%;
   }

@@ -3,6 +3,7 @@ import {FormBuilder, MaxLengthValidator, MaxValidator, Validators} from '@angula
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Country} from '@shared/models/country';
 import {CountryService} from '@shared/services/country.service';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'pek-create-edit-country',
@@ -16,7 +17,7 @@ export class CreateEditCountryComponent implements OnInit {
     name: ['', [Validators.required]],
     alpha2_code: ['', [Validators.required]],
   });
-  isSaving: any;
+  isSaving = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -32,12 +33,17 @@ export class CreateEditCountryComponent implements OnInit {
   }
 
   onSave() {
+    this.isSaving = true;
     if (this.form.value.id) {
-      this.countryService.update(this.form.value).subscribe(() => {
+      this.countryService.update(this.form.value).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(() => {
         this.dialogRef.close(true);
       });
     } else {
-      this.countryService.create(this.form.value).subscribe(() => {
+      this.countryService.create(this.form.value).pipe(
+        finalize(() => this.isSaving = false)
+      ).subscribe(() => {
         this.dialogRef.close(true);
       });
     }

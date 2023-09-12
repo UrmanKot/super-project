@@ -1,8 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Category} from '../../../product-structure/models/category';
 import {TreeNode} from 'primeng/api';
-import {Subject, takeUntil} from 'rxjs';
-import {CategoriesService} from '../../../product-structure/services/categories.service';
 import {PurchaseCategory} from '../../../purchasing/models/purchase-category';
 import {PurchasingCategoryService} from '../../../purchasing/services/purchasing-category.service';
 
@@ -16,6 +13,7 @@ export class MultiPurchaseCategoryPickerComponent implements OnInit {
   @Output() choiceCategoryFolAllIds: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Input() ignoredCategoryId: number;
   @Input() currentCategoryId: number;
+  @Input() withReportFilters = false;
 
   isLoading = true;
   categories: PurchaseCategory[] = [];
@@ -69,6 +67,29 @@ export class MultiPurchaseCategoryPickerComponent implements OnInit {
     });
 
     getChildren(tree);
+
+    if (this.withReportFilters) {
+      tree.unshift({
+        label: 'Outsourcing Service',
+        // @ts-ignore
+        data: {id: 'os'},
+        children: [],
+      });
+
+      tree.unshift({
+        label: 'Outsourcing Materials',
+        // @ts-ignore
+        data: {id: 'ou'},
+        children: [],
+      })
+
+      tree.unshift({
+        label: 'Manufacturing Procurement',
+        // @ts-ignore
+        data: {id: 'mp'},
+        children: [],
+      })
+    }
 
     this.categoriesTree = [...tree];
   }

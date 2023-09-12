@@ -22,6 +22,10 @@ import {MultiSelectModule} from "primeng/multiselect";
 import { CreateEditCountryComponent } from './modals/create-edit-country/create-edit-country.component';
 import { CreateEditRegionComponent } from './modals/create-edit-region/create-edit-region.component';
 import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/create-edit-sub-region.component';
+import { SalesPricesComponent } from './components/sales-prices/sales-prices.component';
+import {TriStateCheckboxModule} from "primeng/tristatecheckbox";
+import { EditNomenclaturePriceComponent } from './modals/edit-nomenclature-price/edit-nomenclature-price.component';
+import { EditOfferPriceComponent } from './modals/edit-offer-price/edit-offer-price.component';
 
 
 @NgModule({
@@ -42,7 +46,10 @@ import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/cr
     CreateSalesFileModalComponent,
     CreateEditCountryComponent,
     CreateEditRegionComponent,
-    CreateEditSubRegionComponent
+    CreateEditSubRegionComponent,
+    SalesPricesComponent,
+    EditNomenclaturePriceComponent,
+    EditOfferPriceComponent,
   ],
     imports: [
         CommonModule,
@@ -50,7 +57,8 @@ import { CreateEditSubRegionComponent } from './modals/create-edit-sub-region/cr
         SharedModule,
         LayoutModule,
         DragDropModule,
-        MultiSelectModule
+        MultiSelectModule,
+        TriStateCheckboxModule
     ]
 })
 export class SalesModule { }

@@ -34,7 +34,7 @@
           <label for="external_id">ExternalID *</label>
           <input type="text" id="external_id" pInputText formControlName="external_id">
         </div>
-        <div *ngIf="type === types.OUTGOING" class="form-group dark-disabled highlight">
+        <div class="form-group dark-disabled highlight">
           <label for="letter_registration_number">Letter Registration Number</label>
           <input type="text"  id="letter_registration_number" pInputText formControlName="letter_registration_number" [disabled]="true">
         </div>

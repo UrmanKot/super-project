@@ -1,0 +1,15 @@
+.product-category-picker {
+  &.disabled {
+    &::ng-deep {
+      p-treeSelect {
+        .p-tree-container {
+          opacity: 0.75 !important;
+        }
+
+        p-treenode {
+          pointer-events: none;
+        }
+      }
+    }
+  }
+}

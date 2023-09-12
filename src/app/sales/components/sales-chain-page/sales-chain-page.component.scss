@@ -1,3 +1,7 @@
+.company-page {
+  overflow: hidden;
+}
+
 h2 {
   font-size: 1.1875rem;
   font-weight: 600;
@@ -31,6 +35,10 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.title-hidden {
+  display: none;
 }
 
 .icons {

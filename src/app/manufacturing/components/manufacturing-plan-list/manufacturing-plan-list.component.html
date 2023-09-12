@@ -121,6 +121,7 @@
           scrollHeight="calc(100vh - 24.25rem)"
           [value]="tasks"
           [(selection)]="selectedTasks"
+          [(first)]="first"
         >
           <ng-template pTemplate="header">
             <tr>
@@ -176,14 +177,16 @@
                 <ng-container *ngIf="task.serials.length > 0">
                   <div pekTippy [content]="getTippyContent(task)" class="serials">
                     <span>{{1}}
-                      . {{task.serials[0].type_with_number ? task.serials[0].type_with_number : task.serials.serial.id}}</span>
+                      . {{task.serials[0].type_with_number ? task.serials[0].type_with_number : task.serials[0].id}}</span>
                     <span *ngIf="task.serials.length > 1">...</span>
                   </div>
                 </ng-container>
 
               </td>
               <td class="text-center" style="width: 10%">
+                <a [routerLink]="['/warehouse/production-lists', task.production_list_id]" target="_blank">
                 {{task.production_list_id}}
+                </a>
               </td>
               <td style="width: 15%;">
                 <a
@@ -193,6 +196,7 @@
                   target="_blank"
                 >
                   {{task.list_product.nomenclature.code}}
+                  <b *ngIf="task.contains_refunded_positions">(RMA)</b>
                 </a>
               </td>
               <td style="width: 25%;">
@@ -262,11 +266,29 @@
         <ng-template pTemplate="caption">
           <div class="d-flex table-caption">
             <button
+              [disabled]="!selectedTasksNodes.length"
+              pButton
+              type="button"
+              icon="pi pi-angle-down"
+              label="Expand"
+              class="ml-auto mr-2"
+              (click)="expandCollapse(selectedTasksNodes, true)"
+            ></button>
+            <button
+              [disabled]="!selectedTasksNodes.length"
+              pButton
+              type="button"
+              icon="pi pi-angle-up"
+              class="mr-2"
+              label="Collapse"
+              (click)="expandCollapse(selectedTasksNodes, false)"
+            ></button>
+            <button
               pButton
               type="button"
               icon="pi pi-angle-down"
               label="Expand All"
-              class="ml-auto mr-2"
+              class="mr-2"
               (click)="onExpandAll()"
               [disabled]="isLoading"
             ></button>
@@ -285,7 +307,7 @@
               type="button"
               icon="pi pi-chart-pie"
               label="Add Split"
-              [disabled]="selectedTasksNodes.length !== 1 || selectedTasksNodes[0]?.data?.task?.required_quantity === 1"
+              [disabled]="selectedTasksNodes.length !== 1 || disabled() || selectedTasksNodes[0]?.data?.task?.required_quantity === 1"
               (click)="onSplitNodePlan()"
             >
             </button>
@@ -295,7 +317,7 @@
               type="button"
               icon="pi pi-chart-bar"
               label="Selected Plans"
-              [disabled]="selectedTasksNodes.length === 0"
+              [disabled]="selectedTasksNodes.length === 0 || disabled()"
               (click)="goToSelectedNodesPlans()"
             >
             </button>
@@ -306,15 +328,14 @@
               icon="pi pi-trash"
               label="Delete Plan"
               [loading]="isDeleting"
-              [disabled]="selectedTasksNodes.length !== 1"
+              [disabled]="selectedTasksNodes.length !== 1 || disabled()"
               (click)="onDeleteNodePlan()"
             >
             </button>
           </div>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-          <tr *ngIf="!rowData.hideFromTable" [ttRow]="rowNode" [ttSelectableRow]="rowNode"
-              [ttSelectableRowDisabled]="!rowData.task">
+          <tr *ngIf="!rowData.hideFromTable" [ttRow]="rowNode" [ttSelectableRow]="rowNode">
             <td style="width: 30%" class="word-break">
               <div class="toggle-row">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -333,6 +354,7 @@
               <span *ngIf="rowData.task">
                 <a rel="noopener noreferrer" class="plan-link" target="_blank" [routerLink]="['plan', rowData.task.id]">
                   {{rowData.task.list_product.nomenclature.code}}
+                  <b *ngIf="rowData.task.contains_refunded_positions">(RMA)</b>
                 </a>
               </span>
             </td>
@@ -347,7 +369,9 @@
             </td>
             <td class="text-center" style="width: 7%">
               <span *ngIf="rowData.task">
+                <a [routerLink]="['/warehouse/production-lists', rowData.task.production_list_id]" target="_blank">
                 {{rowData.task.production_list_id}}
+                </a>
               </span>
             </td>
             <td class="text-center" style="width: 8%">

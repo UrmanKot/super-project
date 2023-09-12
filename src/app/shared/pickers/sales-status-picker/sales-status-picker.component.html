@@ -1,0 +1,11 @@
+<p-dropdown
+  [filter]="true"
+  [showClear]="true"
+  [(ngModel)]="status"
+  [options]="statuses"
+  [disabled]="isLoading || isDisabled"
+  (ngModelChange)="onChange($event)"
+  optionValue="id"
+  optionLabel="name"
+  placeholder="Choose Sale Status">
+</p-dropdown>

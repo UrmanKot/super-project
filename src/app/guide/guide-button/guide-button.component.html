@@ -10,6 +10,9 @@
     class="guide-button__inner"
   >
     {{title}}
+    <ng-container *ngIf="i">
+      <br>i{{i}}
+    </ng-container>
   </span>
   <div
     *ngIf="!disabled && !hideButtons && btnStyle === 'primary'"

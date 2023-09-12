@@ -9,8 +9,8 @@ export enum Impression {
 
 export class EventCompany {
   readonly id: number;
-  event: EventItem;
-  company: Company;
+  event?: EventItem;
+  company?: Company;
   comment: string;
   impression?: Impression;
   is_done: boolean;

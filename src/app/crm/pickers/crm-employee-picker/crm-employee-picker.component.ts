@@ -49,7 +49,7 @@ export class CrmEmployeePickerComponent implements OnInit, OnDestroy {
   }
 
   findEmployees() {
-    if (this.currentEmployeeIds.length > 0) {
+    if (this.currentEmployeeIds?.length > 0) {
       this.currentEmployeeIds.forEach(id => {
         const findEmployee = this.employees.find(t => t.id === id);
 

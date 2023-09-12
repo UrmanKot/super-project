@@ -2,15 +2,17 @@
   <h2 class="modal-header__title">Generated QR-codes</h2>
   <button
     pButton
+    [disabled]="isPrintLoading"
     type="button"
     icon="pi pi-print"
     label="Print QR Codes"
+    class="desktop-version"
     (click)="onPrint()"
   ></button>
 </div>
 
 <mat-dialog-content>
-  <div class="qr-code-modal mt-3">
+  <div class="qr-code-modal mt-3" #tt>
     <div class="qr-code-modal__box">
       <h2>Generated QR-codes With Out Serial Numbers</h2>
     </div>
@@ -38,14 +40,23 @@
     </ul>
   </div>
 
-  <div class="qr-code-modal__print">
-    <pek-print-qr-codes [qrCodes]="qrCodes" [orderId]="data?.orderId" [invoiceId]="data?.invoiceId"></pek-print-qr-codes>
-  </div>
+<!--  <div class="qr-code-modal__print">-->
+<!--    <pek-print-qr-codes [qrCodes]="qrCodes" [orderId]="data?.orderId" [invoiceId]="data?.invoiceId"></pek-print-qr-codes>-->
+<!--  </div>-->
 
 </mat-dialog-content>
 
 <mat-dialog-actions class="justify-content-between">
   <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    [disabled]="isPrintLoading"
+    type="button"
+    icon="pi pi-print"
+    label="Print QR Codes"
+    class="mobile-version"
+    (click)="onPrint()"
+  ></button>
 </mat-dialog-actions>
 
 <ng-template #empty>

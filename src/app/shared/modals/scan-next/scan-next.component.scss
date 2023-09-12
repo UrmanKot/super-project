@@ -1,0 +1,10 @@
+.confirm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &__text {
+    font-weight: 600;
+    font-size: 1.15625rem;
+  }
+}

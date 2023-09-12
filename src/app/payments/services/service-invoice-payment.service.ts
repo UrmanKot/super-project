@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpClient} from '@angular/common/http';
-import {map} from 'rxjs/operators';
-import {forkJoin, Observable} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {concatMap, forkJoin, from, Observable, of, toArray} from 'rxjs';
 import {ServiceInvoicePayment, ServiceInvoicePaymentFile} from '../models/service-invoice-payment';
 import {Payment} from "../models/payment";
 import {ModalActionType} from "@shared/models/modal-action";
@@ -32,12 +32,12 @@ export class ServiceInvoicePaymentService {
       map(response => response.data));
   }
 
-  severalConfirm(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.httpClient.post<{ data: ServiceInvoicePayment }>(this.API_URL + this.url + `confirm/${id}/`, null)));
+  severalConfirm(ids: number[]): Observable<any> {
+    return this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `bulk_confirm/`, ids)
   }
 
-  severalDecline(ids: number[]): Observable<any[]> {
-    return forkJoin(...ids.map(id => this.httpClient.post<{ data: ServiceInvoicePayment }>(this.API_URL + this.url + `decline/${id}/`, null)));
+  severalDecline(ids: number[]): Observable<any> {
+    return this.httpClient.post<{ data: Payment }>(this.API_URL + this.url + `bulk_decline/`, ids)
   }
 
   create(payment: any): Observable<ServiceInvoicePayment> {
@@ -106,12 +106,12 @@ export class ServiceInvoicePaymentService {
     )
   }
 
-  openCreateEditServicePaymentForm(type: ModalActionType, payment?: ServiceInvoicePayment, companyId?: number, orderId?: number): Observable<ServiceInvoicePayment[]> {
+  openCreateEditServicePaymentForm(type: ModalActionType, payment?: ServiceInvoicePayment, companyId?: number, orderId?: number, isDelivery = false): Observable<ServiceInvoicePayment> {
     return this.dialog
       .open<CreateEditServicePaymentFormComponent>(CreateEditServicePaymentFormComponent, {
         width: '55rem',
         height: 'auto',
-        data: {type, payment, companyId, orderId},
+        data: {type, payment, companyId, orderId, isDelivery},
         autoFocus: false,
         panelClass: 'modal-overflow-visible',
         enterAnimationDuration: '250ms'

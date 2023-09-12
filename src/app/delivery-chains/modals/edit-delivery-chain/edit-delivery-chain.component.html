@@ -1,0 +1,64 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Edit Delivery Chain
+  </h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Status*</label>
+          <p-dropdown
+            *ngIf="!isLoading; else spinner"
+            formControlName="status"
+            placeholder="Choose Status"
+            [options]="statuses"
+            optionLabel="name"
+            optionValue="id"
+          ></p-dropdown>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Estimate Date*</label>
+          <p-calendar
+            placeholder="Choose Date"
+            [showButtonBar]="true"
+            formControlName="date"
+            dataType="date"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+          ></p-calendar>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="comment" class="label">Comment</label>
+          <textarea id="comment" [rows]="4" pInputTextarea [autoResize]="true"
+                    formControlName="comment"></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    label="Save"
+    [loading]="isSaving"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

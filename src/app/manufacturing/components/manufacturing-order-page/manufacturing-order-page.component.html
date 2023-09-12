@@ -123,7 +123,7 @@
               </td>
               <td style="width: 10%" class="text-center">{{product.quantity}}</td>
               <td style="width: 20%">
-                <div class="d-flex" *ngFor="let empl of product?.details.task_employees">
+                <div class="d-flex" *ngFor="let empl of product?.task_employees">
                   <span class="mr-2">{{empl.employee.first_name}} {{empl.employee.last_name}}</span>
                   <span>({{empl.duration}})</span>
                 </div>
@@ -182,8 +182,9 @@
       Parts/Materials List
     </h2>
 
-    <div class="page__card mb-4">
-      <div class="page__table">
+
+    <div class="page__card mb-4"  *ngIf="viewMode === ViewMode.LIST">
+      <div class="page__table" >
         <p-table
           #mt
           selectionMode="single"
@@ -192,6 +193,7 @@
           [paginator]="orderMaterials.length > 0"
           [rows]="10"
           [value]="orderMaterials"
+          [(selection)]="selectedOrderMaterial"
         >
           <ng-template pTemplate="caption">
             <div class="d-flex">
@@ -206,6 +208,38 @@
                 class="ml-auto p-button-danger p-button-icon"
               >
               </button>
+              <button
+                *ngIf="orderMaterials.length > 0"
+                (click)="onDeleteOrderMaterial()"
+                pButton
+                [disabled]="!selectedOrderMaterial || selectedOrderMaterial?.totalRequiredQuantity === 0"
+                [loading]="isDeletingOrderMaterial"
+                type="button"
+                label="Delete"
+                icon="pi pi-trash"
+                class="ml-2 p-button p-button-danger p-button-icon"
+              >
+              </button>
+              <button
+                *ngIf="orderMaterials.length > 0"
+                (click)="openHierarchyMode()"
+                pButton
+                [loading]="isCancellation"
+                type="button"
+                label="Hierarchy"
+                icon="pi pi-table"
+                class="ml-2 p-button p-button-icon"
+              >
+              </button>
+              <button
+                *ngIf="orderMaterials.length > 0"
+                pButton
+                type="button"
+                class="ml-2"
+                icon="pi pi-print"
+                label="Print"
+                (click)="printOrderProductsInfo()"
+              ></button>
             </div>
           </ng-template>
           <ng-template pTemplate="header">
@@ -219,7 +253,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-material let-i="rowIndex">
-            <tr>
+            <tr [pSelectableRow]="material">
               <td style="width: 5%" class="text-center">{{i + 1}}</td>
               <td style="width: 15%">
                 <div *ngIf="material.material_nomenclature">
@@ -274,7 +308,7 @@
           </ng-template>
         </p-table>
       </div>
-      <div *ngIf="!mt.paginator && !isLoadingProducts && orderMaterials.length > 0" class="paginator-return-pagination">
+      <div  *ngIf="!mt.paginator && !isLoadingProducts && orderMaterials.length > 0" class="paginator-return-pagination">
         <p-button
           type="button"
           (click)="mt.paginator=true"
@@ -282,6 +316,158 @@
         >
           Return pagination
         </p-button>
+      </div>
+    </div>
+
+    <div class="page__card mb-4"  *ngIf="viewMode === ViewMode.HIERARCHY">
+      <div class="page__table" >
+        <p-treeTable
+          class="orders-tree"
+          [value]="requestTree"
+          selectionMode="single"
+          scrollHeight="calc(100vh - 16.5rem)"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex">
+
+              <button
+                pButton
+                type="button"
+                class="ml-auto"
+                icon="pi pi-angle-down"
+                label="Expand all"
+                (click)="expandCollapseAllOrders()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                class="ml-2"
+                icon="pi pi-angle-up"
+                label="Collapse all"
+                (click)="expandCollapseAllOrders(false)"
+              ></button>
+              <button
+                *ngIf="orderMaterials.length > 0"
+                (click)="openListMode()"
+                pButton
+                [loading]="isCancellation"
+                type="button"
+                label="List"
+                icon="pi pi-list"
+                class="p-button p-button-icon ml-2"
+              >
+              </button>
+              <button
+                pButton
+                type="button"
+                class="ml-2"
+                icon="pi pi-print"
+                label="Print"
+                (click)="printOrderProductsInfo()"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 25%; padding-left: 3.3125rem">ID</th>
+              <th style="width: 15%;">Code</th>
+              <th style="width: 10%;">Name</th>
+              <th style="width: 10%;" class="text-center">Technology</th>
+              <th class="text-center" style="width: 20%;">Required Quantity</th>
+              <th class="text-center" style="width: 20%;">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+            <tr
+              class="pagebreak"
+              [ttRow]="rowNode"
+              [class.is-added-after-order-creation]="rowData.request?.material_nomenclature"
+              [id]="rowData.request ? 'row-' + rowData.request?.id : null"
+              [class.tr-toggler]="rowNode.node.children.length > 0"
+            >
+              <td style="width: 25%;" class="ids-container">
+                <h3 class="td-title">ID</h3>
+                <div class="toggle-row hovered-info">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span [class.bold]="rowData.level < 4">
+                    {{rowData.name}}  {{rowData.listId ? '(' + rowData.listId + ')' : ''}}
+                  </span>
+                  <span *ngIf="rowData.level === 4">
+                     {{rowData.request.id}}
+                    <span *ngIf="rowData.request.allIds?.length > 0">L({{rowData.request.allIds?.length}})</span>
+
+                   <pek-hover-detailed-info-component
+                     [moveLeft]="0"
+                     *ngIf="rowData.request.allIds?.length > 0">
+                                     <span class="ids">
+                    <div *ngFor="let id of rowData.request.allIds">
+                      {{id}}
+                    </div>
+                  </span>
+                  </pek-hover-detailed-info-component>
+                  </span>
+                </div>
+              </td>
+              <td style="width: 15%;">
+                <h3 class="td-title">Code</h3>
+                <div *ngIf="rowData.level === 4">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    {{rowData.request.material_nomenclature.code}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    {{rowData.request.order_product_nomenclature.code}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    {{rowData.request.list_product.nomenclature.code}}
+                  </div>
+                </div>
+
+              </td>
+              <td style="width: 10%;" class="serial-numbers-container">
+                <h3 class="td-title">Name</h3>
+                <div *ngIf="rowData.level === 4">
+                  <div *ngIf="rowData.request.material_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.material_nomenclature.name}}
+                  </div>
+                  <div *ngIf="rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.order_product_nomenclature.name}}
+                  </div>
+                  <div *ngIf="!rowData.request.material_nomenclature && !rowData.request.order_product_nomenclature">
+                    <b *ngIf="rowData.request?.list_product?.nomenclature?.bulk_or_serial === '1'">(S)</b>
+                    {{rowData.request.list_product.nomenclature.name}}
+                  </div>
+                </div>
+              </td>
+              <td style="width: 10%" class="text-center">
+                <h3 class="td-title">Technology</h3>
+                <div *ngIf="rowData.level === 4">
+                  <span *ngIf="rowData.request.technology">{{rowData.request.technology}}</span>
+                </div>
+              </td>
+              <td style="width: 20%;" class="text-center">
+                <h3 class="td-title">Required Quantity</h3>
+                <div *ngIf="rowData.level === 4">
+                  {{rowData.request.totalInitialQuantity}}
+                </div>
+              </td>
+              <td style="width: 20%;" class="text-center">
+                <h3 class="td-title">Status</h3>
+                <i *ngIf="rowData.request?.totalRequiredQuantity === 0" class="pi pi-check-circle"></i>
+                <i *ngIf="rowData.request?.totalRequiredQuantity > 0" class="pi pi-times"></i>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr class="tr-spinner">
+              <td class="text-center p-4" [attr.colspan]="8">
+                <i  class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
       </div>
     </div>
 
@@ -434,4 +620,12 @@
     [products]="products"
   >
   </pek-manufacturing-order-page-print>
+</div>
+
+<div class="manufacturing-order-page-print" *ngIf="isShowOrderProductsPrint">
+  <pek-manufacturing-order-products-info-print
+    [order]="order"
+    [orderId]="orderId"
+    [products]="products"
+    [materials]="orderMaterialsByOrderProduct"></pek-manufacturing-order-products-info-print>
 </div>

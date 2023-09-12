@@ -60,7 +60,7 @@ export class CrmMultiRegionPickerComponent implements OnInit, OnChanges {
   }
 
   loadRegions() {
-    const countryIds = this.countrySelected.map(country => country.id);
+    const countryIds = this.countrySelected?.map(country => country.id);
     this.regionService.get([{name: 'country_ids', value: countryIds}]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(regions => {

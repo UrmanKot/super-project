@@ -1,9 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ENomenclatureType} from '@shared/models/nomenclature';
+import {ENomenclatureType, Nomenclature} from '@shared/models/nomenclature';
 import {AuthService} from '../../../auth/auth.service';
 import {GroupedRequest} from '../../models/grouped-request';
 import {OrderProductGroupedForPrint} from '../../../procurement/models/order-product';
-
+import {OrderTechnicalEquipment} from '../../models/order-technical-equipment';
+import {Locator} from '../../models/locator';
+import {List} from '../../models/list';
+class RootInfoDisplay {
+  id: number;
+  list: List;
+  nomenclature: Nomenclature;
+  planId: number;
+}
 @Component({
   selector: 'pek-warehouse-production-request-print-page',
   templateUrl: './warehouse-production-request-print-page.component.html',
@@ -15,8 +23,10 @@ export class WarehouseProductionRequestPrintPageComponent implements OnInit {
   @Input() rootList: any;
   @Input() orderId: number;
   @Input() technologies: string[];
-  currentDate = new Date();
   @Input() currentReqDate: Date = null;
+  @Input() technicalEquipments: OrderTechnicalEquipment[] = [];
+
+  currentDate = new Date();
 
   constructor(
     public readonly auth: AuthService
@@ -36,4 +46,13 @@ export class WarehouseProductionRequestPrintPageComponent implements OnInit {
     }
   }
 
+  protected readonly Nomenclature = Nomenclature;
+
+  getNomenclature(nomenclature: Nomenclature | number): Nomenclature {
+    return nomenclature as Nomenclature;
+  }
+
+  getLocator(locator: string | Locator) {
+    return locator as Locator;
+  }
 }

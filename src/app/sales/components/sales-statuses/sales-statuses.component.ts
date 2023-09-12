@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SalesStatus} from '../../models/sales-chain';
+import {SalesChainStatus, SalesStatus} from '../../models/sales-chain';
 import {MenuItem} from 'primeng/api';
 import {SalesStatusService} from '../../services/sales-status.service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -28,8 +28,8 @@ export class SalesStatusesComponent implements OnInit {
   }];
 
   isLoading = true;
-  statuses: SalesStatus[] = [];
-  selectedSalesStatus: SalesStatus;
+  statuses: SalesChainStatus[] = [];
+  selectedSalesStatus: SalesChainStatus;
 
   constructor(
     private readonly salesStatusService: SalesStatusService,

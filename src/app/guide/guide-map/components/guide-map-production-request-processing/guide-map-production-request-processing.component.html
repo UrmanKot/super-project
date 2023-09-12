@@ -1,0 +1,119 @@
+<div class="guide-map-item">
+  <img src="assets/images/business-map/production-request-processing/1.png" alt="Image">
+
+  <h3>Creating order to own manufacture</h3>
+
+  <p>
+    For assemblies and production items, the order is created from the production plan. An order can only be created for
+    technologies whose production is not blocked by child technologies. For example, it is not possible to order an
+    assembly if its child positions are not ready. If a position has several technologies, then it is impossible to send
+    the next one to production if the previous one is not ready yet. In order to check if it is possible to create an
+    order for the production of a certain technology, click on the task for this technology and check the flag for the
+    locked field. If the flag is cleared, then an order for this technology can be created.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/2.png" alt="Image">
+
+  <p>
+    To create a new order for your production, in the lower menu, click the order creating button, select the required
+    technology in the filter that you want to add to the order. Only tasks available for order will be selected.<br>
+    Select the necessary ones with the checkmarks to the left of the positions and click the create order button.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/3.png" alt="Image">
+
+  <p>
+    In the modal window that appears, select your production.
+  </p>
+
+  <p>
+    If necessary, add the material needed to produce this task if it was not added directly to the product structure or
+    plan. To do this, check the material required box, select the required nomenclature and quantity.<br>
+    If a special TE is required for production, you will be asked to include it in the order.
+    After that, click the create order button. An order to own production will be created in the orders to own
+    production menu.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/4.png" alt="Image">
+
+  <p>
+    To work with an order to your own production, go to the Manufacturing/orders to own production menu. This menu
+    contains a list of active orders to your production, indicating the date of creation, for which product this order
+    was created and the status of the order. Select the desired order and click the Selected order/own production order
+    button.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/5.png" alt="Image">
+
+  <p>
+    The order form opens, showing the items ordered, the required materials, TEs, and machines if configured.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/6.png" alt="Image">
+
+  <p>
+    The list of materials consists of child items from the plan hierarchy, added materials during the creation of the
+    order, or we can add the material directly to an already created order. To do this, select the ordered item for
+    which you want to add material, click the add material button, find the required item in the list and specify the
+    quantity.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/7.png" alt="Image">
+
+  <h3>Production request preparation</h3>
+
+  <p>
+    After creating an order, the warehouse must deliver the materials and equipment necessary for this order to its
+    production. A list of all requests is located in the Warehouse/Production requests menu. The list of requests
+    contains the root list - the final product of the production according to the plan, the time the request was
+    created, and the technology of the positions in the production order. Select the required request and click the
+    Parts/Materials list button
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/8.png" alt="Image">
+
+  <p>
+    In the window that opens, a list of requests and equipment necessary for production is presented with the quantity
+    and locator on which they are located.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/9.png" alt="Image">
+
+  <p>
+    When working from a mobile device, it is possible to use the camera to scan QR codes to automate the search for the
+    necessary materials. Click the Scan QR Codes button, scan the code, if a match is found in the list of requests, a
+    corresponding message will be displayed in a pop-up window and you will be asked to continue scanning, and the found
+    position will be highlighted in green.
+  </p>
+
+  <h3>Production request delivery</h3>
+
+  <p>
+    After all positions are collected, it is necessary to deliver the request for production to the employee responsible
+    for this. If a mobile device is used for work, it is necessary to press the get signature button, print the name and
+    surname of the receiving party and get his signature, after that the ability to press the complete button will be
+    unlocked and the request will be considered processed. To work from a computer, it is possible to print the request
+    and get the signature of the receiving party on the printed version, and then press the complete button.
+  </p>
+
+  <p>
+    If, after the request was closed, more materials were added to the order, the request will become active again, the
+    newly added positions will be displayed in red in the list, and it is necessary to repeat the preparation of the
+    request. Already delivered items will be displayed in the list with a delivery quantity of 0, which means that they
+    have already been delivered.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/10.png" alt="Image">
+
+  <h3>Order to own production processing</h3>
+
+  <p>
+    After the materials necessary for the production of the order have been delivered from the warehouse, the order form
+    will display the status in the form of a green checkmark next to the list of materials. If you need to add
+    additional materials, you must select the order item in the upper ordered items table, click the add materials
+    button and select the required materials and their quantity. After completing the order, select ready-made items,
+    click the send to QC button, the selected items will be sent for quality control.
+  </p>
+
+  <img src="assets/images/business-map/production-request-processing/11.png" alt="Image">
+</div>

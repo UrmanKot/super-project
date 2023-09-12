@@ -13,6 +13,8 @@ import {MakeRootProductComponent} from '../../modals/make-root-product/make-root
 import {MakeProductionListComponent} from '../../modals/make-production-list/make-production-list.component';
 import {ModalService} from '@shared/services/modal.service';
 import {ENomenclatureType} from '@shared/models/nomenclature';
+import {NomenclatureService} from '@shared/services/nomenclature.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'pek-product-structure-product',
@@ -81,6 +83,11 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
           label: 'Remove',
           icon: 'pi pi-trash',
           command: () => this.onDeleteProduct(),
+        },
+        {
+          label: 'Checking',
+          icon: 'pi pi-check-circle',
+          command: () => this.onCheckProductionListForErrors(),
         }
       ]
     }
@@ -94,12 +101,14 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
 
   inputCodeSub: Subscription;
   inputNameSub: Subscription;
+  ENomenclatureType = ENomenclatureType;
 
   private destroy$ = new Subject();
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly productService: ProductService,
+    private readonly nomenclatureService: NomenclatureService,
     private readonly modalService: ModalService,
     private readonly fb: FormBuilder,
     private readonly dialog: MatDialog,
@@ -156,6 +165,26 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
     });
     this.productsTree = temp;
     this.selectedProduct = null;
+  }
+
+  expandCollapse(node, isExpanded: boolean = true) {
+    const temp = cloneDeep(this.productsTree);
+    temp.forEach(parent => {
+      this.makeRow(parent, node, isExpanded);
+    });
+    this.productsTree = temp;
+  }
+
+  makeRow(node, dat, isExpanded) {
+    if (node.data.id == dat.data.id) {
+      this.expandCollapseRecursive(node, isExpanded);
+    } else {
+      if (node.children) {
+        node.children.forEach(element => {
+          this.makeRow(element, dat, isExpanded);
+        });
+      }
+    }
   }
 
   expandCollapseRecursive(node: TreeNode, isExpand: boolean): void {
@@ -394,6 +423,18 @@ export class ProductStructureProductComponent implements OnInit, AfterViewInit, 
       autoFocus: false,
       enterAnimationDuration: '250ms',
     });
+  }
+
+  onCheckProductionListForErrors() {
+    const nomenclatureId = this.selectedProduct.data.nomenclature.id;
+    this.nomenclatureService.checkStructureForErrors(nomenclatureId).subscribe(
+      {
+        next: (() => {}),
+        error: (error: HttpErrorResponse) => {
+          this.productService.showProductStructureError(error.error?.data[0]).subscribe()
+        }
+      }
+    );
   }
 
   onEditProduct() {

@@ -33,6 +33,13 @@
       Is New
     </div>
   </div>
+
+  <div class="d-flex align-items-center ml-3">
+    <span class="color-box original-structure-changing"></span>
+    <div class="capitalize">
+      original structure changing
+    </div>
+  </div>
 </div>
 <div class="compare">
   <div class=" page__table mr-2">
@@ -43,6 +50,7 @@
         </div>
         <div class="d-flex align-item-center">
           <p-menubar
+            *ngIf="!data.isCompareView"
             class="product-structure-bar ml-auto mr-2"
             [model]="currentMenuItems"
             [class.disabled]="!currentSelectedItem || currentSelectedItem && (hasNoMultipleNames(currentSelectedItem.data) || codeHasMoreThanOne(currentSelectedItem.data))"
@@ -139,7 +147,21 @@
           <p-menubar
             class="product-structure-bar ml-auto mr-2"
             [model]="newMenuItems"
-            [class.disabled]="!newSelectedItem || newSelectedItem && (hasNoMultipleNames(newSelectedItem.data) || codeHasMoreThanOne(newSelectedItem.data))"
+            *ngIf="!data.isCompareView && (!newSelectedItem || newSelectedItem)"
+            [class.disabled]="
+            !newSelectedItem ||
+             newSelectedItem &&
+              (hasNoMultipleNames(newSelectedItem.data) ||
+               codeHasMoreThanOne(newSelectedItem.data)) &&
+               newSelectedItem &&
+               !newSelectedItem.data.existing_structure"
+          ></p-menubar>
+
+          <p-menubar
+            class="product-structure-bar ml-auto mr-2"
+            [model]="newMenuOriginalTreeItems"
+            [class.disabled]="!newSelectedItem || !newSelectedItem?.data?.existing_structure"
+            *ngIf="data.isCompareView"
           ></p-menubar>
           <button
             pButton
@@ -164,6 +186,7 @@
       [scrollable]="true"
       scrollHeight="calc(100vh - 19.2rem)"
       [(selection)]="newSelectedItem"
+      (selectionChange)="selectionChanged()"
       cdkDropListGroup
     >
       <ng-template pTemplate="header">
@@ -179,6 +202,7 @@
             [class.quantity-changed]="rowData?.hasQuantityChanged && !rowData?.hasNameChanged && !rowData?.isDeleted"
             [class.name-changed]="hasNameChanged(rowData) && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
             [class.is-cycled]="rowData?.hasCycle && !rowData?.hasQuantityChanged && !rowData?.isDeleted"
+            [class.original-structure-changing]="rowData?.existing_structure"
             [class.is-deleted]="rowData?.isDeleted && !rowData?.hasQuantityChanged && !rowData?.hasNameChanged">
           <td
             style="width: 30%"
@@ -191,7 +215,10 @@
                 </span>
             </div>
           </td>
-          <td class="name" style="width: 20%">
+          <td class="name"
+
+              style="width: 20%">
+            <!--     [class.original-structure-changing]="rowData?.existing_structure"       -->
             {{rowData?.name}}
             <span *ngIf="rowData ? codeHasMoreThanOne(rowData) : false">
               <p class="badge_warning">Has Multiple Names In Import</p>
@@ -211,6 +238,8 @@
             style="width: 7%"
             class="text-center"
           >
+
+<!--     [class.original-structure-changing]="rowData?.existing_structure"       -->
             {{rowData ? rowData?.quantity : rowData | json}}
           </td>
         </tr>
@@ -226,15 +255,19 @@
     </p-treeTable>
   </div>
 </div>
-<div class="d-flex justify-content-between mt-3">
+<div class="d-flex mt-3"
+     [class.justify-content-between]="!data.isCompareView"
+     [class.justify-content-center]="data.isCompareView">
   <button
     pButton
     type="button"
-    class="p-button-warning mr-2"
-    label="Cancel Changes"
+    class="mr-2"
+    [class.p-button-warning]="!data.isCompareView"
+    [class.p-button-success]="data.isCompareView"
+    [label]="data.isCompareView ? 'Close Compare View' : 'Cancel Changes'"
     (click)="onCancel()"
   ></button>
-  <div class="d-flex align-items-center">
+  <div *ngIf="!data.isCompareView" class="d-flex align-items-center">
     <button
       *ngIf="hasNameChangeDepend() && !moreThanOne()"
       pButton
@@ -253,7 +286,8 @@
       [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct"
       (click)="acceptNewForAll()"
     ></button>
-    <p style="display: inline-block" class="mr-2 text-danger" *ngIf="moreThanOne()"><b>Some Codes Has More Than One Different Name</b></p>
+    <p style="display: inline-block" class="mr-2 text-danger" *ngIf="moreThanOne()"><b>Some Codes Has More Than One
+      Different Name</b></p>
     <button
       [disabled]="!auth.user.can_accept_changes_on_import || hasCyclingProduct || hasNameChangeDepend()"
       pButton

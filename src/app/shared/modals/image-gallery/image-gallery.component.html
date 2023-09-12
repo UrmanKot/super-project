@@ -1,10 +1,11 @@
-<div class="image-gallery" *ngIf="!isLoading && images.length > 0">
+<div #imageGalleryContainer class="image-gallery" *ngIf="!isLoading && images.length > 0">
   <div class="image-gallery__wrapper">
     <div
       class="image-gallery__inner"
       [style.width]="galleryWidth * images.length + 'px'"
       [style.transform]="'translateX(-' + offsetSlider + 'px)'"
     >
+<!--       [style.background-image]="'url(' + image.image +')'"     -->
       <div class="image-gallery__slide" *ngFor="let image of images; let idx = index">
         <img [src]="image.image" [alt]="'Изображение слайда ' + idx + 1">
       </div>

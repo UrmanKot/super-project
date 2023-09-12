@@ -9,9 +9,11 @@ import {CorrespondentService} from '../../services/correspondent.service';
 import {ModalService} from '@shared/services/modal.service';
 import {QuerySearch} from '@shared/models/other';
 import {take} from 'rxjs/operators';
-import {MenuItem} from 'primeng/api';
+import {MenuItem, MessageService} from 'primeng/api';
 import {Subject, takeUntil} from 'rxjs';
 import {environment} from '@env/environment';
+import {AuthService} from '../../../auth/auth.service';
+import {CorrespondentsCategory} from '../../models/correspondents-category';
 
 @Component({
   selector: 'pek-correspondent-list',
@@ -65,11 +67,13 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   }];
   link = environment.image_path;
   constructor(
+    private fb: FormBuilder,
     private activatedRouter: ActivatedRoute,
     private modalService: ModalService,
     private correspondentService: CorrespondentService,
     private adapterService: AdapterService,
-    private fb: FormBuilder,
+    public readonly auth: AuthService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -146,6 +150,14 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
 
   searchCorrespondents(query: QuerySearch[]): void {
     this.correspondentService.get(this.type, query).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      res.results.forEach(correspondent => {
+        correspondent.categoryPath = '';
+        const path: string[] = [];
+        if (correspondent.category) {
+          this.formPath(correspondent.category, path);
+          correspondent.categoryPath = path.reverse().join(' > ')
+        }
+      });
       this.correspondents = res.results;
       this.countCorrespondents = res.count;
 
@@ -156,6 +168,14 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
       this.isStartOnePage = false;
       this.isLoading = false;
     });
+  }
+
+  formPath(category: CorrespondentsCategory, path: string[]) {
+    path.push(category.name);
+    if (category.parent) {
+      return this.formPath(category.parent, path);
+    }
+    return path;
   }
 
   paginate(evt: any) {
@@ -183,6 +203,17 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
   }
 
   edit(): void {
+    if (this.selectedNode.category) {
+      if (!this.haveAccessToCorrespondent(this.selectedNode.category.id)) {
+        this.messageService.add({
+          severity: 'error',
+          summary: `Has no permissions`,
+          detail: `Has no permissions to edit Correspondent with given category`,
+        });
+        return;
+      }
+    }
+
     this.correspondentService.createEditCorrespondent('edit', this.type, this.selectedNode).pipe(take(1), takeUntil(this.destroy$)).subscribe(
       (response) => {
         if (response) {
@@ -191,6 +222,11 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  haveAccessToCorrespondent(categoryId: number) {
+    const categoryPermissions = this.auth.user.correspondent_category_permissions;
+    return this.auth.user.is_superuser || categoryPermissions.some(cat => cat.id === categoryId)
   }
 
   delete() {
@@ -211,7 +247,17 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
     return nameArr[nameArr.length - 1];
   }
 
-  downloadFile(file: any) {
+  downloadFile(file: any, correspondent: Correspondent) {
+    if (correspondent.category) {
+      if (!this.haveAccessToCorrespondent(correspondent.category.id)) {
+        this.messageService.add({
+          severity: 'error',
+          summary: `Has no permissions`,
+          detail: `Has no permissions to download Correspondent files with given category`,
+        });
+        return;
+      }
+    }
     this.correspondentService.download_file(this.type, file.id).pipe(takeUntil(this.destroy$)).subscribe(response => {
       const filename = this.getName(file.file);
       this.adapterService.downloadFile(filename, response);
@@ -292,5 +338,14 @@ export class CorrespondentListComponent implements OnInit, OnDestroy {
     this.paginator.changePage(0);
     this.searchForm.get('page').patchValue(1);
     this.search();
+  }
+
+  getFileLink(link: any, correspondent: any) {
+    if (correspondent.category) {
+      if (!this.haveAccessToCorrespondent(correspondent.category.id)) {
+        return 'javascript:void(0)';
+      }
+    }
+    return this.link + link;
   }
 }

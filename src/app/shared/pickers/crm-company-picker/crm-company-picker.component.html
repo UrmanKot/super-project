@@ -8,17 +8,27 @@
   optionValue="id"
   optionLabel="name"
   [placeholder]="placeholder"
+  filterBy="alpha2_code,name"
+  *ngIf="!isLoading; else spinner"
 >
 
   <ng-template pTemplate="selectedItem">
-    <div class="country-item country-item-value" *ngIf="selectedCountry">
+    <div class="country-item-selected" *ngIf="selectedCountry">
       <div>{{selectedCountry.name}}</div>
+      <div class="ml-2">{{selectedCountry.alpha2_code}}</div>
     </div>
   </ng-template>
 
   <ng-template let-country pTemplate="item">
     <div class="country-item">
       <div>{{country.name}}</div>
+      <div>{{country.alpha2_code}}</div>
     </div>
   </ng-template>
 </p-dropdown>
+
+<ng-template #spinner>
+  <div class="spinner-input">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>

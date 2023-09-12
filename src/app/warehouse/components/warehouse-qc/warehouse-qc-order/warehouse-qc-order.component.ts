@@ -83,6 +83,7 @@ export class WarehouseQcOrderComponent implements OnInit {
           existing.totalQuantity = existing.totalQuantity += product.quantity;
           existing.totalQuantityPassed = existing.totalQuantityPassed += product.passed_quantity;
           existing.totalQuantityNotPassed = existing.totalQuantityNotPassed += product.not_passed_quantity;
+          existing.totalAcceptedQuantity = existing.totalAcceptedQuantity += product.accepted_quantity;
           // existing.totalSerialNumbers.push(...product.serial_numbers);
           existing.orderProducts.push(product);
         } else {
@@ -90,6 +91,7 @@ export class WarehouseQcOrderComponent implements OnInit {
           product.totalQuantity = product.quantity;
           product.totalQuantityPassed = product.passed_quantity;
           product.totalQuantityNotPassed = product.not_passed_quantity;
+          product.totalAcceptedQuantity = product.accepted_quantity;
           // product.totalSerialNumbers = [...product.serial_numbers];
           this.orderProducts.push(product);
         }

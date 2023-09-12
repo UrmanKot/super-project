@@ -1,0 +1,258 @@
+<h2>Manufacturing Module Instruction</h2>
+
+<h3>PLANS</h3>
+
+<p>
+  During the production of a new product or assembly, simultaneously with the formation of the
+  production list, it generates the corresponding production plan - a hierarchical representation of the
+  product structure with the status of each position and the ability to graphically display production
+  sequences, the date of receipt of each position, the ability to specify the employee who will be
+  engaged in the production of this position and create orders in outsourcing and own production.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/1.jpg">
+</p>
+
+<p>
+  In the plans menu, we are presented with all the plans that are currently in production. There are
+  two types - a hierarchy, where we see which specific product this plan applies to, or just a list.
+  To open a specific plan, select it from the list and click the selected plans button.
+  It is also possible to see all current plans at once in one window. To do this, click the all plans
+  button.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/2.jpg">
+</p>
+
+<p>
+  Inside the plan, we see the structure of the product or assembly sent to production. Opposite each
+  position there is a graphical representation of the state of each technology of this position - tasks.
+  Position status is displayed in color:
+  -green - the item is in stock and reserved for this plan
+  -red - the item is out of stock. For purchase items with this status, a purchase request is
+  automatically generated. For manufactured parts and assemblies, it is necessary to form an order for
+  outsourcing or for your own production.
+  -yellow — the order for the item has been generated. If this is an order for purchase or outsourcing,
+  the date of receipt will be automatically displayed on the plan calendar, for items in own
+  production, you must manually specify the date of receipt.
+  - yellow-red striped - the order was sent for rework from QC
+</p>
+
+<p>
+  In addition to color statuses, on the chart we see a calendar for receiving positions in the warehouse.
+  If the date of receipt of a child position is shifted, then the parent positions will be shifted after it
+  automatically.
+  To specify the dates of production of positions of your production, you need to drag the mouse over
+  the right or left edge of the rectangle that displays the status of the technology of the desired
+  position, or left-click on it and explicitly specify the dates in the pop-up window. Also in the pop-up
+  window, you can specify the employee to complete this task and the time he needs, as well as the
+  machine needed to complete this task.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/3.jpg">
+</p>
+
+<p>
+  Also in the pop-up window, we can see a marker, whether this task is unlocked for the order. A task
+  can only be sent to an order when all of its child elements have a green status, i.e. received at the
+  warehouse. Until this moment, the task is blocked for the order.
+</p>
+
+<p>
+  To create an order, there is an order creation button in the lower left corner. When you click on this
+  button, you need to filter the technologies that need to be sent to the order. When filtering, only
+  tasks already unlocked for orders will be selected.
+  After selecting specific items for the order, you must specify the type of order - outsourcing or your
+  own production. If necessary, add materials from the warehouse necessary for the production of
+  these positions and click the create button.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/4.jpg">
+</p>
+
+<p>
+  After that, an order with the selected type will be created and a production request for this order will
+  be generated at the warehouse.
+</p>
+
+<p>
+  To simplify planning, there is a planning button in the lower left corner. It allows you to put down
+  dates and select employees for many selected tasks at once. To do this, click on the planning button,
+  filter the required technologies, specify the required values for all selected tasks.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/5.jpg">
+</p>
+
+<p>
+  After the plan is formed, it is possible to edit the structure of this plan, delete and add positions. In
+  this case, this edit does not affect the structure of the product from which this plan was generated,
+  but only changes this instance of the product or assembly. To delete a position, click on the
+  technology of the desired position and click the delete button in the pop-up window. When deleting
+  a position, a reservation is also made for a certain position in the warehouse.
+  To add an item, you need to click on the add items button in the lower left corner, select the item
+  type, find the desired item in the warehouse, enter the required quantity and click the add button.
+  The number is entered per assembly and will be automatically multiplied by the number of
+  assemblies for the given plan.
+</p>
+
+<p>
+  When adding a position, the warehouse quantity is automatically checked and the required quantity
+  is reserved from the warehouse, or, if the position is in short supply and is purchased, a request for
+  the purchase of this position is automatically generated.
+  When adding an item to an assembly that has already been sent to an order, in this order the added
+  item appears in the list of required materials and in the production request.
+  When deleting an item from an assembly sent to an order, it will also be deleted from the required
+  materials of the order, if the production request has not yet been closed. If the production request
+  has already been closed, the position cannot be deleted.
+  If the item was added to the assembly, the order for which is already closed, this order will be sent
+  to the rework.
+</p>
+
+<p>
+  Also in the bottom menu there are additional filters for this plan
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/6.jpg">
+</p>
+
+<p>If we need to see the availability schedule for several plans at once, or we need to create an order
+  for several plans at once, we can use the ALL plans menu. When you go to this menu, we will see
+  all the plans in one window. You can filter only the plans we need and work with them in the same
+  way as with one plan.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/7.jpg">
+</p>
+
+<h3>ORDERS TO OWN PRODUCTION</h3>
+
+<p>
+  The list of all orders to your production contains the order id, the date of creation, the name of the
+  plan from which the order was generated and the status of the order
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/8.jpg">
+</p>
+
+<p>
+  If the order was created from several plans, both of them will be displayed in the list.
+  Order status:
+  - new - new order
+  - production request completed - the production request was prepared by the warehouse and sent to
+  production
+  - sent to qc – order items were sent to qc
+  - on stock – order items were taken to the warehouse
+</p>
+
+<p>
+  The order card contains a list of ordered items - the ordered items table, a list of materials and parts
+  necessary for the production of ordered items - parts\materials list, a list of machines needed for
+  production - machines and a list of technological equipment.
+  The materials\parts list is sent to the warehouse as a production request for this order when an order
+  is formed. After preparing this list in the warehouse, production can proceed to the order
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/9.jpg">
+</p>
+
+<p>
+  It is possible to add a material or a warehouse item to an order. To do this, select the ordered item
+  for which additional materials are required and select these materials from the warehouse.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/10.jpg">
+</p>
+
+<p>
+  After the order items are ready, you need to select them from the list and send them to QC.
+  Next to each position, its status of passing QC is registered.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/11.jpg">
+</p>
+
+<h3>Slice task menu</h3>
+
+<p>
+  When planning a plan, a task card is filled in for positions indicating an employee for positions sent
+  to their production. The slice tasks menu displays a list of tasks assigned to an employee with the
+  ability to filter by various criteria.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/12.jpg">
+</p>
+
+<h3>Menu Employees</h3>
+
+<p>
+  The list of employees for tasks is formed in the menu Employees
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/13.jpg">
+</p>
+
+<h3>Menu positions</h3>
+
+<p>
+  List of positions
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/14.jpg">
+</p>
+
+<h3>Menu machines</h3>
+
+<p>
+  List of machines
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/15.jpg">
+</p>
+
+<h3>TOOL REQUESTS</h3>
+
+<p>
+  The module is designed to track equipment and tools issued to employees
+</p>
+
+<p>
+  Areas - we form a list of locators, employees or other storage places for which we will generate requests for
+  equipment and tools.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/16.jpg">
+</p>
+
+<p>
+  Instrument and tools - a list of equipment and instruments already given to a specific locator
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/17.jpg">
+</p>
+
+<p>
+  Tool request - the formation of a new request for a warehouse for equipment or tools. You must specify where the
+  request is assigned and the list of requested positions. After that, this request goes to the warehouse.
+</p>
+
+<p>
+  <img src="assets/images/instructions/production/18.jpg">
+</p>

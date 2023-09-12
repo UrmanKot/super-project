@@ -63,12 +63,17 @@ const routes: Routes = [
       {
         path: 'statistics',
         title: 'ERP Statistics',
-        loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
+        loadChildren: () => import('./statistics/statistics.module').then(m => m.StatisticsModule)
       },
       {
         path: 'payments',
         title: 'Payments',
         loadChildren: () => import('./payments/payments.module').then(m => m.PaymentsModule)
+      },
+      {
+        path: 'admin',
+        title: 'Administration',
+        loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule)
       },
       {
         path: 'crm',
@@ -95,6 +100,14 @@ const routes: Routes = [
         path: 'quality-control',
         title: 'Quality Control',
         loadChildren: () => import('./qc/qc.module').then(m => m.QcModule)
+      }, {
+        path: 'reports',
+        title: 'Reports',
+        loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
+      }, {
+        path: 'delivery-chains',
+        title: 'Delivery Chains',
+        loadChildren: () => import('./delivery-chains/delivery-chains.module').then(m => m.DeliveryChainsModule)
       },
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]

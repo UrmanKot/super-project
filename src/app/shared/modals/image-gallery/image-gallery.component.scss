@@ -1,3 +1,5 @@
+@import "src/app/shared/styles/screens-variables";
+
 $slider-width: 1300px;
 $slider-height: 600px;
 
@@ -11,9 +13,22 @@ $slider-height: 600px;
 
 .image-gallery {
   border-radius: 4px;
-  width: $slider-width;
+  width: 1300px;
   position: relative;
   max-height: 90vh;
+
+  @media (max-width: 1625px) {
+    width: 80vw;
+  }
+
+  @media (max-width: 768px) {
+    width: 95vw;
+  }
+
+
+  &.is-preparing {
+    opacity: 0;
+  }
 
   &__btn {
     position: absolute;
@@ -50,22 +65,35 @@ $slider-height: 600px;
 
   &__inner {
     border-radius: 0.25rem;
-    transition: 0.75s all ease;
+    transition: 0.75s transform ease;
     display: flex;
     max-height: 90vh;
   }
 
   &__slide {
     border-radius: 0.25rem;
-    max-width: $slider-width;
-    width: 100%;
+    width: 1300px;
     display: flex;
     align-items: center;
     max-height: 90vh;
+    @media (max-width: 1625px) {
+      width: 80vw;
+    }
+    @media (max-width: 768px) {
+      width: 95vw;
+    }
 
     img {
-      width: $slider-width;
+      width: 1300px;
       object-fit: cover;
+
+      @media (max-width: 1625px) {
+        width: 80vw;
+      }
+
+      @media (max-width: 768px) {
+        width: 95vw;
+      }
     }
   }
 
@@ -75,9 +103,16 @@ $slider-height: 600px;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
-    width: 50rem;
     height: 60vh;
     font-weight: 500;
+    width: 1300px;
+
+    @media (max-width: 1625px) {
+      width: 80vw;
+    }
+    @media (max-width: 768px) {
+      width: 95vw;
+    }
 
     p {
       color: rgba(0, 0, 0, .87);
@@ -91,3 +126,5 @@ $slider-height: 600px;
     }
   }
 }
+
+

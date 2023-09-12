@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h2 class="modal-header__title">
+    Sales Chains
+  </h2>
+
+  <p class="mt-2 mb-2">Choose categories for creation of production list from Sales Chain</p>
+</div>
+
+<mat-dialog-content>
+  <p-treeTable
+    #tt
+    [scrollable]="true"
+    scrollHeight="300px"
+    [value]="categoriesTree"
+    [(selection)]="selectedCategories"
+    selectionMode="checkbox"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>
+          is for sales chain
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          <p-treeTableCheckbox [value]="rowNode"></p-treeTableCheckbox>
+          {{rowData.name}}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center p-4" [attr.colspan]="14">
+          <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
+          <span *ngIf="!isLoading">No Records Found</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-between">
+  <button pButton type="button" label="Cancel" [mat-dialog-close]="false" class="p-button-danger"></button>
+  <button
+    pButton
+    type="button"
+    class="p-button-success"
+    [loading]="isSaving"
+    label="Save"
+    (click)="onSave()"
+  ></button>
+</mat-dialog-actions>

@@ -15,6 +15,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Table} from 'primeng/table';
 import {OrderStatusesTableComponent} from '@shared/components/order-statuses-table/order-statuses-table.component';
 import {environment} from "@env/environment";
+import {OrderProduct, OrderRequestType} from '../../models/order-product';
 
 @UntilDestroy()
 @Component({
@@ -49,6 +50,9 @@ export class ProcurementChainsComponent implements OnInit {
     contains_nomenclature: [null],
     supplier: [null],
     order_root_list_id: [null],
+    contains_nomenclature_code: [null],
+    contains_nomenclature_name: [null],
+    id: [null],
     active_status__in: [null],
     created_after: [null],
     created_before: [null],
@@ -65,7 +69,7 @@ export class ProcurementChainsComponent implements OnInit {
 
   nomenclaturesList: Nomenclature[] = [];
   rootLists: any[] = [];
-  productionPlanLinkBase = environment.link_url + "dash/production/plan/tasks/";
+  productionPlanLinkBase = environment.link_url + 'dash/production/plan/tasks/';
 
   query: QuerySearch[] = [];
 
@@ -74,6 +78,7 @@ export class ProcurementChainsComponent implements OnInit {
   tableScrollHeight = '29.625rem';
   firstPage: number = 0;
   finalStatusSelected = false;
+  isRootListShown: boolean = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -89,7 +94,41 @@ export class ProcurementChainsComponent implements OnInit {
       tap(() => this.prepareForSearch()),
       switchMap(() => this.orderService.get(this.query)),
       map(orders => this.orderService.modifyOrders(orders)),
-      tap(orders => this.orders = orders),
+      tap(orders => {
+
+        orders.forEach(order => {
+          order.hasRequestedByMinimumValueProducts = order.order_products
+            .some(product => product.request_type === OrderRequestType.REQUEST_BY_VOLUME);
+
+          order.uniqueOrderProducts = [];
+          order.order_products.forEach(tempProduct => {
+            const product = new OrderProduct(tempProduct)
+            product.generateUniqueToolRequests();
+            tempProduct = product;
+
+            const existingInList = order.uniqueOrderProducts.find(unProduct =>
+              unProduct.current_technology === tempProduct.current_technology &&
+              unProduct.nomenclature.id === tempProduct.nomenclature.id);
+
+            if (!existingInList) {
+              order.uniqueOrderProducts.push(tempProduct);
+            }
+          });
+
+          const lists: { list: ListProduct, count?: number, allLists: ListProduct[] }[] = [];
+          order.root_production_list_products.forEach((res: ListProduct) => {
+            const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
+            if (found) {
+              found.count++;
+              found.allLists.push(res);
+            } else {
+              lists.push({list: res, count: 1, allLists: [res]});
+            }
+          });
+          order.display_production_list_products = lists;
+          });
+        this.orders = orders;
+      }),
       tap(() => this.generateNomenclaturesListAndRootLists()),
       tap(() => this.isLoading = false),
       untilDestroyed(this)
@@ -112,9 +151,9 @@ export class ProcurementChainsComponent implements OnInit {
 
         order.root_production_plans.forEach((plan: any) => {
           if (plan.list_product.id == root.id) {
-            root.productionPlanId = plan.id
+            root.productionPlanId = plan.id;
           }
-        })
+        });
         this.rootLists.push(root);
       });
 
@@ -143,14 +182,15 @@ export class ProcurementChainsComponent implements OnInit {
 
   }
 
-  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number }[] {
-    const lists: { list: ListProduct, count?: number }[] = [];
+  getRootLists(rootLists: ListProduct[]): { list: ListProduct, count?: number, allLists: ListProduct[] }[] {
+    const lists: { list: ListProduct, count?: number, allLists: ListProduct[] }[] = [];
     rootLists.forEach((res: ListProduct) => {
       const found = lists.find(el => el.list.nomenclature.name === res.nomenclature.name);
       if (found) {
         found.count++;
+        found.allLists.push(res);
       } else {
-        lists.push({list: res, count: 1});
+        lists.push({list: res, count: 1, allLists: [res]});
       }
     });
     return lists;
@@ -183,8 +223,17 @@ export class ProcurementChainsComponent implements OnInit {
     this.query = [
       {name: 'accounting_type', value: 1},
       {name: 'has_purchase_category', value: false},
-      {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
     ];
+
+    if (this.searchForm.get('id').value) {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: false}
+      );
+    } else {
+      this.query.push(
+        {name: 'exclude_with_active_final_status', value: !this.finalStatusSelected}
+      );
+    }
 
     for (const key in this.searchForm.controls) {
       if (this.searchForm.controls[key].value !== null) {

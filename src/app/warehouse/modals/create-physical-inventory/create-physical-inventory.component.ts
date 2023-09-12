@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {Warehouse} from '../../models/warehouse';
+import {Currency} from '../../models/warehouse';
 import {Locator} from '../../models/locator';
 import {PhysicalInventoryService} from '../../services/physical-inventory.service';
 import {finalize} from 'rxjs';
@@ -30,7 +30,7 @@ export class CreatePhysicalInventoryComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  selectWarehouses(warehouses: Warehouse[]) {
+  selectWarehouses(warehouses: Currency[]) {
     let value = null;
     if (warehouses?.length > 0) value = warehouses.map(w => w.id);
     this.form.get('warehouses').patchValue(value);

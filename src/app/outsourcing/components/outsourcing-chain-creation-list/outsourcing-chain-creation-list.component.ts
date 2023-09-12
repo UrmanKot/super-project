@@ -237,7 +237,10 @@ export class OutsourcingChainCreationListComponent implements OnInit {
   }
 
   onDeleteOrders() {
-    this.modalService.confirm('danger').subscribe(confirm => {
+    const deleteItems = this.selectedProducts.map(product => {
+      return `${product.nomenclature.code} ${product.nomenclature.name} Q(${product.initial_quantity})`;
+    });
+    this.modalService.confirmWithDetails(deleteItems, 'danger').subscribe(confirm => {
       if (confirm) {
         const notOrderedProducts = this.selectedProducts.filter(n => n.status === 'A2');
 

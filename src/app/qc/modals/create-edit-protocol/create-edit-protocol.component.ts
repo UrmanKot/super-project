@@ -1,9 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {WarehouseService} from '../../../warehouse/services/warehouse.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModalActionType} from '@shared/models/modal-action';
-import {Warehouse} from '../../../warehouse/models/warehouse';
 import {QcProtocol} from '../../models/protocol';
 import {ProtocolService} from '../../services/protocol.service';
 import {filter, tap} from 'rxjs/operators';

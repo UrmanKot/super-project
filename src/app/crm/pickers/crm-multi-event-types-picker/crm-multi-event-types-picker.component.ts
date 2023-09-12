@@ -13,6 +13,7 @@ export class CrmMultiEventTypesPickerComponent implements OnInit {
   @Input() isInner = false;
   @Input() isExternal = false;
   @Input() currentEventTypesIds: number[] = [];
+  @Input() currentEventTypes: EventType[] = [];
   @Output() selectEventTypes: EventEmitter<EventType[]> = new EventEmitter<EventType[]>();
 
   isLoading = true;
@@ -28,24 +29,22 @@ export class CrmMultiEventTypesPickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.eventTypesService.get().pipe(
+    this.eventTypesService.get([], false).pipe(
       takeUntil(this.destroy$)
     ).subscribe(eventTypes => {
       this.eventTypes = eventTypes;
-
       if (this.isInner) {
         this.eventTypes = this.eventTypes.filter(e => e.is_inner);
       }
 
       if (this.isExternal) this.eventTypes = this.eventTypes.filter(e => !e.is_inner);
-
       this.findEventTypes();
       this.isLoading = false;
     });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if ('currentEmployeeIds' in changes) {
+    if ('currentEmployeeIds' in changes || 'currentEventTypes' in changes) {
       this.selectedEventType = [];
       this.findEventTypes();
     }
@@ -64,6 +63,10 @@ export class CrmMultiEventTypesPickerComponent implements OnInit {
           this.selectedEventType.push(findEventType);
         }
       });
+    }
+
+    if (this.currentEventTypes) {
+      this.selectedEventType.push(...this.currentEventTypes);
     }
   }
 

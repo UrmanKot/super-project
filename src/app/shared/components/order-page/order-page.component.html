@@ -2,20 +2,22 @@
   <div class="page__card order-page__info mb-4">
     <div *ngIf="!isLoading; else infoLoading">
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-4">
           <h2>Order Information</h2>
           <h4><span>Id:</span> {{order.id}}</h4>
           <h4><span>Date:</span> {{order.created|date:'dd/MM/yyyy'}}</h4>
-          <h4><span>Statuses:</span></h4>
-          <div class="statuses">
-            <p
-              [ngClass]="{'text-success': item.is_active}"
-              class="status"
-              *ngFor="let item of order.statuses"
-            >
-              {{item.status.value}}: {{item.estimated_date | date:'dd/MM/yyyy'}}
-            </p>
-          </div>
+            <div  class="all-statuses">
+              <h4><span>Manual Statuses:</span></h4>
+              <div class="statuses">
+                <p
+                  [ngClass]="{'text-success': item.is_active}"
+                  class="status"
+                  *ngFor="let item of manualStatuses"
+                >
+                  {{item.status.value}}: {{item.estimated_date | date:'dd/MM/yyyy'}}
+                </p>
+              </div>
+            </div>
           <h4><span>Comment:</span> {{order.comment}}</h4>
           <h4 *ngIf="orderType === 'purchase'"><span>Type:</span> {{order.purchase_category?.is_material ? 'Tangible' : 'Intangible'}}</h4>
           <div class="purchase-category" *ngIf="orderType === 'purchase'">
@@ -38,7 +40,49 @@
             </div>
           </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
+          <div  class="all-statuses">
+            <h4><span>Auto Statuses:</span></h4>
+            <div class="statuses">
+              <p
+                [ngClass]="{'text-success': item.is_active}"
+                class="status"
+                *ngFor="let item of autoStatuses"
+              >
+                {{item.status.value}}: {{item.estimated_date | date:'dd/MM/yyyy'}}
+              </p>
+            </div>
+          </div>
+            <div class="expected-delivery-date">
+              <h4><span class="title">Expected Delivery Date:</span></h4>
+              <p-calendar
+                class="calendar"
+                [firstDayOfWeek]="1"
+                [showButtonBar]="true"
+                [readonlyInput]="true"
+                [(ngModel)]="expectedDeliveryDate"
+                (onClickOutside)="clickExpectedDeliveryDateOutside()"
+                dataType="date"
+                dateFormat="dd/mm/yy"
+                [hideOnDateTimeSelect]="false"
+                (onClearClick)="clear()"
+                (onClear)="clear()"
+              >
+                <p-footer
+                  class="d-flex justify-content-center align-items-center"
+                >
+                  <button
+                  class="btn btn-primary position-absolute mb-5"
+                  (click)="setExpectedDeliveryDate();"
+                  >
+                    Set Date
+                  </button>
+                </p-footer>
+              </p-calendar>
+
+            </div>
+        </div>
+        <div class="col-md-4">
           <div class="supplier">
             <h2>Supplier</h2>
             <button
@@ -87,8 +131,21 @@
           <ng-template pTemplate="caption">
             <div class="d-flex">
               <p class="subtitle" *ngIf="!selectedProduct">Choose the Item to edit</p>
+              <div class="selected-order-root-lists ml-auto">
+                <button
+                  pButton
+                  type="button"
+                  label="Go To Production Plans"
+                  [disabled]="!selectedProduct || selectedProduct?.display_production_list_products?.length === 0"
+                  [class.disabled]="!selectedProduct"
+                  (click)="isRootListShown = true"
+                ></button>
+                <div pekClickOutside (clickOutside)="isRootListShown = false" class="root-lists" *ngIf="isRootListShown && selectedProduct">
+                  <ng-container *ngTemplateOutlet="productionLists"></ng-container>
+                </div>
+              </div>
               <p-menubar
-                class="ml-auto"
+                class="ml-2"
                 [model]="productMenuItems"
                 [class.disabled]="!selectedProduct || isAlbumPrint"></p-menubar>
               <button
@@ -199,15 +256,47 @@
                 <td style="width: 8%" class="text-center">{{product.request_date |date:'dd/MM/yyyy'}}</td>
                 <td style="width: 10%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
                 <td style="width: 10%" class="text-center">
-                  <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
-                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                  <ng-container *ngIf="product.request_type == OrderRequestType.AUTOMATICALLY">Auto</ng-container>
+                  <ng-container *ngIf="product.request_type == OrderRequestType.MANUALLY || product.request_type === OrderRequestType.REQUEST_BY_VOLUME">Manual</ng-container>
+                  <ng-container *ngIf="product.request_type == 2">Tool Request</ng-container>
                 </td>
                 <td style="width: 10%" class="word-break">
-                  <div
-                    class="d-block"
-                    *ngFor="let item of getRootLists(product.equal_order_products); let idx = index"
-                  >
-                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  <span class="capitalize" *ngIf="product.request_type === OrderRequestType.REQUEST_BY_VOLUME">
+                    requested by minimum volume
+                  </span>
+                  <div class="word-break"
+                       *ngFor="let item of product.display_production_list_products; let idx = index">
+                    <div *ngIf="item.count === 1">
+                      <a
+                        target="_blank"
+                        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                        {{item.list.nomenclature.code}}
+                        ~{{item.list.nomenclature.name}}({{item.count}})
+                      </a>
+                    </div>
+                    <div class="hovered-info" *ngIf="item.count > 1">
+                      <a
+                        target="_blank"
+                        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                        {{item.list.nomenclature.code}}
+                        ~{{item.list.nomenclature.name}}({{item.count}})
+                      </a>
+                      <pek-hover-detailed-info-component
+                        [moveLeft]="+20"
+                        [align]="'left'"
+                        *ngIf="product.display_production_list_products.length > 0"
+                      >
+                        <div *ngFor="let plan of item.allLists">
+                          <a
+                            target="_blank"
+                            [routerLink]="'/manufacturing/plans/plan/' + plan.productionPlanId">
+                            {{plan.productionPlanId}} -
+                            {{item.list.nomenclature.code}}
+                            ~{{item.list.nomenclature.name}}
+                          </a>
+                        </div>
+                      </pek-hover-detailed-info-component>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -239,14 +328,43 @@
                 <td style="width: 8%" class="text-center">{{product.reception_date |date:'dd/MM/yyyy'}}</td>
                 <td style="width: 8%" class="text-center">
                   <ng-container *ngIf="product.request_type == 1">Auto</ng-container>
-                  <ng-container *ngIf="product.request_type == 0">Manual</ng-container>
+                  <ng-container *ngIf="product.request_type == OrderRequestType.MANUALLY || product.request_type === OrderRequestType.REQUEST_BY_VOLUME">Manual</ng-container>
+                  <ng-container *ngIf="product.request_type == 2">Tool Request</ng-container>
                 </td>
                 <td style="width: 14%">
-                  <div
-                    class="d-block"
-                    *ngFor="let item of getRootLists(product.equal_order_products); let idx = index"
-                  >
-                    {{item.list.nomenclature.code}}~{{item.list.nomenclature.name}} ({{item.count}})
+                  <div class="word-break"
+                       *ngFor="let item of product.display_production_list_products; let idx = index">
+                    <div *ngIf="item.count === 1">
+                      <a
+                        target="_blank"
+                        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                        {{item.list.nomenclature.code}}
+                        ~{{item.list.nomenclature.name}}({{item.count}})
+                      </a>
+                    </div>
+                    <div class="hovered-info" *ngIf="item.count > 1">
+                      <a
+                        target="_blank"
+                        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+                        {{item.list.nomenclature.code}}
+                        ~{{item.list.nomenclature.name}}({{item.count}})
+                      </a>
+                      <pek-hover-detailed-info-component
+                        [moveLeft]="+20"
+                        [align]="'left'"
+                        *ngIf="product.display_production_list_products.length > 0"
+                      >
+                        <div *ngFor="let plan of item.allLists">
+                          <a
+                            target="_blank"
+                            [routerLink]="'/manufacturing/plans/plan/' + plan.productionPlanId">
+                            {{plan.productionPlanId}} -
+                            {{item.list.nomenclature.code}}
+                            ~{{item.list.nomenclature.name}}
+                          </a>
+                        </div>
+                      </pek-hover-detailed-info-component>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -500,9 +618,10 @@
                 (click)="onCreateProformaInvoice()"
                 pButton type="button"
                 icon="pi pi-plus"
-                class="ml-2"
+                class="ml-2 p-button-icon"
                 label="Create Proforma Invoice"
                 [disabled]="isLoadingInvoices"
+                [loading]="isCreatingProformaInvoice"
               >
               </button>
             </div>
@@ -565,9 +684,10 @@
                 (click)="onCreateInvoice()"
                 pButton type="button"
                 icon="pi pi-plus"
-                class="ml-2"
+                class="ml-2 p-button-icon"
                 label="Create Invoice"
                 [disabled]="isLoadingInvoices"
+                [loading]="isCreatingInvoice"
               >
               </button>
             </div>
@@ -588,14 +708,17 @@
                 {{invoice.system_creation_date | date:'dd/MM/yyyy'}}
                 <i *ngIf="invoice.related_files" class="pi pi-paperclip"></i>
               </td>
-              <td class="text-center">{{invoice.self_serial_number}}</td>
+              <td class="text-center">
+                {{invoice.self_serial_number}}
+                <b *ngIf="invoice.rma_products_count">(RMA)</b>
+              </td>
               <td class="text-center">{{invoice.supplier?.name}}</td>
               <td class="text-center">{{invoice.total_price | moneyFormat}} {{invoice.currency?.symbol}} </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="5">
+              <td class="text-center p-4" [attr.colspan]="10">
                 <i *ngIf="isLoadingInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingInvoices">No Records Found</span>
               </td>
@@ -644,18 +767,23 @@
           <ng-template pTemplate="header">
             <tr>
               <th style="width: 5%" class="index-header text-center">#</th>
-              <th style="width: 15%" class="text-center">Date</th>
-              <th style="width: 28%" class="text-center">Invoice</th>
-              <th style="width: 32%" class="text-center">Supplier</th>
+              <th style="width: 15%" class="text-center">Creation Date</th>
+              <th style="width: 18%" class="text-center">Invoice</th>
+              <th style="width: 18%" class="text-center">Supplier</th>
               <th style="width: 10%" class="text-center">Amount</th>
               <th style="width: 10%" class="text-center">Converted Amount</th>
+              <th style="width: 15%" class="text-center">Payment Date</th>
+              <th style="width: 10%" class="text-center">Status</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-payment let-i="rowIndex">
             <tr [pSelectableRow]="payment">
               <td class="text-center">{{i + 1}}</td>
               <td class="text-center">
-                {{payment.payment_date | date:'dd/MM/yyyy'}}
+              <span *ngFor="let inv of payment.invoices; let idx = index">
+                        {{inv.system_creation_date |  date:'dd/MM/yyyy'}}
+                <span *ngIf="idx !== payment.invoices.length - 1">,</span>
+              </span>
               </td>
               <td class="text-center">
               <span *ngFor="let inv of payment.invoices; let idx = index">
@@ -671,11 +799,26 @@
               </td>
               <td class="text-center">{{payment.amount | moneyFormat}} €</td>
               <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
+              <td class="text-center">
+                {{payment.payment_date | date:'dd/MM/yyyy'}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div
+                  [ngClass]="{
+                          'text-primary': payment.status==='PAID',
+                          'text-success': payment.status==='CONFIRMED',
+                          'text-danger': payment.status==='DECLINED',
+                          'text-warning': payment.status==='WAITING'
+                          }"
+                >
+                  {{payment.status}}
+                </div>
+              </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="6">
+              <td class="text-center p-4" [attr.colspan]="8">
                 <i *ngIf="isLoadingPayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingPayments">No Records Found</span>
               </td>
@@ -714,9 +857,10 @@
                 (click)="onCreateServiceInvoice(true)"
                 pButton type="button"
                 icon="pi pi-plus"
-                class="ml-2"
+                class="ml-2 p-button-icon"
                 label="Create Auxiliary Proforma Invoice"
                 [disabled]="isLoadingServiceInvoices"
+                [loading]="isCreatingProformaServiceInvoice"
               >
               </button>
             </div>
@@ -748,7 +892,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="5">
+              <td class="text-center p-4" [attr.colspan]="10">
                 <i *ngIf="isLoadingServiceInvoices" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingServiceInvoices">No Records Found</span>
               </td>
@@ -783,9 +927,10 @@
                 (click)="onCreateServiceInvoice(false)"
                 pButton type="button"
                 icon="pi pi-plus"
-                class="ml-2"
+                class="ml-2 p-button-icon"
                 label="Create Auxiliary Invoice"
                 [disabled]="isLoadingServiceInvoices"
+                [loading]="isCreatingServiceInvoice"
               >
               </button>
             </div>
@@ -868,18 +1013,23 @@
           <ng-template pTemplate="header">
             <tr>
               <th style="width: 5%" class="index-header text-center">#</th>
-              <th style="width: 15%" class="text-center">Date</th>
-              <th style="width: 28%" class="text-center">Invoice</th>
-              <th style="width: 32%" class="text-center">Supplier</th>
+              <th style="width: 15%" class="text-center">Creation Date</th>
+              <th style="width: 18%" class="text-center">Invoice</th>
+              <th style="width: 22%" class="text-center">Supplier</th>
               <th style="width: 10%" class="text-center">Amount</th>
               <th style="width: 10%" class="text-center">Converted Amount</th>
+              <th style="width: 15%" class="text-center">Payment Date</th>
+              <th style="width: 10%" class="text-center">Status</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-payment let-i="rowIndex">
             <tr [pSelectableRow]="payment">
               <td class="text-center">{{i + 1}}</td>
               <td class="text-center">
-                {{payment.payment_date|date:'dd/MM/yyyy'}}
+              <span *ngFor="let inv of payment.service_invoices; let idx = index">
+                {{inv.system_creation_date |  date:'dd/MM/yyyy'}}
+                <span *ngIf="idx !== payment.service_invoices.length - 1">,</span>
+              </span>
               </td>
               <td class="text-center">
               <span *ngFor="let inv of payment.service_invoices; let idx = index">
@@ -894,11 +1044,26 @@
               </td>
               <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
               <td class="text-center">{{payment.converted_amount | moneyFormat}} €</td>
+              <td class="text-center">
+                {{payment.payment_date|date:'dd/MM/yyyy'}}
+              </td>
+              <td style="width: 10%" class="text-center">
+                <div
+                  [ngClass]="{
+                          'text-primary': payment.status==='PAID',
+                          'text-success': payment.status==='CONFIRMED',
+                          'text-danger': payment.status==='DECLINED',
+                          'text-warning': payment.status==='WAITING'
+                          }"
+                >
+                  {{payment.status}}
+                </div>
+              </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td class="text-center p-4" [attr.colspan]="6">
+              <td class="text-center p-4" [attr.colspan]="8">
                 <i *ngIf="isLoadingServicePayments" class="pi pi-spin pi-spinner" style="font-size: 2.25rem"></i>
                 <span *ngIf="!isLoadingServicePayments">No Records Found</span>
               </td>
@@ -995,5 +1160,42 @@
 <ng-template #spinner>
   <div class="spinner-input">
     <i class="pi pi-spin pi-spinner" style="font-size: 1.25rem"></i>
+  </div>
+</ng-template>
+
+
+<ng-template #productionLists>
+  <div class="word-break"
+       *ngFor="let item of selectedProduct?.display_production_list_products; let idx = index">
+    <div *ngIf="item.count === 1">
+      <a
+        target="_blank"
+        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+        {{item.list.nomenclature.code}}
+        ~{{item.list.nomenclature.name}}({{item.count}})
+      </a>
+    </div>
+    <div class="hovered-info" *ngIf="item.count > 1">
+      <a
+        target="_blank"
+        [routerLink]="'/manufacturing/plans/plan/' + item.list.productionPlanId">
+        {{item.list.nomenclature.code}}
+        ~{{item.list.nomenclature.name}}({{item.count}})
+      </a>
+      <pek-hover-detailed-info-component
+        [moveLeft]="+20"
+        *ngIf="selectedProduct?.display_production_list_products.length > 0"
+      >
+        <div *ngFor="let plan of item.allLists">
+          <a
+            target="_blank"
+            [routerLink]="'/manufacturing/plans/plan/' + plan.productionPlanId">
+            {{plan.productionPlanId}} -
+            {{item.list.nomenclature.code}}
+            ~{{item.list.nomenclature.name}}
+          </a>
+        </div>
+      </pek-hover-detailed-info-component>
+    </div>
   </div>
 </ng-template>

@@ -1,0 +1,16 @@
+.rma-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  button {
+    width: 100%;
+  }
+}
+
+.rma {
+  span {
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+}

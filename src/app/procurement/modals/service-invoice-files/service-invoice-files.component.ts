@@ -1,13 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Invoice, InvoiceFile} from '../../models/invoice';
+import {Invoice} from '../../models/invoice';
 import {environment} from '@env/environment';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {InvoiceService} from '../../services/invoice.service';
 import {AdapterService} from '@shared/services/adapter.service';
 import {ModalService} from '@shared/services/modal.service';
 import {PaymentFile} from '../../../payments/models/payment';
 import {finalize} from 'rxjs';
 import {ServiceInvoiceService} from '@shared/services/service-invoice.service';
+import {ServiceInvoiceFile} from "../../models/service-invoice";
 
 @Component({
   selector: 'pek-service-invoice-files',
@@ -22,7 +22,7 @@ export class ServiceInvoiceFilesComponent implements OnInit {
   invoiceId: number;
 
   uploadFiles: File[] = [];
-  files: InvoiceFile[] = [];
+  files: ServiceInvoiceFile[] = [];
   isLoading = true;
   isPending = false;
   link = environment.image_path;
@@ -32,13 +32,12 @@ export class ServiceInvoiceFilesComponent implements OnInit {
     private readonly serviceInvoiceService: ServiceInvoiceService,
     private readonly adapterService: AdapterService,
     private readonly modalService: ModalService,
-    @Inject(MAT_DIALOG_DATA) private invoice: Invoice,
+    @Inject(MAT_DIALOG_DATA) private data: {invoiceId: number},
   ) {
   }
 
   ngOnInit(): void {
-    console.log(this.invoice);
-    this.invoiceId = this.invoice.id;
+    this.invoiceId = this.data.invoiceId;
     this.getFiles();
   }
 
@@ -59,7 +58,6 @@ export class ServiceInvoiceFilesComponent implements OnInit {
   }
 
   onDownloadFile(file: PaymentFile) {
-    console.log(file);
     this.addition.add(file.id);
     this.serviceInvoiceService.downloadFile(file.id).subscribe(response => {
       const filename = this.getFileName(file.file);
